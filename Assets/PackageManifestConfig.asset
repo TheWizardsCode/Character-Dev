@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a29f67b488b4458983fd973bbda8c8fa, type: 3}
+  m_Name: PackageManifestConfig
+  m_EditorClassIdentifier: 
+  packageSourcePaths:
+  - Assets
+  packageIgnorePaths:
+  - Assets/PackageManifestConfig.asset
+  - Assets/Generated
+  packageDestinationPath: ../Animation-ReleaseStable
+  legacyPackageDestinationPath: 
+  packageName: org.wizardscode.animation
+  displayName: Wizards Code - Animation
+  packageVersion: 0.0.1
+  unityVersion: 2019.4
+  description: Open source scripts, animation controllers and animations.
+  category: Animation
+  keywords:
+  - Animation
+  - Controller
+  - Script
+  dependencies: []
+  versionConstantsPath: Assets/Scripts/Editor
+  versionConstantsNamespace: org.WizardsCode.Animator.Editor
+  _id: cc0d2366-128a-4766-83ae-65d11799879e
