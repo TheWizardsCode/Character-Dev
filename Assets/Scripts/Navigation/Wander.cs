@@ -70,7 +70,7 @@ namespace threeDTBD.Character
         {
             get
             {
-                if (!m_Agent.pathPending)
+                if (m_Agent.hasPath && !m_Agent.pathPending)
                 {
                     if (m_Agent.remainingDistance <= m_Agent.stoppingDistance)
                     {
@@ -170,7 +170,7 @@ namespace threeDTBD.Character
                     }
 
                     NavMeshHit hit;
-                    if (NavMesh.SamplePosition(position, out hit, 1, NavMesh.AllAreas))
+                    if (NavMesh.SamplePosition(position, out hit, transform.lossyScale.y * 2, NavMesh.AllAreas))
                     {
                         return hit.position;
                     }
