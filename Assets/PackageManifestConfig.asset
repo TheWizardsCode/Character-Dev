@@ -17,19 +17,19 @@ MonoBehaviour:
   packageIgnorePaths:
   - Assets/PackageManifestConfig.asset
   - Assets/Generated
-  packageDestinationPath: ../Animation-ReleaseStable
+  packageDestinationPath: ../Character-ReleaseStable
   legacyPackageDestinationPath: 
-  packageName: org.wizardscode.animation
-  displayName: Wizards Code - Animation
+  packageName: org.wizardscode.character
+  displayName: Wizards Code - Character
   packageVersion: 0.0.1
   unityVersion: 2019.4
-  description: Open source scripts, animation controllers and animations.
-  category: Animation
+  description: Open source scripts to help create believable characters in Unity.
+  category: Script
   keywords:
-  - Animation
+  - Character
   - Controller
   - Script
   dependencies: []
   versionConstantsPath: Assets/Scripts/Editor
-  versionConstantsNamespace: org.WizardsCode.Animator.Editor
+  versionConstantsNamespace: org.WizardsCode.Character.Editor
   _id: cc0d2366-128a-4766-83ae-65d11799879e

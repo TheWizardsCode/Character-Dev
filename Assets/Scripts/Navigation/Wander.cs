@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace threeDTBD.Character
+namespace WizardsCode.Character
 {
     /// <summary>
     /// Make the cahracter wander semi-randomly. They won't necessarily change
@@ -29,9 +29,8 @@ namespace threeDTBD.Character
         [SerializeField, Tooltip("The approximate maximum range the agent will normally wander from their start position.")]
         private float m_MaxWanderRange = 50f;
 
-        private Transform m_Target;
+        private Vector3 m_TargetPosition;
         private float timeOfNextWanderPathChange;
-        private GameObject m_WanderTarget;
         private Vector3 m_StartPosition;
         private NavMeshAgent m_Agent;
         private Terrain m_Terrain;
@@ -39,21 +38,23 @@ namespace threeDTBD.Character
         /// <summary>
         /// Get or set the current target.
         /// </summary>
-        virtual public Transform currentTarget
+        virtual public Vector3 currentTarget
         {
-            get { return m_Target; }
+            get { return m_TargetPosition; }
             set
             {
-                m_Target = value;
-                m_Agent.SetDestination(m_Target.position);
-                timeOfNextWanderPathChange = Random.Range(minTimeBetweenRandomPathChanges, maxTimeBetweenRandomPathChanges);
+                if (m_TargetPosition != value)
+                {
+                    m_TargetPosition = value;
+                    m_Agent.SetDestination(value);
+                    timeOfNextWanderPathChange = Random.Range(minTimeBetweenRandomPathChanges, maxTimeBetweenRandomPathChanges);
+                }
             }
         }
 
         internal void Awake()
         {
             m_StartPosition = transform.position;
-            m_WanderTarget = new GameObject(gameObject.name + " wander target.");
             m_Agent = GetComponent<NavMeshAgent > ();
             Debug.Assert(m_Agent != null, "Characters with a wander behaviour must also have a NavMesh Agent.");
 
@@ -111,11 +112,7 @@ namespace threeDTBD.Character
         /// </summary>
         internal void UpdateWanderTarget()
         {
-            Vector3 position = GetValidWanderPosition();
-
-            m_WanderTarget.transform.position = position;
-
-            currentTarget = m_WanderTarget.transform;
+            currentTarget = GetValidWanderPosition();
 
             timeOfNextWanderPathChange = Time.timeSinceLevelLoad + Random.Range(minTimeBetweenRandomPathChanges, maxTimeBetweenRandomPathChanges);
         }
@@ -195,7 +192,6 @@ namespace threeDTBD.Character
         }
 
 #if UNITY_EDITOR
-
         private void OnDrawGizmosSelected()
         {
             DrawWanderAreaGizmo();
@@ -210,9 +206,9 @@ namespace threeDTBD.Character
 
         private void DrawWanderTargetGizmo()
         {
-            if (m_WanderTarget != null)
+            if (m_TargetPosition != null)
             {
-                Gizmos.DrawSphere(m_WanderTarget.transform.position, 0.2f);
+                Gizmos.DrawSphere(m_TargetPosition, 0.2f);
             }
         }
 
