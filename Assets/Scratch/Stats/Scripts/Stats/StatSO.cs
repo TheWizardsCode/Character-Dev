@@ -5,10 +5,10 @@ using UnityEngine;
 namespace WizardsCode.Character.Stats
 {
     /// <summary>
-    /// A StatsSO tracks the base value and current value of a Stat. This can be used by an AI
+    /// A StatSO tracks the base value and current value of a Stat. This can be used by an AI
     /// system to decide on actions to take.
     /// </summary>
-    public class StatsSO : ScriptableObject
+    public class StatSO : ScriptableObject
     {
         [Header("Details")]
         [SerializeField, Tooltip("The human readable name for this stat.")]

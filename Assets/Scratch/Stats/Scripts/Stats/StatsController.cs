@@ -10,16 +10,12 @@ namespace WizardsCode.Character.Stats {
     /// </summary>
     public class StatsController : MonoBehaviour
     {
-        [Header("Stats")]
-        [SerializeField, Tooltip("The names of stats this controller is tracking.")]
-        string[] m_StatsNames;
-
-        [Header("Optiomiation")]
+        [Header("Optimization")]
         [SerializeField, Tooltip("How often stats should be processed for changes.")]
         float m_TimeBetweenUpdates = 0.5f;
 
         [HideInInspector, SerializeField]
-        List<StatsSO> m_Stats = new List<StatsSO>();
+        List<StatSO> m_Stats = new List<StatSO>();
         [HideInInspector, SerializeField]
         List<StatsInfluencerSO> m_StatsInfluencers = new List<StatsInfluencerSO>();
 
@@ -29,17 +25,6 @@ namespace WizardsCode.Character.Stats {
 
         private void Awake()
         {
-            StatsSO stat;
-            for (int i = 0; i < m_StatsNames.Length; i++)
-            {
-                if (!TryGetStat(m_StatsNames[i], out stat))
-                {
-                    stat = ScriptableObject.CreateInstance<StatsSO>();
-                    stat.name = m_StatsNames[i];
-                    m_Stats.Add(stat);
-                }
-            }
-
             m_Memory = GetComponent<MemoryController>();
         }
 
@@ -83,29 +68,32 @@ namespace WizardsCode.Character.Stats {
         /// <param name="change">The change to make. The result is kept within the -100 to 100 range.</param>
         internal void ChangeStat(StatsInfluencerSO influencer, float change)
         {
-            StatsSO stat;
-            if (TryGetStat(influencer.statName, out stat))
-            {
-                stat.value += change;
-                influencer.influenceApplied += change;
-                Debug.Log(gameObject.name + " changed stat " + influencer.statName + " by " + change);
-            }
+            StatSO stat = GetStat(influencer.statName);
+            stat.value += change;
+            influencer.influenceApplied += change;
+            Debug.Log(gameObject.name + " changed stat " + influencer.statName + " by " + change);
         }
 
-        private bool TryGetStat(string statName, out StatsSO stat)
+        /// <summary>
+        /// Get the stat object representing a named stat.
+        /// </summary>
+        /// <param name="statName"></param>
+        /// <returns></returns>
+        private StatSO GetStat(string statName)
         {
+            StatSO stat;
             // TODO cache results in a dictionary
             for (int i = 0; i < m_Stats.Count; i++)
             {
                 if (m_Stats[i].name == statName)
                 {
-                    stat = m_Stats[i];
-                    return true;
+                    return m_Stats[i];
                 }
             }
 
-            stat = null;
-            return false;
+            stat = ScriptableObject.CreateInstance<StatSO>();
+            stat.name = statName;
+            return stat;
         }
 
         /// <summary>
@@ -134,11 +122,8 @@ namespace WizardsCode.Character.Stats {
                 }
             }
 
-            StatsSO stat;
-            if (TryGetStat(influencer.statName, out stat))
-            {
-                m_StatsInfluencers.Add(influencer);
-            }
+            StatSO stat = GetStat(influencer.statName);
+            m_StatsInfluencers.Add(influencer);
         }
     }
 }
