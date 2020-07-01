@@ -2,20 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace WizardsCode.Character.Personality
+namespace WizardsCode.Character.Stats
 {
     /// <summary>
-    /// A personality trait influencer will alter a Personality Trait by a given amount over a given duration.
+    /// A stats influencer will alter a Stat by a given amount over a given duration.
     /// </summary>
-    public class PersonalityTraitInfluencerSO : ScriptableObject
+    public class StatsInfluencerSO : ScriptableObject
     {
         [SerializeField, Tooltip("The object that generates this influence.")]
         GameObject m_Generator;
-        [SerializeField, Tooltip("The name of the PersonalityTrait this influencer acts upon.")]
-        string m_TraitName;
-        [SerializeField, Tooltip("The maximum amount of change this influencer will impart upon the trait. If the trait will never be taken beyond its maximum and minimum allowable values.")]
+        [SerializeField, Tooltip("The name of the Stat this influencer acts upon.")]
+        string m_StatName;
+        [SerializeField, Tooltip("The maximum amount of change this influencer will impart upon the stat. If the stat will never be taken beyond its maximum and minimum allowable values.")]
         float m_MaxChange;
-        [SerializeField, Tooltip("The time, in seconds, over which the influencer will be effective. The change will occur over this time period, up to the limit of the trait or the maxChange of this influencer. If duration is 0 then the total change is applied instantly.")]
+        [SerializeField, Tooltip("The time, in seconds, over which the influencer will be effective. The change will occur over this time period, up to the limit of the stat or the maxChange of this influencer. If duration is 0 then the total change is applied instantly.")]
         float m_Duration = 0;
         [SerializeField, Tooltip("The cooldown period before a character can be influenced by this object again, in seconds.")]
         float m_Cooldown = 5;
@@ -32,16 +32,16 @@ namespace WizardsCode.Character.Personality
         }
 
         /// <summary>
-        /// The name of the trait that this influencer will act upon.
+        /// The name of the stat that this influencer will act upon.
         /// </summary>
-        public string traitName
+        public string statName
         {
-            get { return m_TraitName; }
-            internal set { m_TraitName = value; }
+            get { return m_StatName; }
+            internal set { m_StatName = value; }
         }
 
         /// <summary>
-        /// The maximum amount of change this influencer will impart upon the trait. If the trait will never be taken beyond its maximum and minimum allowable values.
+        /// The maximum amount of change this influencer will impart upon the stat. If the stat will never be taken beyond its maximum and minimum allowable values.
         /// </summary>
         public float maxChange
         {
@@ -95,7 +95,7 @@ namespace WizardsCode.Character.Personality
 
         /// <summary>
         /// The time, in seconds, over which the influencer will be effective. 
-        /// The change will occur over this time period, up to the limit of the trait or the maxChange of this influencer. 
+        /// The change will occur over this time period, up to the limit of the stat or the maxChange of this influencer. 
         /// If duration is 0 then the total change is applied instantly.
         /// </summary>
         public float duration
@@ -107,6 +107,6 @@ namespace WizardsCode.Character.Personality
             }
         }
 
-        internal PersonalityController controller { get; set; }
+        internal StatsController controller { get; set; }
     }
 }
