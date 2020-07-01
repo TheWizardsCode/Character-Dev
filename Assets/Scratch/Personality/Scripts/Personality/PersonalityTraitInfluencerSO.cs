@@ -9,17 +9,27 @@ namespace WizardsCode.Character.Personality
     /// </summary>
     public class PersonalityTraitInfluencerSO : ScriptableObject
     {
+        [SerializeField, Tooltip("The object that generates this influence.")]
+        GameObject m_Generator;
         [SerializeField, Tooltip("The name of the PersonalityTrait this influencer acts upon.")]
         string m_TraitName;
         [SerializeField, Tooltip("The maximum amount of change this influencer will impart upon the trait. If the trait will never be taken beyond its maximum and minimum allowable values.")]
         float m_MaxChange;
         [SerializeField, Tooltip("The time, in seconds, over which the influencer will be effective. The change will occur over this time period, up to the limit of the trait or the maxChange of this influencer. If duration is 0 then the total change is applied instantly.")]
         float m_Duration = 0;
+        [SerializeField, Tooltip("The cooldown period before a character can be influenced by this object again, in seconds.")]
+        float m_Cooldown = 5;
 
         [HideInInspector, SerializeField]
         float m_InfluenceApplied = 0;
 
         float m_ChangePerSecond = float.NegativeInfinity;
+
+        public GameObject generator
+        {
+            get { return m_Generator; }
+            set { m_Generator = value; }
+        }
 
         /// <summary>
         /// The name of the trait that this influencer will act upon.
@@ -38,8 +48,20 @@ namespace WizardsCode.Character.Personality
             get { return m_MaxChange; }
             internal set { 
                 m_MaxChange = value;
-                m_ChangePerSecond = m_MaxChange / m_Duration;
+                if (m_Duration > 0)
+                {
+                    m_ChangePerSecond = m_MaxChange / m_Duration;
+                }
             }
+        }
+
+        /// <summary>
+        /// The minimum time that must pass before a character can be influenced by this same influencer again.
+        /// </summary>
+        public float cooldown
+        {
+            get { return m_Cooldown; }
+            set { m_Cooldown = value; }
         }
 
         /// <summary>

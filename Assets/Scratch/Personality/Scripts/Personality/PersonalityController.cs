@@ -25,6 +25,7 @@ namespace WizardsCode.Character.Personality {
 
         float m_TimeOfLastUpdate = 0;
         float m_TimeOfNextUpdate = 0;
+        MemoryController m_Memory;
 
         private void Awake()
         {
@@ -38,6 +39,8 @@ namespace WizardsCode.Character.Personality {
                     m_Traits.Add(trait);
                 }
             }
+
+            m_Memory = GetComponent<MemoryController>();
         }
 
         private void Update()
@@ -53,9 +56,14 @@ namespace WizardsCode.Character.Personality {
                 {
                     if (m_TraitInfluencers[i] != null)
                     {
-                        float influence = m_TraitInfluencers[i].changePerSecond * (Time.timeSinceLevelLoad - m_TimeOfLastUpdate);
-                        ChangeTrait(m_TraitInfluencers[i].traitName, influence);
-                        m_TraitInfluencers[i].influenceApplied += influence;
+                        if (m_TraitInfluencers[i].duration > 0)
+                        {
+                            float influence = m_TraitInfluencers[i].changePerSecond * (Time.timeSinceLevelLoad - m_TimeOfLastUpdate);
+                            ChangeTrait(m_TraitInfluencers[i], influence);
+                        } else
+                        {
+                            ChangeTrait(m_TraitInfluencers[i], m_TraitInfluencers[i].maxChange);
+                        }
                     } else
                     {
                         m_TraitInfluencers.RemoveAt(i);
@@ -73,13 +81,14 @@ namespace WizardsCode.Character.Personality {
         /// 
         /// <param name="traitname">The name of the trait to change.</param>
         /// <param name="change">The change to make. The result is kept within the -100 to 100 range.</param>
-        internal void ChangeTrait(string traitName, float change)
+        internal void ChangeTrait(PersonalityTraitInfluencerSO influencer, float change)
         {
             PersonalityTraitSO trait;
-            if (TryGetTrait(traitName, out trait))
+            if (TryGetTrait(influencer.traitName, out trait))
             {
                 trait.value += change;
-                Debug.Log(gameObject.name + " changed trait " + traitName + " by " + change);
+                influencer.influenceApplied += change;
+                Debug.Log(gameObject.name + " changed trait " + influencer.traitName + " by " + change);
             }
         }
 
@@ -100,12 +109,31 @@ namespace WizardsCode.Character.Personality {
         }
 
         /// <summary>
-        /// Add an influencer to this controller. If this controller is not managing the require trait then 
-        /// do nothing.
+        /// Add an influencer to this controller. If this controller is not managing the required trait then 
+        /// do nothing. If this character has any memory of being influenced by the object within short term 
+        /// memory this new influence will be rejected.
         /// </summary>
         /// <param name="influencer">The influencer to add.</param>
         internal void TryAddInfluencer(PersonalityTraitInfluencerSO influencer)
         {
+            if (m_Memory != null) {
+                MemorySO[] memories = m_Memory.RetrieveShortTermMemoriesAbout(influencer.generator);
+                if (memories.Length > 0)
+                {
+                    for (int i = 0; i < memories.Length; i++)
+                    {
+                        if (Time.timeSinceLevelLoad < memories[i].m_Time + memories[i].cooldown)
+                        {
+                            Debug.Log("Not adding influence because there is already a recent short term memory present " + influencer);
+                            return;
+                        }
+                    }
+                } else
+                {
+                    m_Memory.AddMemory(influencer);
+                }
+            }
+
             PersonalityTraitSO trait;
             if (TryGetTrait(influencer.traitName, out trait))
             {

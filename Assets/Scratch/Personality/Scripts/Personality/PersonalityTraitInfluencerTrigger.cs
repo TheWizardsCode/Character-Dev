@@ -25,19 +25,14 @@ namespace WizardsCode.Character.Personality
             PersonalityController personality = other.GetComponent<PersonalityController>();
             if (personality != null)
             {
-                if (m_Duration == 0)
-                {
-                    personality.ChangeTrait(m_TraitName, m_MaxChange);
-                } else
-                {
-                    PersonalityTraitInfluencerSO influencer = ScriptableObject.CreateInstance<PersonalityTraitInfluencerSO>();
-                    influencer.name = m_TraitName + " influencer from " + name + " : " + GetInstanceID(); ;
-                    influencer.traitName = m_TraitName;
-                    influencer.maxChange = m_MaxChange;
-                    influencer.duration = m_Duration;
+                PersonalityTraitInfluencerSO influencer = ScriptableObject.CreateInstance<PersonalityTraitInfluencerSO>();
+                influencer.name = m_TraitName + " influencer from " + name + " : " + GetInstanceID(); ;
+                influencer.generator = gameObject;
+                influencer.traitName = m_TraitName;
+                influencer.maxChange = m_MaxChange;
+                influencer.duration = m_Duration;
 
-                    personality.TryAddInfluencer(influencer);
-                }
+                personality.TryAddInfluencer(influencer);
             }
         }
     }
