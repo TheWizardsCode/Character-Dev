@@ -24,7 +24,7 @@ namespace WizardsCode.Character.Stats
             StatsController controller = other.GetComponent<StatsController>();
             if (controller != null)
             {
-                StatsInfluencerSO influencer = ScriptableObject.CreateInstance<StatsInfluencerSO>();
+                StatInfluencerSO influencer = ScriptableObject.CreateInstance<StatInfluencerSO>();
                 influencer.name = m_StatName + " influencer from " + name + " : " + GetInstanceID(); ;
                 influencer.generator = gameObject;
                 influencer.statName = m_StatName;

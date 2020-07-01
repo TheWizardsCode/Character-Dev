@@ -15,8 +15,10 @@ GameObject:
   - component: {fileID: 8606430813739018796}
   - component: {fileID: 368613788}
   - component: {fileID: 1856901930988388029}
+  - component: {fileID: 368613795}
+  - component: {fileID: 368613796}
   m_Layer: 0
-  m_Name: Personality Character
+  m_Name: Stats Character
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -144,10 +146,40 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &368613795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8606430813739018798}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee9df9fe685a1ed4e95212770d742dbf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_TimeBetweenUpdates: 2
+  m_Stats: []
+  m_StatsInfluencers: []
+--- !u!114 &368613796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8606430813739018798}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88d0b4744a1f8cd4d8a5ef554bfdc489, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShortTermMemories: []
+  m_LongTermMemories: []
+  m_LongTermMemoryThreshold: 100
 --- !u!1 &8606430813808674075
 GameObject:
   m_ObjectHideFlags: 0

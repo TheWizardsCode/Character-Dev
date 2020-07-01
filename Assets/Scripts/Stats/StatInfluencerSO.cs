@@ -7,7 +7,7 @@ namespace WizardsCode.Character.Stats
     /// <summary>
     /// A stats influencer will alter a Stat by a given amount over a given duration.
     /// </summary>
-    public class StatsInfluencerSO : ScriptableObject
+    public class StatInfluencerSO : ScriptableObject
     {
         [SerializeField, Tooltip("The object that generates this influence.")]
         GameObject m_Generator;
@@ -37,7 +37,7 @@ namespace WizardsCode.Character.Stats
         public string statName
         {
             get { return m_StatName; }
-            internal set { m_StatName = value; }
+            set { m_StatName = value; }
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace WizardsCode.Character.Stats
         public float maxChange
         {
             get { return m_MaxChange; }
-            internal set { 
+            set { 
                 m_MaxChange = value;
                 if (m_Duration > 0)
                 {
@@ -101,7 +101,7 @@ namespace WizardsCode.Character.Stats
         public float duration
         {
             get { return m_Duration; }
-            internal set { 
+            set { 
                 m_Duration = value;
                 m_ChangePerSecond = m_MaxChange / m_Duration;
             }

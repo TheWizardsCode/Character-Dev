@@ -228,53 +228,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fbb5dc72a190ae42ad56b00e2f1304d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TraitName: Happiness
+  m_StatName: Happiness
   m_MaxChange: 10
   m_Duration: 10
---- !u!1 &368613787 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8606430813739018798, guid: 7361437c421950b4faac7c3c00523622,
-    type: 3}
-  m_PrefabInstance: {fileID: 442681480}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &368613793 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8606430813739018792, guid: 7361437c421950b4faac7c3c00523622,
     type: 3}
   m_PrefabInstance: {fileID: 442681480}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &368613795
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 368613787}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee9df9fe685a1ed4e95212770d742dbf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_TraitNames:
-  - Happiness
-  m_TimeBetweenUpdates: 2
-  m_Traits: []
-  m_TraitInfluencers: []
---- !u!114 &368613796
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 368613787}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 88d0b4744a1f8cd4d8a5ef554bfdc489, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ShortTermMemories: []
-  m_LongTermMemories: []
-  m_LongTermMemoryThreshold: 100
 --- !u!1 &382506444
 GameObject:
   m_ObjectHideFlags: 0
@@ -307,7 +269,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fbb5dc72a190ae42ad56b00e2f1304d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TraitName: Happiness
+  m_StatName: Happiness
   m_MaxChange: -10
   m_Duration: 1
 --- !u!135 &382506446
@@ -392,11 +354,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1856901930988388029, guid: 7361437c421950b4faac7c3c00523622,
-        type: 3}
-      propertyPath: m_IsKinematic
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8606430813739018792, guid: 7361437c421950b4faac7c3c00523622,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -485,7 +442,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 539758264}
-  m_LocalRotation: {x: 0.19667281, y: 0.0000012722966, z: -0.0000063427556, w: 0.98046917}
+  m_LocalRotation: {x: 0.19667281, y: 0.0000012736017, z: -0.000006349262, w: 0.98046917}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
@@ -1174,7 +1131,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1909819718}
-  m_LocalRotation: {x: 0.19667277, y: 0.0000012722963, z: -0.0000063427556, w: 0.98046917}
+  m_LocalRotation: {x: 0.19667277, y: 0.0000012736015, z: -0.000006349262, w: 0.98046917}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:

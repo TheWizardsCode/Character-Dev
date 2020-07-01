@@ -181,7 +181,7 @@ namespace WizardsCode.Character.Stats
         /// Create a memory about an influencer object. See `AddMemory(MemorySO memory)`.
         /// </summary>
         /// <param name="influencer">The influencer that this memory should record.</param>
-        internal void AddMemory(StatsInfluencerSO influencer)
+        internal void AddMemory(StatInfluencerSO influencer)
         {
             MemorySO memory = ScriptableObject.CreateInstance<MemorySO>();
             memory.about = influencer.generator;

@@ -17,7 +17,11 @@ namespace WizardsCode.Character.Stats {
         [HideInInspector, SerializeField]
         List<StatSO> m_Stats = new List<StatSO>();
         [HideInInspector, SerializeField]
-        List<StatsInfluencerSO> m_StatsInfluencers = new List<StatsInfluencerSO>();
+        List<StatInfluencerSO
+            
+            > m_StatsInfluencers = new List<StatInfluencerSO>();
+
+
 
         float m_TimeOfLastUpdate = 0;
         float m_TimeOfNextUpdate = 0;
@@ -66,20 +70,22 @@ namespace WizardsCode.Character.Stats {
         /// 
         /// <param name="influencer">The influencer imparting the change.</param>
         /// <param name="change">The change to make. The result is kept within the -100 to 100 range.</param>
-        internal void ChangeStat(StatsInfluencerSO influencer, float change)
+        internal void ChangeStat(StatInfluencerSO influencer, float change)
         {
-            StatSO stat = GetStat(influencer.statName);
+            StatSO stat = GetOrCreateStat(influencer.statName);
             stat.value += change;
             influencer.influenceApplied += change;
             Debug.Log(gameObject.name + " changed stat " + influencer.statName + " by " + change);
         }
 
         /// <summary>
-        /// Get the stat object representing a named stat.
+        /// Get the stat object representing a named stat. If it does not already
+        /// exist it will be created with a base value.
         /// </summary>
-        /// <param name="statName"></param>
-        /// <returns></returns>
-        private StatSO GetStat(string statName)
+        /// <param name="statName">Tha name of the stat to Get or Create</param>
+        /// <param name="baseValue">The base value to assign if the stat needs to be created.</param>
+        /// <returns>A StatSO representing the named stat</returns>
+        public StatSO GetOrCreateStat(string statName, float baseValue = 0)
         {
             StatSO stat;
             // TODO cache results in a dictionary
@@ -93,6 +99,8 @@ namespace WizardsCode.Character.Stats {
 
             stat = ScriptableObject.CreateInstance<StatSO>();
             stat.name = statName;
+            stat.value = baseValue;
+            m_Stats.Add(stat);
             return stat;
         }
 
@@ -102,7 +110,8 @@ namespace WizardsCode.Character.Stats {
         /// memory this new influence will be rejected.
         /// </summary>
         /// <param name="influencer">The influencer to add.</param>
-        internal void TryAddInfluencer(StatsInfluencerSO influencer)
+        /// <returns>True if the influencer was added, otherwise false.</returns>
+        public bool TryAddInfluencer(StatInfluencerSO influencer)
         {
             if (m_Memory != null) {
                 MemorySO[] memories = m_Memory.RetrieveShortTermMemoriesAbout(influencer.generator);
@@ -113,7 +122,7 @@ namespace WizardsCode.Character.Stats {
                         if (Time.timeSinceLevelLoad < memories[i].m_Time + memories[i].cooldown)
                         {
                             Debug.Log("Not adding influence because there is already a recent short term memory present " + influencer);
-                            return;
+                            return false;
                         }
                     }
                 } else
@@ -122,8 +131,10 @@ namespace WizardsCode.Character.Stats {
                 }
             }
 
-            StatSO stat = GetStat(influencer.statName);
+            StatSO stat = GetOrCreateStat(influencer.statName);
             m_StatsInfluencers.Add(influencer);
+
+            return true;
         }
     }
 }
