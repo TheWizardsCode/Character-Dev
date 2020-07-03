@@ -183,6 +183,7 @@ namespace WizardsCode.Character
                                 MemorySO[] memories = memory.GetAllMemoriesAbout(hitColliders[i].gameObject);
                                 for (int y = 0; y < memories.Length; y++)
                                 {
+                                    // TODO This avoids an endpoint within a space we don't like, but we also need to avoid paths that include area we don't like
                                     if (!memories[y].isGood)
                                     {
                                         //Debug.Log(gameObject.name + " does not like " + memories[y].about + " avoiding that area.");
