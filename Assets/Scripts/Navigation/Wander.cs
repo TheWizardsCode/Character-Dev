@@ -87,50 +87,34 @@ namespace WizardsCode.Character
 
         internal void Update()
         {
-            UpdateMove();
-        }
-
-        virtual internal void UpdateMove()
-        {
             if (HasReachedTarget)
             {
                 OnReachedTarget();
             }
-            
+
             if (Time.timeSinceLevelLoad > timeOfNextWanderPathChange || !m_Agent.hasPath || m_Agent.pathStatus == NavMeshPathStatus.PathInvalid)
             {
-                UpdateWanderTarget();
+                UpdateMove();
+                timeOfNextWanderPathChange = Time.timeSinceLevelLoad + Random.Range(minTimeBetweenRandomPathChanges, maxTimeBetweenRandomPathChanges);
             }
         }
 
         /// <summary>
-        /// Update the WanderTarget position..
+        /// Called whenever this agent is considering where to move to next.
+        /// </summary>
+        virtual protected void UpdateMove()
+        {   
+            UpdateWanderTarget();
+        }
+
+        /// <summary>
+        /// Update the WanderTarget position.
         /// A new position for the target is chosen within a cone defined by the
         /// minAngleOfRandomPathChange and maxAngleOfRandomPathChange. Optionally,
         /// the cone can extend behind the current agent, which has the effect of 
         /// turning the agent around.
         /// </summary>
-        internal void UpdateWanderTarget()
-        {
-            currentTarget = GetValidWanderPosition();
-
-            timeOfNextWanderPathChange = Time.timeSinceLevelLoad + Random.Range(minTimeBetweenRandomPathChanges, maxTimeBetweenRandomPathChanges);
-        }
-
-        /// <summary>
-        /// Called when a target has been reached.
-        /// </summary>
-        internal virtual void OnReachedTarget()
-        {
-        }
-
-        /// <summary>
-        /// Get a wander target within a cone that is valid. If a valid (i.e. reachable) target is not found within the specified
-        /// number of attemtpts then return the characters starting position as the target.
-        /// </summary>
-        /// <param name="maxAttemptCount">The maximum number of attempts to find a valid target</param>
-        /// <returns></returns>
-        private Vector3 GetValidWanderPosition(int maxAttemptCount = 10)
+        internal void UpdateWanderTarget(int maxAttemptCount = 10)
         {
             bool turning = false;
             int attemptCount = 1;
@@ -147,14 +131,15 @@ namespace WizardsCode.Character
                 float minDistance = minDistanceOfRandomPathChange;
                 float maxDistance = maxDistanceOfRandomPathChange;
 
-                
+
                 float rotation = Random.Range(minAngleOfRandomPathChange, maxAngleOfRandomPathChange);
                 Quaternion randAng = Quaternion.Euler(0, rotation, 0);
 
                 if (!turning)
                 {
                     position = transform.position + ((randAng * transform.forward) * Random.Range(minDistance, maxDistance));
-                } else
+                }
+                else
                 {
                     position = transform.position + ((randAng * -transform.forward) * Random.Range(minDistance, maxDistance));
                 }
@@ -169,50 +154,62 @@ namespace WizardsCode.Character
                     NavMeshHit hit;
                     if (NavMesh.SamplePosition(position, out hit, transform.lossyScale.y * 2, NavMesh.AllAreas))
                     {
-                        return hit.position;
+                        currentTarget = hit.position;
+                        return;
                     }
                 }
             }
 
             if (Vector3.Distance(transform.position, m_StartPosition) > minDistanceOfRandomPathChange)
             {
-                return m_StartPosition;
+                currentTarget = m_StartPosition;
+                return;
             }
             else
             {
                 if (m_Terrain != null)
                 {
                     float y = m_Terrain.SampleHeight(Vector3.zero);
-                    return new Vector3(m_Terrain.terrainData.heightmapResolution / 2, y, m_Terrain.terrainData.heightmapResolution / 2);
-                } else
+                    currentTarget = new Vector3(m_Terrain.terrainData.heightmapResolution / 2, y, m_Terrain.terrainData.heightmapResolution / 2);
+                    return;
+                }
+                else
                 {
-                    return Vector3.zero;
+                    currentTarget = Vector3.zero;
+                    return;
                 }
             }
         }
 
+        /// <summary>
+        /// Called when a target has been reached.
+        /// </summary>
+        internal virtual void OnReachedTarget()
+        {
+        }
+
 #if UNITY_EDITOR
-        private void OnDrawGizmosSelected()
+        void OnDrawGizmosSelected()
         {
             DrawWanderAreaGizmo();
             DrawWanderTargetGizmo();
             DrawWanderRangeGizmo();
         }
 
-        private void DrawWanderRangeGizmo()
+        protected void DrawWanderRangeGizmo()
         {
             Gizmos.DrawWireSphere(m_StartPosition, m_MaxWanderRange);
         }
 
-        private void DrawWanderTargetGizmo()
+        protected void DrawWanderTargetGizmo()
         {
             if (m_TargetPosition != null)
             {
-                Gizmos.DrawSphere(m_TargetPosition, 0.2f);
-            }
+                Gizmos.DrawSphere(currentTarget, 0.5f);
+                Gizmos.DrawLine(transform.position, currentTarget);            }
         }
 
-        private void DrawWanderAreaGizmo()
+        protected void DrawWanderAreaGizmo()
         {
             float totalWanderArc = Mathf.Abs(minAngleOfRandomPathChange) + Mathf.Abs(maxAngleOfRandomPathChange);
             float rayRange = maxDistanceOfRandomPathChange;

@@ -24,6 +24,7 @@ namespace WizardsCode.Editor.Utility
                 Vector3 position = transform.position + new Vector3(pos2D.x, 0, pos2D.y);
                 Quaternion rotation = Quaternion.Euler(new Vector3(0, Random.Range(0, 359.9f), 0));
                 GameObject go = Instantiate(m_Prefab, position, rotation);
+                go.name += " " + i;
             }
         }
 

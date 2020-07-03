@@ -11,8 +11,8 @@ namespace WizardsCode.Personality.Tests
     {
         MemoryController controller;
         
-        GameObject shortTermInfluencer, shortTermInfluencer1;
-        MemorySO shortTermMemory, shortTermMemory1;
+        GameObject shortTermInfluencer, shortTermNegativeInfluencer;
+        MemorySO shortTermMemory, shortTermMemoryNegativeInflunce;
 
         GameObject longTermInfluencer;
         MemorySO longTermMemory;
@@ -23,24 +23,24 @@ namespace WizardsCode.Personality.Tests
             controller = new GameObject().AddComponent<MemoryController>();
 
             shortTermInfluencer = new GameObject("ShortTermInfluencer");
-            shortTermInfluencer1 = new GameObject("ShortTermInfluencer1");
+            shortTermNegativeInfluencer = new GameObject("ShortTermInfluencer1");
 
             shortTermMemory = ScriptableObject.CreateInstance<MemorySO>();
             shortTermMemory.about = shortTermInfluencer;
-            shortTermMemory.traitName = "ShortTermTest";
+            shortTermMemory.statName = "ShortTermTest";
             shortTermMemory.influence = 5;
             shortTermMemory.cooldown = 0.1f;
 
-            shortTermMemory1 = ScriptableObject.CreateInstance<MemorySO>();
-            shortTermMemory1.about = shortTermInfluencer1;
-            shortTermMemory1.traitName = "ShortTermTest1";
-            shortTermMemory1.influence = 5;
+            shortTermMemoryNegativeInflunce = ScriptableObject.CreateInstance<MemorySO>();
+            shortTermMemoryNegativeInflunce.about = shortTermNegativeInfluencer;
+            shortTermMemoryNegativeInflunce.statName = "ShortTermTestNegativeInfluence";
+            shortTermMemoryNegativeInflunce.influence = -5;
 
             longTermInfluencer = new GameObject("LongTermInfluencer");
 
             longTermMemory = ScriptableObject.CreateInstance<MemorySO>();
             longTermMemory.about = longTermInfluencer;
-            longTermMemory.traitName = "LongTermTest";
+            longTermMemory.statName = "LongTermTest";
             longTermMemory.influence = 50;
             longTermMemory.cooldown = 0;
 
@@ -57,15 +57,17 @@ namespace WizardsCode.Personality.Tests
             // Add the three short term memories destined to stay in short term
             controller.AddMemory(shortTermMemory);
             Assert.AreEqual(1, controller.RetrieveShortTermMemories().Length, "The first short term memory item was not committed to memory.");
+            Assert.AreEqual(5, controller.RetrieveShortTermMemoriesAbout(shortTermInfluencer)[0].influence);
             
             controller.AddMemory(shortTermMemory);
             Assert.AreEqual(1, controller.RetrieveShortTermMemories().Length, "The second short term memory item should not have been committed as it is a duplicate of an existing short term memory.");
 
-            controller.AddMemory(shortTermMemory1);
+            controller.AddMemory(shortTermMemoryNegativeInflunce);
             Assert.AreEqual(2, controller.RetrieveShortTermMemories().Length, "The short term memory item 1 should have been committed.");
             Assert.AreEqual(1, controller.RetrieveShortTermMemoriesAbout(shortTermInfluencer).Length, "The first short term memory item was not committed to memory.");
-            Assert.AreEqual(1, controller.RetrieveShortTermMemoriesAbout(shortTermInfluencer1).Length, "The first short term 1 memory item was not committed to memory.");
-            
+            Assert.AreEqual(1, controller.RetrieveShortTermMemoriesAbout(shortTermNegativeInfluencer).Length, "The first short term 1 memory item was not committed to memory.");
+            Assert.AreEqual(-5, controller.RetrieveShortTermMemoriesAbout(shortTermNegativeInfluencer)[0].influence);
+
             yield return null;
         }
 
@@ -80,11 +82,7 @@ namespace WizardsCode.Personality.Tests
 
             controller.AddMemory(shortTermMemory);
             Assert.AreEqual(1, controller.RetrieveShortTermMemories().Length, "The second short term memory item should not have been committed as it is a duplicate of an existing short term memory.");
-
-            yield return new WaitForSeconds(shortTermMemory.cooldown + 0.25f);
-
-            controller.AddMemory(shortTermMemory);
-            Assert.AreEqual(2, controller.RetrieveShortTermMemories().Length, "The second short term memory item should have been committed.");
+            Assert.AreEqual(10, controller.RetrieveSimilarShortTermMemory(shortTermMemory).influence);
 
             yield return null;
         }
@@ -101,13 +99,28 @@ namespace WizardsCode.Personality.Tests
 
             // Add the second memory destined for long term memory, should go into short term
             controller.AddMemory(longTermMemory);
-            Assert.AreEqual(2, controller.RetrieveShortTermMemoriesAbout(longTermInfluencer).Length, "There should be two short term memories after adding a second " + longTermInfluencer.name);
+            Assert.AreEqual(1, controller.RetrieveShortTermMemoriesAbout(longTermInfluencer).Length);
             Assert.Zero(controller.RetrieveLongTermMemories().Length, "There still shouldn't be any long term memories after adding three short terms.");
 
             // Add one more short term memory, this should push the two destined for long term into long term to make space for the short term
             controller.AddMemory(shortTermMemory);
             Assert.AreEqual(1, controller.RetrieveShortTermMemoriesAbout(shortTermInfluencer).Length, "There should be 3 memories about " + shortTermInfluencer.name + " short term items in short term memory at this point");
             Assert.AreEqual(1, controller.RetrieveLongTermMemoriesAbout(longTermInfluencer).Length, "There should now be a long term memory.");
+
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator Cooldown()
+        {
+            SetupMemory();
+
+            controller.AddMemory(shortTermMemory);
+            MemorySO[] about = controller.RetrieveShortTermMemoriesAbout(shortTermMemory.about);
+            Assert.False(about[0].readyToReturn);
+            yield return new WaitForSeconds(0.11f);
+            about = controller.RetrieveShortTermMemoriesAbout(shortTermMemory.about);
+            Assert.True(about[0].readyToReturn);
 
             yield return null;
         }

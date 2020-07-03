@@ -29,6 +29,23 @@ namespace WizardsCode.Character.Stats
         }
 
         /// <summary>
+        /// Retrive all memories (long and short term) about influencers of a stat.
+        /// </summary>
+        /// <param name="name">The name of the stat we are interested in.</param>
+        /// <returns>A set of influencers known to affect the desired stat.</returns>
+        public MemorySO[] RecallMemoriesInfluencingStat(string name)
+        {
+            MemorySO[] shortTermMemories = m_ShortTermMemories.Where(m => m.statName == name).ToArray<MemorySO>();
+            MemorySO[] longTermMemories = m_LongTermMemories.Where(m => m.statName == name).ToArray<MemorySO>();
+
+            MemorySO[] all = new MemorySO[shortTermMemories.Length + longTermMemories.Length];
+            shortTermMemories.CopyTo(all, 0);
+            longTermMemories.CopyTo(all, shortTermMemories.Length);
+
+            return all;
+        }
+
+        /// <summary>
         /// Get all long term memories.
         /// </summary>
         /// <returns>All long term memories currently stored.</returns>
@@ -58,15 +75,19 @@ namespace WizardsCode.Character.Stats
 
         /// <summary>
         /// Add a memory to the short term memory. 
-        /// If there is an existing short term memory that is similar to the new one then do not duplicate.
+        /// If there is an existing short term memory that is similar to the new one then do not duplicate;
+        /// instead strengthen the existing memory.
         /// If there is space left in the memory then is simply inserted.
         /// If there is no space left then discard the weakest memory.
         /// </summary>
         /// <param name="memory"></param>
         public void AddMemory(MemorySO memory)
         {
-            if (HasSimilarShortTermMemory(memory))
+            MemorySO existingMemory = RetrieveSimilarShortTermMemory(memory);
+            if (existingMemory != null)
             {
+                existingMemory.influence += memory.influence;
+                existingMemory.m_Time = memory.m_Time;
                 return;
             }
 
@@ -84,24 +105,21 @@ namespace WizardsCode.Character.Stats
         /// Scan short term memory to see if there is an existing memory similar to this one.
         /// </summary>
         /// <param name="memory">The memory we are looking for similarities to</param>
-        /// <returns>True if a similar memory is found, otherwise false.</returns>
-        private bool HasSimilarShortTermMemory(MemorySO memory)
+        /// <returns>Return an existing short term memory that is similar, if one exists, or null.</returns>
+        public MemorySO RetrieveSimilarShortTermMemory(MemorySO memory)
         {
             MemorySO[] memories = RetrieveShortTermMemoriesAbout(memory.about);
             if (memories.Length > 0)
             {
                 for (int i = 0; i < memories.Length; i++)
                 {
-                    if (memories[i].traitName == memory.traitName)
+                    if (memories[i].statName == memory.statName)
                     {
-                        if (Time.timeSinceLevelLoad < memories[i].m_Time + memories[i].cooldown)
-                        {
-                            return true;
-                        }
+                        return memories[i];
                     }
                 }
             }
-            return false;
+            return null;
         }
 
         /// <summary>
@@ -124,13 +142,13 @@ namespace WizardsCode.Character.Stats
                           group memory by new
                           {
                               memory.about,
-                              memory.traitName,
+                              memory.statName,
                               memory
                           } into grp
                           select new
                           {
                               about = grp.Key.about,
-                              traitName = grp.Key.traitName,
+                              traitName = grp.Key.statName,
                               totalInfluence = grp.Sum(i => i.influence)
                           };
 
@@ -140,7 +158,7 @@ namespace WizardsCode.Character.Stats
                 {
                     MemorySO memory = ScriptableObject.CreateInstance<MemorySO>();
                     memory.about = item.about;
-                    memory.traitName = item.traitName;
+                    memory.statName = item.traitName;
                     memory.influence = item.totalInfluence;
                     AddToLongTermMemory(memory);
 
@@ -185,8 +203,8 @@ namespace WizardsCode.Character.Stats
         {
             MemorySO memory = ScriptableObject.CreateInstance<MemorySO>();
             memory.about = influencer.generator;
-            memory.traitName = "ShortTermTest";
-            memory.influence = 5;
+            memory.statName = influencer.statName;
+            memory.influence = influencer.maxChange;
             AddMemory(memory);
         }
     }
