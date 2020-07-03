@@ -18,6 +18,8 @@ namespace WizardsCode.Character.Stats
         float m_MaxChange;
         [SerializeField, Tooltip("The time, in seconds, over which the influencer will be effective. The total change will occure over this time period. If duration is 0 then the total change is applied instantly")]
         float m_Duration = 0;
+        [SerializeField, Tooltip("The cooldown time before a character can be influenced by this influencer again.")]
+        float m_Cooldown = 30;
 
         private void OnTriggerEnter(Collider other)
         {
@@ -30,6 +32,7 @@ namespace WizardsCode.Character.Stats
                 influencer.statName = m_StatName;
                 influencer.maxChange = m_MaxChange;
                 influencer.duration = m_Duration;
+                influencer.cooldown = m_Cooldown;
 
                 controller.TryAddInfluencer(influencer);
             }

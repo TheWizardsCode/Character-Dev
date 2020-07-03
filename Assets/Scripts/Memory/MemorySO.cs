@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WizardsCode.Editor;
 
 namespace WizardsCode.Character.Stats
 {
@@ -23,6 +24,19 @@ namespace WizardsCode.Character.Stats
         // The time since level load that this memory was created. 
         // TODO: this is not saved between level loads, which probably means it is reset each time. This will cause bugs that allow memories to be formed to frequently between level loads. Need to use a game time and save this value.
         internal float m_Time;
+
+        public string description
+        {
+            get
+            {
+                string msg = about.gameObject.name + " is ";
+                msg += isGood ? "good because it " : "bad because it ";
+                msg += influence > 0 ? " increased " : " decreased ";
+                msg += statName;
+                msg += " by " + Mathf.Abs(influence);
+                return msg;
+            }
+        }
 
         private void Awake()
         {

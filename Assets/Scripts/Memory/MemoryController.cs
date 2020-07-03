@@ -4,9 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+#if UNITY_EDITOR
+using WizardsCode.Editor;
+#endif
+
 namespace WizardsCode.Character.Stats
 {
     public class MemoryController : MonoBehaviour
+#if UNITY_EDITOR
+        , IDebug
+#endif
     {
         [SerializeField, Tooltip("The set of currently retained short term memories.")]
         List<MemorySO> m_ShortTermMemories = new List<MemorySO>();
@@ -23,7 +30,7 @@ namespace WizardsCode.Character.Stats
         /// </summary>
         /// <param name="go">The Game Object to retrieve memories about.</param>
         /// <returns></returns>
-        public MemorySO[] RetrieveShortTermMemoriesAbout(GameObject go)
+        public MemorySO[] GetShortTermMemoriesAbout(GameObject go)
         {
             return m_ShortTermMemories.Where(m => GameObject.ReferenceEquals(go, m.about)).ToArray<MemorySO>();
         }
@@ -33,7 +40,7 @@ namespace WizardsCode.Character.Stats
         /// </summary>
         /// <param name="name">The name of the stat we are interested in.</param>
         /// <returns>A set of influencers known to affect the desired stat.</returns>
-        public MemorySO[] RecallMemoriesInfluencingStat(string name)
+        public MemorySO[] GetMemoriesInfluencingStat(string name)
         {
             MemorySO[] shortTermMemories = m_ShortTermMemories.Where(m => m.statName == name).ToArray<MemorySO>();
             MemorySO[] longTermMemories = m_LongTermMemories.Where(m => m.statName == name).ToArray<MemorySO>();
@@ -49,7 +56,7 @@ namespace WizardsCode.Character.Stats
         /// Get all long term memories.
         /// </summary>
         /// <returns>All long term memories currently stored.</returns>
-        public MemorySO[] RetrieveLongTermMemories()
+        public MemorySO[] GetLongTermMemories()
         {
             return m_LongTermMemories.ToArray<MemorySO>();
         }
@@ -58,9 +65,28 @@ namespace WizardsCode.Character.Stats
         /// Get all short term memories.
         /// </summary>
         /// <returns>All memories in the short term memory.</returns>
-        public MemorySO[] RetrieveShortTermMemories()
+        public MemorySO[] GetShortTermMemories()
         {
             return m_ShortTermMemories.ToArray<MemorySO>();
+        }
+
+        /// <summary>
+        /// Get all memories (long and short term), about a Game Object.
+        /// </summary>
+        /// <param name="go">The Game Object to retrieve memories about.</param>
+        /// <returns></returns>
+        public MemorySO[] GetAllMemoriesAbout(GameObject go)
+        {
+            MemorySO[] shortTerm = m_ShortTermMemories.Where(m => ReferenceEquals(go, m.about))
+                                     .ToArray();
+            MemorySO[] longTerm = m_LongTermMemories.Where(m => ReferenceEquals(go, m.about))
+                                     .ToArray();
+
+            MemorySO[] memories = new MemorySO[longTerm.Length + shortTerm.Length];
+            longTerm.CopyTo(memories, 0);
+            shortTerm.CopyTo(memories, longTerm.Length);
+
+            return memories;
         }
 
         /// <summary>
@@ -68,7 +94,7 @@ namespace WizardsCode.Character.Stats
         /// </summary>
         /// <param name="go">The Game Object to retrieve memories about.</param>
         /// <returns></returns>
-        public MemorySO[] RetrieveLongTermMemoriesAbout(GameObject go)
+        public MemorySO[] GetLongTermMemoriesAbout(GameObject go)
         {
             return m_LongTermMemories.Where(m => GameObject.ReferenceEquals(go, m.about)).ToArray<MemorySO>();
         }
@@ -80,12 +106,20 @@ namespace WizardsCode.Character.Stats
         /// If there is space left in the memory then is simply inserted.
         /// If there is no space left then discard the weakest memory.
         /// </summary>
-        /// <param name="memory"></param>
+        /// <param name="memory">The memory to add</param>
+        
         public void AddMemory(MemorySO memory)
         {
-            MemorySO existingMemory = RetrieveSimilarShortTermMemory(memory);
+            MemorySO existingMemory = GetSimilarShortTermMemory(memory);
             if (existingMemory != null)
             {
+                if (existingMemory.isGood != memory.isGood)
+                {
+                    if (Math.Abs(existingMemory.influence) < Math.Abs(memory.influence))
+                    {
+                        existingMemory.isGood = memory.isGood;
+                    }
+                }
                 existingMemory.influence += memory.influence;
                 existingMemory.m_Time = memory.m_Time;
                 return;
@@ -106,9 +140,9 @@ namespace WizardsCode.Character.Stats
         /// </summary>
         /// <param name="memory">The memory we are looking for similarities to</param>
         /// <returns>Return an existing short term memory that is similar, if one exists, or null.</returns>
-        public MemorySO RetrieveSimilarShortTermMemory(MemorySO memory)
+        public MemorySO GetSimilarShortTermMemory(MemorySO memory)
         {
-            MemorySO[] memories = RetrieveShortTermMemoriesAbout(memory.about);
+            MemorySO[] memories = GetShortTermMemoriesAbout(memory.about);
             if (memories.Length > 0)
             {
                 for (int i = 0; i < memories.Length; i++)
@@ -199,14 +233,44 @@ namespace WizardsCode.Character.Stats
         /// Create a memory about an influencer object. See `AddMemory(MemorySO memory)`.
         /// </summary>
         /// <param name="influencer">The influencer that this memory should record.</param>
-        internal void AddMemory(StatInfluencerSO influencer)
+        /// <param name="isGood">Is this a good memory that represents an experience to be repeated?</param>
+        internal void AddMemory(StatInfluencerSO influencer, bool isGood)
         {
             MemorySO memory = ScriptableObject.CreateInstance<MemorySO>();
             memory.about = influencer.generator;
             memory.statName = influencer.statName;
             memory.influence = influencer.maxChange;
+            memory.cooldown = influencer.cooldown;
+            memory.isGood = isGood;
             AddMemory(memory);
         }
+
+
+#if UNITY_EDITOR
+        string IDebug.StatusText()
+        {
+            string msg = "";
+            if (m_ShortTermMemories.Count > 0)
+            {
+                msg += "\n\nShort Term Memories";
+                for (int i = 0; i < m_ShortTermMemories.Count; i++)
+                {
+                    msg += "\n" + m_ShortTermMemories[i].description;
+                }
+            }
+
+            if (m_LongTermMemories.Count > 0)
+            {
+                msg += "\n\nLong Term Memories";
+                for (int i = 0; i < m_LongTermMemories.Count; i++)
+                {
+                    msg += m_LongTermMemories[i].description;
+                }
+            }
+
+            return msg;
+        }
+#endif
     }
-       
+
 }

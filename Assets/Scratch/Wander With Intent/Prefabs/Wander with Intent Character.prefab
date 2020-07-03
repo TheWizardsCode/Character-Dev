@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 368613795}
   - component: {fileID: 368613796}
   - component: {fileID: 83532868289679868}
+  - component: {fileID: 800850953266828595}
   m_Layer: 0
   m_Name: Wander with Intent Character
   m_TagString: Untagged
@@ -166,7 +167,7 @@ MonoBehaviour:
   desiredStates:
   - statName: Happiness
     objective: 2
-    targetValue: 0
+    targetValue: 75
   m_TimeBetweenUpdates: 2
   m_Stats: []
   m_StatsInfluencers: []
@@ -197,13 +198,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6228e5a8f395da34995acbb1d5b6e821, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minTimeBetweenRandomPathChanges: 5
-  maxTimeBetweenRandomPathChanges: 15
+  minTimeBetweenRandomPathChanges: 10
+  maxTimeBetweenRandomPathChanges: 25
   minDistanceOfRandomPathChange: 10
-  maxDistanceOfRandomPathChange: 20
+  maxDistanceOfRandomPathChange: 30
   minAngleOfRandomPathChange: -30
   maxAngleOfRandomPathChange: 30
-  m_MaxWanderRange: 50
+  m_MaxWanderRange: 250
+--- !u!114 &800850953266828595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8606430813739018798}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d83f3ce966261b4888d7b2737f98b11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8606430813808674075
 GameObject:
   m_ObjectHideFlags: 0

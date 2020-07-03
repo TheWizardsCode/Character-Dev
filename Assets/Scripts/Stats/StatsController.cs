@@ -3,12 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+#if UNITY_EDITOR
+using WizardsCode.Editor;
+#endif
+
 namespace WizardsCode.Character.Stats {
     /// <summary>
     /// The StatsController is responsible for tracking and reporting on the stats of the character.
     /// Stats are made up of a number of `StatsSO` objects.
     /// </summary>
     public class StatsController : MonoBehaviour
+#if UNITY_EDITOR
+        , IDebug
+#endif
     {
         [SerializeField, Tooltip("The desired states for our stats.")]
         DesiredState[] desiredStates = new DesiredState[0];
@@ -152,14 +159,56 @@ namespace WizardsCode.Character.Stats {
         /// <returns>True if the influencer was added, otherwise false.</returns>
         public bool TryAddInfluencer(StatInfluencerSO influencer)
         {
-            if (m_Memory != null) {
-                m_Memory.AddMemory(influencer);
+            StatSO stat = GetOrCreateStat(influencer.statName);
+            bool isGood = true;
+            switch (stat.desiredState.objective)
+            {
+                case DesiredState.Objective.LessThan:
+                    if (influencer.maxChange > 0)
+                    {
+                        isGood = false;
+                    }
+                    break;
+                case DesiredState.Objective.Approximately:
+                    float currentDelta = stat.desiredState.targetValue - stat.value;
+                    float influencedDelta = stat.desiredState.targetValue - (stat.value + influencer.maxChange);
+                    if (currentDelta < influencedDelta)
+                    {
+                        isGood = false;
+                    }
+                    break;
+                case DesiredState.Objective.GreaterThan:
+                    if (influencer.maxChange < 0)
+                    {
+                        isGood = false;
+                    }
+                    break;
             }
 
-            StatSO stat = GetOrCreateStat(influencer.statName);
+            if (m_Memory != null) {
+                m_Memory.AddMemory(influencer, isGood);
+            }
+
+            
             m_StatsInfluencers.Add(influencer);
 
             return true;
         }
+
+#if UNITY_EDITOR
+        string IDebug.StatusText()
+        {
+            StatSO[] stats = GetStatsNotInDesiredState();
+            
+            string msg = "";
+            msg += "\n\nStats";
+            for (int i = 0; i < stats.Length; i++)
+            {
+                msg += "\n" + stats[i].statusDescription;
+            }
+
+            return msg;
+        }
+#endif
     }
 }

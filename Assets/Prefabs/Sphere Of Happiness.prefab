@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4752000210215344498
 RectTransform:
   m_ObjectHideFlags: 0
@@ -26,7 +26,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4752000210215344499}
-  m_LocalRotation: {x: 0.4433268, y: 0.002970094, z: -0.0014604112, w: 0.89635396}
+  m_LocalRotation: {x: 0.44332653, y: 0.0029700762, z: -0.0014604193, w: 0.89635414}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
@@ -258,8 +258,8 @@ GameObject:
   - component: {fileID: 4752000211677487279}
   - component: {fileID: 4752000211677487276}
   - component: {fileID: 4752000211677487277}
-  - component: {fileID: 4752000211677487266}
   - component: {fileID: 4752000211677487278}
+  - component: {fileID: -919064163909290633}
   m_Layer: 0
   m_Name: Sphere Of Happiness
   m_TagString: Untagged
@@ -275,8 +275,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4752000211677487267}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2, y: 1, z: 7.5}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 25, y: 25, z: 25}
   m_Children:
   - {fileID: 4752000210215344498}
   m_Father: {fileID: 0}
@@ -329,19 +329,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!135 &4752000211677487266
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4752000211677487267}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 2
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &4752000211677487278
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -357,3 +344,17 @@ MonoBehaviour:
   m_StatName: Happiness
   m_MaxChange: 10
   m_Duration: 10
+  m_Cooldown: 30
+--- !u!135 &-919064163909290633
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4752000211677487267}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}

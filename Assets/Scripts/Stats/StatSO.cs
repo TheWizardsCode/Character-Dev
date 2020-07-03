@@ -24,6 +24,29 @@ namespace WizardsCode.Character.Stats
         float m_CurrentValue;
 
         /// <summary>
+        /// Get a human readable description of the current status of this stat.
+        /// That is, it's value, whether it is wihtin the desired range etc.
+        /// </summary>
+        public string statusDescription
+        {
+            get {
+                string msg = name + " is " + value;
+                switch (goal) {
+                    case DesiredState.Goal.Decrease:
+                        msg += " which is too high";
+                        break;
+                    case DesiredState.Goal.NoAction:
+                        msg += " which is abou right.";
+                        break;
+                    case DesiredState.Goal.Increase:
+                        msg += " which is too low";
+                        break;
+                }
+                return msg; 
+            }
+        }
+
+        /// <summary>
         /// Set the current value of this stat. If an attempt is made to set the value 
         /// outside the allowable range (-100 to 100) then the value will
         /// be adjusted to fit this range.

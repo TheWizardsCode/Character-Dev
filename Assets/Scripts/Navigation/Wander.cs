@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using WizardsCode.Character.Stats;
+#if UNITY_EDITOR
+using WizardsCode.Editor;
+#endif
 
 namespace WizardsCode.Character
 {
@@ -13,6 +17,9 @@ namespace WizardsCode.Character
     /// </summary>
     [RequireComponent(typeof(NavMeshAgent))]
     public class Wander : MonoBehaviour
+#if UNITY_EDITOR
+        , IDebug
+#endif
     {
         [SerializeField, Tooltip("The minimum time that a character will continue on a random. If the character reaches a waypoint within this time then they will continue in roughly the same direction.")]
         private float minTimeBetweenRandomPathChanges = 5;
@@ -29,11 +36,18 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("The approximate maximum range the agent will normally wander from their start position.")]
         private float m_MaxWanderRange = 50f;
 
+        protected MemoryController memory;
+
         private Vector3 m_TargetPosition;
         private float timeOfNextWanderPathChange;
         private Vector3 m_StartPosition;
         private NavMeshAgent m_Agent;
         private Terrain m_Terrain;
+        
+        protected void Start()
+        {
+            memory = GetComponent<MemoryController>();
+        }
 
         /// <summary>
         /// Get or set the current target.
@@ -135,6 +149,7 @@ namespace WizardsCode.Character
                 float rotation = Random.Range(minAngleOfRandomPathChange, maxAngleOfRandomPathChange);
                 Quaternion randAng = Quaternion.Euler(0, rotation, 0);
 
+                // TODO Rather than turning 180 degress we should turn a multiple of the max or min angles.
                 if (!turning)
                 {
                     position = transform.position + ((randAng * transform.forward) * Random.Range(minDistance, maxDistance));
@@ -152,11 +167,35 @@ namespace WizardsCode.Character
                     }
 
                     NavMeshHit hit;
-                    if (NavMesh.SamplePosition(position, out hit, transform.lossyScale.y * 2, NavMesh.AllAreas))
+                    if (!NavMesh.SamplePosition(position, out hit, transform.lossyScale.y * 2, NavMesh.AllAreas))
                     {
-                        currentTarget = hit.position;
-                        return;
+                        // This is not a valid NavMesh position, abort for this frame
+                        continue;
                     }
+
+                    if (memory != null)
+                    {
+                        Collider[] hitColliders = Physics.OverlapSphere(position, m_Agent.radius * 1.1f);
+                        for (int i = 0; i < hitColliders.Length; i++)
+                        {
+                            if (hitColliders[i].gameObject != gameObject)
+                            {
+                                MemorySO[] memories = memory.GetAllMemoriesAbout(hitColliders[i].gameObject);
+                                for (int y = 0; y < memories.Length; y++)
+                                {
+                                    if (!memories[y].isGood)
+                                    {
+                                        //Debug.Log(gameObject.name + " does not like " + memories[y].about + " avoiding that area.");
+                                        // need to avoid this area as we have bad memories of something here, abort for this frame
+                                        continue;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    currentTarget = hit.position;
+                    return;
                 }
             }
 
@@ -220,6 +259,11 @@ namespace WizardsCode.Character
             Vector3 rightRayDirection = rightRayRotation * transform.forward;
             Gizmos.DrawRay(transform.position, leftRayDirection * rayRange);
             Gizmos.DrawRay(transform.position, rightRayDirection * rayRange);
+        }
+
+        public virtual string StatusText()
+        {
+            return null;
         }
 #endif
     }

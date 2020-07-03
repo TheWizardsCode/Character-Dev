@@ -45,8 +45,8 @@ namespace WizardsCode.Personality.Tests
             longTermMemory.cooldown = 0;
 
             // Validate setup
-            Assert.Zero(controller.RetrieveShortTermMemories().Length, "There are short term memories in a new Memory Controller");
-            Assert.Zero(controller.RetrieveLongTermMemories().Length, "There are long term memories in a new Memory Controller");
+            Assert.Zero(controller.GetShortTermMemories().Length, "There are short term memories in a new Memory Controller");
+            Assert.Zero(controller.GetLongTermMemories().Length, "There are long term memories in a new Memory Controller");
         }
 
         [UnityTest]
@@ -56,17 +56,17 @@ namespace WizardsCode.Personality.Tests
 
             // Add the three short term memories destined to stay in short term
             controller.AddMemory(shortTermMemory);
-            Assert.AreEqual(1, controller.RetrieveShortTermMemories().Length, "The first short term memory item was not committed to memory.");
-            Assert.AreEqual(5, controller.RetrieveShortTermMemoriesAbout(shortTermInfluencer)[0].influence);
+            Assert.AreEqual(1, controller.GetShortTermMemories().Length, "The first short term memory item was not committed to memory.");
+            Assert.AreEqual(5, controller.GetShortTermMemoriesAbout(shortTermInfluencer)[0].influence);
             
             controller.AddMemory(shortTermMemory);
-            Assert.AreEqual(1, controller.RetrieveShortTermMemories().Length, "The second short term memory item should not have been committed as it is a duplicate of an existing short term memory.");
+            Assert.AreEqual(1, controller.GetShortTermMemories().Length, "The second short term memory item should not have been committed as it is a duplicate of an existing short term memory.");
 
             controller.AddMemory(shortTermMemoryNegativeInflunce);
-            Assert.AreEqual(2, controller.RetrieveShortTermMemories().Length, "The short term memory item 1 should have been committed.");
-            Assert.AreEqual(1, controller.RetrieveShortTermMemoriesAbout(shortTermInfluencer).Length, "The first short term memory item was not committed to memory.");
-            Assert.AreEqual(1, controller.RetrieveShortTermMemoriesAbout(shortTermNegativeInfluencer).Length, "The first short term 1 memory item was not committed to memory.");
-            Assert.AreEqual(-5, controller.RetrieveShortTermMemoriesAbout(shortTermNegativeInfluencer)[0].influence);
+            Assert.AreEqual(2, controller.GetShortTermMemories().Length, "The short term memory item 1 should have been committed.");
+            Assert.AreEqual(1, controller.GetShortTermMemoriesAbout(shortTermInfluencer).Length, "The first short term memory item was not committed to memory.");
+            Assert.AreEqual(1, controller.GetShortTermMemoriesAbout(shortTermNegativeInfluencer).Length, "The first short term 1 memory item was not committed to memory.");
+            Assert.AreEqual(-5, controller.GetShortTermMemoriesAbout(shortTermNegativeInfluencer)[0].influence);
 
             yield return null;
         }
@@ -78,11 +78,11 @@ namespace WizardsCode.Personality.Tests
 
             // Add the three short term memories destined to stay in short term
             controller.AddMemory(shortTermMemory);
-            Assert.AreEqual(1, controller.RetrieveShortTermMemories().Length, "The first short term memory item was not committed to memory.");
+            Assert.AreEqual(1, controller.GetShortTermMemories().Length, "The first short term memory item was not committed to memory.");
 
             controller.AddMemory(shortTermMemory);
-            Assert.AreEqual(1, controller.RetrieveShortTermMemories().Length, "The second short term memory item should not have been committed as it is a duplicate of an existing short term memory.");
-            Assert.AreEqual(10, controller.RetrieveSimilarShortTermMemory(shortTermMemory).influence);
+            Assert.AreEqual(1, controller.GetShortTermMemories().Length, "The second short term memory item should not have been committed as it is a duplicate of an existing short term memory.");
+            Assert.AreEqual(10, controller.GetSimilarShortTermMemory(shortTermMemory).influence);
 
             yield return null;
         }
@@ -94,18 +94,18 @@ namespace WizardsCode.Personality.Tests
 
             // Add the first memory destined for long term memory, should go into short term
             controller.AddMemory(longTermMemory);
-            Assert.NotZero(controller.RetrieveShortTermMemoriesAbout(longTermInfluencer).Length, "There are no short term memories even after adding a memory");
-            Assert.Zero(controller.RetrieveLongTermMemories().Length, "There are long term memories in a new Memory Controller");
+            Assert.NotZero(controller.GetShortTermMemoriesAbout(longTermInfluencer).Length, "There are no short term memories even after adding a memory");
+            Assert.Zero(controller.GetLongTermMemories().Length, "There are long term memories in a new Memory Controller");
 
             // Add the second memory destined for long term memory, should go into short term
             controller.AddMemory(longTermMemory);
-            Assert.AreEqual(1, controller.RetrieveShortTermMemoriesAbout(longTermInfluencer).Length);
-            Assert.Zero(controller.RetrieveLongTermMemories().Length, "There still shouldn't be any long term memories after adding three short terms.");
+            Assert.AreEqual(1, controller.GetShortTermMemoriesAbout(longTermInfluencer).Length);
+            Assert.Zero(controller.GetLongTermMemories().Length, "There still shouldn't be any long term memories after adding three short terms.");
 
             // Add one more short term memory, this should push the two destined for long term into long term to make space for the short term
             controller.AddMemory(shortTermMemory);
-            Assert.AreEqual(1, controller.RetrieveShortTermMemoriesAbout(shortTermInfluencer).Length, "There should be 3 memories about " + shortTermInfluencer.name + " short term items in short term memory at this point");
-            Assert.AreEqual(1, controller.RetrieveLongTermMemoriesAbout(longTermInfluencer).Length, "There should now be a long term memory.");
+            Assert.AreEqual(1, controller.GetShortTermMemoriesAbout(shortTermInfluencer).Length, "There should be 3 memories about " + shortTermInfluencer.name + " short term items in short term memory at this point");
+            Assert.AreEqual(1, controller.GetLongTermMemoriesAbout(longTermInfluencer).Length, "There should now be a long term memory.");
 
             yield return null;
         }
@@ -116,10 +116,10 @@ namespace WizardsCode.Personality.Tests
             SetupMemory();
 
             controller.AddMemory(shortTermMemory);
-            MemorySO[] about = controller.RetrieveShortTermMemoriesAbout(shortTermMemory.about);
+            MemorySO[] about = controller.GetShortTermMemoriesAbout(shortTermMemory.about);
             Assert.False(about[0].readyToReturn);
             yield return new WaitForSeconds(0.11f);
-            about = controller.RetrieveShortTermMemoriesAbout(shortTermMemory.about);
+            about = controller.GetShortTermMemoriesAbout(shortTermMemory.about);
             Assert.True(about[0].readyToReturn);
 
             yield return null;

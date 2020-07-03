@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using WizardsCode.Character.Stats;
 #if UNITY_EDITOR
 using WizardsCode.Editor;
+using Random = UnityEngine.Random;
 #endif
 
 namespace WizardsCode.Character
@@ -21,14 +23,13 @@ namespace WizardsCode.Character
     [RequireComponent(typeof(MemoryController))]
     public class WanderWithIntent : Wander
     {
-        MemoryController memory;
         StatsController statsController;
         MemorySO nearestMemoryOfInterest;
         StatSO focusedStat;
 
         void Start()
         {
-            memory = GetComponent<MemoryController>();
+            base.Start();
             statsController = GetComponent<StatsController>();
         }
 
@@ -49,7 +50,7 @@ namespace WizardsCode.Character
                 //Debug.Log(gameObject.name + " desires to " + stats[i].goal + " " + stats[i].name + " to " + stats[i].desiredState.targetValue);
                 //Debug.Log(stats[i].name + " is currently " + stats[i].value);
 
-                MemorySO[] memories = memory.RecallMemoriesInfluencingStat(stats[i].name);
+                MemorySO[] memories = memory.GetMemoriesInfluencingStat(stats[i].name);
 
                 for (int y = 0; y < memories.Length; y++)
                 {
@@ -64,12 +65,16 @@ namespace WizardsCode.Character
                             continue;
                         }
 
-                        float distance = Vector3.SqrMagnitude(memories[y].about.transform.position - gameObject.transform.position);
-                        if (distance < sqrMagnitude)
+                        Collider col = memories[y].about.GetComponent<Collider>();
+                        if (!col.bounds.Contains(transform.position))
                         {
-                            focusedStat = stats[i];
-                            nearestMemoryOfInterest = memories[y];
-                            sqrMagnitude = distance;
+                            float distance = Vector3.SqrMagnitude(memories[y].about.transform.position - gameObject.transform.position);
+                            if (distance < sqrMagnitude)
+                            {
+                                focusedStat = stats[i];
+                                nearestMemoryOfInterest = memories[y];
+                                sqrMagnitude = distance;
+                            }
                         }
                     }
                 }
@@ -80,57 +85,67 @@ namespace WizardsCode.Character
 
                     GameObject target = nearestMemoryOfInterest.about;
                     Collider col = target.GetComponent<Collider>();
-
-                    if (!col.bounds.Contains(transform.position))
-                    {
-                        float xSize = target.transform.lossyScale.x;
-                        float zSize = target.transform.lossyScale.z;
-
-                        Vector3 pos = target.transform.position;
-                        if (Random.value > 0.5f)
-                        {
-                            pos.x += Random.Range(xSize, col.bounds.max.x - xSize);
-                        }
-                        else
-                        {
-                            pos.x -= Random.Range(xSize, col.bounds.max.x - xSize);
-                        }
-
-                        if (Random.value > 0.5f)
-                        {
-                            pos.z += Random.Range(zSize, col.bounds.max.x - zSize);
-                        }
-                        else
-                        {
-                            pos.z -= Random.Range(zSize, col.bounds.max.x - zSize);
-                        }
-                        currentTarget = pos;
-                        return;
-                    }
+                    SetCurrentTargetWithinTriggerOf(col);
+                    return;
                 }
             }
 
             base.UpdateMove();
         }
 
-#if UNITY_EDITOR
-        void OnDrawGizmosSelected()
+        /// <summary>
+        /// Set the current navigation target to somewhere within the trigger zone,
+        /// of a target object.
+        /// </summary>
+        /// <param name="target">The collider to move within.</param>
+        private void SetCurrentTargetWithinTriggerOf(Collider col)
         {
-            Vector3 pos = transform.position;
-            pos.x += 1;
-            pos.y += transform.lossyScale.y * 2;
+            if (!col.bounds.Contains(transform.position))
+            {
+                float xSize = col.bounds.extents.x;
+                float zSize = col.bounds.extents.z;
 
-            string msg = gameObject.name;
+                Vector3 pos = col.transform.position;
+                if (Random.value > 0.5f)
+                {
+                    pos.x += Random.Range(xSize, col.bounds.max.x - xSize);
+                }
+                else
+                {
+                    pos.x -= Random.Range(xSize, col.bounds.max.x - xSize);
+                }
+
+                if (Random.value > 0.5f)
+                {
+                    pos.z += Random.Range(zSize, col.bounds.max.x - zSize);
+                }
+                else
+                {
+                    pos.z -= Random.Range(zSize, col.bounds.max.x - zSize);
+                }
+
+                currentTarget = pos;
+                return;
+            }
+        }
+
+#if UNITY_EDITOR
+
+        public override string StatusText()
+        {
+            string msg = "";
             if (focusedStat != null)
             {
+                msg += "\n\nIntent (from Wander with Intent)";
                 msg += "\n" + focusedStat.describeGoal;
                 msg += "\nNearest object of interest: " + nearestMemoryOfInterest.about.name;
             }
-            ExtendedGizmos.DrawString(msg, pos);
+            else
+            {
+                msg += "\n\nNo current Intent (from Wander with Intent)";
+            }
 
-            DrawWanderAreaGizmo();
-            DrawWanderTargetGizmo();
-            DrawWanderRangeGizmo();
+            return msg;
         }
 #endif
     }
