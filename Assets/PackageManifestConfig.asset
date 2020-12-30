@@ -13,12 +13,9 @@ MonoBehaviour:
   m_Name: PackageManifestConfig
   m_EditorClassIdentifier: 
   packageSourcePaths:
-  - Assets
-  packageIgnorePaths:
-  - Assets/PackageManifestConfig.asset
-  - Assets/Generated
-  - Assets/Generated
-  packageDestinationPath: ../Character-ReleaseStable
+  - Assets/WizardsCode/Character
+  packageIgnorePaths: []
+  packageDestinationPath: ../Character-Package
   legacyPackageDestinationPath: 
   packageName: org.wizardscode.character
   displayName: Wizards Code - Character
@@ -31,6 +28,6 @@ MonoBehaviour:
   - Controller
   - Script
   dependencies: []
-  versionConstantsPath: Assets/Scripts/Editor
-  versionConstantsNamespace: org.WizardsCode.Character.Editor
+  versionConstantsPath: Assets/WizardsCode/Character/Scripts/Editor
+  versionConstantsNamespace: org.WizardsCode.Character
   _id: cc0d2366-128a-4766-83ae-65d11799879e
