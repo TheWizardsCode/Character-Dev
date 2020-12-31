@@ -55,7 +55,7 @@ namespace WizardsCode.Editor.Utility
             return finalPos;
         }
 
-        private void OnDrawGizmos()
+        private void OnDrawGizmosSelected()
         {
             Gizmos.DrawWireSphere(transform.position, m_Radius);
         }
