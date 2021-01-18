@@ -5,6 +5,8 @@ Various scripts and utilities for controlling characters in Unity.
 
 You can either install as a package or from source. We recommend installing from source since this is open source code and we'd love you to contribute fixes, documentations, demo scenes and more. Below are instructions on how to install.
 
+Note if you are on 2018 you will have to checkout the code into your project as we do not release unity packages. The below methods are best for 2019+
+
 ## Install Via Package Manager
 
 This method is super easy and doesn't require Git. However, it will not autoupdate:
