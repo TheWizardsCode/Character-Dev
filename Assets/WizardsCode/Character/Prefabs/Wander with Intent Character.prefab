@@ -198,13 +198,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6228e5a8f395da34995acbb1d5b6e821, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minTimeBetweenRandomPathChanges: 10
-  maxTimeBetweenRandomPathChanges: 25
+  minTimeBetweenRandomPathChanges: 2
+  maxTimeBetweenRandomPathChanges: 5
   minDistanceOfRandomPathChange: 10
   maxDistanceOfRandomPathChange: 30
   minAngleOfRandomPathChange: -30
   maxAngleOfRandomPathChange: 30
-  m_MaxWanderRange: 250
+  m_MaxWanderRange: 100
 --- !u!114 &800850953266828595
 MonoBehaviour:
   m_ObjectHideFlags: 0

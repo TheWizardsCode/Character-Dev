@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 
 #if UNITY_EDITOR
-using WizardsCode.Editor;
+using WizardsCode;
 #endif
 
 namespace WizardsCode.Character.Stats

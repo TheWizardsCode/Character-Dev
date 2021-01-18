@@ -3,10 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using WizardsCode.Character.Stats;
-#if UNITY_EDITOR
-using WizardsCode.Editor;
 using Random = UnityEngine.Random;
-#endif
 
 namespace WizardsCode.Character
 {
@@ -27,7 +24,7 @@ namespace WizardsCode.Character
         MemorySO nearestMemoryOfInterest;
         StatSO focusedStat;
 
-        void Start()
+        protected override void Start()
         {
             base.Start();
             statsController = GetComponent<StatsController>();

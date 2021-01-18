@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace WizardsCode.Editor { 
+namespace WizardsCode { 
     public class ExtendedGizmos {
         
         /// <summary>

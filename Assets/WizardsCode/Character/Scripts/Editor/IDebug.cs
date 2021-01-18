@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace WizardsCode.Editor
+namespace WizardsCode
 {
     public interface IDebug
     {

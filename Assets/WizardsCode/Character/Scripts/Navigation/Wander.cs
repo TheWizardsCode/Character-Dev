@@ -1,11 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using WizardsCode.Character.Stats;
-#if UNITY_EDITOR
-using WizardsCode.Editor;
-#endif
 
 namespace WizardsCode.Character
 {
@@ -35,16 +33,18 @@ namespace WizardsCode.Character
         private float maxAngleOfRandomPathChange = 60;
         [SerializeField, Tooltip("The approximate maximum range the agent will normally wander from their start position.")]
         private float m_MaxWanderRange = 50f;
+        [HideInInspector, SerializeField, Tooltip("The area mask for allowed areas for this agent to wander within.")]
+        public int navMeshAreaMask = NavMesh.AllAreas;
 
         protected MemoryController memory;
 
         private Vector3 m_TargetPosition;
-        private float timeOfNextWanderPathChange;
+        private float timeToNextWanderPathChange;
         private Vector3 m_StartPosition;
         private NavMeshAgent m_Agent;
         private Terrain m_Terrain;
         
-        protected void Start()
+        protected virtual void Start()
         {
             memory = GetComponent<MemoryController>();
         }
@@ -61,7 +61,7 @@ namespace WizardsCode.Character
                 {
                     m_TargetPosition = value;
                     m_Agent.SetDestination(value);
-                    timeOfNextWanderPathChange = Random.Range(minTimeBetweenRandomPathChanges, maxTimeBetweenRandomPathChanges);
+                    timeToNextWanderPathChange = Random.Range(minTimeBetweenRandomPathChanges, maxTimeBetweenRandomPathChanges);
                 }
             }
         }
@@ -101,15 +101,16 @@ namespace WizardsCode.Character
 
         internal void Update()
         {
+            timeToNextWanderPathChange -= Time.deltaTime;
+
             if (HasReachedTarget)
             {
                 OnReachedTarget();
             }
 
-            if (Time.timeSinceLevelLoad > timeOfNextWanderPathChange || !m_Agent.hasPath || m_Agent.pathStatus == NavMeshPathStatus.PathInvalid)
+            if (timeToNextWanderPathChange <= 0) //  || !m_Agent.hasPath || m_Agent.pathStatus == NavMeshPathStatus.PathInvalid
             {
                 UpdateMove();
-                timeOfNextWanderPathChange = Time.timeSinceLevelLoad + Random.Range(minTimeBetweenRandomPathChanges, maxTimeBetweenRandomPathChanges);
             }
         }
 
@@ -167,7 +168,7 @@ namespace WizardsCode.Character
                     }
 
                     NavMeshHit hit;
-                    if (!NavMesh.SamplePosition(position, out hit, transform.lossyScale.y * 2, NavMesh.AllAreas))
+                    if (!NavMesh.SamplePosition(position, out hit, transform.lossyScale.y * 2, navMeshAreaMask))
                     {
                         // This is not a valid NavMesh position, abort for this frame
                         continue;

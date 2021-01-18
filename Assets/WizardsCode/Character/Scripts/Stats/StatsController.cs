@@ -3,9 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-#if UNITY_EDITOR
-using WizardsCode.Editor;
-#endif
 
 namespace WizardsCode.Character.Stats {
     /// <summary>

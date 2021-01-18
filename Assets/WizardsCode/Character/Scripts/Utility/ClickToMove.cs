@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace WizardsCode.Editor.Utility
+namespace WizardsCode.Utility
 {
     /// <summary>
     /// Click hte left mouse button on the NavMesh to move the NavMeshAgent this scrpt is attached to.

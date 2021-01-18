@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace WizardsCode.Editor.Utility
+namespace WizardsCode.Utility
 {
     /// <summary>
     /// A really simple spawner that will create a number of a given prefab within a defined area.

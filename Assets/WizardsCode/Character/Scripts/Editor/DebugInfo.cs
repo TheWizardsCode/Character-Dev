@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace WizardsCode.Editor
+namespace WizardsCode
 {
     /// <summary>
     ///  DebugInfo can be attached to any game object. On startup it will scan for any
