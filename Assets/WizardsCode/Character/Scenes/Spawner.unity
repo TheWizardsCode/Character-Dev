@@ -918,12 +918,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 532aff806919ab44eaa441a2daaa8363, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Prefab: {fileID: 8606430813739018798, guid: e955bb85e43541544a3839827a5bfb2a,
-    type: 3}
+  m_SpawnedPrefabs:
+  - {fileID: 11400000, guid: 80e5ab5715d4d874db76223da8d1030d, type: 2}
+  - {fileID: 11400000, guid: e47acce592272404fa75578185f98f86, type: 2}
   m_Number: 500
-  m_Radius: 40
+  m_Radius: 30
   onNavMesh: 1
-  navMeshAreaMask: 7
+  navMeshAreaMask: 1
 --- !u!4 &1040659021
 Transform:
   m_ObjectHideFlags: 0

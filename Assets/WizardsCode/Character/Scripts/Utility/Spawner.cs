@@ -11,7 +11,7 @@ namespace WizardsCode.Utility
     public class Spawner : MonoBehaviour
     {
         [SerializeField, Tooltip("The prefab to spawn.")]
-        GameObject m_Prefab;
+        SpawnedPrefab[] m_SpawnedPrefabs;
         [SerializeField, Tooltip("The number of the prefab to create.")]
         int m_Number = 10;
         [SerializeField, Tooltip("The radius within which to spawn")]
@@ -27,8 +27,20 @@ namespace WizardsCode.Utility
             {
                 Vector3 position = GetPosition();
                 Quaternion rotation = Quaternion.Euler(new Vector3(0, Random.Range(0, 359.9f), 0));
-                GameObject go = Instantiate(m_Prefab, position, rotation);
-                go.name += " " + i;
+
+                for (int prefabIdx = 0; prefabIdx < m_SpawnedPrefabs.Length; prefabIdx++)
+                {
+                    SpawnedPrefab spawnedPrefab = m_SpawnedPrefabs[prefabIdx];
+                    if (spawnedPrefab.probability >= Random.value) {
+                        GameObject go = Instantiate(spawnedPrefab.prefab, position, rotation);
+                        go.name += " " + i;
+
+                        if (spawnedPrefab.stopSpawning)
+                        {
+                            break;
+                        }
+                    }
+                }
             }
         }
 
