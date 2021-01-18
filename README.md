@@ -22,13 +22,13 @@ We are a big fan of enabling our users to improve Dev Logger, so we would encour
 
   1. Fork and clone the repo and submodules into your preferred location with `git clone --recurse-submodules [YOUR_FORK_URL]`
   2. In the project view select `Assets/DevTest PackageManifestConfig`
-  3. In the inspector click `Export Package Source`, this will export the package to a folder next to your checkout director called "DevLogger-Package"
+  3. In the inspector click `Export Package Source`, this will export the package to a folder next to your checkout director called "Character-Release"
   4. To use this package in your development environments go to `Window -> Package Manager`
   5. Click the '+" in the top left
   6. Select 'Add package from disk ...'
-  7. Point to the `package.json` file in the `DevLogger-Package` directory 
+  7. Point to the `package.json` file in the `Character-Release` directory 
   
-If you find a bug or want to make an improvement do it inside the DevLogger project in Unity. To make it available to your work projects repeat step 2 and 3 above. This will re-publish your package locally and will be automatically picked up when you next give your development environment focus. 
+If you find a bug or want to make an improvement do it inside the Character project in Unity. To make it available to your work projects repeat step 2 and 3 above. This will re-publish your package locally and will be automatically picked up when you next give your development environment focus. 
 
 Once you have tested the changes please issue a pull request against our repo so we can make the code better for everyone.
 
@@ -36,7 +36,7 @@ Once you have tested the changes please issue a pull request against our repo so
 
 We use [PackageTools](https://github.com/jeffcampbellmakesgames/unity-package-tools) to create our releases. To build a release:
 
-  0. Alongside your working repository checkout the `release/stable` branch of this repo into a directory called `DevLogger-Release` using `git clone --single-branch --branch release/stable git@github.com:TheWizardsCode/Character.git Character-Release`
+  0. Alongside your working repository checkout the `release/stable` branch of this repo into a directory called `Character-Release` using `git clone --single-branch --branch release/stable git@github.com:TheWizardsCode/Character.git Character-Release`
   1. Update the version number in the `Release PackageManifestConfig` to match that in `DevTest PackageManifestConfig` (both are in the root of the `Assets` folder)
   2. Increase the version number in the `DevTest PackageManifestConfig` to represent the next release number (not this release)
   3. Click `Generate VersionConstants.cs` in the inspector from the release package manifest
