@@ -8,7 +8,7 @@ namespace WizardsCode.Character
 		/// <summary>
 		/// The semantic version
 		/// </summary>
-		public const string VERSION = "0.0.4";
+		public const string VERSION = "0.0.5";
 
 		/// <summary>
 		/// The branch of GIT this package was published from.
@@ -18,7 +18,7 @@ namespace WizardsCode.Character
 		/// <summary>
 		/// The current GIT commit hash this package was published on.
 		/// </summary>
-		public const string GIT_COMMIT = "d9bdb7918c6b9b2af8beab4e3672f1d19fcb5fbc";
+		public const string GIT_COMMIT = "deaf36cc1fe98c5845fc7a5eee03c9b00ce520da";
 
 		/// <summary>
 		/// The UTC human-readable date this package was published at.
@@ -28,6 +28,6 @@ namespace WizardsCode.Character
 		/// <summary>
 		/// The UTC time this package was published at.
 		/// </summary>
-		public const string PUBLISH_TIME = "01/18/2021 05:55:22";
+		public const string PUBLISH_TIME = "01/18/2021 19:02:50";
 	}
 }
