@@ -1,7 +1,7 @@
 # Character
-Various scripts and utilities for controlling characters in Unity. The project is intended to be self-documenting. Drop into the Scenes folder and take a look at each of them.
+Various scripts and utilities for controlling characters in Unity. The project is intended to be self-documenting. Drop into the [Scenes folder](https://github.com/TheWizardsCode/Character/tree/master/Assets/WizardsCode/Character/Scenes) and take a look at each of them.
 
-This is open source, if it doesn't do what you need raise and issue to see if it's something we will add. It's much more likely to be added if you provide the code - but don't worry about simply making suggestions. Bug reports are especially valuable. Use the issue tracker please.
+This is open source, if it doesn't do what you need raise and issue to see if it's something we will add. It's much more likely to be added if you provide the code - but don't worry about simply making suggestions. Bug reports are especially valuable. Use the [issue tracker](https://github.com/TheWizardsCode/Character/issues) please.
 
 # Installation
 
