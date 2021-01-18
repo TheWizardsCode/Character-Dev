@@ -18,6 +18,8 @@ namespace WizardsCode.Utility
         float m_Radius = 10;
         [SerializeField, Tooltip("Should the character only be placed on a NavMesh?")]
         bool onNavMesh = false;
+        [HideInInspector, SerializeField, Tooltip("The area mask that indicates NavMesh areas that the spawner can spawn characters into.")]
+        public int navMeshAreaMask = NavMesh.AllAreas;
 
         private void Start()
         {
@@ -30,8 +32,14 @@ namespace WizardsCode.Utility
             }
         }
 
-        private Vector3 GetPosition()
+        private Vector3 GetPosition(int attemptNumber = 0)
         {
+            attemptNumber++;
+            if (attemptNumber > 10)
+            {
+                throw new System.Exception("Unable to find a suitable location on the navmesh for " + gameObject.name + ". Check you have baked the NavMesh and that you have at least one allowed area within the spawn radius.");
+            }
+
             Vector2 pos2D = Random.insideUnitCircle * m_Radius;
             Vector3 position = transform.position + new Vector3(pos2D.x, 0, pos2D.y);
             Vector3 finalPos = position;
@@ -41,14 +49,13 @@ namespace WizardsCode.Utility
 
             if (onNavMesh)
             {
-                //TODO should abort after x tries
                 NavMeshHit hit;
-                if (NavMesh.SamplePosition(finalPos, out hit, 2, NavMesh.AllAreas))
+                if (NavMesh.SamplePosition(finalPos, out hit, 2, navMeshAreaMask))
                 {
                     finalPos = hit.position;
                 } else
                 {
-                    finalPos = GetPosition();
+                    finalPos = GetPosition(attemptNumber);
                 }
             }
 
