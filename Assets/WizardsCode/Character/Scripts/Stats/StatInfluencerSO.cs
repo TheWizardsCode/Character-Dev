@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace WizardsCode.Character.Stats
+namespace WizardsCode.Stats
 {
     /// <summary>
     /// A stats influencer will alter a Stat by a given amount over a given duration.
@@ -11,8 +11,8 @@ namespace WizardsCode.Character.Stats
     {
         [SerializeField, Tooltip("The object that generates this influence.")]
         GameObject m_Generator;
-        [SerializeField, Tooltip("The name of the Stat this influencer acts upon.")]
-        string m_StatName;
+        [SerializeField, Tooltip("The Stat this influencer acts upon.")]
+        StatSO m_stat;
         [SerializeField, Tooltip("The maximum amount of change this influencer will impart upon the stat. If the stat will never be taken beyond its maximum and minimum allowable values.")]
         float m_MaxChange;
         [SerializeField, Tooltip("The time, in seconds, over which the influencer will be effective. The change will occur over this time period, up to the limit of the stat or the maxChange of this influencer. If duration is 0 then the total change is applied instantly.")]
@@ -32,12 +32,12 @@ namespace WizardsCode.Character.Stats
         }
 
         /// <summary>
-        /// The name of the stat that this influencer will act upon.
+        /// The stat that this influencer will act upon.
         /// </summary>
-        public string statName
+        public StatSO stat
         {
-            get { return m_StatName; }
-            set { m_StatName = value; }
+            get { return m_stat; }
+            set { m_stat = value; }
         }
 
         /// <summary>

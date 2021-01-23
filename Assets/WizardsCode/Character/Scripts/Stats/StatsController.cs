@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WizardsCode.Character;
 
-
-namespace WizardsCode.Character.Stats {
+namespace WizardsCode.Stats {
     /// <summary>
     /// The StatsController is responsible for tracking and reporting on the stats of the character.
     /// Stats are made up of a number of `StatsSO` objects.
@@ -77,7 +77,7 @@ namespace WizardsCode.Character.Stats {
             List<StatSO> stats = new List<StatSO>();
             for (int i = 0; i < desiredStates.Length; i++)
             {
-                StatSO stat = GetOrCreateStat(desiredStates[i].statName);
+                StatSO stat = GetOrCreateStat(desiredStates[i].stat.name);
                 if (stat.goal != DesiredState.Goal.NoAction)
                 {
                     stats.Add(stat);
@@ -88,16 +88,15 @@ namespace WizardsCode.Character.Stats {
         }
 
         /// <summary>
-        /// Get a named stat. If it does not exist then return null.
+        /// Get the Stat of a given type.
         /// </summary>
-        /// <param name="statName">The name of the stat to retrieve.</param>
+        /// <param name="name">The name of the stat we want to retrieve</param>
         /// <returns>The stat, if it exists, or null.</returns>
-        public StatSO GetStat(string statName)
+        public StatSO GetStat(string name)
         {
-            // TODO cache results in a dictionary
             for (int i = 0; i < m_Stats.Count; i++)
             {
-                if (m_Stats[i].name == statName)
+                if (m_Stats[i].name == name)
                 {
                     return m_Stats[i];
                 }
@@ -113,7 +112,7 @@ namespace WizardsCode.Character.Stats {
         /// <param name="change">The change to make. The result is kept within the -100 to 100 range.</param>
         internal void ChangeStat(StatInfluencerSO influencer, float change)
         {
-            StatSO stat = GetOrCreateStat(influencer.statName);
+            StatSO stat = GetOrCreateStat(influencer.stat.name);
             stat.value += change;
             influencer.influenceApplied += change;
             //Debug.Log(gameObject.name + " changed stat " + influencer.statName + " by " + change);
@@ -123,20 +122,19 @@ namespace WizardsCode.Character.Stats {
         /// Get the stat object representing a named stat. If it does not already
         /// exist it will be created with a base value.
         /// </summary>
-        /// <param name="statName">Tha name of the stat to Get or Create</param>
-        /// <param name="baseValue">The base value to assign if the stat needs to be created.</param>
+        /// <param name="name">Tha name of the stat to Get or Create for this controller</param>
         /// <returns>A StatSO representing the named stat</returns>
-        public StatSO GetOrCreateStat(string statName, float baseValue = 0)
+        public StatSO GetOrCreateStat(string name, float value = 0)
         {
-            StatSO stat = GetStat(statName);
+            StatSO stat = GetStat(name);
             if (stat != null) return stat;
 
             stat = ScriptableObject.CreateInstance<StatSO>();
-            stat.name = statName;
-            stat.value = baseValue;
+            stat.name = name;
+            stat.value = value;
             for (int i = 0; i < desiredStates.Length; i++)
             {
-                if (statName == desiredStates[i].statName)
+                if (stat.GetType() == desiredStates[i].stat.GetType())
                 {
                     stat.desiredState = desiredStates[i];
                     break;
@@ -156,7 +154,7 @@ namespace WizardsCode.Character.Stats {
         /// <returns>True if the influencer was added, otherwise false.</returns>
         public bool TryAddInfluencer(StatInfluencerSO influencer)
         {
-            StatSO stat = GetOrCreateStat(influencer.statName);
+            StatSO stat = GetOrCreateStat(influencer.stat.name);
             bool isGood = true;
             switch (stat.desiredState.objective)
             {

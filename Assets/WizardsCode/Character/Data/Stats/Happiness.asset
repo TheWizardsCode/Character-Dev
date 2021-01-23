@@ -9,9 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df80cf6adda148a4e914e12b8c71ec0a, type: 3}
-  m_Name: Basic Character Red Spawn Config
+  m_Script: {fileID: 11500000, guid: c51095d4916d20d4f8b4b02cc693ecec, type: 3}
+  m_Name: Happiness
   m_EditorClassIdentifier: 
-  prefab: {fileID: 8606430813739018798, guid: e955bb85e43541544a3839827a5bfb2a, type: 3}
-  probability: 1
-  stopSpawning: 1
+  displayName: Happiness
+  m_BaseValue: 0
+  desiredState:
+    stat: {fileID: 0}
+    objective: 0
+    targetValue: 0
+  m_CurrentValue: 0

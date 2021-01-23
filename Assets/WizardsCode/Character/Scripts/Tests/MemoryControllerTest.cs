@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using WizardsCode.Character;
 using WizardsCode.Character.Stats;
+using WizardsCode.Stats;
 
 namespace WizardsCode.Personality.Tests
 {
@@ -25,22 +27,31 @@ namespace WizardsCode.Personality.Tests
             shortTermInfluencer = new GameObject("ShortTermInfluencer");
             shortTermNegativeInfluencer = new GameObject("ShortTermInfluencer1");
 
+            StatSO shortTermTestStat = ScriptableObject.CreateInstance<StatSO>();
+            shortTermTestStat.name = "ShortTermTest";
+
             shortTermMemory = ScriptableObject.CreateInstance<MemorySO>();
             shortTermMemory.about = shortTermInfluencer;
-            shortTermMemory.statName = "ShortTermTest";
+            shortTermMemory.stat = shortTermTestStat;
             shortTermMemory.influence = 5;
             shortTermMemory.cooldown = 0.1f;
 
+            StatSO shortTermNegativeInfluenceTestStat = ScriptableObject.CreateInstance<StatSO>();
+            shortTermNegativeInfluenceTestStat.name = "ShortTermNegativeInfluence";
+
             shortTermMemoryNegativeInflunce = ScriptableObject.CreateInstance<MemorySO>();
             shortTermMemoryNegativeInflunce.about = shortTermNegativeInfluencer;
-            shortTermMemoryNegativeInflunce.statName = "ShortTermTestNegativeInfluence";
+            shortTermMemoryNegativeInflunce.stat = shortTermNegativeInfluenceTestStat;
             shortTermMemoryNegativeInflunce.influence = -5;
 
             longTermInfluencer = new GameObject("LongTermInfluencer");
 
+            StatSO longTermTestStat = ScriptableObject.CreateInstance<StatSO>();
+            longTermTestStat.name = "LongTermTest";
+
             longTermMemory = ScriptableObject.CreateInstance<MemorySO>();
             longTermMemory.about = longTermInfluencer;
-            longTermMemory.statName = "LongTermTest";
+            longTermMemory.stat = longTermTestStat;
             longTermMemory.influence = 50;
             longTermMemory.cooldown = 0;
 

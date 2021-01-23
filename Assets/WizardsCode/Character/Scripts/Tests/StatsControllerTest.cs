@@ -2,8 +2,9 @@
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using WizardsCode.Stats;
 
-namespace WizardsCode.Character.Stats
+namespace WizardsCode.Stats
 {
     public class StatsControllerTest
     {
@@ -29,7 +30,8 @@ namespace WizardsCode.Character.Stats
             StatsController controller = new GameObject().AddComponent<StatsController>();
 
             StatInfluencerSO influencer = ScriptableObject.CreateInstance<StatInfluencerSO>();
-            influencer.statName = statName;
+            StatSO stat = controller.GetOrCreateStat(statName);
+            influencer.stat = stat;
             influencer.maxChange = 10;
             influencer.duration = 0;
 

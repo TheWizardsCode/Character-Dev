@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using WizardsCode.Character.Stats;
+using WizardsCode.Stats;
 using Random = UnityEngine.Random;
 
 namespace WizardsCode.Character
@@ -47,8 +48,8 @@ namespace WizardsCode.Character
                 //Debug.Log(gameObject.name + " desires to " + stats[i].goal + " " + stats[i].name + " to " + stats[i].desiredState.targetValue);
                 //Debug.Log(stats[i].name + " is currently " + stats[i].value);
 
+                // Find the nearest place that is in current memory that helps achieve one of the characters goals
                 MemorySO[] memories = memory.GetMemoriesInfluencingStat(stats[i].name);
-
                 for (int y = 0; y < memories.Length; y++)
                 {
                     if (memories[y].readyToReturn)
@@ -76,6 +77,7 @@ namespace WizardsCode.Character
                     }
                 }
 
+                // Head to the remembered place
                 if (nearestMemoryOfInterest != null)
                 {
                     //Debug.Log("It looks like " + nearestMemoryOfInterest.about + " is the best place to achieve that goal");
@@ -87,6 +89,7 @@ namespace WizardsCode.Character
                 }
             }
 
+            // if no place in memory wander randomly
             base.UpdateMove();
         }
 
@@ -105,20 +108,20 @@ namespace WizardsCode.Character
                 Vector3 pos = col.transform.position;
                 if (Random.value > 0.5f)
                 {
-                    pos.x += Random.Range(xSize, col.bounds.max.x - xSize);
+                    pos.x += Random.Range(0, xSize);
                 }
                 else
                 {
-                    pos.x -= Random.Range(xSize, col.bounds.max.x - xSize);
+                    pos.x -= Random.Range(0, xSize);
                 }
 
                 if (Random.value > 0.5f)
                 {
-                    pos.z += Random.Range(zSize, col.bounds.max.x - zSize);
+                    pos.z += Random.Range(0, zSize);
                 }
                 else
                 {
-                    pos.z -= Random.Range(zSize, col.bounds.max.x - zSize);
+                    pos.z -= Random.Range(0, zSize);
                 }
 
                 currentTarget = pos;

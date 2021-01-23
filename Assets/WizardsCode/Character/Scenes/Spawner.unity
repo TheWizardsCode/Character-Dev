@@ -563,7 +563,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 44.75
+  m_fontSize: 22.05
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -609,7 +609,7 @@ MonoBehaviour:
     spaceCount: 9
     wordCount: 10
     linkCount: 0
-    lineCount: 1
+    lineCount: 2
     pageCount: 1
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
@@ -724,7 +724,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 70.1
+  m_fontSize: 40.75
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -770,7 +770,7 @@ MonoBehaviour:
     spaceCount: 35
     wordCount: 35
     linkCount: 0
-    lineCount: 8
+    lineCount: 10
     pageCount: 1
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
@@ -1438,6 +1438,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3628273535258001664, guid: 7ae8deda6588c6d41842a37ae4e8d8bc,
+        type: 3}
+      propertyPath: navMeshAreaMask
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3628273535258001665, guid: 7ae8deda6588c6d41842a37ae4e8d8bc,
         type: 3}
       propertyPath: m_LocalPosition.x

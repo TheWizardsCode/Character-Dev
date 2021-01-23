@@ -3,12 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace WizardsCode.Character.Stats
+namespace WizardsCode.Stats
 {
     /// <summary>
     /// A StatSO tracks the base value and current value of a Stat. This can be used by an AI
     /// system to decide on actions to take.
     /// </summary>
+    [CreateAssetMenu(fileName = "New Stat", menuName = "Wizards Code/Stats/New Stat")]
     public class StatSO : ScriptableObject
     {
         [Header("Details")]
@@ -143,8 +144,8 @@ namespace WizardsCode.Character.Stats
     {
         public enum Goal { Decrease, NoAction, Increase }
         public enum Objective { LessThan, Approximately, GreaterThan }
-        [Tooltip("The name of the stat we are defining a desired state for.")]
-        public string statName;
+        [Tooltip("The stat we are defining a desired state for.")]
+        public StatSO stat;
         [Tooltip("State objective indicates whether our target value is a minimum, maxium or goal.")]
         public Objective objective;
         [Tooltip("The target value of this stat.")]

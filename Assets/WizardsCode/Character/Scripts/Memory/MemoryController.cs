@@ -6,9 +6,10 @@ using UnityEngine;
 
 #if UNITY_EDITOR
 using WizardsCode;
+using WizardsCode.Stats;
 #endif
 
-namespace WizardsCode.Character.Stats
+namespace WizardsCode.Character
 {
     public class MemoryController : MonoBehaviour
 #if UNITY_EDITOR
@@ -38,12 +39,12 @@ namespace WizardsCode.Character.Stats
         /// <summary>
         /// Retrive all memories (long and short term) about influencers of a stat.
         /// </summary>
-        /// <param name="name">The name of the stat we are interested in.</param>
+        /// <param name="name">The stat we are interested in.</param>
         /// <returns>A set of influencers known to affect the desired stat.</returns>
         public MemorySO[] GetMemoriesInfluencingStat(string name)
         {
-            MemorySO[] shortTermMemories = m_ShortTermMemories.Where(m => m.statName == name).ToArray<MemorySO>();
-            MemorySO[] longTermMemories = m_LongTermMemories.Where(m => m.statName == name).ToArray<MemorySO>();
+            MemorySO[] shortTermMemories = m_ShortTermMemories.Where(m => m.stat.name == name).ToArray<MemorySO>();
+            MemorySO[] longTermMemories = m_LongTermMemories.Where(m => m.stat.name == name).ToArray<MemorySO>();
 
             MemorySO[] all = new MemorySO[shortTermMemories.Length + longTermMemories.Length];
             shortTermMemories.CopyTo(all, 0);
@@ -147,7 +148,7 @@ namespace WizardsCode.Character.Stats
             {
                 for (int i = 0; i < memories.Length; i++)
                 {
-                    if (memories[i].statName == memory.statName)
+                    if (memories[i].stat == memory.stat)
                     {
                         return memories[i];
                     }
@@ -176,13 +177,13 @@ namespace WizardsCode.Character.Stats
                           group memory by new
                           {
                               memory.about,
-                              memory.statName,
+                              memory.stat,
                               memory
                           } into grp
                           select new
                           {
                               about = grp.Key.about,
-                              traitName = grp.Key.statName,
+                              traitName = grp.Key.stat,
                               totalInfluence = grp.Sum(i => i.influence)
                           };
 
@@ -192,7 +193,7 @@ namespace WizardsCode.Character.Stats
                 {
                     MemorySO memory = ScriptableObject.CreateInstance<MemorySO>();
                     memory.about = item.about;
-                    memory.statName = item.traitName;
+                    memory.stat = item.traitName;
                     memory.influence = item.totalInfluence;
                     AddToLongTermMemory(memory);
 
@@ -238,7 +239,7 @@ namespace WizardsCode.Character.Stats
         {
             MemorySO memory = ScriptableObject.CreateInstance<MemorySO>();
             memory.about = influencer.generator;
-            memory.statName = influencer.statName;
+            memory.stat = influencer.stat;
             memory.influence = influencer.maxChange;
             memory.cooldown = influencer.cooldown;
             memory.isGood = isGood;

@@ -6,15 +6,21 @@ namespace WizardsCode.Character
     [CustomEditor(typeof(Spawner), true)]
     public class SpawnerEditor : Editor
     {
-        int mask;
+        SerializedProperty navMeshMask;
+        void OnEnable()
+        {
+            navMeshMask = serializedObject.FindProperty("navMeshAreaMask");
+        }
+
         public override void OnInspectorGUI()
         {
             base.DrawDefaultInspector();
-
-            Spawner spawner = (Spawner)target;
+            serializedObject.Update();
 
             string[] areas = GameObjectUtility.GetNavMeshAreaNames();
-            spawner.navMeshAreaMask = EditorGUILayout.MaskField("NavMesh Area Mask", spawner.navMeshAreaMask, areas);
+            navMeshMask.intValue = EditorGUILayout.MaskField("NavMesh Area Mask", navMeshMask.intValue, areas);
+
+            serializedObject.ApplyModifiedProperties();
         }
     }
 }
