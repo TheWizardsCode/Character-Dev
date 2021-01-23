@@ -21,17 +21,24 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("The cooldown period before a character can be influenced by this object again, in seconds.")]
         float m_Cooldown = 5;
 
-        // The time since level load that this memory was created. 
-        // TODO: this is not saved between level loads, which probably means it is reset each time. This will cause bugs that allow memories to be formed to frequently between level loads. Need to use a game time and save this value.
-        internal float m_Time;
+        //TODO: this is not saved between level loads, which probably means it is reset each time. This will cause bugs that allow memories to be formed to frequently between level loads. Need to use a game time and save this value.
+        float m_Time;
+        /// <summary>
+        /// The time since level load that this memory was created.
+        /// </summary>
+        public float time
+        {
+            get { return m_Time; }
+            set { m_Time = value; }
+        }
 
         public string description
         {
             get
             {
-                string msg = about.gameObject.name + " is ";
+                string msg = about != null ? about.gameObject.name + " is " : "Influence from unknown source is ";
                 msg += isGood ? "good because it " : "bad because it ";
-                msg += influence > 0 ? " increased " : " decreased ";
+                msg += influence > 0 ? "increased " : "decreased ";
                 msg += stat.name;
                 msg += " by " + Mathf.Abs(influence);
                 return msg;

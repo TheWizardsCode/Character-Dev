@@ -5,8 +5,10 @@ using UnityEngine;
 namespace WizardsCode.Stats
 {
     /// <summary>
-    /// A stats influencer will alter a Stat by a given amount over a given duration.
+    /// A stats influencer is used to alter a Stat by a given amount over a given duration.
+    /// 
     /// </summary>
+    [CreateAssetMenu(fileName ="New Stats Influencer", menuName = "Wizards Code/Stats/New Influencer")]
     public class StatInfluencerSO : ScriptableObject
     {
         [SerializeField, Tooltip("The object that generates this influence.")]
@@ -75,8 +77,7 @@ namespace WizardsCode.Stats
         }
 
         /// <summary>
-        /// The influence applied by this infliencer to date. When this reaches
-        /// the maxChange value the object will be destroyed.
+        /// The influence applied by this influencer to date.
         /// </summary>
         public float influenceApplied
         {
@@ -88,7 +89,7 @@ namespace WizardsCode.Stats
                     m_InfluenceApplied = value;
                 } else
                 {
-                    Destroy(this);
+                    m_InfluenceApplied = maxChange;
                 }
             }
         }

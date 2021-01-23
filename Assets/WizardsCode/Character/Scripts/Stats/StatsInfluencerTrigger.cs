@@ -8,7 +8,8 @@ namespace WizardsCode.Character.Stats
     /// <summary>
     /// Place the StatsInfluencerTrigger on any game object with a trigger collider. When 
     /// another object with a StatsController attached triggers the collider the defined
-    /// StatsInfluencer is attached to the StatsController.
+    /// StatsInfluencer is attached to the StatsController. That StatsController will then
+    /// apply the influence as defined within the StatsInfluencerSO.
     /// </summary>
     public class StatsInfluencerTrigger : MonoBehaviour
     {

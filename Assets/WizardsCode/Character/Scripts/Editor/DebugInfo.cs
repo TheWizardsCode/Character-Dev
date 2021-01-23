@@ -22,6 +22,8 @@ namespace WizardsCode
 
         private void OnDrawGizmosSelected()
         {
+            if (components == null) return;
+
             string msg = gameObject.name;
             for (int i = 0; i < components.Length; i++)
             {

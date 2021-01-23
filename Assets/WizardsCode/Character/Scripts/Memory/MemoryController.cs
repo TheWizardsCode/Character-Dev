@@ -122,7 +122,7 @@ namespace WizardsCode.Character
                     }
                 }
                 existingMemory.influence += memory.influence;
-                existingMemory.m_Time = memory.m_Time;
+                existingMemory.time = memory.time;
                 return;
             }
 

@@ -7,7 +7,8 @@ using WizardsCode.Character;
 namespace WizardsCode.Stats {
     /// <summary>
     /// The StatsController is responsible for tracking and reporting on the stats of the character.
-    /// Stats are made up of a number of `StatsSO` objects.
+    /// Stats are made up of a number of `StatsSO` objects and can be influenced by a collection of
+    /// StatsInfluencerSO's.
     /// </summary>
     public class StatsController : MonoBehaviour
 #if UNITY_EDITOR
@@ -48,13 +49,11 @@ namespace WizardsCode.Stats {
                 {
                     if (m_StatsInfluencers[i] != null)
                     {
-                        if (m_StatsInfluencers[i].duration > 0)
+                        ChangeStat(m_StatsInfluencers[i]);
+
+                        if (m_StatsInfluencers[i].influenceApplied >= m_StatsInfluencers[i].maxChange)
                         {
-                            float influence = m_StatsInfluencers[i].changePerSecond * (Time.timeSinceLevelLoad - m_TimeOfLastUpdate);
-                            ChangeStat(m_StatsInfluencers[i], influence);
-                        } else
-                        {
-                            ChangeStat(m_StatsInfluencers[i], m_StatsInfluencers[i].maxChange);
+                            m_StatsInfluencers.RemoveAt(i);
                         }
                     } else
                     {
@@ -109,10 +108,20 @@ namespace WizardsCode.Stats {
         /// </summary>
         /// 
         /// <param name="influencer">The influencer imparting the change.</param>
-        /// <param name="change">The change to make. The result is kept within the -100 to 100 range.</param>
-        internal void ChangeStat(StatInfluencerSO influencer, float change)
+        internal void ChangeStat(StatInfluencerSO influencer)
         {
             StatSO stat = GetOrCreateStat(influencer.stat.name);
+            float change; 
+
+            if (influencer.duration > 0)
+            {
+                change = Mathf.Clamp(influencer.changePerSecond * (Time.timeSinceLevelLoad - m_TimeOfLastUpdate), float.MinValue, influencer.maxChange - influencer.influenceApplied);
+            }
+            else
+            {
+                change = Mathf.Clamp(influencer.maxChange, influencer.maxChange - influencer.influenceApplied, influencer.maxChange);
+            }
+
             stat.value += change;
             influencer.influenceApplied += change;
             //Debug.Log(gameObject.name + " changed stat " + influencer.statName + " by " + change);
@@ -147,13 +156,24 @@ namespace WizardsCode.Stats {
 
         /// <summary>
         /// Add an influencer to this controller. If this controller is not managing the required stat then 
-        /// do nothing. If this character has any memory of being influenced by the object within short term 
-        /// memory this new influence will be rejected.
+        /// do nothing.
         /// </summary>
         /// <param name="influencer">The influencer to add.</param>
         /// <returns>True if the influencer was added, otherwise false.</returns>
         public bool TryAddInfluencer(StatInfluencerSO influencer)
         {
+            if (m_Memory != null && influencer.generator != null)
+            {
+                MemorySO[] memories = m_Memory.GetAllMemoriesAbout(influencer.generator);
+                for (int i = 0; i < memories.Length; i++)
+                {
+                    if (memories[i].stat == influencer.stat && memories[i].time + memories[i].cooldown > Time.timeSinceLevelLoad)
+                    {
+                        return false;
+                    }
+                }
+            }
+
             StatSO stat = GetOrCreateStat(influencer.stat.name);
             bool isGood = true;
             switch (stat.desiredState.objective)
@@ -184,7 +204,6 @@ namespace WizardsCode.Stats {
                 m_Memory.AddMemory(influencer, isGood);
             }
 
-            
             m_StatsInfluencers.Add(influencer);
 
             return true;
@@ -193,13 +212,17 @@ namespace WizardsCode.Stats {
 #if UNITY_EDITOR
         string IDebug.StatusText()
         {
-            StatSO[] stats = GetStatsNotInDesiredState();
-            
             string msg = "";
             msg += "\n\nStats";
-            for (int i = 0; i < stats.Length; i++)
+            for (int i = 0; i < m_Stats.Count; i++)
             {
-                msg += "\n" + stats[i].statusDescription;
+                msg += "\n" + m_Stats[i].statusDescription;
+            }
+
+            msg += "\n\nActive Influencers";
+            for (int i = 0; i < m_StatsInfluencers.Count; i++)
+            {
+                msg += "\n" + m_StatsInfluencers[i].stat + " changed by " + m_StatsInfluencers[i].maxChange + " at " + m_StatsInfluencers[i].changePerSecond + " per second (" + Mathf.Round((m_StatsInfluencers[i].influenceApplied / m_StatsInfluencers[i].maxChange) * 100) + "% applied)";
             }
 
             return msg;
