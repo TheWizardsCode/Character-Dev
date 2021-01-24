@@ -53,6 +53,9 @@ namespace WizardsCode.Stats
                 if (m_Duration > 0)
                 {
                     m_ChangePerSecond = m_MaxChange / m_Duration;
+                } else
+                {
+                    m_ChangePerSecond = 0;
                 }
             }
         }
@@ -104,7 +107,13 @@ namespace WizardsCode.Stats
             get { return m_Duration; }
             set { 
                 m_Duration = value;
-                m_ChangePerSecond = m_MaxChange / m_Duration;
+                if (duration > 0)
+                {
+                    m_ChangePerSecond = m_MaxChange / m_Duration;
+                } else
+                {
+                    m_ChangePerSecond = 0;
+                }
             }
         }
 

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WizardsCode.Character;
 
 namespace WizardsCode.Stats
 {
@@ -18,9 +19,6 @@ namespace WizardsCode.Stats
         [SerializeField, Tooltip("The base value for this stat. This is the value that the character will always trend towards with no external factors influencing the current value."), Range(-100, 100)]
         float m_BaseValue = 0;
 
-        [HideInInspector]
-        /// The desiredState for this stat. This indicates the value the character should seek to achieve with this state.
-        public DesiredState desiredState;
         [HideInInspector, SerializeField]
         float m_CurrentValue;
 
@@ -32,19 +30,16 @@ namespace WizardsCode.Stats
         {
             get {
                 string msg = name + " is " + value;
-                switch (goal) {
-                    case DesiredState.Goal.Decrease:
-                        msg += " which is too high";
-                        break;
-                    case DesiredState.Goal.NoAction:
-                        msg += " which is abou right.";
-                        break;
-                    case DesiredState.Goal.Increase:
-                        msg += " which is too low";
-                        break;
-                }
                 return msg; 
             }
+        }
+
+        /// <summary>
+        /// Called every tick to allow for the state to be updated over time.
+        /// </summary>
+        internal virtual void OnUpdate()
+        {
+            // Do nothing by default
         }
 
         /// <summary>
@@ -64,92 +59,5 @@ namespace WizardsCode.Stats
         {
             m_CurrentValue = m_BaseValue;
         }
-
-        /// <summary>
-        /// Called by the StatsController to update the stat based on current conditions.
-        /// </summary>
-        internal virtual void OnUpdate()
-        {
-            //Debug.Log("Stat \"" + name + "\" has value of " + value);
-        }
-
-        /// <summary>
-        /// Get the current goal relating to this stat. That is do we currently want to 
-        /// increase, decrease or maintaint his stat.
-        /// </summary>
-        /// <returns>The current goal for this stat.</returns>
-        public DesiredState.Goal goal
-        {
-            get
-            {
-                switch (desiredState.objective)
-                {
-                    case DesiredState.Objective.LessThan:
-                        if (value > desiredState.targetValue)
-                        {
-                            return DesiredState.Goal.Decrease;
-                        }
-                        break;
-
-                    case DesiredState.Objective.Approximately:
-                        if (value > desiredState.targetValue * 1.1)
-                        {
-                            return DesiredState.Goal.Decrease;
-                        }
-                        else
-                        {
-                            if (value < desiredState.targetValue * 0.9)
-                            {
-                                return DesiredState.Goal.Increase;
-                            }
-                        }
-                        break;
-
-                    case DesiredState.Objective.GreaterThan:
-                        if (value < desiredState.targetValue)
-                        {
-                            return DesiredState.Goal.Increase;
-                        }
-                        break;
-                }
-                return DesiredState.Goal.NoAction;
-            }
-        }
-
-        /// <summary>
-        /// Describe the goal in human readable form.
-        /// </summary>
-        public string describeGoal { 
-            get
-            {
-                if (goal == DesiredState.Goal.NoAction)
-                {
-                    return "No current goal for " + name;
-                } else
-                {
-                    return "Goal: " + goal + " " + name + " from " + Mathf.RoundToInt(value) + " to " + desiredState.targetValue;
-                }
-            }
-        }
-    }
-
-    /// <summary>
-    /// DesiredState is a struct that captures the desired state of a 
-    /// stat. This can be used, for example, in AI where the AI may
-    /// choose an action based on the Desired State and the actual state
-    /// of a stat.
-    /// </summary>
-    [Serializable]
-    public struct DesiredState
-    {
-        public enum Goal { Decrease, NoAction, Increase }
-        public enum Objective { LessThan, Approximately, GreaterThan }
-        [Tooltip("The stat we are defining a desired state for.")]
-        public StatSO stat;
-        [Tooltip("State objective indicates whether our target value is a minimum, maxium or goal.")]
-        public Objective objective;
-        [Tooltip("The target value of this stat.")]
-        public float targetValue;
-
     }
 }

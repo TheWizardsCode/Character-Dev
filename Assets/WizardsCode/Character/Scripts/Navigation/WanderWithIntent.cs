@@ -54,11 +54,11 @@ namespace WizardsCode.Character
                 {
                     if (memories[y].readyToReturn)
                     {
-                        if (stats[i].goal == DesiredState.Goal.Increase && memories[y].influence < 0)
+                        if (statsController.GetGoalFor(stats[i]) == StateSO.Goal.Increase && memories[y].influence < 0)
                         {
                             continue;
                         }
-                        else if (stats[i].goal == DesiredState.Goal.Decrease && memories[y].influence > 0)
+                        else if (statsController.GetGoalFor(stats[i]) == StateSO.Goal.Decrease && memories[y].influence > 0)
                         {
                             continue;
                         }
@@ -137,7 +137,6 @@ namespace WizardsCode.Character
             if (focusedStat != null)
             {
                 msg += "\n\nIntent (from Wander with Intent)";
-                msg += "\n" + focusedStat.describeGoal;
                 msg += "\nNearest object of interest: " + nearestMemoryOfInterest.about.name;
             }
             else

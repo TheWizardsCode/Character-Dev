@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using WizardsCode.Character;
+using static WizardsCode.Character.StateSO;
 
 namespace WizardsCode.Stats {
     /// <summary>
@@ -16,7 +17,7 @@ namespace WizardsCode.Stats {
 #endif
     {
         [SerializeField, Tooltip("The desired states for our stats.")]
-        DesiredState[] desiredStates = new DesiredState[0];
+        StateSO[] m_DesiredStates = new StateSO[0];
 
         [Header("Optimization")]
         [SerializeField, Tooltip("How often stats should be processed for changes.")]
@@ -74,10 +75,10 @@ namespace WizardsCode.Stats {
         public StatSO[] GetStatsNotInDesiredState()
         {
             List<StatSO> stats = new List<StatSO>();
-            for (int i = 0; i < desiredStates.Length; i++)
+            for (int i = 0; i < m_DesiredStates.Length; i++)
             {
-                StatSO stat = GetOrCreateStat(desiredStates[i].stat.name);
-                if (stat.goal != DesiredState.Goal.NoAction)
+                StatSO stat = GetOrCreateStat(m_DesiredStates[i].statTemplate.name);
+                if (GetGoalFor(m_DesiredStates[i].statTemplate) != StateSO.Goal.NoAction)
                 {
                     stats.Add(stat);
                 }
@@ -135,20 +136,12 @@ namespace WizardsCode.Stats {
         /// <returns>A StatSO representing the named stat</returns>
         public StatSO GetOrCreateStat(string name, float value = 0)
         {
-            StatSO stat = GetStat(name);
+            StatSO stat = GetOrCreateStat(name);
             if (stat != null) return stat;
 
             stat = ScriptableObject.CreateInstance<StatSO>();
             stat.name = name;
             stat.value = value;
-            for (int i = 0; i < desiredStates.Length; i++)
-            {
-                if (stat.GetType() == desiredStates[i].stat.GetType())
-                {
-                    stat.desiredState = desiredStates[i];
-                    break;
-                }
-            }
 
             m_Stats.Add(stat);
             return stat;
@@ -175,38 +168,117 @@ namespace WizardsCode.Stats {
             }
 
             StatSO stat = GetOrCreateStat(influencer.stat.name);
-            bool isGood = true;
-            switch (stat.desiredState.objective)
+            List<StateSO> states = GetStatesFor(stat);
+            bool isGood = false;
+            for (int i = 0; i < states.Count; i++)
             {
-                case DesiredState.Objective.LessThan:
-                    if (influencer.maxChange > 0)
-                    {
-                        isGood = false;
-                    }
-                    break;
-                case DesiredState.Objective.Approximately:
-                    float currentDelta = stat.desiredState.targetValue - stat.value;
-                    float influencedDelta = stat.desiredState.targetValue - (stat.value + influencer.maxChange);
-                    if (currentDelta < influencedDelta)
-                    {
-                        isGood = false;
-                    }
-                    break;
-                case DesiredState.Objective.GreaterThan:
-                    if (influencer.maxChange < 0)
-                    {
-                        isGood = false;
-                    }
-                    break;
-            }
+                switch (states[i].objective)
+                {
+                    case StateSO.Objective.LessThan:
+                        if (influencer.maxChange > 0)
+                        {
+                            isGood = false;
+                        }
+                        break;
+                    case StateSO.Objective.Approximately:
+                        float currentDelta = states[i].targetValue - stat.value;
+                        float influencedDelta = states[i].targetValue - (stat.value + influencer.maxChange);
+                        if (currentDelta < influencedDelta)
+                        {
+                            isGood = false;
+                        }
+                        break;
+                    case StateSO.Objective.GreaterThan:
+                        if (influencer.maxChange < 0)
+                        {
+                            isGood = false;
+                        }
+                        break;
+                }
 
-            if (m_Memory != null) {
-                m_Memory.AddMemory(influencer, isGood);
+                if (m_Memory != null)
+                {
+                    m_Memory.AddMemory(influencer, isGood);
+                }
             }
 
             m_StatsInfluencers.Add(influencer);
 
             return true;
+        }
+
+        private List<StateSO> GetStatesFor(StatSO stat)
+        {
+            List<StateSO> states = new List<StateSO>();
+
+            for (int i = 0; i < m_DesiredStates.Length; i++)
+            {
+                if (stat.GetType() == m_DesiredStates[i].statTemplate.GetType())
+                {
+                    states.Add(m_DesiredStates[i]);
+                    break;
+                }
+            }
+
+            return states;
+        }
+
+        /// <summary>
+        /// Get the current goal for a given stat. That is do we currently want to 
+        /// increase, decrease or maintaint his stat.
+        /// If there are multiple desired states then an attempt is made to create 
+        /// a meaningful goal. For example, if there are multiple greater than goals
+        /// then the target will be the highest goal. 
+        /// 
+        /// If there are conflicting goals,
+        /// such as a greater than and a less than then lessThan will take preference
+        /// over greaterThan, but approximately will always be given prefernce.
+        /// </summary>
+        /// <returns>The current goal for the stat.</returns>
+        public Goal GetGoalFor(StatSO stat)
+        {
+            float lessThan = float.MaxValue;
+            float greaterThan = float.MinValue;
+
+            List<StateSO> states = GetStatesFor(stat);
+            for (int i = 0; i < states.Count; i++)
+            {
+                switch (states[i].objective)
+                {
+                    case Objective.LessThan:
+                        if (stat.value >= states[i].targetValue && states[i].targetValue < lessThan)
+                        {
+                            lessThan = states[i].targetValue;
+                        }
+                        break;
+
+                    case Objective.Approximately:
+                        if (stat.value > states[i].targetValue * 1.1)
+                        {
+                            return StateSO.Goal.Decrease;
+                        }
+                        else
+                        {
+                            if (stat.value < states[i].targetValue * 0.9)
+                            {
+                                return StateSO.Goal.Increase;
+                            }
+                        }
+                        break;
+
+                    case Objective.GreaterThan:
+                        if (stat.value <= states[i].targetValue && states[i].targetValue > greaterThan)
+                        {
+                            greaterThan = states[i].targetValue;
+                        }
+                        break;
+                }
+            }
+
+            if (lessThan != float.MaxValue) return StateSO.Goal.Decrease;
+            if (greaterThan != float.MinValue) return StateSO.Goal.Increase;
+
+            return StateSO.Goal.NoAction;
         }
 
 #if UNITY_EDITOR
@@ -222,7 +294,16 @@ namespace WizardsCode.Stats {
             msg += "\n\nActive Influencers";
             for (int i = 0; i < m_StatsInfluencers.Count; i++)
             {
-                msg += "\n" + m_StatsInfluencers[i].stat + " changed by " + m_StatsInfluencers[i].maxChange + " at " + m_StatsInfluencers[i].changePerSecond + " per second (" + Mathf.Round((m_StatsInfluencers[i].influenceApplied / m_StatsInfluencers[i].maxChange) * 100) + "% applied)";
+                msg += "\n" + m_StatsInfluencers[i].stat.name + " changed by " + m_StatsInfluencers[i].maxChange + " at " + m_StatsInfluencers[i].changePerSecond + " per second (" + Mathf.Round((m_StatsInfluencers[i].influenceApplied / m_StatsInfluencers[i].maxChange) * 100) + "% applied)";
+            }
+
+            msg += "\n\nDesired States";
+            for (int i = 0; i < m_DesiredStates.Length; i++)
+            {
+                StatSO stat = GetOrCreateStat(m_DesiredStates[i].statTemplate.name);
+                msg += GetGoalFor(stat) == Goal.NoAction ? "\nIs " : "\nIs not ";
+                msg += m_DesiredStates[i].name + " ";
+                msg += " (" + stat.name + " should be " + m_DesiredStates[i].objective + " " + m_DesiredStates[i].targetValue + ")";
             }
 
             return msg;
