@@ -23,12 +23,24 @@ namespace WizardsCode.Character
 
         int cueIndex = -1;
 
+        private void Awake()
+        {
+            if (actor == null)
+            {
+                Debug.LogWarning("No actor identified in th Director component. Either add an actor or remove the component. Destroyting the Director and its UI.");
+                Destroy(this.gameObject);
+            }
+
+            if (cueButton == null)
+            {
+                Debug.LogWarning("No cue button identified in th Director component. Either add an actor or remove the component. Destroyting the Director and its UI.");
+                Destroy(this.gameObject);
+            }
+        }
+
         private void Start()
         {
-            if (cueButton != null)
-            {
-                cueButton.onClick.AddListener(Prompt);
-            }
+            cueButton.onClick.AddListener(Prompt);
             SetupNextCue();
         }
 
