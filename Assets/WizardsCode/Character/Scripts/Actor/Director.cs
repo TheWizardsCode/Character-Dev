@@ -27,7 +27,7 @@ namespace WizardsCode.Character
         {
             if (actor == null)
             {
-                Debug.LogWarning("No actor identified in th Director component. Either add an actor or remove the component. Destroyting the Director and its UI.");
+                Debug.LogWarning("No actor identified in th Director component. Either add an actor or remove the component. Destroying the Director and its UI.");
                 Destroy(this.gameObject);
             }
 

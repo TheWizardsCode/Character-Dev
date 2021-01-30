@@ -52,7 +52,11 @@ namespace WizardsCode.Character
         /// <summary>
         /// If all the conditions of this state are satisfied then this will return true.
         /// </summary>
-        public bool IsSatisfiedFor (StatSO stat) {
+        public bool IsSatisfiedFor (StatsController controller) {
+            if (statTemplate != null)
+            {
+                StatSO stat = controller.GetOrCreateStat(statTemplate.name);
+
             switch (objective)
             {
                 case Objective.LessThan:
@@ -82,11 +86,13 @@ namespace WizardsCode.Character
                         return false;
                     }
                     break;
+                }
             }
 
-            for (int i = 0; i <= m_SubStates.Count; i++)
+            // Check substates
+            for (int i = 0; i < m_SubStates.Count; i++)
             {
-                if (!m_SubStates[i].IsSatisfiedFor(stat))
+                if (!m_SubStates[i].IsSatisfiedFor(controller))
                 {
                     return false;
                 }

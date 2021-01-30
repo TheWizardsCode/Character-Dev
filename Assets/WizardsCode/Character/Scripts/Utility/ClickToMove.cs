@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using WizardsCode.Character;
+using WizardsCode.Stats;
 
 namespace WizardsCode.Utility
 {
     /// <summary>
-    /// Click hte left mouse button on the NavMesh to move the NavMeshAgent this scrpt is attached to.
+    /// Click the left mouse button on the NavMesh to move the NavMeshAgent this scrpt is attached to.
     /// </summary>
-    public class ClickToMove : MonoBehaviour
+    public class ClickToMove : AbstractAIBehaviour
     {
+
         NavMeshAgent m_Agent;
 
         void Awake()
@@ -17,7 +20,7 @@ namespace WizardsCode.Utility
             m_Agent = GetComponent<NavMeshAgent>();
         }
 
-        private void Update()
+        protected override void OnUpdate()
         {
             if (Input.GetMouseButtonDown(0))
             {

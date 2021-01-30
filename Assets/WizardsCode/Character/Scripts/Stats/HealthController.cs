@@ -29,14 +29,30 @@ namespace WizardsCode.Character.Stats
         private void Start()
         {
             controller = GetComponent<StatsController>();
-            SetHitPontsNormalized(1);
+
+            health = controller.GetOrCreateStat(healthTemplate.name, 1);
+            health.onValueChanged.AddListener(OnHealthChanged);
+
             deathTriggerID = Animator.StringToHash(deathTriggerName);
         }
 
-        private void SetHitPontsNormalized(float value)
+        /// <summary>
+        /// Set the value of hit points to a normalized value.
+        /// </summary>
+        /// <param name="value">The normalized value to use. That is a value between 0 and 1, where 1 is equivalent to the max possible value and 0 is the equivalent of the minimal possible value.</param>
+        public void SetHitPointsNormalized(float value)
         {
-            health = controller.GetOrCreateStat(healthTemplate.name, value);
-            health.onValueChanged.AddListener(OnHealthChanged);
+            health.normalizedValue = value;
+        }
+
+        /// <summary>
+        /// Set the current hit points to an absolute value. If an attempt to set the value
+        /// above or below the maximum or minium allowable values it will be clamped.
+        /// </summary>
+        /// <param name="value">The value to set hit points to.</param>
+        public void SetHitPoints(float value)
+        {
+            health.value = value;
         }
 
         private void OnHealthChanged(float normalizedDelta)
@@ -46,5 +62,7 @@ namespace WizardsCode.Character.Stats
                 m_Animator.SetTrigger(deathTriggerID);
             }
         }
+
+
     }
 }

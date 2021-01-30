@@ -17,7 +17,11 @@ namespace WizardsCode.Stats
         [Header("Details")]
         [SerializeField, Tooltip("The human readable name for this stat.")]
         string m_displayName = "No Name Stat";
-        [SerializeField, Tooltip("The base value for this stat. This is the value that the character will always trend towards with no external factors influencing the current value."), Range(-100, 100)]
+        [SerializeField, Tooltip("The minimum value this stat can have.")]
+        float minValue = 0;
+        [SerializeField, Tooltip("The maximum value this stat can have.")]
+        float maxValue = 100;
+        [SerializeField, Tooltip("The base value for this stat. This is the value that the character will always trend towards with no external factors influencing the current value."), Range(0, 1)]
         float m_BaseNormalizedValue = 0;
 
         [HideInInspector, SerializeField]
@@ -61,6 +65,16 @@ namespace WizardsCode.Stats
                     if (onValueChanged != null) onValueChanged.Invoke(m_CurrentNormalizedValue - old);
                 }
             }
+        }
+
+        /// <summary>
+        /// Set the current absolute value of this stat. If an attempt is set te value above or below the allowable min/max
+        /// the value will be clamped.
+        /// </summary>
+        public float value
+        {
+            get { return (maxValue - minValue) * normalizedValue; }
+            set { normalizedValue = (value - maxValue) / (maxValue - minValue); }
         }
 
         private void Awake()

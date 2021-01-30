@@ -14,7 +14,7 @@ namespace WizardsCode.Character
     /// direction.
     /// </summary>
     [RequireComponent(typeof(NavMeshAgent))]
-    public class Wander : MonoBehaviour
+    public class Wander : AbstractAIBehaviour
 #if UNITY_EDITOR
         , IDebug
 #endif
@@ -44,8 +44,22 @@ namespace WizardsCode.Character
         private NavMeshAgent m_Agent;
         private Terrain m_Terrain;
         
-        protected virtual void Start()
+        protected override void Init()
         {
+            base.Init();
+
+            m_StartPosition = transform.position;
+            m_Agent = GetComponent<NavMeshAgent>();
+            Debug.Assert(m_Agent != null, "Characters with a wander behaviour must also have a NavMesh Agent.");
+
+            Vector3 pos = transform.position;
+            m_Terrain = Terrain.activeTerrain;
+            if (m_Terrain != null)
+            {
+                pos.y = m_Terrain.SampleHeight(pos);
+            }
+            m_Agent.Warp(pos); 
+            
             memory = GetComponent<MemoryController>();
         }
 
@@ -66,21 +80,6 @@ namespace WizardsCode.Character
             }
         }
 
-        internal void Awake()
-        {
-            m_StartPosition = transform.position;
-            m_Agent = GetComponent<NavMeshAgent > ();
-            Debug.Assert(m_Agent != null, "Characters with a wander behaviour must also have a NavMesh Agent.");
-
-            Vector3 pos = transform.position;
-            m_Terrain = Terrain.activeTerrain;
-            if (m_Terrain != null)
-            {
-                pos.y = m_Terrain.SampleHeight(pos);
-            }
-            m_Agent.Warp(pos);
-        }
-
         public bool HasReachedTarget
         {
             get
@@ -99,7 +98,7 @@ namespace WizardsCode.Character
             }
         }
 
-        internal void Update()
+        protected override void OnUpdate()
         {
             timeToNextWanderPathChange -= Time.deltaTime;
 
