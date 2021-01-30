@@ -32,6 +32,11 @@ namespace WizardsCode.Stats {
         float m_TimeOfNextUpdate = 0;
         MemoryController m_Memory;
 
+        public StateSO[] desiredStates
+        {
+            get { return m_DesiredStates; }
+        }
+
         private void Awake()
         {
             m_Memory = GetComponent<MemoryController>();
@@ -123,7 +128,7 @@ namespace WizardsCode.Stats {
                 change = Mathf.Clamp(influencer.maxChange, influencer.maxChange - influencer.influenceApplied, influencer.maxChange);
             }
 
-            stat.value += change;
+            stat.normalizedValue += change;
             influencer.influenceApplied += change;
             //Debug.Log(gameObject.name + " changed stat " + influencer.statName + " by " + change);
         }
@@ -136,12 +141,12 @@ namespace WizardsCode.Stats {
         /// <returns>A StatSO representing the named stat</returns>
         public StatSO GetOrCreateStat(string name, float value = 0)
         {
-            StatSO stat = GetOrCreateStat(name);
+            StatSO stat = GetStat(name);
             if (stat != null) return stat;
 
             stat = ScriptableObject.CreateInstance<StatSO>();
             stat.name = name;
-            stat.value = value;
+            stat.normalizedValue = value;
 
             m_Stats.Add(stat);
             return stat;
@@ -181,8 +186,8 @@ namespace WizardsCode.Stats {
                         }
                         break;
                     case StateSO.Objective.Approximately:
-                        float currentDelta = states[i].targetValue - stat.value;
-                        float influencedDelta = states[i].targetValue - (stat.value + influencer.maxChange);
+                        float currentDelta = states[i].targetValue - stat.normalizedValue;
+                        float influencedDelta = states[i].targetValue - (stat.normalizedValue + influencer.maxChange);
                         if (currentDelta < influencedDelta)
                         {
                             isGood = false;
@@ -246,20 +251,20 @@ namespace WizardsCode.Stats {
                 switch (states[i].objective)
                 {
                     case Objective.LessThan:
-                        if (stat.value >= states[i].targetValue && states[i].targetValue < lessThan)
+                        if (stat.normalizedValue >= states[i].targetValue && states[i].targetValue < lessThan)
                         {
                             lessThan = states[i].targetValue;
                         }
                         break;
 
                     case Objective.Approximately:
-                        if (stat.value > states[i].targetValue * 1.1)
+                        if (stat.normalizedValue > states[i].targetValue * 1.1)
                         {
                             return StateSO.Goal.Decrease;
                         }
                         else
                         {
-                            if (stat.value < states[i].targetValue * 0.9)
+                            if (stat.normalizedValue < states[i].targetValue * 0.9)
                             {
                                 return StateSO.Goal.Increase;
                             }
@@ -267,7 +272,7 @@ namespace WizardsCode.Stats {
                         break;
 
                     case Objective.GreaterThan:
-                        if (stat.value <= states[i].targetValue && states[i].targetValue > greaterThan)
+                        if (stat.normalizedValue <= states[i].targetValue && states[i].targetValue > greaterThan)
                         {
                             greaterThan = states[i].targetValue;
                         }

@@ -39,7 +39,7 @@ namespace WizardsCode.Stats
 
             yield return null;
 
-            Assert.True(controller.GetOrCreateStat(statName).value > 0, "Seems the influencer has had no effect.");
+            Assert.True(controller.GetOrCreateStat(statName).normalizedValue > 0, "Seems the influencer has had no effect.");
 
             yield return null;
         }

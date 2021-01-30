@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using WizardsCode.Character;
 
 namespace WizardsCode.Stats
@@ -15,12 +16,18 @@ namespace WizardsCode.Stats
     {
         [Header("Details")]
         [SerializeField, Tooltip("The human readable name for this stat.")]
-        string displayName = "No Name Stat";
-        [SerializeField, Tooltip("The base value for this stat. This is the value that the character will always trend towards with no external factors influencing the current value."), Range(-100, 100)]
-        float m_BaseValue = 0;
+        string m_displayName = "No Name Stat";
+        [SerializeField, Tooltip("The minimum value this stat can have.")]
+        float minValue = 0;
+        [SerializeField, Tooltip("The maximum value this stat can have.")]
+        float maxValue = 100;
+        [SerializeField, Tooltip("The base value for this stat. This is the value that the character will always trend towards with no external factors influencing the current value."), Range(0, 1)]
+        float m_BaseNormalizedValue = 0;
 
         [HideInInspector, SerializeField]
-        float m_CurrentValue;
+        float m_CurrentNormalizedValue;
+
+        public StatChangedEvent onValueChanged = new StatChangedEvent();
 
         /// <summary>
         /// Get a human readable description of the current status of this stat.
@@ -29,7 +36,7 @@ namespace WizardsCode.Stats
         public string statusDescription
         {
             get {
-                string msg = name + " is " + value;
+                string msg = name + " is " + normalizedValue;
                 return msg; 
             }
         }
@@ -44,20 +51,42 @@ namespace WizardsCode.Stats
 
         /// <summary>
         /// Set the current value of this stat. If an attempt is made to set the value 
-        /// outside the allowable range (-100 to 100) then the value will
-        /// be adjusted to fit this range.
+        /// outside the allowable range (0 to 1) then the value will
+        /// be clamped.
         /// </summary>
-        public float value {
-            get { return m_CurrentValue; }
+        public float normalizedValue {
+            get { return m_CurrentNormalizedValue; }
             internal set
             {
-                m_CurrentValue = Mathf.Clamp(value, -100, 100);
+                if (m_CurrentNormalizedValue != value)
+                {
+                    float old = m_CurrentNormalizedValue;
+                    m_CurrentNormalizedValue = Mathf.Clamp01(value);
+                    if (onValueChanged != null) onValueChanged.Invoke(m_CurrentNormalizedValue - old);
+                }
             }
+        }
+
+        /// <summary>
+        /// Set the current absolute value of this stat. If an attempt is set te value above or below the allowable min/max
+        /// the value will be clamped.
+        /// </summary>
+        public float value
+        {
+            get { return (maxValue - minValue) * normalizedValue; }
+            set { normalizedValue = (value - maxValue) / (maxValue - minValue); }
         }
 
         private void Awake()
         {
-            m_CurrentValue = m_BaseValue;
+            m_CurrentNormalizedValue = m_BaseNormalizedValue;
         }
+    }
+
+    /// <summary>
+    /// An event notifying that the stat has changed and by how much (normalized).
+    /// </summary>
+    public class StatChangedEvent : UnityEvent<float>
+    {
     }
 }

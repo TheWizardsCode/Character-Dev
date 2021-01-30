@@ -25,9 +25,9 @@ namespace WizardsCode.Character
         MemorySO nearestMemoryOfInterest;
         StatSO focusedStat;
 
-        protected override void Start()
+        protected override void Init()
         {
-            base.Start();
+            base.Init();
             statsController = GetComponent<StatsController>();
         }
 
