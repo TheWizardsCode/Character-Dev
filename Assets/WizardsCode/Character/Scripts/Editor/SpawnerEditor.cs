@@ -1,4 +1,4 @@
-using UnityEditor;
+﻿using UnityEditor;
 using WizardsCode.Utility;
 
 namespace WizardsCode.Character
@@ -7,7 +7,7 @@ namespace WizardsCode.Character
     public class SpawnerEditor : Editor
     {
         SerializedProperty navMeshMask;
-        void OnEnable()
+        protected virtual void OnEnable()
         {
             navMeshMask = serializedObject.FindProperty("navMeshAreaMask");
         }
