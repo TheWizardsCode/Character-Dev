@@ -32,7 +32,7 @@ namespace WizardsCode.Character.Stats
             for (int i = 0; i < states.Length; i++)
             {
                 //TODO cache results rather than grabbing stat every cycle
-                StatSO stat = character.GetOrCreateStat(states[i].statTemplate.name);
+                StatSO stat = character.GetOrCreateStat(states[i].statTemplate);
 
                 StatUIPanel stateUI;
                 if (!stateUIObjects.TryGetValue(stat, out stateUI)) {

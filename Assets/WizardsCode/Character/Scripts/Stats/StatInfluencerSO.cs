@@ -113,7 +113,7 @@ namespace WizardsCode.Stats
         /// <param name="brain">The brain managing the stats to be changed.</param>
         internal void ChangeStat(Brain brain)
         {
-            StatSO statToUpdate = brain.GetOrCreateStat(stat.name);
+            StatSO statToUpdate = brain.GetOrCreateStat(stat);
             float change;
 
             if (duration > 0)
@@ -125,16 +125,9 @@ namespace WizardsCode.Stats
                 change = Mathf.Clamp(maxChange, maxChange - influenceApplied, Mathf.Abs(maxChange));
             }
 
-            if (maxChange < 0)
-            {
-                statToUpdate.Value -= change;
-                influenceApplied -= change;
-            }
-            else
-            {
-                statToUpdate.Value += change;
-                influenceApplied += change;
-            }
+            statToUpdate.Value += change;
+            influenceApplied += change;
+
             m_TimeOfLastUpdate = Time.timeSinceLevelLoad;
             //Debug.Log(gameObject.name + " changed stat " + influencer.statName + " by " + change);
         }

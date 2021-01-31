@@ -7,7 +7,6 @@ using Random = UnityEngine.Random;
 
 namespace WizardsCode.Character
 {
-    [RequireComponent(typeof(ActorController))]
     public abstract class AbstractAIBehaviour : MonoBehaviour
     {
         [SerializeField, Tooltip("The required states for this behaviour to be enabled.")]
@@ -78,7 +77,7 @@ namespace WizardsCode.Character
         /// </summary>
         protected virtual void Init()
         {
-            brain = GetComponent<Brain>();
+            brain = GetComponentInParent<Brain>();
             if (brain == null)
             {
                 if (m_RequiredStates.Length > 0)
@@ -86,7 +85,7 @@ namespace WizardsCode.Character
                     Debug.LogError(gameObject.name + " has required states defined but has no StatsController against which to check these states.");
                 }
             }
-            controller = GetComponent<ActorController>();
+            controller = GetComponentInParent<ActorController>();
         }
 
         public void Update()

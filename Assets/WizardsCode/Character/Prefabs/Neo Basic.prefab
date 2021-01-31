@@ -695,7 +695,8 @@ GameObject:
   - component: {fileID: 3360203716490077351}
   - component: {fileID: 4916481902465882585}
   - component: {fileID: 9054380431863938952}
-  - component: {fileID: 6598073914812104789}
+  - component: {fileID: 7030462137739076377}
+  - component: {fileID: 2028998955628458642}
   m_Layer: 0
   m_Name: Neo Basic
   m_TagString: Untagged
@@ -886,7 +887,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &6598073914812104789
+--- !u!114 &7030462137739076377
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -895,7 +896,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 8205544462760689034}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23ee98f0dc17c5747aabcf7e378cb67c, type: 3}
+  m_Script: {fileID: 11500000, guid: c16293aed1528d24aad933246e10feee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_DesiredStates: []
+  m_DefaultBehaviour: {fileID: 0}
+  m_TimeBetweenUpdates: 0.5
+  m_Stats: []
+  m_StatsInfluencers: []
+--- !u!114 &2028998955628458642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8205544462760689034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a6accd2cb69e3e4fa6abfca9de05a98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   SpeedParameterName: Forward

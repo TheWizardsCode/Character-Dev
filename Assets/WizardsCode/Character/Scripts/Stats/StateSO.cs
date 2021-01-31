@@ -55,7 +55,7 @@ namespace WizardsCode.Character
         public bool IsSatisfiedFor (Brain controller) {
             if (statTemplate != null)
             {
-                StatSO stat = controller.GetOrCreateStat(statTemplate.name);
+                StatSO stat = controller.GetOrCreateStat(statTemplate);
 
                 switch (objective)
                 {

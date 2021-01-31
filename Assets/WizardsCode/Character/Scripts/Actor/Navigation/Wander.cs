@@ -13,8 +13,6 @@ namespace WizardsCode.Character
     /// direction for some time. Eventually they will get bored and change
     /// direction.
     /// </summary>
-    [RequireComponent(typeof(ActorController))]
-    [RequireComponent(typeof(NavMeshAgent))]
     public class Wander : AbstractAIBehaviour
 #if UNITY_EDITOR
         , IDebug

@@ -30,7 +30,7 @@ namespace WizardsCode.Character.Stats
         {
             controller = GetComponent<Brain>();
 
-            health = controller.GetOrCreateStat(healthTemplate.name, 1);
+            health = controller.GetOrCreateStat(healthTemplate, 1);
             health.onValueChanged.AddListener(OnHealthChanged);
 
             deathTriggerID = Animator.StringToHash(deathTriggerName);

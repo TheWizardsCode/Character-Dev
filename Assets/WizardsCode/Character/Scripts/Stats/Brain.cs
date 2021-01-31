@@ -141,6 +141,8 @@ namespace WizardsCode.Stats {
                 }
             }
 
+            if (candidateBehaviour == null) return;
+
             m_CurrentBehaviour = candidateBehaviour;
             m_CurrentBehaviour.IsExecuting = true;
         }
@@ -173,7 +175,7 @@ namespace WizardsCode.Stats {
             List<StatSO> stats = new List<StatSO>();
             for (int i = 0; i < UnsatisfiedDesiredStates.Length; i++)
             {
-                StatSO stat = GetOrCreateStat(UnsatisfiedDesiredStates[i].statTemplate.name);
+                StatSO stat = GetOrCreateStat(UnsatisfiedDesiredStates[i].statTemplate);
                 if (GetGoalFor(UnsatisfiedDesiredStates[i].statTemplate) != StateSO.Goal.NoAction)
                 {
                     stats.Add(stat);
@@ -187,11 +189,11 @@ namespace WizardsCode.Stats {
         /// </summary>
         /// <param name="name">The name of the stat we want to retrieve</param>
         /// <returns>The stat, if it exists, or null.</returns>
-        public StatSO GetStat(string name)
+        public StatSO GetStat(StatSO template)
         {
             for (int i = 0; i < m_Stats.Count; i++)
             {
-                if (m_Stats[i].name == name)
+                if (m_Stats[i].name == template.name)
                 {
                     return m_Stats[i];
                 }
@@ -205,14 +207,17 @@ namespace WizardsCode.Stats {
         /// </summary>
         /// <param name="name">Tha name of the stat to Get or Create for this controller</param>
         /// <returns>A StatSO representing the named stat</returns>
-        public StatSO GetOrCreateStat(string name, float value = 0)
+        public StatSO GetOrCreateStat(StatSO template, float? value = null)
         {
-            StatSO stat = GetStat(name);
+            StatSO stat = GetStat(template);
             if (stat != null) return stat;
 
-            stat = ScriptableObject.CreateInstance<StatSO>();
-            stat.name = name;
-            stat.NormalizedValue = value;
+            stat = Instantiate(template);
+            stat.name = template.name;
+            if (value != null)
+            {
+                stat.NormalizedValue = (float)value;
+            }
 
             m_Stats.Add(stat);
             return stat;
@@ -240,7 +245,7 @@ namespace WizardsCode.Stats {
 
             if (m_Memory != null)
             {
-                StatSO stat = GetOrCreateStat(influencer.stat.name);
+                StatSO stat = GetOrCreateStat(influencer.stat);
                 List<StateSO> states = GetStatesFor(stat);
                 bool isGood = false;
                 for (int i = 0; i < states.Count; i++)
@@ -371,7 +376,7 @@ namespace WizardsCode.Stats {
             if (UnsatisfiedDesiredStates.Length == 0) msg += "\nNone";
             for (int i = 0; i < UnsatisfiedDesiredStates.Length; i++)
             {
-                StatSO stat = GetOrCreateStat(m_DesiredStates[i].statTemplate.name);
+                StatSO stat = GetOrCreateStat(m_DesiredStates[i].statTemplate);
                 msg += GetGoalFor(stat) == Goal.NoAction ? "\nIs " : "\nIs not ";
                 msg += m_DesiredStates[i].name + " ";
                 msg += " (" + stat.name + " should be " + m_DesiredStates[i].objective + " " + m_DesiredStates[i].normalizedTargetValue + ")";
