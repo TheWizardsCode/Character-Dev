@@ -19,6 +19,7 @@ namespace WizardsCode.Stats {
         [SerializeField, Tooltip("The desired states for our stats.")]
         StateSO[] m_DesiredStates = new StateSO[0];
         [SerializeField, Tooltip("The default behaviour to execute if no other behaviour is selected.")]
+        //TODO we don't need a default behaviour the configuration of the behaviours themselves should have a fallback behaviour, e.g. Wander
         AbstractAIBehaviour m_DefaultBehaviour;
 
         [Header("Optimization")]

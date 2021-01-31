@@ -10,5 +10,6 @@ namespace WizardsCode.Character
     /// </summary>
     public class Eat : AbstractAIBehaviour
     {
+        //TODO This should be a GenericAIBehaviour
     }
 }

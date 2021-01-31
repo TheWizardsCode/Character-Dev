@@ -14,6 +14,7 @@ namespace WizardsCode.Character
         //TODO These are not required states, they are affected states and I think they will always be inverted
         [SerializeField, Tooltip("The required states for this behaviour to be enabled.")]
         RequiredState[] m_RequiredStates = new RequiredState[0];
+        //TODO Duration should really come from the influencer rather than the behaviour. Different influencers will take different amounts of time.
         [SerializeField, Tooltip("The duration within which the actor will be prevented from starting another behaviour.")]
         float m_Duration = 5;
         [SerializeField, Tooltip("The range within which the Actor can sense interactables that this behaviour can impact. This does not affect interactables that are recalled from memory.")]

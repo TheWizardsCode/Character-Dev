@@ -17,11 +17,11 @@ namespace WizardsCode.Stats
         [Header("Details")]
         [SerializeField, Tooltip("The human readable name for this stat.")]
         string m_displayName = "No Name Stat";
-        [SerializeField, Tooltip("The start value for this stat.")]
+        [SerializeField, Tooltip("The start value for this stat (not normalized).")]
         float startValue = 100;
-        [SerializeField, Tooltip("The minimum value this stat can have.")]
+        [SerializeField, Tooltip("The minimum value this stat can have (not normalized).")]
         float minValue = 0;
-        [SerializeField, Tooltip("The maximum value this stat can have.")]
+        [SerializeField, Tooltip("The maximum value this stat can have (not normalized).")]
         float maxValue = 100;
 
         [Header("Time Effects")]
@@ -90,7 +90,7 @@ namespace WizardsCode.Stats
 
         private void Awake()
         {
-            NormalizedValue = startValue;
+            Value = startValue;
         }
     }
 

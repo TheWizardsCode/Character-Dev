@@ -14,5 +14,6 @@ namespace WizardsCode.Character
     /// </summary>
     public class Sleep : AbstractAIBehaviour
     {
+        //TODO This should be a GenericAIBehaviour
     }
 }
