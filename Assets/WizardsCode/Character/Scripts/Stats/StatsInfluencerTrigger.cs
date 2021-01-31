@@ -13,7 +13,7 @@ namespace WizardsCode.Character.Stats
     /// </summary>
     public class StatsInfluencerTrigger : MonoBehaviour
     {
-        // TODO all multiple influencers in each trigger
+        // TODO allow multiple influencers in each trigger
         [SerializeField, Tooltip("The Stat this influencer acts upon.")]
         StatSO m_Stat;
         [SerializeField, Tooltip("The maximum amount of change this influencer will impart upon the trait, to the limit of the stats allowable value.")]
@@ -22,21 +22,56 @@ namespace WizardsCode.Character.Stats
         float m_Duration = 0;
         [SerializeField, Tooltip("The cooldown time before a character can be influenced by this influencer again.")]
         float m_Cooldown = 30;
+        [SerializeField, Tooltip("If the actor stays within the trigger area can they get a new influencer after the duration + cooldown has expired?")]
+        bool m_IsRepeating = false;
+
+        private Dictionary<Brain, float> m_TimeOfLastInfluence = new Dictionary<Brain, float>();
+
+        public StatSO Stat
+        {
+            get { return m_Stat; }
+        }
 
         private void OnTriggerEnter(Collider other)
         {
-            StatsController controller = other.GetComponent<StatsController>();
-            if (controller != null)
-            {
-                StatInfluencerSO influencer = ScriptableObject.CreateInstance<StatInfluencerSO>();
-                influencer.name = m_Stat.name + " influencer from " + name + " : " + GetInstanceID(); ;
-                influencer.generator = gameObject;
-                influencer.stat = m_Stat;
-                influencer.maxChange = m_MaxChange;
-                influencer.duration = m_Duration;
-                influencer.cooldown = m_Cooldown;
+            Brain brain = other.GetComponent<Brain>();
 
-                controller.TryAddInfluencer(influencer);
+            if (brain == null || !brain.ShouldInteractWith(this)) return;
+            AddInfluencer(brain);
+        }
+
+        private void OnTriggerStay(Collider other)
+        {
+            if (!m_IsRepeating) return;
+
+            Brain brain = other.GetComponent<Brain>();
+
+            if (brain == null || !brain.ShouldInteractWith(this)) return;
+
+            float lastTime;
+            if (m_TimeOfLastInfluence.TryGetValue(brain, out lastTime))
+            {
+                if (lastTime + m_Duration + m_Cooldown <= Time.timeSinceLevelLoad)
+                {
+                    AddInfluencer(brain);
+                }
+            }
+        }
+
+        private void AddInfluencer(Brain brain)
+        {
+            StatInfluencerSO influencer = ScriptableObject.CreateInstance<StatInfluencerSO>();
+            influencer.name = m_Stat.name + " influencer from " + name + " : " + GetInstanceID(); ;
+            influencer.generator = gameObject;
+            influencer.stat = m_Stat;
+            influencer.maxChange = m_MaxChange;
+            influencer.duration = m_Duration;
+            influencer.cooldown = m_Cooldown;
+
+            if (brain.TryAddInfluencer(influencer))
+            {
+                m_TimeOfLastInfluence.Remove(brain);
+                m_TimeOfLastInfluence.Add(brain, Time.timeSinceLevelLoad);
             }
         }
     }

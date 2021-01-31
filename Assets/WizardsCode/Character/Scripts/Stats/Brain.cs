@@ -3,21 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using WizardsCode.Character;
+using WizardsCode.Character.Stats;
 using static WizardsCode.Character.StateSO;
 
 namespace WizardsCode.Stats {
     /// <summary>
-    /// The StatsController is responsible for tracking and reporting on the stats of the character.
-    /// Stats are made up of a number of `StatsSO` objects and can be influenced by a collection of
-    /// StatsInfluencerSO's.
+    /// The Brain is responsible for tracking the stats and goal states of the character and
+    /// making decisions and plans to reach those goal stats.
     /// </summary>
-    public class StatsController : MonoBehaviour
+    public class Brain : MonoBehaviour
 #if UNITY_EDITOR
         , IDebug
 #endif
     {
         [SerializeField, Tooltip("The desired states for our stats.")]
         StateSO[] m_DesiredStates = new StateSO[0];
+        [SerializeField, Tooltip("The default behaviour to execute if no other behaviour is selected.")]
+        AbstractAIBehaviour m_DefaultBehaviour;
 
         [Header("Optimization")]
         [SerializeField, Tooltip("How often stats should be processed for changes.")]
@@ -31,15 +33,54 @@ namespace WizardsCode.Stats {
         float m_TimeOfLastUpdate = 0;
         float m_TimeOfNextUpdate = 0;
         MemoryController m_Memory;
+        ActorController m_Controller;
+        AbstractAIBehaviour[] m_Behaviours = default;
+        private AbstractAIBehaviour m_CurrentBehaviour;
+        private Interactable m_TargetInteractable;
 
         public StateSO[] desiredStates
         {
             get { return m_DesiredStates; }
         }
+        public StateSO[] UnsatisfiedDesiredStates { get; internal set; }
+        internal Interactable TargetInteractable
+        {
+            get { return m_TargetInteractable; }
+            set
+            {
+                if (m_Controller != null
+                    && value != null)
+                {
+                    //TODO move to an interaction point not to the transform position
+                    m_Controller.TargetPosition = value.transform.position;
+                }
+
+                m_TargetInteractable = value;
+            }
+        }
 
         private void Awake()
         {
             m_Memory = GetComponent<MemoryController>();
+            m_Behaviours = GetComponents<AbstractAIBehaviour>();
+            m_Controller = GetComponent<ActorController>();
+        }
+
+        /// <summary>
+        /// Decide whether the actor should interact with an influencer trigger they just entered.
+        /// </summary>
+        /// <param name="statsInfluencerTrigger">The influencer trigger that was activated and can now be interacted with.</param>
+        /// <returns></returns>
+        internal bool ShouldInteractWith(StatsInfluencerTrigger statsInfluencerTrigger)
+        {
+            Interactable interactable = statsInfluencerTrigger.gameObject.GetComponent<Interactable>();
+            if (interactable != null && GameObject.ReferenceEquals(interactable, TargetInteractable))
+            {
+                return true;
+            } else
+            {
+                return false;
+            }
         }
 
         private void Update()
@@ -55,9 +96,9 @@ namespace WizardsCode.Stats {
                 {
                     if (m_StatsInfluencers[i] != null)
                     {
-                        ChangeStat(m_StatsInfluencers[i]);
+                        m_StatsInfluencers[i].ChangeStat(this);
 
-                        if (m_StatsInfluencers[i].influenceApplied >= m_StatsInfluencers[i].maxChange)
+                        if (Mathf.Abs(m_StatsInfluencers[i].influenceApplied) >= Mathf.Abs(m_StatsInfluencers[i].maxChange))
                         {
                             m_StatsInfluencers.RemoveAt(i);
                         }
@@ -67,9 +108,58 @@ namespace WizardsCode.Stats {
                     }
                 }
 
+                UpdateUnsatisfiedStates();
+
+                UpdateActiveBehaviour();
+
                 m_TimeOfLastUpdate = Time.timeSinceLevelLoad;
                 m_TimeOfNextUpdate = Time.timeSinceLevelLoad + m_TimeBetweenUpdates;
             }
+        }
+
+        /// <summary>
+        /// Iterates over all the behaviours available to this actor and picks the most important one to be executed next.
+        /// </summary>
+        private void UpdateActiveBehaviour()
+        {
+            //TODO Allow tasks to be interuptable
+            if (m_CurrentBehaviour != null && m_CurrentBehaviour.IsExecuting) return;
+            
+            AbstractAIBehaviour candidateBehaviour = m_DefaultBehaviour;
+            float highestWeight = 0;
+            float currentWeight = 0;
+            for (int i = 0; i < m_Behaviours.Length; i++)
+            {
+                if (m_Behaviours[i].IsAvailable)
+                {
+                    currentWeight = m_Behaviours[i].Weight(this);
+                    if (currentWeight > highestWeight)
+                    {
+                        candidateBehaviour = m_Behaviours[i];
+                        highestWeight = currentWeight;
+                    }
+                }
+            }
+
+            m_CurrentBehaviour = candidateBehaviour;
+            m_CurrentBehaviour.IsExecuting = true;
+        }
+
+        /// <summary>
+        /// Iterates over all the desired stated and checks to see if they are currently satsified.
+        /// Unsatisfied states are caches in `UnsatisfiedStates`.
+        /// </summary>
+        private void UpdateUnsatisfiedStates()
+        {
+            List<StateSO> states = new List<StateSO>();
+            for (int i = 0; i < m_DesiredStates.Length; i++)
+            {
+                if (!m_DesiredStates[i].IsSatisfiedFor(this))
+                {
+                    states.Add(m_DesiredStates[i]);
+                }
+            }
+            UnsatisfiedDesiredStates = states.ToArray();
         }
 
         /// <summary>
@@ -77,17 +167,17 @@ namespace WizardsCode.Stats {
         /// This can be used, for example. by AI deciding what action to take next.
         /// </summary>
         /// <returns>A list of stats that are not in a desired state.</returns>
+        [Obsolete("This method needs to be replaced with one that identifies whether the stat is to increase or decrease. Or perhaps it is not needed at all since it is currently only used in WanderWithIntent. Maybe that behaviour should look for places the brain has identified for it.")]
         public StatSO[] GetStatsNotInDesiredState()
         {
             List<StatSO> stats = new List<StatSO>();
-            for (int i = 0; i < m_DesiredStates.Length; i++)
+            for (int i = 0; i < UnsatisfiedDesiredStates.Length; i++)
             {
-                StatSO stat = GetOrCreateStat(m_DesiredStates[i].statTemplate.name);
-                if (GetGoalFor(m_DesiredStates[i].statTemplate) != StateSO.Goal.NoAction)
+                StatSO stat = GetOrCreateStat(UnsatisfiedDesiredStates[i].statTemplate.name);
+                if (GetGoalFor(UnsatisfiedDesiredStates[i].statTemplate) != StateSO.Goal.NoAction)
                 {
                     stats.Add(stat);
                 }
-
             }
             return stats.ToArray();
         }
@@ -110,30 +200,6 @@ namespace WizardsCode.Stats {
         }
 
         /// <summary>
-        /// Apply an immediate change to a given Stats, if this controller is tracking that stat.
-        /// </summary>
-        /// 
-        /// <param name="influencer">The influencer imparting the change.</param>
-        internal void ChangeStat(StatInfluencerSO influencer)
-        {
-            StatSO stat = GetOrCreateStat(influencer.stat.name);
-            float change; 
-
-            if (influencer.duration > 0)
-            {
-                change = Mathf.Clamp(influencer.changePerSecond * (Time.timeSinceLevelLoad - m_TimeOfLastUpdate), float.MinValue, influencer.maxChange - influencer.influenceApplied);
-            }
-            else
-            {
-                change = Mathf.Clamp(influencer.maxChange, influencer.maxChange - influencer.influenceApplied, influencer.maxChange);
-            }
-
-            stat.normalizedValue += change;
-            influencer.influenceApplied += change;
-            //Debug.Log(gameObject.name + " changed stat " + influencer.statName + " by " + change);
-        }
-
-        /// <summary>
         /// Get the stat object representing a named stat. If it does not already
         /// exist it will be created with a base value.
         /// </summary>
@@ -146,7 +212,7 @@ namespace WizardsCode.Stats {
 
             stat = ScriptableObject.CreateInstance<StatSO>();
             stat.name = name;
-            stat.normalizedValue = value;
+            stat.NormalizedValue = value;
 
             m_Stats.Add(stat);
             return stat;
@@ -172,37 +238,37 @@ namespace WizardsCode.Stats {
                 }
             }
 
-            StatSO stat = GetOrCreateStat(influencer.stat.name);
-            List<StateSO> states = GetStatesFor(stat);
-            bool isGood = false;
-            for (int i = 0; i < states.Count; i++)
+            if (m_Memory != null)
             {
-                switch (states[i].objective)
+                StatSO stat = GetOrCreateStat(influencer.stat.name);
+                List<StateSO> states = GetStatesFor(stat);
+                bool isGood = false;
+                for (int i = 0; i < states.Count; i++)
                 {
-                    case StateSO.Objective.LessThan:
-                        if (influencer.maxChange > 0)
-                        {
-                            isGood = false;
-                        }
-                        break;
-                    case StateSO.Objective.Approximately:
-                        float currentDelta = states[i].targetValue - stat.normalizedValue;
-                        float influencedDelta = states[i].targetValue - (stat.normalizedValue + influencer.maxChange);
-                        if (currentDelta < influencedDelta)
-                        {
-                            isGood = false;
-                        }
-                        break;
-                    case StateSO.Objective.GreaterThan:
-                        if (influencer.maxChange < 0)
-                        {
-                            isGood = false;
-                        }
-                        break;
-                }
+                    switch (states[i].objective)
+                    {
+                        case StateSO.Objective.LessThan:
+                            if (influencer.maxChange > 0)
+                            {
+                                isGood = false;
+                            }
+                            break;
+                        case StateSO.Objective.Approximately:
+                            float currentDelta = states[i].normalizedTargetValue - stat.NormalizedValue;
+                            float influencedDelta = states[i].normalizedTargetValue - (stat.NormalizedValue + influencer.maxChange);
+                            if (currentDelta < influencedDelta)
+                            {
+                                isGood = false;
+                            }
+                            break;
+                        case StateSO.Objective.GreaterThan:
+                            if (influencer.maxChange < 0)
+                            {
+                                isGood = false;
+                            }
+                            break;
+                    }
 
-                if (m_Memory != null)
-                {
                     m_Memory.AddMemory(influencer, isGood);
                 }
             }
@@ -251,20 +317,18 @@ namespace WizardsCode.Stats {
                 switch (states[i].objective)
                 {
                     case Objective.LessThan:
-                        if (stat.normalizedValue >= states[i].targetValue && states[i].targetValue < lessThan)
+                        if (stat.NormalizedValue >= states[i].normalizedTargetValue && states[i].normalizedTargetValue < lessThan)
                         {
-                            lessThan = states[i].targetValue;
+                            lessThan = states[i].normalizedTargetValue;
                         }
                         break;
 
                     case Objective.Approximately:
-                        if (stat.normalizedValue > states[i].targetValue * 1.1)
-                        {
-                            return StateSO.Goal.Decrease;
-                        }
-                        else
-                        {
-                            if (stat.normalizedValue < states[i].targetValue * 0.9)
+                        if (Mathf.Approximately(stat.NormalizedValue, states[i].normalizedTargetValue)) {
+                            if (stat.NormalizedValue > states[i].normalizedTargetValue)
+                            {
+                                return StateSO.Goal.Decrease;
+                            } else
                             {
                                 return StateSO.Goal.Increase;
                             }
@@ -272,9 +336,9 @@ namespace WizardsCode.Stats {
                         break;
 
                     case Objective.GreaterThan:
-                        if (stat.normalizedValue <= states[i].targetValue && states[i].targetValue > greaterThan)
+                        if (stat.NormalizedValue <= states[i].normalizedTargetValue && states[i].normalizedTargetValue > greaterThan)
                         {
-                            greaterThan = states[i].targetValue;
+                            greaterThan = states[i].normalizedTargetValue;
                         }
                         break;
                 }
@@ -297,19 +361,24 @@ namespace WizardsCode.Stats {
             }
 
             msg += "\n\nActive Influencers";
+            if (m_StatsInfluencers.Count == 0) msg += "\nNone";
             for (int i = 0; i < m_StatsInfluencers.Count; i++)
             {
                 msg += "\n" + m_StatsInfluencers[i].stat.name + " changed by " + m_StatsInfluencers[i].maxChange + " at " + m_StatsInfluencers[i].changePerSecond + " per second (" + Mathf.Round((m_StatsInfluencers[i].influenceApplied / m_StatsInfluencers[i].maxChange) * 100) + "% applied)";
             }
 
-            msg += "\n\nDesired States";
-            for (int i = 0; i < m_DesiredStates.Length; i++)
+            msg += "\n\nUnsatisfied Desired States";
+            if (UnsatisfiedDesiredStates.Length == 0) msg += "\nNone";
+            for (int i = 0; i < UnsatisfiedDesiredStates.Length; i++)
             {
                 StatSO stat = GetOrCreateStat(m_DesiredStates[i].statTemplate.name);
                 msg += GetGoalFor(stat) == Goal.NoAction ? "\nIs " : "\nIs not ";
                 msg += m_DesiredStates[i].name + " ";
-                msg += " (" + stat.name + " should be " + m_DesiredStates[i].objective + " " + m_DesiredStates[i].targetValue + ")";
+                msg += " (" + stat.name + " should be " + m_DesiredStates[i].objective + " " + m_DesiredStates[i].normalizedTargetValue + ")";
             }
+
+            msg += "\n\nCurrent Behaviour";
+            msg += "\n" + m_CurrentBehaviour;
 
             return msg;
         }

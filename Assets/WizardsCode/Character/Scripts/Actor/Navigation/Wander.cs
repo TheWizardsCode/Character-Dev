@@ -13,6 +13,7 @@ namespace WizardsCode.Character
     /// direction for some time. Eventually they will get bored and change
     /// direction.
     /// </summary>
+    [RequireComponent(typeof(ActorController))]
     [RequireComponent(typeof(NavMeshAgent))]
     public class Wander : AbstractAIBehaviour
 #if UNITY_EDITOR
@@ -41,25 +42,13 @@ namespace WizardsCode.Character
         private Vector3 m_TargetPosition;
         private float timeToNextWanderPathChange;
         private Vector3 m_StartPosition;
-        private NavMeshAgent m_Agent;
         private Terrain m_Terrain;
         
         protected override void Init()
         {
             base.Init();
 
-            m_StartPosition = transform.position;
-            m_Agent = GetComponent<NavMeshAgent>();
-            Debug.Assert(m_Agent != null, "Characters with a wander behaviour must also have a NavMesh Agent.");
-
-            Vector3 pos = transform.position;
-            m_Terrain = Terrain.activeTerrain;
-            if (m_Terrain != null)
-            {
-                pos.y = m_Terrain.SampleHeight(pos);
-            }
-            m_Agent.Warp(pos); 
-            
+            m_StartPosition = transform.position;            
             memory = GetComponent<MemoryController>();
         }
 
@@ -74,27 +63,9 @@ namespace WizardsCode.Character
                 if (m_TargetPosition != value)
                 {
                     m_TargetPosition = value;
-                    m_Agent.SetDestination(value);
+                    controller.TargetPosition = value;
                     timeToNextWanderPathChange = Random.Range(minTimeBetweenRandomPathChanges, maxTimeBetweenRandomPathChanges);
                 }
-            }
-        }
-
-        public bool HasReachedTarget
-        {
-            get
-            {
-                if (m_Agent.hasPath && !m_Agent.pathPending)
-                {
-                    if (m_Agent.remainingDistance <= m_Agent.stoppingDistance)
-                    {
-                        if (!m_Agent.hasPath || m_Agent.velocity.sqrMagnitude == 0f)
-                        {
-                            return true;
-                        }
-                    }
-                }
-                return false;
             }
         }
 
@@ -102,7 +73,7 @@ namespace WizardsCode.Character
         {
             timeToNextWanderPathChange -= Time.deltaTime;
 
-            if (HasReachedTarget)
+            if (controller.HasReachedTarget)
             {
                 OnReachedTarget();
             }
@@ -149,13 +120,13 @@ namespace WizardsCode.Character
                 float rotation = Random.Range(minAngleOfRandomPathChange, maxAngleOfRandomPathChange);
                 Quaternion randAng = Quaternion.Euler(0, rotation, 0);
 
-                // TODO Rather than turning 180 degress we should turn a multiple of the max or min angles.
                 if (!turning)
                 {
                     position = transform.position + ((randAng * transform.forward) * Random.Range(minDistance, maxDistance));
                 }
                 else
                 {
+                    // TODO Rather than turning 180 degress we should turn a multiple of the max or min angles.
                     position = transform.position + ((randAng * -transform.forward) * Random.Range(minDistance, maxDistance));
                 }
 
@@ -175,7 +146,7 @@ namespace WizardsCode.Character
 
                     if (memory != null)
                     {
-                        Collider[] hitColliders = Physics.OverlapSphere(position, m_Agent.radius * 1.1f);
+                        Collider[] hitColliders = Physics.OverlapSphere(position, 5f);
                         for (int i = 0; i < hitColliders.Length; i++)
                         {
                             if (hitColliders[i].gameObject != gameObject)

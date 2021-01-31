@@ -10,7 +10,7 @@ namespace WizardsCode.Character
     public class Director : MonoBehaviour
     {
         [SerializeField, Tooltip("The actors this director is directing.")]
-        ActorCharacter actor;
+        ActorController actor;
 
         [SerializeField, Tooltip("Cues that the director must give to the actor.")]
         ActorCue[] cues;

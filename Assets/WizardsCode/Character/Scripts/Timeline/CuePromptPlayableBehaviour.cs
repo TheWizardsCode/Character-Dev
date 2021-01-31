@@ -15,11 +15,11 @@ namespace WizardsCode.Character
         ActorCue cue;
 
         private bool isPrompted;
-        private ActorCharacter actor;
+        private ActorController actor;
 
         public override void ProcessFrame(Playable playable, FrameData info, object playerData)
         {
-            actor = playerData as ActorCharacter;
+            actor = playerData as ActorController;
             if (actor == null) return;
 
             if (!isPrompted)

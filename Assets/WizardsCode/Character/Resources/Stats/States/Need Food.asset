@@ -10,11 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 19d0479af55690b459aa37cc281af882, type: 3}
-  m_Name: CanMove
+  m_Name: Need Food
   m_EditorClassIdentifier: 
-  name: Can Move
-  m_Objective: 0
-  m_TargetValue: 0
-  m_Stat: {fileID: 0}
-  m_SubStates:
-  - {fileID: 11400000, guid: 53dc65a468340dd458f231254029ab52, type: 2}
+  name: Need Food
+  m_Objective: 2
+  m_NormalizeTargetValue: 0.614
+  m_Stat: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
+  m_SubStates: []

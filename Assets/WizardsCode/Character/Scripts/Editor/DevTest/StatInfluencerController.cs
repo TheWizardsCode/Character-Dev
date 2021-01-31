@@ -20,7 +20,7 @@ namespace WizardsCode.Character
         public void ApplyInfluencerToSelectedObject()
         {
             Transform selected = Selection.activeTransform;
-            StatsController stats = selected.GetComponent<StatsController>();
+            Brain stats = selected.GetComponent<Brain>();
             if (stats)
             {
                 stats.TryAddInfluencer(influencer);

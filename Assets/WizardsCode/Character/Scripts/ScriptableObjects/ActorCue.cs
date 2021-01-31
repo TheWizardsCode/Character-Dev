@@ -45,7 +45,7 @@ namespace WizardsCode.Character
         /// <summary>
         /// Prompt and actor to enact the actions identified in this cue.
         /// </summary>
-        public virtual void Prompt(ActorCharacter actor)
+        public virtual void Prompt(ActorController actor)
         {
             ProcessMove(actor);
             ProcessAudio(actor);
@@ -57,7 +57,7 @@ namespace WizardsCode.Character
         /// If this cue has any animation parameter changes then have an actor make those changes.
         /// </summary>
         /// <param name="actor">The actor to enact the animation changes.</param>
-        private void ProcessAnimationParameters(ActorCharacter actor)
+        private void ProcessAnimationParameters(ActorController actor)
         {
             if (!string.IsNullOrWhiteSpace(paramName))
             {
@@ -84,7 +84,7 @@ namespace WizardsCode.Character
         /// The name of an animation clip to play upon this cue.
         /// </summary>
         /// <param name="actor">The actor to enact the animation changes.</param>
-        private void ProcessAnimationClips(ActorCharacter actor)
+        private void ProcessAnimationClips(ActorController actor)
         {
             if (string.IsNullOrWhiteSpace(animationClipName))
             {
@@ -96,7 +96,7 @@ namespace WizardsCode.Character
         /// <summary>
         /// If this cue has any audio defined within it then have an actor enact play that audio.
         /// </summary>
-        void ProcessMove(ActorCharacter actor)
+        void ProcessMove(ActorController actor)
         {
             if (!string.IsNullOrWhiteSpace(markName))
             {
@@ -106,7 +106,7 @@ namespace WizardsCode.Character
             }
         }
 
-        void ProcessAudio(ActorCharacter actor)
+        void ProcessAudio(ActorController actor)
         {
             if (audioClip != null)
             {

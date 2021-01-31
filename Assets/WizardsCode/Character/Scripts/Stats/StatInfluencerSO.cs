@@ -11,12 +11,10 @@ namespace WizardsCode.Stats
     [CreateAssetMenu(fileName ="New Stats Influencer", menuName = "Wizards Code/Stats/New Influencer")]
     public class StatInfluencerSO : ScriptableObject
     {
-        [SerializeField, Tooltip("The object that generates this influence.")]
-        GameObject m_Generator;
         [SerializeField, Tooltip("The Stat this influencer acts upon.")]
         StatSO m_stat;
         [SerializeField, Tooltip("The maximum amount of change this influencer will impart upon the stat. If the stat will never be taken beyond its maximum and minimum allowable values.")]
-        float m_MaxChange;
+        float m_MaxChange = 10;
         [SerializeField, Tooltip("The time, in seconds, over which the influencer will be effective. The change will occur over this time period, up to the limit of the stat or the maxChange of this influencer. If duration is 0 then the total change is applied instantly.")]
         float m_Duration = 0;
         [SerializeField, Tooltip("The cooldown period before a character can be influenced by this object again, in seconds.")]
@@ -24,9 +22,15 @@ namespace WizardsCode.Stats
 
         [HideInInspector, SerializeField]
         float m_InfluenceApplied = 0;
+        GameObject m_Generator;
 
         float m_ChangePerSecond = float.NegativeInfinity;
+        private float m_TimeOfLastUpdate;
 
+        /// <summary>
+        /// Get the game object that imparted this influencer on the actor.
+        /// This is used in the memory system to remember good/bad results of interations with objects.
+        /// </summary>
         public GameObject generator
         {
             get { return m_Generator; }
@@ -79,6 +83,11 @@ namespace WizardsCode.Stats
             }
         }
 
+        private void Awake()
+        {
+            m_TimeOfLastUpdate = Time.timeSinceLevelLoad;
+        }
+
         /// <summary>
         /// The influence applied by this influencer to date.
         /// </summary>
@@ -95,6 +104,39 @@ namespace WizardsCode.Stats
                     m_InfluenceApplied = maxChange;
                 }
             }
+        }
+
+        /// <summary>
+        /// Apply a change from a stat influencer.
+        /// </summary>
+        /// 
+        /// <param name="brain">The brain managing the stats to be changed.</param>
+        internal void ChangeStat(Brain brain)
+        {
+            StatSO statToUpdate = brain.GetOrCreateStat(stat.name);
+            float change;
+
+            if (duration > 0)
+            {
+                change = Mathf.Clamp(changePerSecond * (Time.timeSinceLevelLoad - m_TimeOfLastUpdate), float.MinValue, Mathf.Abs(maxChange) - Mathf.Abs(influenceApplied));
+            }
+            else
+            {
+                change = Mathf.Clamp(maxChange, maxChange - influenceApplied, Mathf.Abs(maxChange));
+            }
+
+            if (maxChange < 0)
+            {
+                statToUpdate.Value -= change;
+                influenceApplied -= change;
+            }
+            else
+            {
+                statToUpdate.Value += change;
+                influenceApplied += change;
+            }
+            m_TimeOfLastUpdate = Time.timeSinceLevelLoad;
+            //Debug.Log(gameObject.name + " changed stat " + influencer.statName + " by " + change);
         }
 
         /// <summary>
@@ -117,6 +159,6 @@ namespace WizardsCode.Stats
             }
         }
 
-        internal StatsController controller { get; set; }
+        internal Brain controller { get; set; }
     }
 }

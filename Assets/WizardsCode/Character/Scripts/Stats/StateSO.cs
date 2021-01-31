@@ -22,8 +22,8 @@ namespace WizardsCode.Character
         string name = "No Name State";
         [SerializeField, Tooltip("State objective indicates whether our target value is a minimum, maxium or goal.")]
         Objective m_Objective;
-        [SerializeField, Tooltip("The target value of this stat.")]
-        float m_TargetValue;
+        [SerializeField, Tooltip("The normalized target value of this stat."), Range(0f,1f)]
+        float m_NormalizeTargetValue;
         [SerializeField, Tooltip("The stat that manages this state.")]
         StatSO m_Stat;
 
@@ -43,49 +43,36 @@ namespace WizardsCode.Character
             set { m_Objective = value; }
         }
 
-        public float targetValue
+        public float normalizedTargetValue
         {
-            get { return m_TargetValue; }
-            set { m_TargetValue = value; }
+            get { return m_NormalizeTargetValue; }
+            set { m_NormalizeTargetValue = value; }
         }
 
         /// <summary>
         /// If all the conditions of this state are satisfied then this will return true.
         /// </summary>
-        public bool IsSatisfiedFor (StatsController controller) {
+        public bool IsSatisfiedFor (Brain controller) {
             if (statTemplate != null)
             {
                 StatSO stat = controller.GetOrCreateStat(statTemplate.name);
 
-            switch (objective)
-            {
-                case Objective.LessThan:
-                    if (stat.normalizedValue >= targetValue)
-                    {
-                        return false;
-                    }
-                    break;
-
-                case Objective.Approximately:
-                    if (stat.normalizedValue > targetValue * 1.1)
-                    {
-                        return false;
-                    }
-                    else
-                    {
-                        if (stat.normalizedValue < targetValue * 0.9)
+                switch (objective)
+                {
+                    case Objective.LessThan:
+                        if (stat.NormalizedValue >= normalizedTargetValue)
                         {
                             return false;
                         }
-                    }
-                    break;
-
-                case Objective.GreaterThan:
-                    if (stat.normalizedValue <= targetValue)
-                    {
-                        return false;
-                    }
-                    break;
+                        break;
+                    case Objective.Approximately:
+                        return Mathf.Approximately(stat.NormalizedValue, normalizedTargetValue);
+                    case Objective.GreaterThan:
+                        if (stat.NormalizedValue <= normalizedTargetValue)
+                        {
+                            return false;
+                        }
+                        break;
                 }
             }
 
@@ -97,6 +84,7 @@ namespace WizardsCode.Character
                     return false;
                 }
             }
+
             return true;
         }
     }

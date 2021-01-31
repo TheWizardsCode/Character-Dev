@@ -23,12 +23,12 @@ namespace WizardsCode.Character.Stats
         string deathTriggerName = "Die";
 
         StatSO health;
-        StatsController controller;
+        Brain controller;
         int deathTriggerID;
 
         private void Start()
         {
-            controller = GetComponent<StatsController>();
+            controller = GetComponent<Brain>();
 
             health = controller.GetOrCreateStat(healthTemplate.name, 1);
             health.onValueChanged.AddListener(OnHealthChanged);
@@ -42,7 +42,7 @@ namespace WizardsCode.Character.Stats
         /// <param name="value">The normalized value to use. That is a value between 0 and 1, where 1 is equivalent to the max possible value and 0 is the equivalent of the minimal possible value.</param>
         public void SetHitPointsNormalized(float value)
         {
-            health.normalizedValue = value;
+            health.NormalizedValue = value;
         }
 
         /// <summary>
@@ -52,12 +52,12 @@ namespace WizardsCode.Character.Stats
         /// <param name="value">The value to set hit points to.</param>
         public void SetHitPoints(float value)
         {
-            health.value = value;
+            health.Value = value;
         }
 
         private void OnHealthChanged(float normalizedDelta)
         {
-            if (m_Animator != null && health.normalizedValue == 0)
+            if (m_Animator != null && health.NormalizedValue == 0)
             {
                 m_Animator.SetTrigger(deathTriggerID);
             }

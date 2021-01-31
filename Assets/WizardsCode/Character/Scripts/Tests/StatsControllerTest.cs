@@ -14,7 +14,7 @@ namespace WizardsCode.Stats
         public IEnumerator StatsControllerAddUnknownStat()
         {
             string statName = "Test Unkown Stat";
-            StatsController controller = new GameObject().AddComponent<StatsController>();
+            Brain controller = new GameObject().AddComponent<Brain>();
 
             StatSO stat = controller.GetOrCreateStat(statName, 50);
 
@@ -27,7 +27,7 @@ namespace WizardsCode.Stats
         public IEnumerator StatInstantInfluencer()
         {
             string statName = "Test Immediate Influencer Stat";
-            StatsController controller = new GameObject().AddComponent<StatsController>();
+            Brain controller = new GameObject().AddComponent<Brain>();
 
             StatInfluencerSO influencer = ScriptableObject.CreateInstance<StatInfluencerSO>();
             StatSO stat = controller.GetOrCreateStat(statName);
@@ -39,7 +39,7 @@ namespace WizardsCode.Stats
 
             yield return null;
 
-            Assert.True(controller.GetOrCreateStat(statName).normalizedValue > 0, "Seems the influencer has had no effect.");
+            Assert.True(controller.GetOrCreateStat(statName).NormalizedValue > 0, "Seems the influencer has had no effect.");
 
             yield return null;
         }

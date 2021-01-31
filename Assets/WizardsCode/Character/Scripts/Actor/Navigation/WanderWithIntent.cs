@@ -17,18 +17,18 @@ namespace WizardsCode.Character
     /// When seeking an influencer they will consult their memory
     /// to find a suitable influencer.
     /// </summary>
-    [RequireComponent(typeof(StatsController))]
+    [RequireComponent(typeof(Brain))]
     [RequireComponent(typeof(MemoryController))]
     public class WanderWithIntent : Wander
     {
-        StatsController statsController;
+        Brain statsController;
         MemorySO nearestMemoryOfInterest;
         StatSO focusedStat;
 
         protected override void Init()
         {
             base.Init();
-            statsController = GetComponent<StatsController>();
+            statsController = GetComponent<Brain>();
         }
 
         /// <summary>

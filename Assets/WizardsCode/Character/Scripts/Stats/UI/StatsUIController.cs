@@ -9,7 +9,7 @@ namespace WizardsCode.Character.Stats
     {
         [Header("Character")]
         [SerializeField, Tooltip("The character whos states we want to view")]
-        StatsController character;
+        Brain character;
 
         [Header("UI Templates")]
         [SerializeField, Tooltip("The UI template to use to display a stat.")]

@@ -28,7 +28,7 @@ namespace WizardsCode.Character.Stats
 
         private void OnEnable()
         {
-            statSlider.value = stat.normalizedValue;
+            statSlider.value = stat.NormalizedValue;
             statSlider.onValueChanged.AddListener(delegate { SetValue(statSlider.value); });
         }
 
@@ -39,14 +39,14 @@ namespace WizardsCode.Character.Stats
 
         private void SetValue(float value)
         {
-            stat.normalizedValue = value;
+            stat.NormalizedValue = value;
         }
 
         private void Update()
         {
             if (stat == null) return;
 
-            statLabel.text = stat.name + "\n" + stat.normalizedValue.ToString("P0", CultureInfo.InvariantCulture);
+            statLabel.text = stat.name + "\n" + stat.NormalizedValue.ToString("P0", CultureInfo.InvariantCulture);
         }
     }
 }

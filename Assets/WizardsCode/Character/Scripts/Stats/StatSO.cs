@@ -21,7 +21,7 @@ namespace WizardsCode.Stats
         float minValue = 0;
         [SerializeField, Tooltip("The maximum value this stat can have.")]
         float maxValue = 100;
-        [SerializeField, Tooltip("The base value for this stat. This is the value that the character will always trend towards with no external factors influencing the current value."), Range(0, 1)]
+        [SerializeField, Tooltip("The base value for this stat. This is the value at start and that the character will always trend towards with no external factors influencing the current value."), Range(0, 1)]
         float m_BaseNormalizedValue = 0;
 
         [HideInInspector, SerializeField]
@@ -36,7 +36,7 @@ namespace WizardsCode.Stats
         public string statusDescription
         {
             get {
-                string msg = name + " is " + normalizedValue;
+                string msg = name + " is " + NormalizedValue;
                 return msg; 
             }
         }
@@ -50,11 +50,11 @@ namespace WizardsCode.Stats
         }
 
         /// <summary>
-        /// Set the current value of this stat. If an attempt is made to set the value 
+        /// Set the current normalized value of this stat. If an attempt is made to set the value 
         /// outside the allowable range (0 to 1) then the value will
         /// be clamped.
         /// </summary>
-        public float normalizedValue {
+        public float NormalizedValue {
             get { return m_CurrentNormalizedValue; }
             internal set
             {
@@ -68,18 +68,19 @@ namespace WizardsCode.Stats
         }
 
         /// <summary>
-        /// Set the current absolute value of this stat. If an attempt is set te value above or below the allowable min/max
-        /// the value will be clamped.
+        /// Get the current absolute value of this stat. If an attempt is made to set the value 
+        /// outside the allowable range (0 to 1) then the value will
+        /// be clamped.
         /// </summary>
-        public float value
+        public float Value
         {
-            get { return (maxValue - minValue) * normalizedValue; }
-            set { normalizedValue = (value - maxValue) / (maxValue - minValue); }
+            get { return ((maxValue - minValue) * NormalizedValue) + minValue; }
+            set { NormalizedValue = (value - minValue) / (maxValue - minValue); }
         }
 
         private void Awake()
         {
-            m_CurrentNormalizedValue = m_BaseNormalizedValue;
+            NormalizedValue = m_BaseNormalizedValue;
         }
     }
 
