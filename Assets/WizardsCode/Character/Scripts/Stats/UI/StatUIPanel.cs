@@ -47,6 +47,7 @@ namespace WizardsCode.Character.Stats
             if (stat == null) return;
 
             statLabel.text = stat.name + "\n" + stat.NormalizedValue.ToString("P0", CultureInfo.InvariantCulture);
+            statSlider.value = stat.NormalizedValue;
         }
     }
 }

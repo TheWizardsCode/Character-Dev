@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using UnityEditor;
 using UnityEngine;
 
 namespace WizardsCode.Utility.UI
@@ -10,9 +12,23 @@ namespace WizardsCode.Utility.UI
     /// </summary>
     public class InstructionsPanel : MonoBehaviour
     {
+        [SerializeField, Tooltip("If the documentation is to be loaded from a file in the Documentation folder enter its name here. The content of this file will be placed into the UI on startup.")]
+        string documentationFilename = "";
+        [SerializeField, Tooltip("If the documentation is to be loaded from a file this is the text component to load the content into.")]
+        TMP_Text documentationTextGUI;
+
         void Awake()
         {
             Time.timeScale = 0;
+
+            if (!string.IsNullOrEmpty(documentationFilename) && documentationTextGUI) { 
+                //TODO don't hardcode the path to the documentation folder
+                TextAsset content = (TextAsset)AssetDatabase.LoadAssetAtPath("Assets/WizardsCode/Character/Documentation/" + documentationFilename, typeof(TextAsset));
+                if (content != null)
+                {
+                    documentationTextGUI.text = content.text;
+                }
+            }
         }
 
         // Update is called once per frame
