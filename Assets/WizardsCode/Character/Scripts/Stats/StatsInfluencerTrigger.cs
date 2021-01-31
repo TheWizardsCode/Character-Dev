@@ -34,7 +34,9 @@ namespace WizardsCode.Character.Stats
 
         private void OnTriggerEnter(Collider other)
         {
-            Brain brain = other.GetComponent<Brain>();
+            if (other.gameObject == this.gameObject) return;
+
+            Brain brain = other.GetComponentInParent<Brain>();
 
             if (brain == null || !brain.ShouldInteractWith(this)) return;
             AddInfluencer(brain);
@@ -44,7 +46,9 @@ namespace WizardsCode.Character.Stats
         {
             if (!m_IsRepeating) return;
 
-            Brain brain = other.GetComponent<Brain>();
+            if (other.gameObject == this.gameObject) return;
+
+            Brain brain = other.GetComponentInParent<Brain>();
 
             if (brain == null || !brain.ShouldInteractWith(this)) return;
 

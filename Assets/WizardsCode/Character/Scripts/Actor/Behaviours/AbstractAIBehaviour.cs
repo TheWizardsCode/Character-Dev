@@ -9,13 +9,16 @@ namespace WizardsCode.Character
 {
     public abstract class AbstractAIBehaviour : MonoBehaviour
     {
+        [SerializeField, Tooltip("The name to use in the User Interface.")]
+        string m_DisplayName = "Unnamed AI Behaviour";
+        //TODO These are not required states, they are affected states and I think they will always be inverted
         [SerializeField, Tooltip("The required states for this behaviour to be enabled.")]
         RequiredState[] m_RequiredStates = new RequiredState[0];
         [SerializeField, Tooltip("The duration within which the actor will be prevented from starting another behaviour.")]
         float m_Duration = 5;
         [SerializeField, Tooltip("The range within which the Actor can sense interactables that this behaviour can impact. This does not affect interactables that are recalled from memory.")]
         float awarenessRange = 10;
-
+        
         internal Brain brain;
         internal ActorController controller;
         internal MemoryController memory;
@@ -94,12 +97,6 @@ namespace WizardsCode.Character
             memory = GetComponentInParent<MemoryController>();
         }
 
-        public void Update()
-        {
-            if (!IsExecuting) return;
-            OnUpdate();
-        }
-
         /// <summary>
         /// Calculates the current weight for this behaviour between 0 (don't execute)
         /// and 1 (really want to execute). By default this is directly proportional to,
@@ -145,26 +142,38 @@ namespace WizardsCode.Character
             }
         }
 
+
+        public void Update()
+        {
+            if (!IsExecuting) return;
+            
+            if (m_StartTime == 0)
+            {
+                m_StartTime = Time.timeSinceLevelLoad;
+
+                if (cachedAvailableInteractables.Count == 0)
+                {
+                    brain.TargetInteractable = null;
+                }
+                else
+                {
+                    //TODO select the optimal interactible based on distance and amount of influence
+                    int idx = Random.Range(0, cachedAvailableInteractables.Count);
+                    brain.TargetInteractable = cachedAvailableInteractables[idx];
+                }
+            }
+            OnUpdate();
+        }
+
         /// <summary>
         /// Called whenever this behaviour needs to be updated. By default this will look
         /// for interactables nearby that will satisfy the needs of this behaviour.
         /// </summary>
         protected virtual void OnUpdate()
         {
-            if (m_StartTime == 0)
+            if (m_StartTime + m_Duration <= Time.timeSinceLevelLoad)
             {
-                m_StartTime = Time.timeSinceLevelLoad;
-                
-                //TODO select the optimal place to eat (distance and amount of influence)
-                int idx = Random.Range(0, cachedAvailableInteractables.Count);
-                brain.TargetInteractable = cachedAvailableInteractables[idx];
-            }
-            else
-            {
-                if (m_StartTime + m_Duration <= Time.timeSinceLevelLoad)
-                {
-                    Finish();
-                }
+                Finish();
             }
         }
 
@@ -195,6 +204,11 @@ namespace WizardsCode.Character
         {
             IsExecuting = false;
             m_StartTime = 0;
+        }
+
+        public override string ToString()
+        {
+            return m_DisplayName;
         }
     }
     

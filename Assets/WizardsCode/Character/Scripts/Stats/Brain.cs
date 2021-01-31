@@ -42,6 +42,7 @@ namespace WizardsCode.Stats {
         {
             get { return m_DesiredStates; }
         }
+
         public StateSO[] UnsatisfiedDesiredStates { get; internal set; }
         internal Interactable TargetInteractable
         {
@@ -85,36 +86,41 @@ namespace WizardsCode.Stats {
 
         private void Update()
         {
-            if (Time.timeSinceLevelLoad >= m_TimeOfNextUpdate)
+            if (Time.timeSinceLevelLoad < m_TimeOfNextUpdate) return;
+
+            //TODO don't need to repath every frame, but we might want to do it more frequently than the overall AI Decision making
+            if (TargetInteractable != null && Vector3.SqrMagnitude(TargetInteractable.transform.position - m_Controller.TargetPosition) > 0.7f)
             {
-                for (int i = 0; i < m_Stats.Count; i++)
-                {
-                    m_Stats[i].OnUpdate();
-                }
+                m_Controller.TargetPosition = TargetInteractable.transform.position;
+            }
 
-                for (int i = 0; i < m_StatsInfluencers.Count; i++)
-                {
-                    if (m_StatsInfluencers[i] != null)
-                    {
-                        m_StatsInfluencers[i].ChangeStat(this);
+            for (int i = 0; i < m_Stats.Count; i++)
+            {
+                m_Stats[i].OnUpdate();
+            }
 
-                        if (Mathf.Abs(m_StatsInfluencers[i].influenceApplied) >= Mathf.Abs(m_StatsInfluencers[i].maxChange))
-                        {
-                            m_StatsInfluencers.RemoveAt(i);
-                        }
-                    } else
+            for (int i = 0; i < m_StatsInfluencers.Count; i++)
+            {
+                if (m_StatsInfluencers[i] != null)
+                {
+                    m_StatsInfluencers[i].ChangeStat(this);
+
+                    if (Mathf.Abs(m_StatsInfluencers[i].influenceApplied) >= Mathf.Abs(m_StatsInfluencers[i].maxChange))
                     {
                         m_StatsInfluencers.RemoveAt(i);
                     }
+                } else
+                {
+                    m_StatsInfluencers.RemoveAt(i);
                 }
-
-                UpdateUnsatisfiedStates();
-
-                UpdateActiveBehaviour();
-
-                m_TimeOfLastUpdate = Time.timeSinceLevelLoad;
-                m_TimeOfNextUpdate = Time.timeSinceLevelLoad + m_TimeBetweenUpdates;
             }
+
+            UpdateUnsatisfiedStates();
+
+            UpdateActiveBehaviour();
+
+            m_TimeOfLastUpdate = Time.timeSinceLevelLoad;
+            m_TimeOfNextUpdate = Time.timeSinceLevelLoad + m_TimeBetweenUpdates;
         }
 
         /// <summary>
@@ -289,7 +295,7 @@ namespace WizardsCode.Stats {
 
             for (int i = 0; i < m_DesiredStates.Length; i++)
             {
-                if (stat.GetType() == m_DesiredStates[i].statTemplate.GetType())
+                if (stat.name == m_DesiredStates[i].statTemplate.name)
                 {
                     states.Add(m_DesiredStates[i]);
                     break;

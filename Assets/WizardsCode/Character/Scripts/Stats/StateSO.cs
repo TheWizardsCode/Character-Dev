@@ -19,13 +19,14 @@ namespace WizardsCode.Character
 
         [Header("Stat Requirements")]
         [SerializeField, Tooltip("The name of this state")]
+        //TODO need to change name to ID and ensure it is game unique
         string name = "No Name State";
+        [SerializeField, Tooltip("The stat that manages this state.")]
+        StatSO m_Stat;
         [SerializeField, Tooltip("State objective indicates whether our target value is a minimum, maxium or goal.")]
         Objective m_Objective;
         [SerializeField, Tooltip("The normalized target value of this stat."), Range(0f,1f)]
         float m_NormalizeTargetValue;
-        [SerializeField, Tooltip("The stat that manages this state.")]
-        StatSO m_Stat;
 
         [Header("Sub States")]
         [SerializeField, Tooltip("A collection of states that must also be satisfied for this state to be satisfied.")]

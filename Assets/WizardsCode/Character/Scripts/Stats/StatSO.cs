@@ -23,6 +23,10 @@ namespace WizardsCode.Stats
         float minValue = 0;
         [SerializeField, Tooltip("The maximum value this stat can have.")]
         float maxValue = 100;
+
+        [Header("Time Effects")]
+        [SerializeField, Tooltip("Should the value of this stat change naturally over time even when there are no other influencers acting upon it?")]
+        bool m_AdjustsOverTime = true;
         [SerializeField, Tooltip("The base value for this stat. This is the value at start and that the character will always trend towards with no external factors influencing the current value."), Range(0, 1)]
         float m_BaseNormalizedValue = 0;
         [SerializeField, Tooltip("The speed (lower is faster) at which this stat moved towards the base value if there are no other effects at play.")]
@@ -50,7 +54,7 @@ namespace WizardsCode.Stats
         /// </summary>
         internal virtual void OnUpdate()
         {
-            if (Mathf.Approximately(NormalizedValue, m_BaseNormalizedValue)) return;
+            if (!m_AdjustsOverTime || Mathf.Approximately(NormalizedValue, m_BaseNormalizedValue)) return;
 
             NormalizedValue += (m_BaseNormalizedValue - NormalizedValue) * (Time.deltaTime / m_SpeedToBaseValue);
         }
