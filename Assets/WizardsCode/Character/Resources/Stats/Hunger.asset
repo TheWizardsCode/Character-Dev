@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Hunger
   m_EditorClassIdentifier: 
   m_displayName: Hunger
+  startValue: 100
   minValue: 0
   maxValue: 100
   m_BaseNormalizedValue: 1
-  m_CurrentNormalizedValue: 0
+  m_SpeedToBaseValue: 3
+  m_CurrentNormalizedValue: 1

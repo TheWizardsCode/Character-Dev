@@ -17,12 +17,16 @@ namespace WizardsCode.Stats
         [Header("Details")]
         [SerializeField, Tooltip("The human readable name for this stat.")]
         string m_displayName = "No Name Stat";
+        [SerializeField, Tooltip("The start value for this stat.")]
+        float startValue = 100;
         [SerializeField, Tooltip("The minimum value this stat can have.")]
         float minValue = 0;
         [SerializeField, Tooltip("The maximum value this stat can have.")]
         float maxValue = 100;
         [SerializeField, Tooltip("The base value for this stat. This is the value at start and that the character will always trend towards with no external factors influencing the current value."), Range(0, 1)]
         float m_BaseNormalizedValue = 0;
+        [SerializeField, Tooltip("The speed (lower is faster) at which this stat moved towards the base value if there are no other effects at play.")]
+        float m_SpeedToBaseValue = 5;
 
         [HideInInspector, SerializeField]
         float m_CurrentNormalizedValue;
@@ -46,7 +50,9 @@ namespace WizardsCode.Stats
         /// </summary>
         internal virtual void OnUpdate()
         {
-            // Do nothing by default
+            if (Mathf.Approximately(NormalizedValue, m_BaseNormalizedValue)) return;
+
+            NormalizedValue += (m_BaseNormalizedValue - NormalizedValue) * (Time.deltaTime / m_SpeedToBaseValue);
         }
 
         /// <summary>
@@ -80,7 +86,7 @@ namespace WizardsCode.Stats
 
         private void Awake()
         {
-            NormalizedValue = m_BaseNormalizedValue;
+            NormalizedValue = startValue;
         }
     }
 

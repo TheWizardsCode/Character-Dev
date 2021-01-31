@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Energy
   m_EditorClassIdentifier: 
   m_displayName: Energy
+  startValue: 100
   minValue: 0
   maxValue: 100
-  m_BaseNormalizedValue: 0.301
-  m_CurrentNormalizedValue: 0
+  m_BaseNormalizedValue: 0
+  m_SpeedToBaseValue: 10
+  m_CurrentNormalizedValue: 0.301
