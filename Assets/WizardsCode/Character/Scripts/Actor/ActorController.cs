@@ -76,10 +76,7 @@ namespace WizardsCode.Character
                 {
                     if (m_Agent.remainingDistance <= m_Agent.stoppingDistance)
                     {
-                        if (!m_Agent.hasPath || m_Agent.velocity.sqrMagnitude == 0f)
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
                 return false;

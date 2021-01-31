@@ -13,11 +13,12 @@ namespace WizardsCode.Character
         RequiredState[] m_RequiredStates = new RequiredState[0];
         [SerializeField, Tooltip("The duration within which the actor will be prevented from starting another behaviour.")]
         float m_Duration = 5;
-
-        internal float awarenessRange = 50;
+        [SerializeField, Tooltip("The range within which the Actor can sense interactables that this behaviour can impact. This does not affect interactables that are recalled from memory.")]
+        float awarenessRange = 10;
 
         internal Brain brain;
         internal ActorController controller;
+        internal MemoryController memory;
 
         public RequiredState[] requiredStates {
             get {return m_RequiredStates;}
@@ -36,6 +37,7 @@ namespace WizardsCode.Character
         {
             get
             {
+                // Are requirements met?
                 for (int i = 0; i < m_RequiredStates.Length; i++)
                 {
                     if (m_RequiredStates[i].invert)
@@ -48,12 +50,15 @@ namespace WizardsCode.Character
                     }
                 }
 
-                return true;
+                UpdateAvailbleInteractablesCache();
+
+                return cachedAvailableInteractables.Count != 0;
             }
         }
 
         private bool m_IsExecuting = false;
         private float m_StartTime;
+        private List<Interactable> cachedAvailableInteractables = new List<Interactable>();
 
         /// <summary>
         /// Is this behaviour the currently executing behaviour?
@@ -86,6 +91,7 @@ namespace WizardsCode.Character
                 }
             }
             controller = GetComponentInParent<ActorController>();
+            memory = GetComponentInParent<MemoryController>();
         }
 
         public void Update()
@@ -119,24 +125,24 @@ namespace WizardsCode.Character
             return weight / brain.UnsatisfiedDesiredStates.Length;
         }
 
-        internal Interactable[] GetNearbyInteractablesFor(RequiredState[] requiredStates)
+        internal void UpdateCacheWithNearbyInteractables(StatSO statTemplate)
         {
-            //TODO Cache the interactables near the current location
+            //TODO Cache the interactables near the current location and only update if moved
+
+            cachedAvailableInteractables = new List<Interactable>();
+
             //TODO Put interactables on a layer to make the physics operation fsater
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, awarenessRange);
-            List<Interactable> availableInteractables = new List<Interactable>();
             Interactable currentInteractable;
             for (int i = 0; i < hitColliders.Length; i++)
             {
                 currentInteractable = hitColliders[i].GetComponent<Interactable>();
-                //TODO need to get interactables that affect the state in the way desired (e.g. increase or decrease)
-                if (currentInteractable != null && currentInteractable.Influences(requiredStates[0].state.statTemplate))
+                //TODO need to only get interactables that affect the state in the way desired (e.g. increase or decrease)
+                if (currentInteractable != null && currentInteractable.Influences(statTemplate))
                 {
-                    availableInteractables.Add(currentInteractable);
+                    cachedAvailableInteractables.Add(currentInteractable);
                 }
             }
-
-            return availableInteractables.ToArray();
         }
 
         /// <summary>
@@ -148,29 +154,47 @@ namespace WizardsCode.Character
             if (m_StartTime == 0)
             {
                 m_StartTime = Time.timeSinceLevelLoad;
-
-                Interactable[] availableInteractables = GetNearbyInteractablesFor(requiredStates);
-                if (availableInteractables.Length == 0)
-                {
-                    return;
-                }
-
-                //TODO find the nearest place in memory that one can influence the required states
-
+                
                 //TODO select the optimal place to eat (distance and amount of influence)
-                int idx = Random.Range(0, availableInteractables.Length);
-
-                brain.TargetInteractable = availableInteractables[idx];
-
-                //TODO block lower priority actions until done
-            } else
+                int idx = Random.Range(0, cachedAvailableInteractables.Count);
+                brain.TargetInteractable = cachedAvailableInteractables[idx];
+            }
+            else
             {
                 if (m_StartTime + m_Duration <= Time.timeSinceLevelLoad)
                 {
-                    IsExecuting = false;
-                    m_StartTime = 0;
+                    Finish();
                 }
             }
+        }
+
+        private void UpdateAvailbleInteractablesCache()
+        {
+            //TODO need to get interactables for all states (currently on getting for the first state)
+            if (requiredStates.Length > 0)
+            {
+                UpdateCacheWithNearbyInteractables(requiredStates[0].state.statTemplate);
+
+                if (memory != null)
+                {
+                    MemorySO[] memories = memory.GetMemoriesInfluencingStat(requiredStates[0].state.statTemplate);
+                    Interactable interactable;
+                    for (int i = 0; i < memories.Length; i++)
+                    {
+                        if (memories[i].isGood)
+                        {
+                            interactable = memories[i].about.GetComponentInChildren<Interactable>();
+                            if (interactable != null) cachedAvailableInteractables.Add(interactable);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void Finish()
+        {
+            IsExecuting = false;
+            m_StartTime = 0;
         }
     }
     

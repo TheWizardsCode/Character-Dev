@@ -247,7 +247,7 @@ namespace WizardsCode.Stats {
             {
                 StatSO stat = GetOrCreateStat(influencer.stat);
                 List<StateSO> states = GetStatesFor(stat);
-                bool isGood = false;
+                bool isGood = true;
                 for (int i = 0; i < states.Count; i++)
                 {
                     switch (states[i].objective)
@@ -376,10 +376,10 @@ namespace WizardsCode.Stats {
             if (UnsatisfiedDesiredStates.Length == 0) msg += "\nNone";
             for (int i = 0; i < UnsatisfiedDesiredStates.Length; i++)
             {
-                StatSO stat = GetOrCreateStat(m_DesiredStates[i].statTemplate);
-                msg += GetGoalFor(stat) == Goal.NoAction ? "\nIs " : "\nIs not ";
-                msg += m_DesiredStates[i].name + " ";
-                msg += " (" + stat.name + " should be " + m_DesiredStates[i].objective + " " + m_DesiredStates[i].normalizedTargetValue + ")";
+                StatSO stat = GetOrCreateStat(UnsatisfiedDesiredStates[i].statTemplate);
+                msg += "\nIs not ";
+                msg += UnsatisfiedDesiredStates[i].name + " ";
+                msg += " (" + stat.name + " should be " + UnsatisfiedDesiredStates[i].objective + " " + UnsatisfiedDesiredStates[i].normalizedTargetValue + ")";
             }
 
             msg += "\n\nCurrent Behaviour";

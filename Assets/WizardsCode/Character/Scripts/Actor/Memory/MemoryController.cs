@@ -41,10 +41,28 @@ namespace WizardsCode.Character
         /// </summary>
         /// <param name="name">The stat we are interested in.</param>
         /// <returns>A set of influencers known to affect the desired stat.</returns>
+        [Obsolete("Use GetMemoriesInfluencingStat(StatSO template) intead.")]
         public MemorySO[] GetMemoriesInfluencingStat(string name)
         {
             MemorySO[] shortTermMemories = m_ShortTermMemories.Where(m => m.stat.name == name).ToArray<MemorySO>();
             MemorySO[] longTermMemories = m_LongTermMemories.Where(m => m.stat.name == name).ToArray<MemorySO>();
+
+            MemorySO[] all = new MemorySO[shortTermMemories.Length + longTermMemories.Length];
+            shortTermMemories.CopyTo(all, 0);
+            longTermMemories.CopyTo(all, shortTermMemories.Length);
+
+            return all;
+        }
+
+        /// <summary>
+        /// Retrive all memories (long and short term) about influencers of a stat.
+        /// </summary>
+        /// <param name="statTemplate">Template of the stat we are interested in.</param>
+        /// <returns>A set of influencers known to affect the desired stat.</returns>
+        public MemorySO[] GetMemoriesInfluencingStat(StatSO statTemplate)
+        {
+            MemorySO[] shortTermMemories = m_ShortTermMemories.Where(m => m.stat.name == statTemplate.name).ToArray<MemorySO>();
+            MemorySO[] longTermMemories = m_LongTermMemories.Where(m => m.stat.name == statTemplate.name).ToArray<MemorySO>();
 
             MemorySO[] all = new MemorySO[shortTermMemories.Length + longTermMemories.Length];
             shortTermMemories.CopyTo(all, 0);

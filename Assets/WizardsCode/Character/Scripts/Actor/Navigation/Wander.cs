@@ -35,8 +35,6 @@ namespace WizardsCode.Character
         [HideInInspector, SerializeField, Tooltip("The area mask for allowed areas for this agent to wander within.")]
         public int navMeshAreaMask = NavMesh.AllAreas;
 
-        protected MemoryController memory;
-
         private Vector3 m_TargetPosition;
         private float timeToNextWanderPathChange;
         private Vector3 m_StartPosition;
@@ -74,6 +72,7 @@ namespace WizardsCode.Character
             if (controller.HasReachedTarget)
             {
                 OnReachedTarget();
+                IsExecuting = false;
             }
 
             if (timeToNextWanderPathChange <= 0) //  || !m_Agent.hasPath || m_Agent.pathStatus == NavMeshPathStatus.PathInvalid
