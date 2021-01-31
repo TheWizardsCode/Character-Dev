@@ -121,28 +121,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 23800000, guid: 5c4c34850c523e4489934b5c61a92cb9, type: 2}
---- !u!1 &32433945 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 32433945, guid: d7d4eba111d2d1647a2041ac59f3290d,
-    type: 3}
-  m_PrefabInstance: {fileID: 1447282027282201894}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &32433948
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 32433945}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e54373ef6672c514aa05bf72b646f4d8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_RequiredStates:
-  - state: {fileID: 11400000, guid: ecc69f49e6bf0de4aa6a4d2cd85c971b, type: 2}
-    invert: 0
-  m_Duration: 5
 --- !u!1 &265539482
 GameObject:
   m_ObjectHideFlags: 0
@@ -162,7 +140,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!65 &265539483
 BoxCollider:
@@ -819,10 +797,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 32433945, guid: d7d4eba111d2d1647a2041ac59f3290d, type: 3}
-      propertyPath: m_Name
-      value: Unthreatened Behaviours
-      objectReference: {fileID: 0}
     - target: {fileID: 4742660635448254581, guid: d7d4eba111d2d1647a2041ac59f3290d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -883,46 +857,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: Neo Red
       objectReference: {fileID: 0}
-    - target: {fileID: 6813743105957234667, guid: d7d4eba111d2d1647a2041ac59f3290d,
-        type: 3}
-      propertyPath: m_DesiredStates.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6813743105957234667, guid: d7d4eba111d2d1647a2041ac59f3290d,
-        type: 3}
-      propertyPath: m_DesiredStates.Array.data[0]
-      value: 
-      objectReference: {fileID: 11400000, guid: ecc69f49e6bf0de4aa6a4d2cd85c971b,
-        type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d7d4eba111d2d1647a2041ac59f3290d, type: 3}
---- !u!1 &6813743105957234665 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5375749932780059343, guid: d7d4eba111d2d1647a2041ac59f3290d,
-    type: 3}
-  m_PrefabInstance: {fileID: 1447282027282201894}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &6813743105957234667 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6813743105957234667, guid: d7d4eba111d2d1647a2041ac59f3290d,
     type: 3}
   m_PrefabInstance: {fileID: 1447282027282201894}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6813743105957234665}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c16293aed1528d24aad933246e10feee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &6813743105957234668
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6813743105957234665}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d83f3ce966261b4888d7b2737f98b11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

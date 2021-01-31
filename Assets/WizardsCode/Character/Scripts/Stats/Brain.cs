@@ -62,8 +62,8 @@ namespace WizardsCode.Stats {
         private void Awake()
         {
             m_Memory = GetComponent<MemoryController>();
-            m_Behaviours = GetComponents<AbstractAIBehaviour>();
             m_Controller = GetComponent<ActorController>();
+            m_Behaviours = GetComponentsInChildren<AbstractAIBehaviour>();
         }
 
         /// <summary>
