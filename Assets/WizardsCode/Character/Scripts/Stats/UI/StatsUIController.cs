@@ -28,7 +28,7 @@ namespace WizardsCode.Character.Stats
         void Update()
         {
             //TODO: don't update every frame
-            StateSO[] states = character.desiredStates;
+            StateSO[] states = character.DesiredStates;
             for (int i = 0; i < states.Length; i++)
             {
                 //TODO cache results rather than grabbing stat every cycle

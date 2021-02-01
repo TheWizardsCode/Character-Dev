@@ -16,12 +16,6 @@ namespace WizardsCode.Stats {
         , IDebug
 #endif
     {
-        [SerializeField, Tooltip("The desired states for our stats.")]
-        StateSO[] m_DesiredStates = new StateSO[0];
-        [SerializeField, Tooltip("The default behaviour to execute if no other behaviour is selected.")]
-        //TODO we don't need a default behaviour the configuration of the behaviours themselves should have a fallback behaviour, e.g. Wander
-        AbstractAIBehaviour m_DefaultBehaviour;
-
         [Header("Optimization")]
         [SerializeField, Tooltip("How often stats should be processed for changes.")]
         float m_TimeBetweenUpdates = 0.5f;
@@ -33,15 +27,27 @@ namespace WizardsCode.Stats {
 
         float m_TimeOfLastUpdate = 0;
         float m_TimeOfNextUpdate = 0;
-        MemoryController m_Memory;
         ActorController m_Controller;
         AbstractAIBehaviour[] m_Behaviours = default;
         private AbstractAIBehaviour m_CurrentBehaviour;
         private Interactable m_TargetInteractable;
 
-        public StateSO[] desiredStates
+        public MemoryController Memory { get; private set; }
+
+        public StateSO[] DesiredStates
         {
-            get { return m_DesiredStates; }
+            get {
+                //TODO Cache desired states
+                List<StateSO> states = new List<StateSO>();
+                for (int i = 0; i < m_Behaviours.Length; i++)
+                {
+                    for (int idx = 0; idx < m_Behaviours[i].requiredStates.Length; i++)
+                    {
+                        states.Add(m_Behaviours[i].requiredStates[idx].state);
+                    }
+                }
+                return states.ToArray();
+            }
         }
 
         public StateSO[] UnsatisfiedDesiredStates { get; internal set; }
@@ -63,8 +69,8 @@ namespace WizardsCode.Stats {
 
         private void Awake()
         {
-            m_Memory = GetComponent<MemoryController>();
             m_Controller = GetComponent<ActorController>();
+            Memory = GetComponentInChildren<MemoryController>();
             m_Behaviours = GetComponentsInChildren<AbstractAIBehaviour>();
         }
 
@@ -131,8 +137,8 @@ namespace WizardsCode.Stats {
         {
             //TODO Allow tasks to be interuptable
             if (m_CurrentBehaviour != null && m_CurrentBehaviour.IsExecuting) return;
-            
-            AbstractAIBehaviour candidateBehaviour = m_DefaultBehaviour;
+
+            AbstractAIBehaviour candidateBehaviour = null;
             float highestWeight = float.MinValue;
             float currentWeight = 0;
             for (int i = 0; i < m_Behaviours.Length; i++)
@@ -161,11 +167,11 @@ namespace WizardsCode.Stats {
         private void UpdateUnsatisfiedStates()
         {
             List<StateSO> states = new List<StateSO>();
-            for (int i = 0; i < m_DesiredStates.Length; i++)
+            for (int i = 0; i < DesiredStates.Length; i++)
             {
-                if (!m_DesiredStates[i].IsSatisfiedFor(this))
+                if (!DesiredStates[i].IsSatisfiedFor(this))
                 {
-                    states.Add(m_DesiredStates[i]);
+                    states.Add(DesiredStates[i]);
                 }
             }
             UnsatisfiedDesiredStates = states.ToArray();
@@ -238,9 +244,9 @@ namespace WizardsCode.Stats {
         /// <returns>True if the influencer was added, otherwise false.</returns>
         public bool TryAddInfluencer(StatInfluencerSO influencer)
         {
-            if (m_Memory != null && influencer.generator != null)
+            if (Memory != null && influencer.generator != null)
             {
-                MemorySO[] memories = m_Memory.GetAllMemoriesAbout(influencer.generator);
+                MemorySO[] memories = Memory.GetAllMemoriesAbout(influencer.generator);
                 for (int i = 0; i < memories.Length; i++)
                 {
                     if (memories[i].stat == influencer.stat && memories[i].time + memories[i].cooldown > Time.timeSinceLevelLoad)
@@ -250,7 +256,7 @@ namespace WizardsCode.Stats {
                 }
             }
 
-            if (m_Memory != null)
+            if (Memory != null)
             {
                 StatSO stat = GetOrCreateStat(influencer.stat);
                 List<StateSO> states = GetStatesFor(stat);
@@ -281,7 +287,7 @@ namespace WizardsCode.Stats {
                             break;
                     }
 
-                    m_Memory.AddMemory(influencer, isGood);
+                    Memory.AddMemory(influencer, isGood);
                 }
             }
 
@@ -294,11 +300,11 @@ namespace WizardsCode.Stats {
         {
             List<StateSO> states = new List<StateSO>();
 
-            for (int i = 0; i < m_DesiredStates.Length; i++)
+            for (int i = 0; i < DesiredStates.Length; i++)
             {
-                if (stat.name == m_DesiredStates[i].statTemplate.name)
+                if (stat.name == DesiredStates[i].statTemplate.name)
                 {
-                    states.Add(m_DesiredStates[i]);
+                    states.Add(DesiredStates[i]);
                     break;
                 }
             }
@@ -387,6 +393,16 @@ namespace WizardsCode.Stats {
                 msg += "\nIs not ";
                 msg += UnsatisfiedDesiredStates[i].name + " ";
                 msg += " (" + stat.name + " should be " + UnsatisfiedDesiredStates[i].objective + " " + UnsatisfiedDesiredStates[i].normalizedTargetValue + ")";
+            }
+
+            if (Memory == null)
+            {
+                msg += "\n\nThis actor has no memory.";
+            } else
+            {
+                msg += "\n\nThis actor has a memory.";
+                msg += "\nShort term memories: " + Memory.GetShortTermMemories().Length;
+                msg += "\nLong term memories: " + Memory.GetLongTermMemories().Length;
             }
 
             msg += "\n\nCurrent Behaviour";

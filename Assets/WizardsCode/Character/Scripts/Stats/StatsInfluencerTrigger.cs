@@ -36,7 +36,7 @@ namespace WizardsCode.Character.Stats
             float lastTime;
             if (m_TimeOfLastInfluence.TryGetValue(brain, out lastTime))
             {
-                return lastTime + m_Cooldown > Time.timeSinceLevelLoad;
+                return Time.timeSinceLevelLoad < lastTime + m_Cooldown;
             } else
             {
                 return false;
@@ -80,7 +80,7 @@ namespace WizardsCode.Character.Stats
 
             if (brain == null || !brain.ShouldInteractWith(this)) return;
 
-            if (IsOnCooldownFor(brain))
+            if (!IsOnCooldownFor(brain))
             {
                 AddInfluencer(brain);
             }

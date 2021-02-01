@@ -19,7 +19,8 @@ namespace WizardsCode.Character
         
         internal Brain brain;
         internal ActorController controller;
-        internal MemoryController memory;
+        
+        internal MemoryController Memory { get { return brain.Memory; } }
 
         public RequiredState[] requiredStates {
             get {return m_RequiredStates;}
@@ -92,7 +93,6 @@ namespace WizardsCode.Character
                 }
             }
             controller = GetComponentInParent<ActorController>();
-            memory = GetComponentInParent<MemoryController>();
         }
 
         /// <summary>
@@ -182,9 +182,9 @@ namespace WizardsCode.Character
             {
                 UpdateCacheWithNearbyInteractables(requiredStates[0].state.statTemplate);
 
-                if (memory != null)
+                if (Memory != null)
                 {
-                    MemorySO[] memories = memory.GetMemoriesInfluencingStat(requiredStates[0].state.statTemplate);
+                    MemorySO[] memories = Memory.GetMemoriesInfluencingStat(requiredStates[0].state.statTemplate);
                     Interactable interactable;
                     for (int i = 0; i < memories.Length; i++)
                     {

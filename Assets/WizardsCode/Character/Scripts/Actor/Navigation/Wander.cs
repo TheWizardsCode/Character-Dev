@@ -44,8 +44,7 @@ namespace WizardsCode.Character
         {
             base.Init();
 
-            m_StartPosition = transform.position;            
-            memory = GetComponent<MemoryController>();
+            m_StartPosition = transform.position;
         }
 
         /// <summary>
@@ -141,14 +140,14 @@ namespace WizardsCode.Character
                         continue;
                     }
 
-                    if (memory != null)
+                    if (Memory != null)
                     {
                         Collider[] hitColliders = Physics.OverlapSphere(position, 5f);
                         for (int i = 0; i < hitColliders.Length; i++)
                         {
                             if (hitColliders[i].gameObject != gameObject)
                             {
-                                MemorySO[] memories = memory.GetAllMemoriesAbout(hitColliders[i].gameObject);
+                                MemorySO[] memories = Memory.GetAllMemoriesAbout(hitColliders[i].gameObject);
                                 for (int y = 0; y < memories.Length; y++)
                                 {
                                     // TODO This avoids an endpoint within a space we don't like, but we also need to avoid paths that include area we don't like
