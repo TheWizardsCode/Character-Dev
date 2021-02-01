@@ -9,11 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 415d279d9d5523c49bbf529ff168d783, type: 3}
-  m_Name: Regain Energy
+  m_Script: {fileID: 11500000, guid: c51095d4916d20d4f8b4b02cc693ecec, type: 3}
+  m_Name: Cash
   m_EditorClassIdentifier: 
-  m_stat: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
-  m_MaxChange: 100
-  m_Duration: 30
-  m_Cooldown: 30
-  m_InfluenceApplied: 0
+  m_displayName: Cash
+  startValue: 30
+  minValue: 0
+  maxValue: 100000
+  m_AdjustsOverTime: 0
+  m_BaseNormalizedValue: 0
+  m_SpeedToBaseValue: 5
+  m_CurrentNormalizedValue: 1
