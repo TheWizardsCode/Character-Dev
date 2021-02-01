@@ -10,6 +10,7 @@ namespace WizardsCode.Utility.UI
     /// Attach to an instrcutions panel so that it can be removed by pressing the ESC key.
     /// While the panel is visible the game will be paused.
     /// </summary>
+    [ExecuteAlways]
     public class InstructionsPanel : MonoBehaviour
     {
         [SerializeField, Tooltip("If the documentation is to be loaded from a file in the Documentation folder enter its name here. The content of this file will be placed into the UI on startup.")]
