@@ -21,8 +21,13 @@ namespace WizardsCode.Utility.UI
         void Awake()
         {
             Time.timeScale = 0;
+        }
 
-            if (!string.IsNullOrEmpty(documentationFilename) && documentationTextGUI) { 
+        // Update is called once per frame
+        void Update()
+        {
+            if (!string.IsNullOrEmpty(documentationFilename) && documentationTextGUI)
+            {
                 //TODO don't hardcode the path to the documentation folder
                 TextAsset content = (TextAsset)AssetDatabase.LoadAssetAtPath("Assets/WizardsCode/Character/Documentation/" + documentationFilename, typeof(TextAsset));
                 if (content != null)
@@ -30,11 +35,7 @@ namespace WizardsCode.Utility.UI
                     documentationTextGUI.text = content.text;
                 }
             }
-        }
 
-        // Update is called once per frame
-        void Update()
-        {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 gameObject.SetActive(false);
