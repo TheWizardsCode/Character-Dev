@@ -1334,7 +1334,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_DisplayName: Wander
   m_RequiredStates: []
-  m_Duration: 5
   awarenessRange: 10
   minTimeBetweenRandomPathChanges: 5
   maxTimeBetweenRandomPathChanges: 15
@@ -1360,7 +1359,6 @@ MonoBehaviour:
   m_RequiredStates:
   - state: {fileID: 11400000, guid: e30fb225c32f2084695d3aa33ce9e5c5, type: 2}
     invert: 1
-  m_Duration: 5
   awarenessRange: 10
 --- !u!114 &1492661178
 MonoBehaviour:
@@ -1378,7 +1376,6 @@ MonoBehaviour:
   m_RequiredStates:
   - state: {fileID: 11400000, guid: ecc69f49e6bf0de4aa6a4d2cd85c971b, type: 2}
     invert: 1
-  m_Duration: 5
   awarenessRange: 10
 --- !u!114 &1492661179
 MonoBehaviour:
@@ -1396,7 +1393,6 @@ MonoBehaviour:
   m_RequiredStates:
   - state: {fileID: 11400000, guid: ef3549760720a984e9098abc3d3bfb11, type: 2}
     invert: 1
-  m_Duration: 30
   awarenessRange: 10
 --- !u!114 &2368201730389772761 stripped
 MonoBehaviour:

@@ -133,7 +133,7 @@ namespace WizardsCode.Stats {
             if (m_CurrentBehaviour != null && m_CurrentBehaviour.IsExecuting) return;
             
             AbstractAIBehaviour candidateBehaviour = m_DefaultBehaviour;
-            float highestWeight = 0;
+            float highestWeight = float.MinValue;
             float currentWeight = 0;
             for (int i = 0; i < m_Behaviours.Length; i++)
             {

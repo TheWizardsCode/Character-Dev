@@ -72,7 +72,7 @@ namespace WizardsCode.Character
             if (controller.HasReachedTarget)
             {
                 OnReachedTarget();
-                IsExecuting = false;
+                Finish();
             }
 
             if (timeToNextWanderPathChange <= 0) //  || !m_Agent.hasPath || m_Agent.pathStatus == NavMeshPathStatus.PathInvalid

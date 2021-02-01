@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using WizardsCode.Stats;
@@ -25,11 +26,38 @@ namespace WizardsCode.Character.Stats
         [SerializeField, Tooltip("If the actor stays within the trigger area can they get a new influencer after the duration + cooldown has expired?")]
         bool m_IsRepeating = false;
 
+        /// <summary>
+        /// Test to see if this influencer trigger is on cooldown for a given actor.
+        /// </summary>
+        /// <param name="brain">The brain of the actor we are testing against</param>
+        /// <returns>True if this influencer is on cooldown, meaning the actor cannot use it yet.</returns>
+        internal bool IsOnCooldownFor(Brain brain)
+        {
+            float lastTime;
+            if (m_TimeOfLastInfluence.TryGetValue(brain, out lastTime))
+            {
+                return lastTime + m_Cooldown > Time.timeSinceLevelLoad;
+            } else
+            {
+                return false;
+            }
+        }
+
         private Dictionary<Brain, float> m_TimeOfLastInfluence = new Dictionary<Brain, float>();
 
         public StatSO Stat
         {
             get { return m_Stat; }
+        }
+
+        /// <summary>
+        /// The time this influencer will operate.
+        /// </summary>
+        public float Duration { 
+            get
+            {
+                return m_Duration;
+            }
         }
 
         private void OnTriggerEnter(Collider other)
@@ -52,13 +80,9 @@ namespace WizardsCode.Character.Stats
 
             if (brain == null || !brain.ShouldInteractWith(this)) return;
 
-            float lastTime;
-            if (m_TimeOfLastInfluence.TryGetValue(brain, out lastTime))
+            if (IsOnCooldownFor(brain))
             {
-                if (lastTime + m_Duration + m_Cooldown <= Time.timeSinceLevelLoad)
-                {
-                    AddInfluencer(brain);
-                }
+                AddInfluencer(brain);
             }
         }
 

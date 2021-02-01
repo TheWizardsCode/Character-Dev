@@ -14,9 +14,6 @@ namespace WizardsCode.Character
         //TODO These are not required states, they are affected states and I think they will always be inverted
         [SerializeField, Tooltip("The required states for this behaviour to be enabled.")]
         RequiredState[] m_RequiredStates = new RequiredState[0];
-        //TODO Duration should really come from the influencer rather than the behaviour. Different influencers will take different amounts of time.
-        [SerializeField, Tooltip("The duration within which the actor will be prevented from starting another behaviour.")]
-        float m_Duration = 5;
         [SerializeField, Tooltip("The range within which the Actor can sense interactables that this behaviour can impact. This does not affect interactables that are recalled from memory.")]
         float awarenessRange = 10;
         
@@ -56,12 +53,12 @@ namespace WizardsCode.Character
 
                 UpdateAvailbleInteractablesCache();
 
-                return cachedAvailableInteractables.Count != 0;
+                return m_RequiredStates.Length == 0 || cachedAvailableInteractables.Count != 0;
             }
         }
 
         private bool m_IsExecuting = false;
-        private float m_StartTime;
+        private float m_EndTime;
         private List<Interactable> cachedAvailableInteractables = new List<Interactable>();
 
         /// <summary>
@@ -73,7 +70,7 @@ namespace WizardsCode.Character
             {
                 if (value && !m_IsExecuting)
                 {
-                    m_StartTime = 0;
+                    m_EndTime = 0;
                 }
 
                 m_IsExecuting = value;
@@ -126,17 +123,18 @@ namespace WizardsCode.Character
         internal void UpdateCacheWithNearbyInteractables(StatSO statTemplate)
         {
             //TODO Cache the interactables near the current location and only update if moved
-
             cachedAvailableInteractables = new List<Interactable>();
 
-            //TODO Put interactables on a layer to make the physics operation fsater
+            //TODO Put interactables on a layer to make the physics operation faster
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, awarenessRange);
             Interactable currentInteractable;
             for (int i = 0; i < hitColliders.Length; i++)
             {
                 currentInteractable = hitColliders[i].GetComponent<Interactable>();
                 //TODO need to only get interactables that affect the state in the way desired (e.g. increase or decrease)
-                if (currentInteractable != null && currentInteractable.Influences(statTemplate))
+                if (currentInteractable != null 
+                    && currentInteractable.Influences(statTemplate)
+                    && !currentInteractable.IsOnCooldownFor(brain))
                 {
                     cachedAvailableInteractables.Add(currentInteractable);
                 }
@@ -148,10 +146,8 @@ namespace WizardsCode.Character
         {
             if (!IsExecuting) return;
             
-            if (m_StartTime == 0)
+            if (m_EndTime == 0)
             {
-                m_StartTime = Time.timeSinceLevelLoad;
-
                 if (cachedAvailableInteractables.Count == 0)
                 {
                     brain.TargetInteractable = null;
@@ -161,6 +157,7 @@ namespace WizardsCode.Character
                     //TODO select the optimal interactible based on distance and amount of influence
                     int idx = Random.Range(0, cachedAvailableInteractables.Count);
                     brain.TargetInteractable = cachedAvailableInteractables[idx];
+                    m_EndTime = Time.timeSinceLevelLoad + brain.TargetInteractable.Duration;
                 }
             }
             OnUpdate();
@@ -172,7 +169,7 @@ namespace WizardsCode.Character
         /// </summary>
         protected virtual void OnUpdate()
         {
-            if (m_StartTime + m_Duration <= Time.timeSinceLevelLoad)
+            if (m_EndTime < Time.timeSinceLevelLoad)
             {
                 Finish();
             }
@@ -191,20 +188,25 @@ namespace WizardsCode.Character
                     Interactable interactable;
                     for (int i = 0; i < memories.Length; i++)
                     {
+                        //TODO if memory is of an already cached interactable we can skip
                         if (memories[i].isGood)
                         {
                             interactable = memories[i].about.GetComponentInChildren<Interactable>();
-                            if (interactable != null) cachedAvailableInteractables.Add(interactable);
+                            if (interactable != null
+                                && !interactable.IsOnCooldownFor(brain))
+                            {
+                                cachedAvailableInteractables.Add(interactable);
+                            }
                         }
                     }
                 }
             }
         }
 
-        private void Finish()
+        internal void Finish()
         {
             IsExecuting = false;
-            m_StartTime = 0;
+            m_EndTime = 0;
         }
 
         public override string ToString()
