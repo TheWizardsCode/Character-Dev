@@ -33,6 +33,9 @@ namespace WizardsCode.Utility.UI
                 if (content != null)
                 {
                     documentationTextGUI.text = content.text;
+                } else
+                {
+                    Debug.LogError("Unable to find documentation file '" + documentationFilename + "' configured in " + this);
                 }
             }
 

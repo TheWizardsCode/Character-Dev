@@ -1300,8 +1300,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1492661175}
-  - component: {fileID: 1492661179}
-  - component: {fileID: 1492661178}
   - component: {fileID: 1492661177}
   - component: {fileID: 1492661176}
   m_Layer: 0
@@ -1363,40 +1361,6 @@ MonoBehaviour:
   m_DisplayName: Learn
   m_RequiredStates:
   - state: {fileID: 11400000, guid: e30fb225c32f2084695d3aa33ce9e5c5, type: 2}
-    invert: 1
-  awarenessRange: 10
---- !u!114 &1492661178
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1492661174}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45e2d955ea028604c9552bc8d9e5cf47, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_DisplayName: Sleep
-  m_RequiredStates:
-  - state: {fileID: 11400000, guid: ef3549760720a984e9098abc3d3bfb11, type: 2}
-    invert: 1
-  awarenessRange: 10
---- !u!114 &1492661179
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1492661174}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45e2d955ea028604c9552bc8d9e5cf47, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_DisplayName: Eat
-  m_RequiredStates:
-  - state: {fileID: 11400000, guid: ecc69f49e6bf0de4aa6a4d2cd85c971b, type: 2}
     invert: 1
   awarenessRange: 10
 --- !u!114 &2368201730389772761 stripped
