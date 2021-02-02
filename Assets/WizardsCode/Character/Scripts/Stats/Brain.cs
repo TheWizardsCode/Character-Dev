@@ -16,6 +16,10 @@ namespace WizardsCode.Stats {
         , IDebug
 #endif
     {
+        [Header("Personality")]
+        [SerializeField, Tooltip("Desired States are the states that the actor would like to satisfy. These are, essentially, the things that drive the actor.")]
+        StateSO[] m_DesiredStates = default;
+
         [Header("Optimization")]
         [SerializeField, Tooltip("How often stats should be processed for changes.")]
         float m_TimeBetweenUpdates = 0.5f;
@@ -34,7 +38,17 @@ namespace WizardsCode.Stats {
 
         public MemoryController Memory { get; private set; }
 
-        public StateSO[] DesiredStates
+        /// <summary>
+        /// Desired States are the states that the actor would like to satisfy.
+        /// These are, essentially, the things that drive the actor.
+        /// </summary>
+        public StateSO[] DesiredStates { get { return m_DesiredStates; } }
+
+        /// <summary>
+        /// Needed states are ones that are needed in order to carry out one
+        /// or more behavour.
+        /// </summary>
+        public StateSO[] NeededStates
         {
             get {
                 //TODO Cache desired states
@@ -182,19 +196,34 @@ namespace WizardsCode.Stats {
         /// This can be used, for example. by AI deciding what action to take next.
         /// </summary>
         /// <returns>A list of stats that are not in a desired state.</returns>
-        [Obsolete("This method needs to be replaced with one that identifies whether the stat is to increase or decrease. Or perhaps it is not needed at all since it is currently only used in WanderWithIntent. Maybe that behaviour should look for places the brain has identified for it.")]
+        [Obsolete("This method needs to be replaced with one that identifies whether the stat is satisfied or needs to increase or decrease. Or perhaps it is not needed at all since it is currently only used in WanderWithIntent. Maybe that behaviour should look for places the brain has identified for it.")]
         public StatSO[] GetStatsNotInDesiredState()
         {
             List<StatSO> stats = new List<StatSO>();
             for (int i = 0; i < UnsatisfiedDesiredStates.Length; i++)
             {
-                StatSO stat = GetOrCreateStat(UnsatisfiedDesiredStates[i].statTemplate);
-                if (GetGoalFor(UnsatisfiedDesiredStates[i].statTemplate) != StateSO.Goal.NoAction)
+                stats.AddRange(GetStatsDesiredForState(UnsatisfiedDesiredStates[i]));
+            }
+            return stats.ToArray();
+        }
+
+        private List<StatSO> GetStatsDesiredForState(StateSO state)
+        {
+            List<StatSO> stats = new List<StatSO>();
+            if (state.statTemplate != null)
+            {
+                StatSO stat = GetOrCreateStat(state.statTemplate);
+                if (GetGoalFor(state.statTemplate) != StateSO.Goal.NoAction)
                 {
                     stats.Add(stat);
                 }
             }
-            return stats.ToArray();
+
+            for (int idx = 1; idx < state.SubStates.Length; idx++)
+            {
+                stats.AddRange(GetStatsDesiredForState(state.SubStates[idx]));
+            }
+            return stats;
         }
 
         /// <summary>
@@ -206,9 +235,12 @@ namespace WizardsCode.Stats {
         {
             for (int i = 0; i < m_Stats.Count; i++)
             {
-                if (m_Stats[i].name == template.name)
+                if (template != null)
                 {
-                    return m_Stats[i];
+                    if (m_Stats[i].name == template.name)
+                    {
+                        return m_Stats[i];
+                    }
                 }
             }
             return null;
@@ -302,7 +334,7 @@ namespace WizardsCode.Stats {
 
             for (int i = 0; i < DesiredStates.Length; i++)
             {
-                if (stat.name == DesiredStates[i].statTemplate.name)
+                if (DesiredStates[i].statTemplate != null && stat.name == DesiredStates[i].statTemplate.name)
                 {
                     states.Add(DesiredStates[i]);
                     break;

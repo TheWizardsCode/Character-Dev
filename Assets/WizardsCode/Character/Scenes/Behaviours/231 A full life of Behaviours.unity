@@ -815,7 +815,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Eat, Sleep, Work, Play and Learn Behaviour Set
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3938940413439049667, guid: fc96c4b3ae6ba0848816427c33e7beb8, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: fc96c4b3ae6ba0848816427c33e7beb8, type: 3}
 --- !u!1 &1130285046
 GameObject:
@@ -1567,6 +1568,47 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1341916249903757481, guid: 5946825c01ac14c4b8a72b03526b1f70,
+        type: 3}
+      propertyPath: m_DesiredStates.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1341916249903757481, guid: 5946825c01ac14c4b8a72b03526b1f70,
+        type: 3}
+      propertyPath: m_DesiredStates.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 53dc65a468340dd458f231254029ab52,
+        type: 2}
+    - target: {fileID: 1341916249903757481, guid: 5946825c01ac14c4b8a72b03526b1f70,
+        type: 3}
+      propertyPath: m_DesiredStates.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: c0811d82e3a1aeb40b0f48bab0f522af,
+        type: 2}
+    - target: {fileID: 1341916249903757481, guid: 5946825c01ac14c4b8a72b03526b1f70,
+        type: 3}
+      propertyPath: m_DesiredStates.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: ecc69f49e6bf0de4aa6a4d2cd85c971b,
+        type: 2}
+    - target: {fileID: 1341916249903757481, guid: 5946825c01ac14c4b8a72b03526b1f70,
+        type: 3}
+      propertyPath: m_DesiredStates.Array.data[3]
+      value: 
+      objectReference: {fileID: 11400000, guid: ef3549760720a984e9098abc3d3bfb11,
+        type: 2}
+    - target: {fileID: 1341916249903757481, guid: 5946825c01ac14c4b8a72b03526b1f70,
+        type: 3}
+      propertyPath: m_DesiredStates.Array.data[4]
+      value: 
+      objectReference: {fileID: 11400000, guid: 0c1fb811601257240b793d86c1a22950,
+        type: 2}
+    - target: {fileID: 1341916249903757481, guid: 5946825c01ac14c4b8a72b03526b1f70,
+        type: 3}
+      propertyPath: m_DesiredStates.Array.data[5]
+      value: 
+      objectReference: {fileID: 11400000, guid: dafe8a104efbb6b4c9db8348013f854c,
+        type: 2}
     - target: {fileID: 5115762418512223567, guid: 5946825c01ac14c4b8a72b03526b1f70,
         type: 3}
       propertyPath: m_LocalPosition.x

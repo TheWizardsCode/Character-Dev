@@ -31,6 +31,8 @@ namespace WizardsCode.Character.Stats
             StateSO[] states = character.DesiredStates;
             for (int i = 0; i < states.Length; i++)
             {
+                if (states[i].statTemplate == null) continue;
+
                 //TODO cache results rather than grabbing stat every cycle
                 StatSO stat = character.GetOrCreateStat(states[i].statTemplate);
 
