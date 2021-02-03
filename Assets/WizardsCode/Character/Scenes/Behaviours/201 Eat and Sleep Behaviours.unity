@@ -1306,5 +1306,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: Eat and Sleep Behaviour Set
       objectReference: {fileID: 0}
+    - target: {fileID: 190556795456077561, guid: 32fab1670319fb94a816bf153cc2f916,
+        type: 3}
+      propertyPath: m_RequiresInteractable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 190556795456077562, guid: 32fab1670319fb94a816bf153cc2f916,
+        type: 3}
+      propertyPath: m_RequiredStats.Array.data[0].normalizedValue
+      value: 0.802
+      objectReference: {fileID: 0}
+    - target: {fileID: 190556795456077562, guid: 32fab1670319fb94a816bf153cc2f916,
+        type: 3}
+      propertyPath: m_RequiredStats.Array.data[0].objective
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 32fab1670319fb94a816bf153cc2f916, type: 3}

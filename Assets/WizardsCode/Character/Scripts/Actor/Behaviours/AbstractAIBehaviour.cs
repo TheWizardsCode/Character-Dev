@@ -13,12 +13,13 @@ namespace WizardsCode.Character
     {
         [SerializeField, Tooltip("The name to use in the User Interface.")]
         string m_DisplayName = "Unnamed AI Behaviour";
-        //TODO These are not required states, they are affected states and I think they will always be inverted
-        [SerializeField, Tooltip("The required states for this behaviour to be enabled.")]
-        [FormerlySerializedAs("m_RequiredStates")]
-        RequiredState[] m_AffectedStates = new RequiredState[0];
         [SerializeField, Tooltip("The required stats to enable this behaviour. Here you should set minimum, maximum or approximate values for stats that are needed for this behaviour to fire. For example, buying items is only possible if the actor has cash.")]
         RequiredStat[] m_RequiredStats = default;
+        //TODO These are not required states, they are affected states and I think they will always be inverted
+        [SerializeField, Tooltip("The required states for this behaviour to be enabled.")]
+        DesiredStateImpact[] m_AffectedStates = new DesiredStateImpact[0];
+        [SerializeField, Tooltip("Does this behaviour require an interactable to be active?")]
+        bool m_RequiresInteractable = true;
         [SerializeField, Tooltip("The range within which the Actor can sense interactables that this behaviour can impact. This does not affect interactables that are recalled from memory.")]
         float awarenessRange = 10;
         
@@ -28,7 +29,7 @@ namespace WizardsCode.Character
         internal MemoryController Memory { get { return brain.Memory; } }
 
         [Obsolete("We should probably pull this data from the interactable.")]
-        public RequiredState[] AffectedStates {
+        public DesiredStateImpact[] AffectedStates {
             get {return m_AffectedStates;}
         }
 
@@ -45,22 +46,29 @@ namespace WizardsCode.Character
         {
             get
             {
-                // Are requirements met?
-                for (int i = 0; i < m_AffectedStates.Length; i++)
+                bool requirementsMet = false;
+                for (int i = 0; i < m_RequiredStats.Length; i++)
                 {
-                    if (m_AffectedStates[i].invert)
+                    switch (m_RequiredStats[i].objective)
                     {
-                        if (m_AffectedStates[i].state.IsSatisfiedFor(brain)) return false;
-                    }
-                    else
-                    {
-                        if (!m_AffectedStates[i].state.IsSatisfiedFor(brain)) return false;
+                        case Objective.LessThan:
+                            requirementsMet = brain.GetOrCreateStat(m_RequiredStats[i].stat).NormalizedValue < m_RequiredStats[i].normalizedValue;
+                            break;
+                        case Objective.Approximately:
+                            requirementsMet = Mathf.Approximately(brain.GetOrCreateStat(m_RequiredStats[i].stat).NormalizedValue, m_RequiredStats[i].normalizedValue);
+                            break;
+                        case Objective.GreaterThan:
+                            requirementsMet =  brain.GetOrCreateStat(m_RequiredStats[i].stat).NormalizedValue > m_RequiredStats[i].normalizedValue;
+                            break;
+                        default:
+                            Debug.LogError("Don't know how to handle an Objective of " + m_RequiredStats[i].objective);
+                            break;
                     }
                 }
 
                 UpdateAvailbleInteractablesCache();
 
-                return m_AffectedStates.Length == 0 || cachedAvailableInteractables.Count != 0;
+                return (m_RequiredStats.Length == 0 || requirementsMet) && (!m_RequiresInteractable || cachedAvailableInteractables.Count > 0);
             }
         }
 
@@ -183,6 +191,26 @@ namespace WizardsCode.Character
 
         private void UpdateAvailbleInteractablesCache()
         {
+            for (int i = 0; i < m_AffectedStates.Length; i++)
+            {
+                /*
+                switch (m_AffectedStates[i].objective)
+                {
+                    case Objective.LessThan:
+                        return m_AffectedStates[i].state
+
+                        case Objective.Approximately:
+                        break;
+
+                    case Objective.GreaterThan:
+                        break;
+
+                    default:
+                        Debug.LogError("Don't know how to handle an Objective of " + m_AffectedStates[i].objective);
+                        break;
+                }
+                */
+            }
             //TODO need to get interactables for all states (currently on getting for the first state)
             if (AffectedStates.Length > 0)
             {
@@ -222,12 +250,12 @@ namespace WizardsCode.Character
     }
     
     [Serializable]
-    public struct RequiredState
+    public struct DesiredStateImpact
     {
-        [SerializeField, Tooltip("The required states for this behaviour to be enabled.")]
+        [SerializeField, Tooltip("The state we want this behaviour to impact.")]
         public StateSO state;
-        [SerializeField, Tooltip("If set to true the state will be required to be inactive.")]
-        public bool invert;
+        [SerializeField, Tooltip("The type of change we desire, usually increase or decrease.")]
+        public Objective objective;
     }
 
     [Serializable]
@@ -236,7 +264,7 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("The stat we require a value for.")]
         public StatSO stat;
         [SerializeField, Tooltip("The object for this stats value, for example, greater than, less than or approximatly equal to.")]
-        Objective objective;
+        public Objective objective;
         [SerializeField, Tooltip("The normalized value required for this stat. "), Range(0f,1f)]
         public float normalizedValue;
     }
