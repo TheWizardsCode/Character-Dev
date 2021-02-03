@@ -27,7 +27,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 865814804603064886}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.003282249, z: 0.12968259}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -47,9 +47,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DisplayName: Eat
-  m_RequiredStates:
+  m_AffectedStates:
   - state: {fileID: 11400000, guid: ecc69f49e6bf0de4aa6a4d2cd85c971b, type: 2}
     invert: 1
+  m_RequiredStats:
+  - stat: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
+    objective: 0
+    normalizedValue: 0.745
   awarenessRange: 10
 --- !u!114 &865814804603064904
 MonoBehaviour:
@@ -64,9 +68,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DisplayName: Sleep
-  m_RequiredStates:
+  m_AffectedStates:
   - state: {fileID: 11400000, guid: ef3549760720a984e9098abc3d3bfb11, type: 2}
     invert: 1
+  m_RequiredStats:
+  - stat: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
+    objective: 0
+    normalizedValue: 0.272
   awarenessRange: 10
 --- !u!114 &2111137397857906006
 MonoBehaviour:
@@ -81,9 +89,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DisplayName: Learn
-  m_RequiredStates:
+  m_AffectedStates:
   - state: {fileID: 11400000, guid: e30fb225c32f2084695d3aa33ce9e5c5, type: 2}
     invert: 1
+  m_RequiredStats:
+  - stat: {fileID: 11400000, guid: 3091b91fc8dcd26428dac24f52b6116e, type: 2}
+    objective: 0
+    normalizedValue: 1
   awarenessRange: 10
 --- !u!114 &865814804603064906
 MonoBehaviour:
@@ -98,7 +110,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DisplayName: Wander
-  m_RequiredStates: []
+  m_AffectedStates: []
+  m_RequiredStats: []
   awarenessRange: 10
   minTimeBetweenRandomPathChanges: 5
   maxTimeBetweenRandomPathChanges: 15

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using WizardsCode.Stats;
 using System;
 using Random = UnityEngine.Random;
+using UnityEngine.Serialization;
+using static WizardsCode.Character.StateSO;
 
 namespace WizardsCode.Character
 {
@@ -13,7 +15,10 @@ namespace WizardsCode.Character
         string m_DisplayName = "Unnamed AI Behaviour";
         //TODO These are not required states, they are affected states and I think they will always be inverted
         [SerializeField, Tooltip("The required states for this behaviour to be enabled.")]
-        RequiredState[] m_RequiredStates = new RequiredState[0];
+        [FormerlySerializedAs("m_RequiredStates")]
+        RequiredState[] m_AffectedStates = new RequiredState[0];
+        [SerializeField, Tooltip("The required stats to enable this behaviour. Here you should set minimum, maximum or approximate values for stats that are needed for this behaviour to fire. For example, buying items is only possible if the actor has cash.")]
+        RequiredStat[] m_RequiredStats = default;
         [SerializeField, Tooltip("The range within which the Actor can sense interactables that this behaviour can impact. This does not affect interactables that are recalled from memory.")]
         float awarenessRange = 10;
         
@@ -22,8 +27,9 @@ namespace WizardsCode.Character
         
         internal MemoryController Memory { get { return brain.Memory; } }
 
-        public RequiredState[] requiredStates {
-            get {return m_RequiredStates;}
+        [Obsolete("We should probably pull this data from the interactable.")]
+        public RequiredState[] AffectedStates {
+            get {return m_AffectedStates;}
         }
 
         private void Start()
@@ -40,21 +46,21 @@ namespace WizardsCode.Character
             get
             {
                 // Are requirements met?
-                for (int i = 0; i < m_RequiredStates.Length; i++)
+                for (int i = 0; i < m_AffectedStates.Length; i++)
                 {
-                    if (m_RequiredStates[i].invert)
+                    if (m_AffectedStates[i].invert)
                     {
-                        if (m_RequiredStates[i].state.IsSatisfiedFor(brain)) return false;
+                        if (m_AffectedStates[i].state.IsSatisfiedFor(brain)) return false;
                     }
                     else
                     {
-                        if (!m_RequiredStates[i].state.IsSatisfiedFor(brain)) return false;
+                        if (!m_AffectedStates[i].state.IsSatisfiedFor(brain)) return false;
                     }
                 }
 
                 UpdateAvailbleInteractablesCache();
 
-                return m_RequiredStates.Length == 0 || cachedAvailableInteractables.Count != 0;
+                return m_AffectedStates.Length == 0 || cachedAvailableInteractables.Count != 0;
             }
         }
 
@@ -87,7 +93,7 @@ namespace WizardsCode.Character
             brain = GetComponentInParent<Brain>();
             if (brain == null)
             {
-                if (m_RequiredStates.Length > 0)
+                if (m_AffectedStates.Length > 0)
                 {
                     Debug.LogError(gameObject.name + " has required states defined but has no StatsController against which to check these states.");
                 }
@@ -112,9 +118,9 @@ namespace WizardsCode.Character
             float weight = 0;
             for (int i = 0; i < brain.UnsatisfiedDesiredStates.Length; i++)
             {
-                for (int idx = 0; idx < requiredStates.Length; idx++)
+                for (int idx = 0; idx < AffectedStates.Length; idx++)
                 {
-                    if (brain.UnsatisfiedDesiredStates[i].name == requiredStates[idx].state.name) weight++;
+                    if (brain.UnsatisfiedDesiredStates[i].name == AffectedStates[idx].state.name) weight++;
                 }
             }
             return weight / brain.UnsatisfiedDesiredStates.Length;
@@ -178,13 +184,13 @@ namespace WizardsCode.Character
         private void UpdateAvailbleInteractablesCache()
         {
             //TODO need to get interactables for all states (currently on getting for the first state)
-            if (requiredStates.Length > 0)
+            if (AffectedStates.Length > 0)
             {
-                UpdateCacheWithNearbyInteractables(requiredStates[0].state.statTemplate);
+                UpdateCacheWithNearbyInteractables(AffectedStates[0].state.statTemplate);
 
                 if (Memory != null)
                 {
-                    MemorySO[] memories = Memory.GetMemoriesInfluencingStat(requiredStates[0].state.statTemplate);
+                    MemorySO[] memories = Memory.GetMemoriesInfluencingStat(AffectedStates[0].state.statTemplate);
                     Interactable interactable;
                     for (int i = 0; i < memories.Length; i++)
                     {
@@ -222,5 +228,16 @@ namespace WizardsCode.Character
         public StateSO state;
         [SerializeField, Tooltip("If set to true the state will be required to be inactive.")]
         public bool invert;
-    } 
+    }
+
+    [Serializable]
+    public struct RequiredStat
+    {
+        [SerializeField, Tooltip("The stat we require a value for.")]
+        public StatSO stat;
+        [SerializeField, Tooltip("The object for this stats value, for example, greater than, less than or approximatly equal to.")]
+        Objective objective;
+        [SerializeField, Tooltip("The normalized value required for this stat. "), Range(0f,1f)]
+        public float normalizedValue;
+    }
 }

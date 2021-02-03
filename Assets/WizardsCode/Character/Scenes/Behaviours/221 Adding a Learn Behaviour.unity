@@ -369,6 +369,18 @@ MonoBehaviour:
   m_Duration: 30
   m_Cooldown: 30
   m_IsRepeating: 0
+--- !u!114 &632508968 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1341916249903757481, guid: 5946825c01ac14c4b8a72b03526b1f70,
+    type: 3}
+  m_PrefabInstance: {fileID: 1903679712}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c16293aed1528d24aad933246e10feee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &697836676
 GameObject:
   m_ObjectHideFlags: 0
@@ -913,7 +925,7 @@ PrefabInstance:
     - target: {fileID: 1524781527, guid: 7a17c6bb2ca7c2748860603b4499aa21, type: 3}
       propertyPath: character
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 632508968}
     - target: {fileID: 55733185629990233, guid: 7a17c6bb2ca7c2748860603b4499aa21,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -1341,6 +1353,29 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1341916249903757481, guid: 5946825c01ac14c4b8a72b03526b1f70,
+        type: 3}
+      propertyPath: m_DesiredStates.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1341916249903757481, guid: 5946825c01ac14c4b8a72b03526b1f70,
+        type: 3}
+      propertyPath: m_DesiredStates.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: ecc69f49e6bf0de4aa6a4d2cd85c971b,
+        type: 2}
+    - target: {fileID: 1341916249903757481, guid: 5946825c01ac14c4b8a72b03526b1f70,
+        type: 3}
+      propertyPath: m_DesiredStates.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: e30fb225c32f2084695d3aa33ce9e5c5,
+        type: 2}
+    - target: {fileID: 1341916249903757481, guid: 5946825c01ac14c4b8a72b03526b1f70,
+        type: 3}
+      propertyPath: m_DesiredStates.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: ef3549760720a984e9098abc3d3bfb11,
+        type: 2}
     - target: {fileID: 5115762418512223567, guid: 5946825c01ac14c4b8a72b03526b1f70,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1399,7 +1434,7 @@ PrefabInstance:
     - target: {fileID: 8444945103901806786, guid: 5946825c01ac14c4b8a72b03526b1f70,
         type: 3}
       propertyPath: m_Name
-      value: Neo with No Behaviours
+      value: Neo with Eat, Sleep and Learn Behaviours
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5946825c01ac14c4b8a72b03526b1f70, type: 3}
@@ -1472,24 +1507,3 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e95cd673e092e2e4b9681a245a73dcd8, type: 3}
---- !u!1 &6624998765228340669 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 865814804603064886, guid: e95cd673e092e2e4b9681a245a73dcd8,
-    type: 3}
-  m_PrefabInstance: {fileID: 6337484677224720267}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &6624998765228340670
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6624998765228340669}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45e2d955ea028604c9552bc8d9e5cf47, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_DisplayName: Unnamed AI Behaviour
-  m_RequiredStates: []
-  awarenessRange: 10

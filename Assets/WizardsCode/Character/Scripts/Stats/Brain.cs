@@ -44,26 +44,6 @@ namespace WizardsCode.Stats {
         /// </summary>
         public StateSO[] DesiredStates { get { return m_DesiredStates; } }
 
-        /// <summary>
-        /// Needed states are ones that are needed in order to carry out one
-        /// or more behavour.
-        /// </summary>
-        public StateSO[] NeededStates
-        {
-            get {
-                //TODO Cache desired states
-                List<StateSO> states = new List<StateSO>();
-                for (int i = 0; i < m_Behaviours.Length; i++)
-                {
-                    for (int idx = 0; idx < m_Behaviours[i].requiredStates.Length; i++)
-                    {
-                        states.Add(m_Behaviours[i].requiredStates[idx].state);
-                    }
-                }
-                return states.ToArray();
-            }
-        }
-
         public StateSO[] UnsatisfiedDesiredStates { get; internal set; }
         internal Interactable TargetInteractable
         {
