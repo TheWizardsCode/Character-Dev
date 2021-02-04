@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7604596892291220884}
   - component: {fileID: 2242483778498595817}
   - component: {fileID: 1031709833432347895}
+  - component: {fileID: 3634621180718998709}
   - component: {fileID: 1031709833432347893}
   m_Layer: 0
   m_Name: Eat, Sleep, Work, Play and Learn Behaviour Set
@@ -121,6 +122,28 @@ MonoBehaviour:
   m_RequiresInteractable: 1
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: 3091b91fc8dcd26428dac24f52b6116e, type: 2}
+    objective: 2
+  awarenessRange: 10
+--- !u!114 &3634621180718998709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1031709833432347785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e2d955ea028604c9552bc8d9e5cf47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_DisplayName: Socialize
+  m_RequiredStats:
+  - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
+    objective: 2
+    normalizedValue: 0.2
+  m_RequiresInteractable: 1
+  m_DesiredStateImpacts:
+  - statTemplate: {fileID: 11400000, guid: e7d5ac7f90040d04b892ec7dda97749d, type: 2}
     objective: 2
   awarenessRange: 10
 --- !u!114 &1031709833432347893
