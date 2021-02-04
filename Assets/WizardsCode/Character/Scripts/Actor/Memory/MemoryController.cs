@@ -109,6 +109,37 @@ namespace WizardsCode.Character
         }
 
         /// <summary>
+        /// Get all memories (long and short term) about interactables within a given range.
+        /// </summary>
+        /// <param name="range">The range within which interactables must be to be recalled</param>
+        /// <returns>All interactables remembered with range</returns>
+        public MemorySO[] GetAllMemoriesAboutInteractables(float range)
+        {
+            Interactable interactable;
+            List<MemorySO> memories = new List<MemorySO>();
+
+            for (int i = 0; i < m_ShortTermMemories.Count; i++)
+            {
+                interactable = m_ShortTermMemories[i].about.GetComponent<Interactable>();
+                if (interactable != null)
+                {
+                    memories.Add(m_ShortTermMemories[i]);
+                }
+            }
+
+            for (int i = 0; i < m_LongTermMemories.Count; i++)
+            {
+                interactable = m_LongTermMemories[i].about.GetComponent<Interactable>();
+                if (interactable != null)
+                {
+                    memories.Add(m_LongTermMemories[i]);
+                }
+            }
+
+            return memories.ToArray();
+        }
+
+        /// <summary>
         /// Get all long term memories, about a Game Object.
         /// </summary>
         /// <param name="go">The Game Object to retrieve memories about.</param>

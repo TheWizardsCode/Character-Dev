@@ -26,6 +26,8 @@ namespace WizardsCode.Character.Stats
         [SerializeField, Tooltip("If the actor stays within the trigger area can they get a new influencer after the duration + cooldown has expired?")]
         bool m_IsRepeating = false;
 
+        public float MaxChange {  get { return m_MaxChange; } }
+
         /// <summary>
         /// Test to see if this influencer trigger is on cooldown for a given actor.
         /// </summary>
@@ -45,7 +47,7 @@ namespace WizardsCode.Character.Stats
 
         private Dictionary<Brain, float> m_TimeOfLastInfluence = new Dictionary<Brain, float>();
 
-        public StatSO Stat
+        public StatSO StatTemplate
         {
             get { return m_Stat; }
         }

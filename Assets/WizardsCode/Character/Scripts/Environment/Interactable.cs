@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using WizardsCode.Stats;
 using WizardsCode.Character.Stats;
 using System;
+using static WizardsCode.Character.StateSO;
 
 namespace WizardsCode.Character
 {
@@ -33,10 +34,33 @@ namespace WizardsCode.Character
             m_Influencer = GetComponent<StatsInfluencerTrigger>();
         }
 
-        public bool Influences(StatSO stat) {
+        /// <summary>
+        /// Test to see if this interactable will affect a state in a way that
+        /// is desired.
+        /// </summary>
+        /// <param name="stateImpact">The desired state impact</param>
+        /// <returns>True if the desired impact will result from interaction, otherwise false.</returns>
+        public bool Influences(DesiredStatImpact stateImpact) {
             if (m_Influencer == null) return false;
 
-            return m_Influencer.Stat.name == stat.name;
+            bool result = m_Influencer.StatTemplate.name == stateImpact.statTemplate.name;
+            switch (stateImpact.objective)
+            {
+                case Objective.LessThan:
+                    result &= m_Influencer.MaxChange < 0;
+                    break;
+                case Objective.Approximately:
+                    result &= Mathf.Approximately(m_Influencer.MaxChange, 0);
+                    break;
+                case Objective.GreaterThan:
+                    result &= m_Influencer.MaxChange > 0;
+                    break;
+                default:
+                    Debug.LogError("Don't know how to handle objective " + stateImpact.objective);
+                    break;
+            }
+
+            return result;
         }
 
         /// <summary>
