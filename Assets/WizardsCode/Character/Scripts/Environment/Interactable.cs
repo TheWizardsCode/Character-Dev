@@ -43,24 +43,26 @@ namespace WizardsCode.Character
         public bool Influences(DesiredStatImpact stateImpact) {
             if (m_Influencer == null) return false;
 
-            bool result = m_Influencer.StatTemplate.name == stateImpact.statTemplate.name;
-            switch (stateImpact.objective)
+            for (int i = 0; i < m_Influencer.influences.Length; i++)
             {
-                case Objective.LessThan:
-                    result &= m_Influencer.MaxChange < 0;
-                    break;
-                case Objective.Approximately:
-                    result &= Mathf.Approximately(m_Influencer.MaxChange, 0);
-                    break;
-                case Objective.GreaterThan:
-                    result &= m_Influencer.MaxChange > 0;
-                    break;
-                default:
-                    Debug.LogError("Don't know how to handle objective " + stateImpact.objective);
-                    break;
+                if (m_Influencer.influences[i].statTemplate.name == stateImpact.statTemplate.name)
+                {
+                    switch (stateImpact.objective)
+                    {
+                        case Objective.LessThan:
+                            return m_Influencer.influences[i].maxChange < 0;
+                        case Objective.Approximately:
+                            return Mathf.Approximately(m_Influencer.influences[i].maxChange, 0);
+                        case Objective.GreaterThan:
+                            return m_Influencer.influences[i].maxChange > 0;
+                        default:
+                            Debug.LogError("Don't know how to handle objective " + stateImpact.objective);
+                            break;
+                    }
+                }
             }
 
-            return result;
+            return false;
         }
 
         /// <summary>

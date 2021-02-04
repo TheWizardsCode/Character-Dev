@@ -89,7 +89,6 @@ namespace WizardsCode.Stats {
         {
             if (Time.timeSinceLevelLoad < m_TimeOfNextUpdate) return;
 
-            //TODO don't need to repath every frame, but we might want to do it more frequently than the overall AI Decision making
             if (TargetInteractable != null && Vector3.SqrMagnitude(TargetInteractable.transform.position - m_Controller.TargetPosition) > 0.7f)
             {
                 m_Controller.TargetPosition = TargetInteractable.transform.position;
@@ -100,6 +99,7 @@ namespace WizardsCode.Stats {
                 m_Stats[i].OnUpdate();
             }
 
+            // Apply stat influencers
             for (int i = 0; i < m_StatsInfluencers.Count; i++)
             {
                 if (m_StatsInfluencers[i] != null)

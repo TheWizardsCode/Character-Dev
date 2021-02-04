@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 1031709833432347784}
   - component: {fileID: 1031709833432347894}
   - component: {fileID: 7604596892291220884}
-  - component: {fileID: 1031709833432347895}
   - component: {fileID: 2242483778498595817}
+  - component: {fileID: 1031709833432347895}
   - component: {fileID: 1031709833432347893}
   m_Layer: 0
   m_Name: Eat, Sleep, Work, Play and Learn Behaviour Set
@@ -28,7 +28,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1031709833432347785}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.003282249, z: 0.12968259}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -48,9 +48,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DisplayName: Eat
-  m_RequiredStats: []
+  m_RequiredStats:
+  - statTemplate: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
+    objective: 2
+    normalizedValue: 0.75
   m_RequiresInteractable: 1
-  m_DesiredStateImpacts: []
+  m_DesiredStateImpacts:
+  - statTemplate: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
+    objective: 0
   awarenessRange: 10
 --- !u!114 &7604596892291220884
 MonoBehaviour:
@@ -64,27 +69,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45e2d955ea028604c9552bc8d9e5cf47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_DisplayName: Work
-  m_RequiredStats: []
-  m_RequiresInteractable: 1
-  m_DesiredStateImpacts: []
-  awarenessRange: 10
---- !u!114 &1031709833432347895
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1031709833432347785}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45e2d955ea028604c9552bc8d9e5cf47, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
   m_DisplayName: Sleep
-  m_RequiredStats: []
+  m_RequiredStats:
+  - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
+    objective: 0
+    normalizedValue: 0.255
   m_RequiresInteractable: 1
-  m_DesiredStateImpacts: []
+  m_DesiredStateImpacts:
+  - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
+    objective: 2
   awarenessRange: 10
 --- !u!114 &2242483778498595817
 MonoBehaviour:
@@ -98,10 +91,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45e2d955ea028604c9552bc8d9e5cf47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_DisplayName: Learn
-  m_RequiredStats: []
+  m_DisplayName: Work
+  m_RequiredStats:
+  - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
+    objective: 0
+    normalizedValue: 1
   m_RequiresInteractable: 1
-  m_DesiredStateImpacts: []
+  m_DesiredStateImpacts:
+  - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
+    objective: 2
+  awarenessRange: 25
+--- !u!114 &1031709833432347895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1031709833432347785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e2d955ea028604c9552bc8d9e5cf47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_DisplayName: Learn
+  m_RequiredStats:
+  - statTemplate: {fileID: 11400000, guid: 3091b91fc8dcd26428dac24f52b6116e, type: 2}
+    objective: 0
+    normalizedValue: 1
+  m_RequiresInteractable: 1
+  m_DesiredStateImpacts:
+  - statTemplate: {fileID: 11400000, guid: 3091b91fc8dcd26428dac24f52b6116e, type: 2}
+    objective: 2
   awarenessRange: 10
 --- !u!114 &1031709833432347893
 MonoBehaviour:
