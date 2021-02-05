@@ -5,6 +5,7 @@ using WizardsCode.Stats;
 using WizardsCode.Character.Stats;
 using System;
 using static WizardsCode.Character.StateSO;
+using static WizardsCode.Character.Stats.StatsInfluencerTrigger;
 
 namespace WizardsCode.Character
 {
@@ -16,6 +17,13 @@ namespace WizardsCode.Character
     public class Interactable : MonoBehaviour
     {
         StatsInfluencerTrigger m_Influencer;
+
+        /// <summary>
+        /// Get the StatInfluences for this interactable.
+        /// </summary>
+        public StatInfluence[]  Influences {
+            get { return m_Influencer.influences; }
+        }
 
         /// <summary>
         /// The time it takes, under normal circumstances, to interact with this thing.
@@ -40,7 +48,7 @@ namespace WizardsCode.Character
         /// </summary>
         /// <param name="stateImpact">The desired state impact</param>
         /// <returns>True if the desired impact will result from interaction, otherwise false.</returns>
-        public bool Influences(DesiredStatImpact stateImpact) {
+        public bool HasInfluenceOn(DesiredStatImpact stateImpact) {
             if (m_Influencer == null) return false;
 
             for (int i = 0; i < m_Influencer.influences.Length; i++)

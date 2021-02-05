@@ -6,6 +6,8 @@ using System;
 using Random = UnityEngine.Random;
 using UnityEngine.Serialization;
 using static WizardsCode.Character.StateSO;
+using WizardsCode.Character.Stats;
+using static WizardsCode.Character.Stats.StatsInfluencerTrigger;
 
 namespace WizardsCode.Character
 {
@@ -68,7 +70,8 @@ namespace WizardsCode.Character
 
                 UpdateAvailbleInteractablesCache();
 
-                return (m_RequiredStats.Length == 0 || requirementsMet) && (!m_RequiresInteractable || cachedAvailableInteractables.Count > 0);
+                return (m_RequiredStats.Length == 0 || requirementsMet) 
+                    && (!m_RequiresInteractable || cachedAvailableInteractables.Count > 0);
             }
         }
 
@@ -179,10 +182,31 @@ namespace WizardsCode.Character
                 }
                 else
                 {
+                    Interactable interactable = null;
+                    StatInfluence influence;
                     //TODO select the optimal interactible based on distance and amount of influence
-                    int idx = Random.Range(0, cachedAvailableInteractables.Count);
-                    brain.TargetInteractable = cachedAvailableInteractables[idx];
-                    m_EndTime = Time.timeSinceLevelLoad + brain.TargetInteractable.Duration;
+                    for (int i = 0; i < cachedAvailableInteractables.Count; i++)
+                    {
+                        for (int idx = 0; idx < cachedAvailableInteractables[i].Influences.Length; idx++)
+                        {
+                            influence = cachedAvailableInteractables[i].Influences[idx];
+                            if (influence.maxChange < 0)
+                            {
+                                if (brain.GetOrCreateStat(influence.statTemplate).Value > influence.maxChange)
+                                {
+                                    //TODO don't match on the first stat, check others too, need all of them to match
+                                    interactable = cachedAvailableInteractables[i];
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    brain.TargetInteractable = interactable;
+                    if (interactable != null)
+                    {
+                        m_EndTime = Time.timeSinceLevelLoad + brain.TargetInteractable.Duration;
+                    }
                 }
             }
             OnUpdate();
@@ -200,6 +224,10 @@ namespace WizardsCode.Character
             }
         }
 
+        /// <summary>
+        /// Updates the cache of interractables in the area and from memory that can be used by this
+        /// behaviour.
+        /// </summary>
         private void UpdateAvailbleInteractablesCache()
         {
             cachedAvailableInteractables.Clear();
@@ -213,7 +241,7 @@ namespace WizardsCode.Character
                 for (int idx = 0; idx < DesiredStateImpacts.Length; idx++)
                 {
                     if (!candidateInteractables[i].IsOnCooldownFor(brain) 
-                        && candidateInteractables[i].Influences(DesiredStateImpacts[idx]))
+                        && candidateInteractables[i].HasInfluenceOn(DesiredStateImpacts[idx]))
                     {
                         cachedAvailableInteractables.Add(candidateInteractables[i]);
                         break;
@@ -236,7 +264,7 @@ namespace WizardsCode.Character
                     for (int idx = 0; idx < DesiredStateImpacts.Length; idx++)
                     {
                         if (!interactable.IsOnCooldownFor(brain)
-                            && interactable.Influences(DesiredStateImpacts[idx]))
+                            && interactable.HasInfluenceOn(DesiredStateImpacts[idx]))
                         {
                             cachedAvailableInteractables.Add(interactable);
                             break;
