@@ -742,7 +742,7 @@ GameObject:
   - component: {fileID: 308353990286599577}
   - component: {fileID: 7052856452304730166}
   m_Layer: 0
-  m_Name: Neo with No Behaviours
+  m_Name: Neo Pedestrians
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -761,7 +761,7 @@ Transform:
   m_Children:
   - {fileID: 7540341204525271306}
   - {fileID: 1412975150860039787}
-  - {fileID: 3166946061664967291}
+  - {fileID: 620574475721162805}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1067,7 +1067,7 @@ Transform:
   m_Father: {fileID: 1269383580575169921}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &288757109722090367
+--- !u!1001 &2841250835723096369
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -1129,6 +1129,36 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466693, guid: 7eff6a92dc3534740911b2ece7526899,
+        type: 3}
+      propertyPath: m_MaxWanderRange
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466693, guid: 7eff6a92dc3534740911b2ece7526899,
+        type: 3}
+      propertyPath: minDistanceOfRandomPathChange
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466693, guid: 7eff6a92dc3534740911b2ece7526899,
+        type: 3}
+      propertyPath: navMeshAreaMask
+      value: 113
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466693, guid: 7eff6a92dc3534740911b2ece7526899,
+        type: 3}
+      propertyPath: maxDistanceOfRandomPathChange
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466693, guid: 7eff6a92dc3534740911b2ece7526899,
+        type: 3}
+      propertyPath: minAngleOfRandomPathChange
+      value: -100
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466693, guid: 7eff6a92dc3534740911b2ece7526899,
+        type: 3}
+      propertyPath: maxAngleOfRandomPathChange
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 3454999400584466695, guid: 7eff6a92dc3534740911b2ece7526899,
         type: 3}
       propertyPath: m_Name
@@ -1136,9 +1166,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7eff6a92dc3534740911b2ece7526899, type: 3}
---- !u!4 &3166946061664967291 stripped
+--- !u!4 &620574475721162805 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3454999400584466692, guid: 7eff6a92dc3534740911b2ece7526899,
     type: 3}
-  m_PrefabInstance: {fileID: 288757109722090367}
+  m_PrefabInstance: {fileID: 2841250835723096369}
   m_PrefabAsset: {fileID: 0}
