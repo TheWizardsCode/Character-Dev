@@ -16,6 +16,10 @@ namespace WizardsCode.Stats {
         , IDebug
 #endif
     {
+        [Header("Personality")]
+        [SerializeField, Tooltip("Desired States are the states that the actor would like to satisfy. These are, essentially, the things that drive the actor.")]
+        StateSO[] m_DesiredStates = default;
+
         [Header("Optimization")]
         [SerializeField, Tooltip("How often stats should be processed for changes.")]
         float m_TimeBetweenUpdates = 0.5f;
@@ -34,21 +38,11 @@ namespace WizardsCode.Stats {
 
         public MemoryController Memory { get; private set; }
 
-        public StateSO[] DesiredStates
-        {
-            get {
-                //TODO Cache desired states
-                List<StateSO> states = new List<StateSO>();
-                for (int i = 0; i < m_Behaviours.Length; i++)
-                {
-                    for (int idx = 0; idx < m_Behaviours[i].requiredStates.Length; i++)
-                    {
-                        states.Add(m_Behaviours[i].requiredStates[idx].state);
-                    }
-                }
-                return states.ToArray();
-            }
-        }
+        /// <summary>
+        /// Desired States are the states that the actor would like to satisfy.
+        /// These are, essentially, the things that drive the actor.
+        /// </summary>
+        public StateSO[] DesiredStates { get { return m_DesiredStates; } }
 
         public StateSO[] UnsatisfiedDesiredStates { get; internal set; }
         internal Interactable TargetInteractable
@@ -95,7 +89,6 @@ namespace WizardsCode.Stats {
         {
             if (Time.timeSinceLevelLoad < m_TimeOfNextUpdate) return;
 
-            //TODO don't need to repath every frame, but we might want to do it more frequently than the overall AI Decision making
             if (TargetInteractable != null && Vector3.SqrMagnitude(TargetInteractable.transform.position - m_Controller.TargetPosition) > 0.7f)
             {
                 m_Controller.TargetPosition = TargetInteractable.transform.position;
@@ -106,6 +99,7 @@ namespace WizardsCode.Stats {
                 m_Stats[i].OnUpdate();
             }
 
+            // Apply stat influencers
             for (int i = 0; i < m_StatsInfluencers.Count; i++)
             {
                 if (m_StatsInfluencers[i] != null)
@@ -182,19 +176,34 @@ namespace WizardsCode.Stats {
         /// This can be used, for example. by AI deciding what action to take next.
         /// </summary>
         /// <returns>A list of stats that are not in a desired state.</returns>
-        [Obsolete("This method needs to be replaced with one that identifies whether the stat is to increase or decrease. Or perhaps it is not needed at all since it is currently only used in WanderWithIntent. Maybe that behaviour should look for places the brain has identified for it.")]
+        [Obsolete("This method needs to be replaced with one that identifies whether the stat is satisfied or needs to increase or decrease. Or perhaps it is not needed at all since it is currently only used in WanderWithIntent. Maybe that behaviour should look for places the brain has identified for it.")]
         public StatSO[] GetStatsNotInDesiredState()
         {
             List<StatSO> stats = new List<StatSO>();
             for (int i = 0; i < UnsatisfiedDesiredStates.Length; i++)
             {
-                StatSO stat = GetOrCreateStat(UnsatisfiedDesiredStates[i].statTemplate);
-                if (GetGoalFor(UnsatisfiedDesiredStates[i].statTemplate) != StateSO.Goal.NoAction)
+                stats.AddRange(GetStatsDesiredForState(UnsatisfiedDesiredStates[i]));
+            }
+            return stats.ToArray();
+        }
+
+        private List<StatSO> GetStatsDesiredForState(StateSO state)
+        {
+            List<StatSO> stats = new List<StatSO>();
+            if (state.statTemplate != null)
+            {
+                StatSO stat = GetOrCreateStat(state.statTemplate);
+                if (GetGoalFor(state.statTemplate) != StateSO.Goal.NoAction)
                 {
                     stats.Add(stat);
                 }
             }
-            return stats.ToArray();
+
+            for (int idx = 1; idx < state.SubStates.Length; idx++)
+            {
+                stats.AddRange(GetStatsDesiredForState(state.SubStates[idx]));
+            }
+            return stats;
         }
 
         /// <summary>
@@ -206,9 +215,12 @@ namespace WizardsCode.Stats {
         {
             for (int i = 0; i < m_Stats.Count; i++)
             {
-                if (m_Stats[i].name == template.name)
+                if (template != null)
                 {
-                    return m_Stats[i];
+                    if (m_Stats[i].name == template.name)
+                    {
+                        return m_Stats[i];
+                    }
                 }
             }
             return null;
@@ -302,7 +314,7 @@ namespace WizardsCode.Stats {
 
             for (int i = 0; i < DesiredStates.Length; i++)
             {
-                if (stat.name == DesiredStates[i].statTemplate.name)
+                if (DesiredStates[i].statTemplate != null && stat.name == DesiredStates[i].statTemplate.name)
                 {
                     states.Add(DesiredStates[i]);
                     break;

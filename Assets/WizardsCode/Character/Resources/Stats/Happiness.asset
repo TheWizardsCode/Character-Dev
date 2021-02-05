@@ -13,7 +13,10 @@ MonoBehaviour:
   m_Name: Happiness
   m_EditorClassIdentifier: 
   m_displayName: Happiness
+  startValue: 50
   minValue: 0
   maxValue: 100
+  m_AdjustsOverTime: 1
   m_BaseNormalizedValue: 0
-  m_CurrentNormalizedValue: 0
+  m_SpeedToBaseValue: 5
+  m_CurrentNormalizedValue: 1

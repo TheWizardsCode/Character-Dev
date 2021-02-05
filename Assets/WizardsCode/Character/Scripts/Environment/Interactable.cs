@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using WizardsCode.Stats;
 using WizardsCode.Character.Stats;
 using System;
+using static WizardsCode.Character.StateSO;
+using static WizardsCode.Character.Stats.StatsInfluencerTrigger;
 
 namespace WizardsCode.Character
 {
@@ -15,6 +17,13 @@ namespace WizardsCode.Character
     public class Interactable : MonoBehaviour
     {
         StatsInfluencerTrigger m_Influencer;
+
+        /// <summary>
+        /// Get the StatInfluences for this interactable.
+        /// </summary>
+        public StatInfluence[]  Influences {
+            get { return m_Influencer.influences; }
+        }
 
         /// <summary>
         /// The time it takes, under normal circumstances, to interact with this thing.
@@ -33,10 +42,35 @@ namespace WizardsCode.Character
             m_Influencer = GetComponent<StatsInfluencerTrigger>();
         }
 
-        public bool Influences(StatSO stat) {
+        /// <summary>
+        /// Test to see if this interactable will affect a state in a way that
+        /// is desired.
+        /// </summary>
+        /// <param name="stateImpact">The desired state impact</param>
+        /// <returns>True if the desired impact will result from interaction, otherwise false.</returns>
+        public bool HasInfluenceOn(DesiredStatImpact stateImpact) {
             if (m_Influencer == null) return false;
 
-            return m_Influencer.Stat.name == stat.name;
+            for (int i = 0; i < m_Influencer.influences.Length; i++)
+            {
+                if (m_Influencer.influences[i].statTemplate.name == stateImpact.statTemplate.name)
+                {
+                    switch (stateImpact.objective)
+                    {
+                        case Objective.LessThan:
+                            return m_Influencer.influences[i].maxChange < 0;
+                        case Objective.Approximately:
+                            return Mathf.Approximately(m_Influencer.influences[i].maxChange, 0);
+                        case Objective.GreaterThan:
+                            return m_Influencer.influences[i].maxChange > 0;
+                        default:
+                            Debug.LogError("Don't know how to handle objective " + stateImpact.objective);
+                            break;
+                    }
+                }
+            }
+
+            return false;
         }
 
         /// <summary>

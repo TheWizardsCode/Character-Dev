@@ -38,6 +38,11 @@ namespace WizardsCode.Character
             set { m_Stat = value; }
         }
 
+        public StateSO[] SubStates
+        {
+            get { return m_SubStates.ToArray(); }
+        }
+
         public Objective objective
         {
             get { return m_Objective; }

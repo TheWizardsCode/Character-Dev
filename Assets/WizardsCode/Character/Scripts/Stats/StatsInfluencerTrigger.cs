@@ -14,11 +14,8 @@ namespace WizardsCode.Character.Stats
     /// </summary>
     public class StatsInfluencerTrigger : MonoBehaviour
     {
-        // TODO allow multiple influencers in each trigger
-        [SerializeField, Tooltip("The Stat this influencer acts upon.")]
-        StatSO m_Stat;
-        [SerializeField, Tooltip("The maximum amount of change this influencer will impart upon the trait, to the limit of the stats allowable value.")]
-        float m_MaxChange;
+        [SerializeField, Tooltip("The set of stats and the influence to apply to them.")]
+        internal StatInfluence[] influences;
         [SerializeField, Tooltip("The time, in seconds, over which the influencer will be effective. The total change will occure over this time period. If duration is 0 then the total change is applied instantly")]
         float m_Duration = 0;
         [SerializeField, Tooltip("The cooldown time before a character can be influenced by this influencer again.")]
@@ -44,11 +41,6 @@ namespace WizardsCode.Character.Stats
         }
 
         private Dictionary<Brain, float> m_TimeOfLastInfluence = new Dictionary<Brain, float>();
-
-        public StatSO Stat
-        {
-            get { return m_Stat; }
-        }
 
         /// <summary>
         /// The time this influencer will operate.
@@ -88,19 +80,31 @@ namespace WizardsCode.Character.Stats
 
         private void AddInfluencer(Brain brain)
         {
-            StatInfluencerSO influencer = ScriptableObject.CreateInstance<StatInfluencerSO>();
-            influencer.name = m_Stat.name + " influencer from " + name + " : " + GetInstanceID(); ;
-            influencer.generator = gameObject;
-            influencer.stat = m_Stat;
-            influencer.maxChange = m_MaxChange;
-            influencer.duration = m_Duration;
-            influencer.cooldown = m_Cooldown;
-
-            if (brain.TryAddInfluencer(influencer))
+            for (int i = 0; i < influences.Length; i++)
             {
-                m_TimeOfLastInfluence.Remove(brain);
-                m_TimeOfLastInfluence.Add(brain, Time.timeSinceLevelLoad);
+                StatInfluencerSO influencer = ScriptableObject.CreateInstance<StatInfluencerSO>();
+                influencer.name = influences[i].statTemplate.name + " influencer from " + name + " (" + GetInstanceID() + ")";
+                influencer.generator = gameObject;
+                influencer.stat = influences[i].statTemplate;
+                influencer.maxChange = influences[i].maxChange;
+                influencer.duration = m_Duration;
+                influencer.cooldown = m_Cooldown;
+
+                if (brain.TryAddInfluencer(influencer))
+                {
+                    m_TimeOfLastInfluence.Remove(brain);
+                    m_TimeOfLastInfluence.Add(brain, Time.timeSinceLevelLoad);
+                }
             }
+        }
+
+        [Serializable]
+        public struct StatInfluence
+        {
+            [SerializeField, Tooltip("The Stat this influencer acts upon.")]
+            public StatSO statTemplate;
+            [SerializeField, Tooltip("The maximum amount of change this influencer will impart upon the trait, to the limit of the stats allowable value.")]
+            public float maxChange;
         }
     }
 }
