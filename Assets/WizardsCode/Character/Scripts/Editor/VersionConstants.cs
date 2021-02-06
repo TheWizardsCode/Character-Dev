@@ -13,21 +13,21 @@ namespace WizardsCode.Character
 		/// <summary>
 		/// The branch of GIT this package was published from.
 		/// </summary>
-		public const string GIT_BRANCH = "devtest";
+		public const string GIT_BRANCH = "master";
 
 		/// <summary>
 		/// The current GIT commit hash this package was published on.
 		/// </summary>
-		public const string GIT_COMMIT = "91c248a39145c51dffc9143b0444354695fed6ed";
+		public const string GIT_COMMIT = "3b58f9c6b22ecd40722979ef61f5d9c5a5fb655a";
 
 		/// <summary>
 		/// The UTC human-readable date this package was published at.
 		/// </summary>
-		public const string PUBLISH_DATE = "Friday, January 29, 2021";
+		public const string PUBLISH_DATE = "Friday, February 5, 2021";
 
 		/// <summary>
 		/// The UTC time this package was published at.
 		/// </summary>
-		public const string PUBLISH_TIME = "01/29/2021 04:40:13";
+		public const string PUBLISH_TIME = "02/05/2021 04:18:13";
 	}
 }

@@ -24,7 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3454999400584466695}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.003282249, z: 0.12968259}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -50,9 +50,9 @@ MonoBehaviour:
   awarenessRange: 10
   minTimeBetweenRandomPathChanges: 5
   maxTimeBetweenRandomPathChanges: 15
-  minDistanceOfRandomPathChange: 10
-  maxDistanceOfRandomPathChange: 20
-  minAngleOfRandomPathChange: -60
-  maxAngleOfRandomPathChange: 60
-  m_MaxWanderRange: 50
-  navMeshAreaMask: -1
+  minDistanceOfRandomPathChange: 30
+  maxDistanceOfRandomPathChange: 100
+  minAngleOfRandomPathChange: -100
+  maxAngleOfRandomPathChange: 100
+  m_MaxWanderRange: 500
+  navMeshAreaMask: 32
