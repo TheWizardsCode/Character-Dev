@@ -184,21 +184,61 @@ namespace WizardsCode.Character
                 {
                     Interactable interactable = null;
                     StatInfluence influence;
+                    bool selectInteractable = true;
                     //TODO select the optimal interactible based on distance and amount of influence
                     for (int i = 0; i < cachedAvailableInteractables.Count; i++)
                     {
-                        for (int idx = 0; idx < cachedAvailableInteractables[i].Influences.Length; idx++)
+                        for (int idx = 0; idx < cachedAvailableInteractables[i].CharacterInfluences.Length; idx++)
                         {
-                            influence = cachedAvailableInteractables[i].Influences[idx];
-                            if (influence.maxChange < 0)
+                            influence = cachedAvailableInteractables[i].CharacterInfluences[idx];
+                            for (int y = 0; y < m_DesiredStateImpacts.Length; y++)
                             {
-                                if (brain.GetOrCreateStat(influence.statTemplate).Value > influence.maxChange)
+                                if (m_DesiredStateImpacts[y].statTemplate.name == influence.statTemplate.name)
                                 {
-                                    //TODO don't match on the first stat, check others too, need all of them to match
-                                    interactable = cachedAvailableInteractables[i];
-                                    break;
+                                    switch (m_DesiredStateImpacts[y].objective)
+                                    {
+                                        case Objective.GreaterThan:
+                                            if (influence.maxChange > 0)
+                                            {
+                                                selectInteractable &= true;
+                                            } else
+                                            {
+                                                selectInteractable = false;
+                                            }
+                                            break;
+                                        case Objective.Approximately:
+                                            if (Mathf.Approximately(influence.maxChange, 0))
+                                            {
+                                                selectInteractable &= true;
+                                            }
+                                            else
+                                            {
+                                                selectInteractable = false;
+                                            }
+                                            break;
+                                        case Objective.LessThan:
+                                            if (influence.maxChange < 0)
+                                            {
+                                                selectInteractable &= true;
+                                            }
+                                            else
+                                            {
+                                                selectInteractable = false;
+                                            }
+                                            break;
+                                    }
+                                    if (!selectInteractable) break;
                                 }
+                                if (!selectInteractable) break;
                             }
+                        }
+                        if (selectInteractable)
+                        {
+                            interactable = cachedAvailableInteractables[i];
+                            break;
+                        } else
+                        {
+                            interactable = null;
                         }
                     }
 

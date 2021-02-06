@@ -110,10 +110,10 @@ namespace WizardsCode.Stats
         /// Apply a change from a stat influencer.
         /// </summary>
         /// 
-        /// <param name="brain">The brain managing the stats to be changed.</param>
-        internal void ChangeStat(Brain brain)
+        /// <param name="statsTracker">The brain managing the stats to be changed.</param>
+        internal void ChangeStat(StatsTracker statsTracker)
         {
-            StatSO statToUpdate = brain.GetOrCreateStat(stat);
+            StatSO statToUpdate = statsTracker.GetOrCreateStat(stat);
             float change;
 
             if (duration > 0)

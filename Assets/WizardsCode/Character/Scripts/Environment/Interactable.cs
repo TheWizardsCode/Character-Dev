@@ -19,10 +19,18 @@ namespace WizardsCode.Character
         StatsInfluencerTrigger m_Influencer;
 
         /// <summary>
-        /// Get the StatInfluences for this interactable.
+        /// Get the StatInfluences that act upon a character interacting with this item.
         /// </summary>
-        public StatInfluence[]  Influences {
-            get { return m_Influencer.influences; }
+        public StatInfluence[]  CharacterInfluences {
+            get { return m_Influencer.CharacterInfluences; }
+        }
+
+        /// <summary>
+        /// Get the StatInfluences that act upon this object when a character interacts with this item.
+        /// </summary>
+        public StatInfluence[] ObjectInfluences
+        {
+            get { return m_Influencer.ObjectInfluences; }
         }
 
         /// <summary>
@@ -51,18 +59,18 @@ namespace WizardsCode.Character
         public bool HasInfluenceOn(DesiredStatImpact stateImpact) {
             if (m_Influencer == null) return false;
 
-            for (int i = 0; i < m_Influencer.influences.Length; i++)
+            for (int i = 0; i < m_Influencer.CharacterInfluences.Length; i++)
             {
-                if (m_Influencer.influences[i].statTemplate.name == stateImpact.statTemplate.name)
+                if (m_Influencer.CharacterInfluences[i].statTemplate.name == stateImpact.statTemplate.name)
                 {
                     switch (stateImpact.objective)
                     {
                         case Objective.LessThan:
-                            return m_Influencer.influences[i].maxChange < 0;
+                            return m_Influencer.CharacterInfluences[i].maxChange < 0;
                         case Objective.Approximately:
-                            return Mathf.Approximately(m_Influencer.influences[i].maxChange, 0);
+                            return Mathf.Approximately(m_Influencer.CharacterInfluences[i].maxChange, 0);
                         case Objective.GreaterThan:
-                            return m_Influencer.influences[i].maxChange > 0;
+                            return m_Influencer.CharacterInfluences[i].maxChange > 0;
                         default:
                             Debug.LogError("Don't know how to handle objective " + stateImpact.objective);
                             break;

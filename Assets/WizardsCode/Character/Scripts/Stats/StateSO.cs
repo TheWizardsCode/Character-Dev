@@ -58,10 +58,10 @@ namespace WizardsCode.Character
         /// <summary>
         /// If all the conditions of this state are satisfied then this will return true.
         /// </summary>
-        public bool IsSatisfiedFor (Brain controller) {
+        public bool IsSatisfiedFor (StatsTracker statsTracker) {
             if (statTemplate != null)
             {
-                StatSO stat = controller.GetOrCreateStat(statTemplate);
+                StatSO stat = statsTracker.GetOrCreateStat(statTemplate);
 
                 switch (objective)
                 {
@@ -85,7 +85,7 @@ namespace WizardsCode.Character
             // Check substates
             for (int i = 0; i < m_SubStates.Count; i++)
             {
-                if (!m_SubStates[i].IsSatisfiedFor(controller))
+                if (!m_SubStates[i].IsSatisfiedFor(statsTracker))
                 {
                     return false;
                 }

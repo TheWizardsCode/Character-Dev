@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using WizardsCode.Stats;
 
 namespace WizardsCode.Character.Stats
@@ -14,14 +15,34 @@ namespace WizardsCode.Character.Stats
     /// </summary>
     public class StatsInfluencerTrigger : MonoBehaviour
     {
-        [SerializeField, Tooltip("The set of stats and the influence to apply to them.")]
-        internal StatInfluence[] influences;
+        [SerializeField, Tooltip("The set of character stats and the influence to apply to them when a character interacts with the object.")]
+        [FormerlySerializedAs("influences")]
+        internal StatInfluence[] m_CharacterInfluences;
+        [SerializeField, Tooltip("The set of object stats and the influence to apply to them when a character interacts with the object.")]
+        internal StatInfluence[] m_ObjectInfluences;
         [SerializeField, Tooltip("The time, in seconds, over which the influencer will be effective. The total change will occure over this time period. If duration is 0 then the total change is applied instantly")]
         float m_Duration = 0;
         [SerializeField, Tooltip("The cooldown time before a character can be influenced by this influencer again.")]
         float m_Cooldown = 30;
         [SerializeField, Tooltip("If the actor stays within the trigger area can they get a new influencer after the duration + cooldown has expired?")]
         bool m_IsRepeating = false;
+
+        private StatsTracker m_StatsTracker;
+
+        /// <summary>
+        /// The influences that act upon the interacting character.
+        /// </summary>
+        internal StatInfluence[] CharacterInfluences{get { return m_CharacterInfluences; } }
+
+        /// <summary>
+        /// The influences that act upon the interacting character.
+        /// </summary>
+        internal StatInfluence[] ObjectInfluences { get { return m_ObjectInfluences; } }
+
+        private void Awake()
+        {
+            m_StatsTracker = GetComponentInParent<StatsTracker>();
+        }
 
         /// <summary>
         /// Test to see if this influencer trigger is on cooldown for a given actor.
@@ -59,7 +80,8 @@ namespace WizardsCode.Character.Stats
             Brain brain = other.GetComponentInParent<Brain>();
 
             if (brain == null || !brain.ShouldInteractWith(this)) return;
-            AddInfluencer(brain);
+            AddCharacterInfluence(brain);
+            AddObjectInfluence();
         }
 
         private void OnTriggerStay(Collider other)
@@ -74,19 +96,20 @@ namespace WizardsCode.Character.Stats
 
             if (!IsOnCooldownFor(brain))
             {
-                AddInfluencer(brain);
+                AddCharacterInfluence(brain);
+                AddObjectInfluence();
             }
         }
 
-        private void AddInfluencer(Brain brain)
+        private void AddCharacterInfluence(Brain brain)
         {
-            for (int i = 0; i < influences.Length; i++)
+            for (int i = 0; i < CharacterInfluences.Length; i++)
             {
                 StatInfluencerSO influencer = ScriptableObject.CreateInstance<StatInfluencerSO>();
-                influencer.name = influences[i].statTemplate.name + " influencer from " + name + " (" + GetInstanceID() + ")";
+                influencer.name = CharacterInfluences[i].statTemplate.name + " influencer from " + name + " (" + GetInstanceID() + ")";
                 influencer.generator = gameObject;
-                influencer.stat = influences[i].statTemplate;
-                influencer.maxChange = influences[i].maxChange;
+                influencer.stat = CharacterInfluences[i].statTemplate;
+                influencer.maxChange = CharacterInfluences[i].maxChange;
                 influencer.duration = m_Duration;
                 influencer.cooldown = m_Cooldown;
 
@@ -95,6 +118,21 @@ namespace WizardsCode.Character.Stats
                     m_TimeOfLastInfluence.Remove(brain);
                     m_TimeOfLastInfluence.Add(brain, Time.timeSinceLevelLoad);
                 }
+            }
+        }
+        private void AddObjectInfluence()
+        {
+            for (int i = 0; i < ObjectInfluences.Length; i++)
+            {
+                StatInfluencerSO influencer = ScriptableObject.CreateInstance<StatInfluencerSO>();
+                influencer.name = ObjectInfluences[i].statTemplate.name + " influencer from " + name + " (" + GetInstanceID() + ")";
+                influencer.generator = gameObject;
+                influencer.stat = ObjectInfluences[i].statTemplate;
+                influencer.maxChange = ObjectInfluences[i].maxChange;
+                influencer.duration = m_Duration;
+                influencer.cooldown = m_Cooldown;
+
+                m_StatsTracker.TryAddInfluencer(influencer);
             }
         }
 
