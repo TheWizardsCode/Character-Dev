@@ -44,7 +44,7 @@ namespace WizardsCode.Stats
         public string statusDescription
         {
             get {
-                string msg = name + " is " + NormalizedValue;
+                string msg = name + " is " + Value.ToString("0.00") + " (Nomalized: " + NormalizedValue.ToString("0.00") + ")";
                 return msg; 
             }
         }

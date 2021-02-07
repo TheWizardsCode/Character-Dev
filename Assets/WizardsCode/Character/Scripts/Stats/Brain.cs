@@ -18,8 +18,9 @@ namespace WizardsCode.Stats {
     {
         ActorController m_Controller;
         AbstractAIBehaviour[] m_Behaviours = default;
-        private AbstractAIBehaviour m_CurrentBehaviour;
         private Interactable m_TargetInteractable;
+
+        public AbstractAIBehaviour CurrentBehaviour { get; set; }
 
         public MemoryController Memory { get; private set; }
 
@@ -85,7 +86,7 @@ namespace WizardsCode.Stats {
         private void UpdateActiveBehaviour()
         {
             //TODO Allow tasks to be interuptable
-            if (m_CurrentBehaviour != null && m_CurrentBehaviour.IsExecuting) return;
+            if (CurrentBehaviour != null && CurrentBehaviour.IsExecuting) return;
 
             AbstractAIBehaviour candidateBehaviour = null;
             float highestWeight = float.MinValue;
@@ -105,8 +106,9 @@ namespace WizardsCode.Stats {
 
             if (candidateBehaviour == null) return;
 
-            m_CurrentBehaviour = candidateBehaviour;
-            m_CurrentBehaviour.IsExecuting = true;
+            CurrentBehaviour = candidateBehaviour;
+            CurrentBehaviour.IsExecuting = true;
+            TargetInteractable = CurrentBehaviour.CurrentInteractableTarget;
         }
 
         /// <summary>
@@ -200,7 +202,14 @@ namespace WizardsCode.Stats {
             }
 
             msg += "\n\nCurrent Behaviour";
-            msg += "\n" + m_CurrentBehaviour;
+            msg += "\n" + CurrentBehaviour + " (time to abort / end " + (CurrentBehaviour.EndTime - Time.timeSinceLevelLoad).ToString("0.0") + ")";
+            if (TargetInteractable != null)
+            {
+                msg += "\nTarget interactable: " + TargetInteractable.InteractionName + " at " + TargetInteractable.name;
+            } else
+            {
+                msg += "\nNo target interactable";
+            }
 
             return msg;
         }

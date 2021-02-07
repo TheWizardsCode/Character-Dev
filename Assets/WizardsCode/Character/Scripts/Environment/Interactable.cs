@@ -11,8 +11,10 @@ namespace WizardsCode.Character
 {
     /// <summary>
     /// Marks an object as interactable so that a actors can find them. 
-    /// Records the effects the interactable can have on an actor when
-    /// interacting.
+    /// Records the effects the interactable can have on an actor and
+    /// the object itself when interacting.
+    /// 
+    /// A stats tracker required in an ancestor.
     /// </summary>
     public class Interactable : MonoBehaviour
     {
@@ -35,7 +37,7 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("The set of object stats and the influence to apply to them when a character interacts with the object.")]
         internal StatInfluence[] m_ObjectInfluences;
         [SerializeField, Tooltip("The time, in seconds, over which the influencer will be effective. The total change will occure over this time period. If duration is 0 then the total change is applied instantly")]
-        float m_Duration = 0;
+        float m_Duration = 3;
         [SerializeField, Tooltip("The cooldown time before a character can be influenced by this influencer again.")]
         float m_Cooldown = 30;
         
@@ -80,7 +82,7 @@ namespace WizardsCode.Character
 
         void Awake()
         {
-            m_StatsTracker = GetComponent<StatsTracker>();
+            m_StatsTracker = GetComponentInParent<StatsTracker>();
         }
 
         /// <summary>
@@ -172,7 +174,7 @@ namespace WizardsCode.Character
             for (int i = 0; i < ObjectInfluences.Length; i++)
             {
                 if (ObjectInfluences[i].maxChange < 0 
-                    && m_StatsTracker.GetOrCreateStat(ObjectInfluences[i].statTemplate).Value < Math.Abs(ObjectInfluences[i].maxChange))
+                    && m_StatsTracker.GetOrCreateStat(ObjectInfluences[i].statTemplate).Value >= Math.Abs(ObjectInfluences[i].maxChange))
                 {
                     isValid = false;
                     break;
@@ -221,6 +223,8 @@ namespace WizardsCode.Character
 
         private void StartCharacterInteraction(Brain brain)
         {
+            brain.CurrentBehaviour.StartInteraction(this);
+
             for (int i = 0; i < CharacterInfluences.Length; i++)
             {
                 StatInfluencerSO influencer = ScriptableObject.CreateInstance<StatInfluencerSO>();

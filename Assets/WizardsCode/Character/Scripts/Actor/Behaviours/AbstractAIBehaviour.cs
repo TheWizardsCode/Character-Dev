@@ -12,12 +12,18 @@ namespace WizardsCode.Character
     {
         [SerializeField, Tooltip("The name to use in the User Interface.")]
         string m_DisplayName = "Unnamed AI Behaviour";
+        [SerializeField, Tooltip("How frequentlys, in seconds, this behaviour should be tested for activation."), Range(0.01f,5f)]
+        float m_RetryFrequency = 2;
+        [SerializeField, Tooltip("Time until execution of this behaviour is aborted. " +
+            "This is used as a safeguard in case something prevents the actor from completing " +
+            "the actions associated with this behaviour, e.g. if they are unable to reach the chosen interactable.")]
+        float m_AbortDuration = 30;
         [SerializeField, Tooltip("The required stats to enable this behaviour. Here you should set minimum, maximum or approximate values for stats that are needed for this behaviour to fire. For example, buying items is only possible if the actor has cash.")]
         RequiredStat[] m_RequiredStats = default;
 
         [Header("Interactables")]
         [SerializeField, Tooltip("Does this behaviour require an interactable to be active?")]
-        bool m_RequiresInteractable = true;//TODO These are not required states, they are affected states and I think they will always be inverted
+        bool m_RequiresInteractable = true;
         [SerializeField, Tooltip("The impacts we need an interactable to have on states for this behaviour to be enabled by it.")]
         DesiredStatImpact[] m_DesiredStateImpacts = new DesiredStatImpact[0];
         [SerializeField, Tooltip("The range within which the Actor can sense interactables that this behaviour can impact. This does not affect interactables that are recalled from memory.")]
@@ -25,11 +31,24 @@ namespace WizardsCode.Character
         
         internal Brain brain;
         internal ActorController controller;
-        
+        private bool m_IsExecuting = false;
+        private List<Interactable> cachedAvailableInteractables = new List<Interactable>();
+        private Vector3 positionAtLastInteractableCheck = Vector3.zero;
+        private List<Interactable> nearbyInteractablesCache = new List<Interactable>();
+        private float m_NextRetryTime;
+
+        internal Interactable CurrentInteractableTarget = default;
+
+
         internal MemoryController Memory { get { return brain.Memory; } }
 
         public DesiredStatImpact[] DesiredStateImpacts {
             get {return m_DesiredStateImpacts;}
+        }
+
+        public float EndTime { 
+            get; 
+            internal set; 
         }
 
         private void Start()
@@ -45,38 +64,73 @@ namespace WizardsCode.Character
         {
             get
             {
-                bool requirementsMet = false;
-                for (int i = 0; i < m_RequiredStats.Length; i++)
+                if (Time.timeSinceLevelLoad < m_NextRetryTime) return false;
+                m_NextRetryTime = Time.timeSinceLevelLoad + m_RetryFrequency;
+
+                if (CheckCharacteHasRequiredStats())
                 {
-                    switch (m_RequiredStats[i].objective)
+                    if (m_RequiresInteractable)
                     {
-                        case Objective.LessThan:
-                            requirementsMet = brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).NormalizedValue < m_RequiredStats[i].normalizedValue;
-                            break;
-                        case Objective.Approximately:
-                            requirementsMet = Mathf.Approximately(brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).NormalizedValue, m_RequiredStats[i].normalizedValue);
-                            break;
-                        case Objective.GreaterThan:
-                            requirementsMet =  brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).NormalizedValue > m_RequiredStats[i].normalizedValue;
-                            break;
-                        default:
-                            Debug.LogError("Don't know how to handle an Objective of " + m_RequiredStats[i].objective);
-                            break;
+                        UpdateAvailableInteractablesCache();
+                    } else
+                    {
+                        return true;
+                    }
+                } else
+                {
+                    return false;
+                }
+
+                // Check there is a valid interactable
+                if (cachedAvailableInteractables.Count == 0)
+                {
+                    CurrentInteractableTarget = null;
+                }
+                else
+                {
+                    float sqrMagnitude = float.MaxValue;
+                    //TODO select the optimal interactible based on distance and amount of influence
+                    for (int interactablesIndex = 0; interactablesIndex < cachedAvailableInteractables.Count; interactablesIndex++)
+                    {
+                        float mag = Vector3.SqrMagnitude(transform.position - cachedAvailableInteractables[interactablesIndex].transform.position);
+                        if (mag < sqrMagnitude)
+                        {
+                            sqrMagnitude = mag;
+                            CurrentInteractableTarget = cachedAvailableInteractables[interactablesIndex];
+                        }
                     }
                 }
 
-                UpdateAvailableInteractablesCache();
-
-                return (m_RequiredStats.Length == 0 || requirementsMet) 
-                    && (!m_RequiresInteractable || cachedAvailableInteractables.Count > 0);
+                return CurrentInteractableTarget != null;
             }
         }
 
-        private bool m_IsExecuting = false;
-        private float m_EndTime;
-        private List<Interactable> cachedAvailableInteractables = new List<Interactable>();
-        private Vector3 positionAtLastInteractableCheck = Vector3.zero;
-        private List<Interactable> nearbyInteractablesCache = new List<Interactable>();
+        private bool CheckCharacteHasRequiredStats()
+        {
+            if (m_RequiredStats.Length == 0) return true;
+
+            bool requirementsMet = false;
+            for (int i = 0; i < m_RequiredStats.Length; i++)
+            {
+                switch (m_RequiredStats[i].objective)
+                {
+                    case Objective.LessThan:
+                        requirementsMet = brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).NormalizedValue < m_RequiredStats[i].normalizedValue;
+                        break;
+                    case Objective.Approximately:
+                        requirementsMet = Mathf.Approximately(brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).NormalizedValue, m_RequiredStats[i].normalizedValue);
+                        break;
+                    case Objective.GreaterThan:
+                        requirementsMet = brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).NormalizedValue > m_RequiredStats[i].normalizedValue;
+                        break;
+                    default:
+                        Debug.LogError("Don't know how to handle an Objective of " + m_RequiredStats[i].objective);
+                        break;
+                }
+            }
+
+            return requirementsMet;
+        }
 
         /// <summary>
         /// Is this behaviour the currently executing behaviour?
@@ -87,7 +141,7 @@ namespace WizardsCode.Character
             {
                 if (value && !m_IsExecuting)
                 {
-                    m_EndTime = 0;
+                    EndTime = Time.timeSinceLevelLoad + m_AbortDuration;
                 }
 
                 m_IsExecuting = value;
@@ -105,10 +159,20 @@ namespace WizardsCode.Character
             {
                 if (DesiredStateImpacts.Length > 0)
                 {
-                    Debug.LogError(gameObject.name + " has desired states defined but has no StatsController against which to check these states.");
+                    Debug.LogError(gameObject.name + " has desired states defined but has no StatsTracker against which to check these states.");
                 }
             }
             controller = GetComponentInParent<ActorController>();
+        }
+
+        /// <summary>
+        /// Start an interaction with a given object as part of this behaviour. This is
+        /// where animations, sounds, FX and similar should be started.
+        /// </summary>
+        /// <param name="interactable">The interactable we are working on.</param>
+        internal virtual void StartInteraction(Interactable interactable)
+        {
+            EndTime = Time.timeSinceLevelLoad + interactable.Duration;
         }
 
         /// <summary>
@@ -117,15 +181,13 @@ namespace WizardsCode.Character
         /// the number of unsatisfied desired states in the brain that this behaviour 
         /// impacts.
         /// 
-        /// If there are no unsatisfiedDesiredStates then the weight will be 0.
+        /// If there are no unsatisfiedDesiredStates then the weight will be 0.01
         /// 
         /// This should nearly always be overridden in specific behaviour implementations.
         /// </summary>
         public virtual float Weight(Brain brain)
         {
-            if (brain.UnsatisfiedDesiredStates.Length == 0) return 0f;
-
-            float weight = 0;
+            float weight = 0.01f;
             for (int i = 0; i < brain.UnsatisfiedDesiredStates.Length; i++)
             {
                 for (int idx = 0; idx < DesiredStateImpacts.Length; idx++)
@@ -153,13 +215,16 @@ namespace WizardsCode.Character
 
             //TODO Put interactables on a layer to make the physics operation faster
             Collider[] hitColliders = Physics.OverlapSphere(transform.position, awarenessRange);
-            Interactable currentInteractable;
+            Interactable[] currentInteractables;
             for (int i = 0; i < hitColliders.Length; i++)
             {
-                currentInteractable = hitColliders[i].GetComponent<Interactable>();
-                if (currentInteractable != null && currentInteractable.HasSpaceFor(brain))
+                currentInteractables = hitColliders[i].GetComponents<Interactable>();
+                for (int idx = 0; idx < currentInteractables.Length; idx++)
                 {
-                    nearbyInteractablesCache.Add(currentInteractable);
+                    if (currentInteractables[idx].HasSpaceFor(brain))
+                    {
+                        nearbyInteractablesCache.Add(currentInteractables[idx]);
+                    }
                 }
             }
 
@@ -170,84 +235,6 @@ namespace WizardsCode.Character
         public void Update()
         {
             if (!IsExecuting) return;
-            
-            if (m_EndTime == 0)
-            {
-                if (cachedAvailableInteractables.Count == 0)
-                {
-                    brain.TargetInteractable = null;
-                }
-                else
-                {
-                    Interactable interactable = null;
-                    StatInfluence influence;
-                    bool selectInteractable = true;
-                    //TODO select the optimal interactible based on distance and amount of influence
-                    for (int i = 0; i < cachedAvailableInteractables.Count; i++)
-                    {
-                        if (!cachedAvailableInteractables[i].HasSpaceFor(brain)) continue;
-
-                        for (int idx = 0; idx < cachedAvailableInteractables[i].CharacterInfluences.Length; idx++)
-                        {
-                            influence = cachedAvailableInteractables[i].CharacterInfluences[idx];
-                            for (int y = 0; y < m_DesiredStateImpacts.Length; y++)
-                            {
-                                if (m_DesiredStateImpacts[y].statTemplate.name == influence.statTemplate.name)
-                                {
-                                    switch (m_DesiredStateImpacts[y].objective)
-                                    {
-                                        case Objective.GreaterThan:
-                                            if (influence.maxChange > 0)
-                                            {
-                                                selectInteractable &= true;
-                                            } else
-                                            {
-                                                selectInteractable = false;
-                                            }
-                                            break;
-                                        case Objective.Approximately:
-                                            if (Mathf.Approximately(influence.maxChange, 0))
-                                            {
-                                                selectInteractable &= true;
-                                            }
-                                            else
-                                            {
-                                                selectInteractable = false;
-                                            }
-                                            break;
-                                        case Objective.LessThan:
-                                            if (influence.maxChange < 0)
-                                            {
-                                                selectInteractable &= true;
-                                            }
-                                            else
-                                            {
-                                                selectInteractable = false;
-                                            }
-                                            break;
-                                    }
-                                    if (!selectInteractable) break;
-                                }
-                                if (!selectInteractable) break;
-                            }
-                        }
-                        if (selectInteractable)
-                        {
-                            interactable = cachedAvailableInteractables[i];
-                            break;
-                        } else
-                        {
-                            interactable = null;
-                        }
-                    }
-
-                    brain.TargetInteractable = interactable;
-                    if (interactable != null)
-                    {
-                        m_EndTime = Time.timeSinceLevelLoad + brain.TargetInteractable.Duration;
-                    }
-                }
-            }
             OnUpdate();
         }
 
@@ -257,7 +244,7 @@ namespace WizardsCode.Character
         /// </summary>
         protected virtual void OnUpdate()
         {
-            if (m_EndTime < Time.timeSinceLevelLoad)
+            if (EndTime < Time.timeSinceLevelLoad)
             {
                 Finish();
             }
@@ -265,7 +252,7 @@ namespace WizardsCode.Character
 
         /// <summary>
         /// Updates the cache of interractables in the area and from memory that can be used by this
-        /// behaviour.
+        /// behaviour. Only interactables that have the desired influences on the actor are returned.
         /// </summary>
         private void UpdateAvailableInteractablesCache()
         {
@@ -273,25 +260,14 @@ namespace WizardsCode.Character
 
             //TODO share cached interactables across all behaviours and only update if character has moved more than 1 unity
             List<Interactable> candidateInteractables = GetNearbyInteractables();
-            
+
             // Iterate over them keeping only the ones that satsify all desiredStateImpacts
             for (int i = 0; i < candidateInteractables.Count; i++)
             {
-                for (int idx = 0; idx < DesiredStateImpacts.Length; idx++)
+                if (IsValidInteractable(candidateInteractables[i]))
                 {
-                    // does the interactable have the desired influence on the character?
-                    if (!candidateInteractables[i].IsOnCooldownFor(brain) 
-                        && candidateInteractables[i].HasInfluenceOn(DesiredStateImpacts[idx]))
-                    {
-                        // does the interactable have the required stats drive the object influence?
-                        if (candidateInteractables[i].HasRequiredObjectStats())
-                        {
-                            cachedAvailableInteractables.Add(candidateInteractables[i]);
-                            break;
-                        }
-                    }
+                    cachedAvailableInteractables.Add(candidateInteractables[i]);
                 }
-                
             }
 
             if (Memory != null)
@@ -304,24 +280,53 @@ namespace WizardsCode.Character
                     interactable = memories[i].about.GetComponentInChildren<Interactable>();
 
                     //TODO if memory is of an already cached interactable we can skip
-                    
-                    for (int idx = 0; idx < DesiredStateImpacts.Length; idx++)
+
+                    if (IsValidInteractable(interactable))
                     {
-                        if (!interactable.IsOnCooldownFor(brain)
-                            && interactable.HasInfluenceOn(DesiredStateImpacts[idx]))
-                        {
-                            cachedAvailableInteractables.Add(interactable);
-                            break;
-                        }
+                        cachedAvailableInteractables.Add(interactable);
                     }
                 }
             }
         }
 
+        /// <summary>
+        /// Does the interactable offer the desired impact and does it have the required stats 
+        /// to deliver the objects influence?
+        /// That is, if a behaviour requires 10 cash to be delievered does the interactable have
+        /// 10 cash to deliver?
+        /// </summary>
+        /// <param name="interactable">The interactable to be tested</param>
+        /// <returns>True if the interactable can deliver on all desired influences</returns>
+        private bool IsValidInteractable(Interactable interactable)
+        {
+            bool isValid = interactable.HasSpaceFor(brain);
+            isValid &= !interactable.IsOnCooldownFor(brain);
+            isValid &= HasDesiredImpact(interactable);
+            return isValid && interactable.HasRequiredObjectStats();
+        }
+
+        /// <summary>
+        /// Does the interactable have the desired impact to satisfy this behaviour.
+        /// </summary>
+        /// <param name="interactable"></param>
+        /// <returns></returns>
+        private bool HasDesiredImpact(Interactable interactable)
+        {
+            for (int idx = 0; idx < DesiredStateImpacts.Length; idx++)
+            {
+                if (!interactable.HasInfluenceOn(DesiredStateImpacts[idx]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         internal void Finish()
         {
             IsExecuting = false;
-            m_EndTime = 0;
+            EndTime = 0;
         }
 
         public override string ToString()

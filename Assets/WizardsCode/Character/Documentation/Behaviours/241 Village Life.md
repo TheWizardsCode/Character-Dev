@@ -8,6 +8,7 @@ The `241 Village Life` scene has a number of interacting characters that live to
 ## Workers
 
 * Neo Farmer - works at the Farm
-* Neo Cook - works in the Resteraunt
+* Neo Cook - works in the Restaurant
+* TODO Neo Trader - Buys and sells things for profit, in this village she will purchase raw food from the Farm shop and sell it to the restaurant and social club
 
 
