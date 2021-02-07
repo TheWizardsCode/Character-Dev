@@ -11,6 +11,8 @@ namespace WizardsCode.Stats
     [CreateAssetMenu(fileName ="New Stats Influencer", menuName = "Wizards Code/Stats/New Influencer")]
     public class StatInfluencerSO : ScriptableObject
     {
+        [SerializeField, Tooltip("The name of the interaction that created this influencer.")]
+        string m_InteractionName;
         [SerializeField, Tooltip("The Stat this influencer acts upon.")]
         StatSO m_stat;
         [SerializeField, Tooltip("The maximum amount of change this influencer will impart upon the stat. If the stat will never be taken beyond its maximum and minimum allowable values.")]
@@ -26,6 +28,15 @@ namespace WizardsCode.Stats
 
         float m_ChangePerSecond = float.NegativeInfinity;
         private float m_TimeOfLastUpdate;
+
+        /// <summary>
+        /// The name of this interaction. Used as an ID for this interaction.
+        /// </summary>
+        public string InteractionName
+        {
+            get { return m_InteractionName; }
+            set { m_InteractionName = value; }
+        }
 
         /// <summary>
         /// Get the game object that imparted this influencer on the actor.

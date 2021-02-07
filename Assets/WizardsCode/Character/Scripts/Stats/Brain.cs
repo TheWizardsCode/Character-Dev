@@ -175,12 +175,7 @@ namespace WizardsCode.Stats {
                 msg += "\n" + m_Stats[i].statusDescription;
             }
 
-            msg += "\n\nActive Influencers";
-            if (m_StatsInfluencers.Count == 0) msg += "\nNone";
-            for (int i = 0; i < m_StatsInfluencers.Count; i++)
-            {
-                msg += "\n" + m_StatsInfluencers[i].stat.name + " changed by " + m_StatsInfluencers[i].maxChange + " at " + m_StatsInfluencers[i].changePerSecond + " per second (" + Mathf.Round((m_StatsInfluencers[i].influenceApplied / m_StatsInfluencers[i].maxChange) * 100) + "% applied)";
-            }
+            msg += GetActiveInfluencersDescription();
 
             msg += "\n\nUnsatisfied Desired States";
             if (UnsatisfiedDesiredStates.Length == 0) msg += "\nNone";

@@ -12,6 +12,8 @@ namespace WizardsCode.Character
     {
         [SerializeField, Tooltip("The game object that this memory is about.")]
         GameObject m_About;
+        [SerializeField, Tooltip("The name of the interaction that generated this memory.")]
+        string m_InteractionName;
         [SerializeField, Tooltip("The stat that was changed by the action this memory embodies.")]
         StatSO m_AffectedStat;
         [SerializeField, Tooltip("Is this a good memory, that is one that the character would like to repeat if possible and appropriate.")]
@@ -48,6 +50,12 @@ namespace WizardsCode.Character
         private void Awake()
         {
             m_Time = Time.timeSinceLevelLoad;
+        }
+
+        public string interactionName
+        {
+            get { return m_InteractionName; }
+            set { m_InteractionName = value; }
         }
 
         public bool isGood

@@ -280,11 +280,16 @@ namespace WizardsCode.Character
             {
                 for (int idx = 0; idx < DesiredStateImpacts.Length; idx++)
                 {
+                    // does the interactable have the desired influence on the character?
                     if (!candidateInteractables[i].IsOnCooldownFor(brain) 
                         && candidateInteractables[i].HasInfluenceOn(DesiredStateImpacts[idx]))
                     {
-                        cachedAvailableInteractables.Add(candidateInteractables[i]);
-                        break;
+                        // does the interactable have the required stats drive the object influence?
+                        if (candidateInteractables[i].HasRequiredObjectStats())
+                        {
+                            cachedAvailableInteractables.Add(candidateInteractables[i]);
+                            break;
+                        }
                     }
                 }
                 

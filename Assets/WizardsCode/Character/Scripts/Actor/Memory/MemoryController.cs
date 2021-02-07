@@ -288,6 +288,7 @@ namespace WizardsCode.Character
         {
             MemorySO memory = ScriptableObject.CreateInstance<MemorySO>();
             memory.about = influencer.generator;
+            memory.interactionName = influencer.InteractionName;
             memory.stat = influencer.stat;
             memory.influence = influencer.maxChange;
             memory.cooldown = influencer.cooldown;

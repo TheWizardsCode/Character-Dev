@@ -15,6 +15,8 @@ namespace WizardsCode.Character.Stats
     /// </summary>
     public class StatsInfluencerTrigger : MonoBehaviour
     {
+        [SerializeField, Tooltip("The name of the interaction that will produce this result.")]
+        string m_InteractionName = "Name of Interaction";
         [SerializeField, Tooltip("The set of character stats and the influence to apply to them when a character interacts with the object.")]
         [FormerlySerializedAs("influences")]
         internal StatInfluence[] m_CharacterInfluences;
@@ -64,6 +66,15 @@ namespace WizardsCode.Character.Stats
         private Dictionary<Brain, float> m_TimeOfLastInfluence = new Dictionary<Brain, float>();
 
         /// <summary>
+        /// The name of this interaction. Used as an ID for this interaction.
+        /// </summary>
+        public string InteractionName
+        {
+            get { return m_InteractionName; }
+            set { m_InteractionName = value; }
+        }
+
+        /// <summary>
         /// The time this influencer will operate.
         /// </summary>
         public float Duration { 
@@ -106,7 +117,7 @@ namespace WizardsCode.Character.Stats
             for (int i = 0; i < CharacterInfluences.Length; i++)
             {
                 StatInfluencerSO influencer = ScriptableObject.CreateInstance<StatInfluencerSO>();
-                influencer.name = CharacterInfluences[i].statTemplate.name + " influencer from " + name + " (" + GetInstanceID() + ")";
+                influencer.InteractionName = CharacterInfluences[i].statTemplate.name + " influencer from " + InteractionName + " (" + GetInstanceID() + ")";
                 influencer.generator = gameObject;
                 influencer.stat = CharacterInfluences[i].statTemplate;
                 influencer.maxChange = CharacterInfluences[i].maxChange;
@@ -125,7 +136,7 @@ namespace WizardsCode.Character.Stats
             for (int i = 0; i < ObjectInfluences.Length; i++)
             {
                 StatInfluencerSO influencer = ScriptableObject.CreateInstance<StatInfluencerSO>();
-                influencer.name = ObjectInfluences[i].statTemplate.name + " influencer from " + name + " (" + GetInstanceID() + ")";
+                influencer.InteractionName = ObjectInfluences[i].statTemplate.name + " influencer from " + InteractionName + " (" + GetInstanceID() + ")";
                 influencer.generator = gameObject;
                 influencer.stat = ObjectInfluences[i].statTemplate;
                 influencer.maxChange = ObjectInfluences[i].maxChange;

@@ -17,6 +17,9 @@ namespace WizardsCode.Character
     public class Interactable : MonoBehaviour
     {
         StatsInfluencerTrigger m_Influencer;
+        StatsTracker m_StatsTracker;
+
+        
 
         /// <summary>
         /// Get the StatInfluences that act upon a character interacting with this item.
@@ -48,6 +51,7 @@ namespace WizardsCode.Character
         void Awake()
         {
             m_Influencer = GetComponent<StatsInfluencerTrigger>();
+            m_StatsTracker = GetComponent<StatsTracker>();
         }
 
         /// <summary>
@@ -91,6 +95,21 @@ namespace WizardsCode.Character
             if (m_Influencer == null) return false;
 
             return m_Influencer.IsOnCooldownFor(brain);
+        }
+
+        internal bool HasRequiredObjectStats()
+        {
+            bool isValid = true;
+            for (int i = 0; i < ObjectInfluences.Length; i++)
+            {
+                if (ObjectInfluences[i].maxChange < 0 
+                    && m_StatsTracker.GetOrCreateStat(ObjectInfluences[i].statTemplate).Value < Math.Abs(ObjectInfluences[i].maxChange))
+                {
+                    isValid = false;
+                    break;
+                }
+            }
+            return isValid;
         }
     }
 }
