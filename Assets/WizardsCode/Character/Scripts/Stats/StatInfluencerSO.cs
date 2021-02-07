@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WizardsCode.Character;
+using WizardsCode.Character.Stats;
 
 namespace WizardsCode.Stats
 {
@@ -24,7 +26,7 @@ namespace WizardsCode.Stats
 
         [HideInInspector, SerializeField]
         float m_InfluenceApplied = 0;
-        GameObject m_Generator;
+        Interactable m_Trigger;
 
         float m_ChangePerSecond = float.NegativeInfinity;
         private float m_TimeOfLastUpdate;
@@ -39,13 +41,21 @@ namespace WizardsCode.Stats
         }
 
         /// <summary>
+        /// Get or set the StatsInfluencerTrigger that imparted this influencer on the actor.
+        /// </summary>
+        public Interactable Trigger
+        {
+            get { return m_Trigger; }
+            set { m_Trigger = value; }
+        }
+
+        /// <summary>
         /// Get the game object that imparted this influencer on the actor.
         /// This is used in the memory system to remember good/bad results of interations with objects.
         /// </summary>
-        public GameObject generator
+        public GameObject Generator
         {
-            get { return m_Generator; }
-            set { m_Generator = value; }
+            get { return m_Trigger.gameObject; }
         }
 
         /// <summary>

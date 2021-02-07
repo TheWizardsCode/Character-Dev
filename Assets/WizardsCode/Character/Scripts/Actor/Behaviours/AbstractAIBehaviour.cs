@@ -4,10 +4,7 @@ using System.Collections.Generic;
 using WizardsCode.Stats;
 using System;
 using Random = UnityEngine.Random;
-using UnityEngine.Serialization;
 using static WizardsCode.Character.StateSO;
-using WizardsCode.Character.Stats;
-using static WizardsCode.Character.Stats.StatsInfluencerTrigger;
 
 namespace WizardsCode.Character
 {
@@ -68,7 +65,7 @@ namespace WizardsCode.Character
                     }
                 }
 
-                UpdateAvailbleInteractablesCache();
+                UpdateAvailableInteractablesCache();
 
                 return (m_RequiredStats.Length == 0 || requirementsMet) 
                     && (!m_RequiresInteractable || cachedAvailableInteractables.Count > 0);
@@ -140,9 +137,9 @@ namespace WizardsCode.Character
         }
 
         /// <summary>
-        /// Scan for nearby interactables.
+        /// Scan for nearby interactables that have capacity for an actor.
         /// </summary>
-        /// <returns>A list of interactables within range.</returns>
+        /// <returns>A list of interactables within range that have space for an actor.</returns>
         internal List<Interactable> GetNearbyInteractables()
         {
             if (positionAtLastInteractableCheck != Vector3.zero
@@ -160,7 +157,7 @@ namespace WizardsCode.Character
             for (int i = 0; i < hitColliders.Length; i++)
             {
                 currentInteractable = hitColliders[i].GetComponent<Interactable>();
-                if (currentInteractable != null)
+                if (currentInteractable != null && currentInteractable.HasSpaceFor(brain))
                 {
                     nearbyInteractablesCache.Add(currentInteractable);
                 }
@@ -188,6 +185,8 @@ namespace WizardsCode.Character
                     //TODO select the optimal interactible based on distance and amount of influence
                     for (int i = 0; i < cachedAvailableInteractables.Count; i++)
                     {
+                        if (!cachedAvailableInteractables[i].HasSpaceFor(brain)) continue;
+
                         for (int idx = 0; idx < cachedAvailableInteractables[i].CharacterInfluences.Length; idx++)
                         {
                             influence = cachedAvailableInteractables[i].CharacterInfluences[idx];
@@ -268,7 +267,7 @@ namespace WizardsCode.Character
         /// Updates the cache of interractables in the area and from memory that can be used by this
         /// behaviour.
         /// </summary>
-        private void UpdateAvailbleInteractablesCache()
+        private void UpdateAvailableInteractablesCache()
         {
             cachedAvailableInteractables.Clear();
 
@@ -349,5 +348,14 @@ namespace WizardsCode.Character
         public Objective objective;
         [SerializeField, Tooltip("The normalized value required for this stat. "), Range(0f,1f)]
         public float normalizedValue;
+    }
+
+    [Serializable]
+    public struct StatInfluence
+    {
+        [SerializeField, Tooltip("The Stat this influencer acts upon.")]
+        public StatSO statTemplate;
+        [SerializeField, Tooltip("The maximum amount of change this influencer will impart upon the trait, to the limit of the stats allowable value.")]
+        public float maxChange;
     }
 }

@@ -5,7 +5,7 @@ The `241 Village Life` scene has a number of interacting characters that live to
 * Farm - enjoyable work that produces raw materials that are sold in the farm shop
 * Farm Shop - boring work in which farm produce is sold
 
-# Workers
+## Workers
 
 * Neo Farmer - works at the Farm
 * Neo Cook - works in the Resteraunt

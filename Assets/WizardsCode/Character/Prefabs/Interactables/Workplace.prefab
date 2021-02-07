@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5452606180778513854}
   - component: {fileID: 5452606180778513855}
   - component: {fileID: 5452606180778513848}
-  - component: {fileID: 5452606180778513849}
+  - component: {fileID: 1466872850}
   m_Layer: 0
   m_Name: Workplace
   m_TagString: Untagged
@@ -107,7 +107,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66f048bfe15920a4e9328734b8239ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5452606180778513849
+  m_InteractionName: Work
+  m_MaxInteractors: 1
+  m_CharacterInfluences:
+  - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
+    maxChange: 20
+  m_ObjectInfluences:
+  - statTemplate: {fileID: 11400000, guid: cf9e8ec2f416536438ba755bec4df9d6, type: 2}
+    maxChange: 10
+  m_Duration: 5
+  m_Cooldown: 20
+  m_IsRepeating: 1
+--- !u!114 &1466872850
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -116,14 +127,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5452606180778513851}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fbb5dc72a190ae42ad56b00e2f1304d, type: 3}
+  m_Script: {fileID: 11500000, guid: 1e5278de6e568c64cb6cddd4d1c2177d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  influences:
-  - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
-    maxChange: 20
-  - statTemplate: {fileID: 11400000, guid: e7d5ac7f90040d04b892ec7dda97749d, type: 2}
-    maxChange: -10
-  m_Duration: 30
-  m_Cooldown: 120
-  m_IsRepeating: 0
+  m_DesiredStates: []
+  m_TimeBetweenUpdates: 0.5
+  m_Stats: []
+  m_StatsInfluencers: []

@@ -31,8 +31,11 @@ namespace WizardsCode.Stats {
                 if (m_Controller != null
                     && value != null)
                 {
-                    //TODO move to an interaction point not to the transform position
-                    m_Controller.TargetPosition = value.transform.position;
+                    if (value.ReserveFor(this))
+                    {
+                        //TODO move to an interaction point not to the transform position
+                        m_Controller.TargetPosition = value.transform.position;
+                    }
                 }
 
                 m_TargetInteractable = value;
@@ -49,11 +52,10 @@ namespace WizardsCode.Stats {
         /// <summary>
         /// Decide whether the actor should interact with an influencer trigger they just entered.
         /// </summary>
-        /// <param name="statsInfluencerTrigger">The influencer trigger that was activated and can now be interacted with.</param>
+        /// <param name="interactable">The influencer trigger that was activated and can now be interacted with.</param>
         /// <returns></returns>
-        internal bool ShouldInteractWith(StatsInfluencerTrigger statsInfluencerTrigger)
+        internal bool ShouldInteractWith(Interactable interactable)
         {
-            Interactable interactable = statsInfluencerTrigger.gameObject.GetComponent<Interactable>();
             if (interactable != null && GameObject.ReferenceEquals(interactable, TargetInteractable))
             {
                 return true;
@@ -115,9 +117,9 @@ namespace WizardsCode.Stats {
         /// <returns>True if the influencer was added, otherwise false.</returns>
         public override bool TryAddInfluencer(StatInfluencerSO influencer)
         {
-            if (Memory != null && influencer.generator != null)
+            if (Memory != null && influencer.Trigger != null)
             {
-                MemorySO[] memories = Memory.GetAllMemoriesAbout(influencer.generator);
+                MemorySO[] memories = Memory.GetAllMemoriesAbout(influencer.Generator);
                 for (int i = 0; i < memories.Length; i++)
                 {
                     if (memories[i].stat == influencer.stat && memories[i].time + memories[i].cooldown > Time.timeSinceLevelLoad)

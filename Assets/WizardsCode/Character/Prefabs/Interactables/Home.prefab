@@ -13,14 +13,13 @@ GameObject:
   - component: {fileID: 1494473663186942997}
   - component: {fileID: 1494473663186942996}
   - component: {fileID: 1494473663186942992}
-  - component: {fileID: 1494473663186942993}
   m_Layer: 0
-  m_Name: Bed
+  m_Name: Home
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1494473663186942999
 Transform:
   m_ObjectHideFlags: 0
@@ -61,7 +60,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 5917fb0e578008e4a9eacb5e2ebbb4ca, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -107,21 +106,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66f048bfe15920a4e9328734b8239ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1494473663186942993
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1494473663186943003}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fbb5dc72a190ae42ad56b00e2f1304d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  influences:
+  m_InteractionName: Sleep
+  m_MaxInteractors: 1
+  m_CharacterInfluences:
   - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
     maxChange: 70
+  m_ObjectInfluences: []
   m_Duration: 60
   m_Cooldown: 30
   m_IsRepeating: 0

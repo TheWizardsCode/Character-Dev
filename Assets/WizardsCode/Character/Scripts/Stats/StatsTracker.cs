@@ -61,6 +61,7 @@ namespace WizardsCode.Stats {
 
                     if (Mathf.Abs(m_StatsInfluencers[i].influenceApplied) >= Mathf.Abs(m_StatsInfluencers[i].maxChange))
                     {
+                        m_StatsInfluencers[i].Trigger.StopCharacterInteraction(this);
                         m_StatsInfluencers.RemoveAt(i);
                     }
                 }
@@ -290,7 +291,7 @@ namespace WizardsCode.Stats {
             if (m_StatsInfluencers.Count == 0) msg += "\nNone";
             for (int i = 0; i < m_StatsInfluencers.Count; i++)
             {
-                msg += "\n" + m_StatsInfluencers[i].InteractionName;
+                msg += "\n" + m_StatsInfluencers[i].InteractionName + " at " + m_StatsInfluencers[i].Generator.name; ;
                 msg += "\n\t - " + m_StatsInfluencers[i].stat.name + " changed by " + m_StatsInfluencers[i].maxChange + " at " + m_StatsInfluencers[i].changePerSecond + " per second (" + Mathf.Round((m_StatsInfluencers[i].influenceApplied / m_StatsInfluencers[i].maxChange) * 100) + "% applied)";
             }
 
