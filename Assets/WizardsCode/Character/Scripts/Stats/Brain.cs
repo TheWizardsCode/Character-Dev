@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using WizardsCode.Character;
 using WizardsCode.Character.Stats;
@@ -88,13 +89,23 @@ namespace WizardsCode.Stats {
             //TODO Allow tasks to be interuptable
             if (CurrentBehaviour != null && CurrentBehaviour.IsExecuting) return;
 
+            StringBuilder log = new StringBuilder();
             AbstractAIBehaviour candidateBehaviour = null;
             float highestWeight = float.MinValue;
             float currentWeight = 0;
+
+            log.Append(DisplayName);
+            log.AppendLine(" considered what to do next.");
+
             for (int i = 0; i < m_Behaviours.Length; i++)
             {
                 if (m_Behaviours[i].IsAvailable)
                 {
+                    log.Append("Option ");
+                    log.AppendLine((i + 1).ToString());
+                    log.AppendLine(m_Behaviours[i].DisplayName);
+                    log.AppendLine(m_Behaviours[i].reasoning.ToString());
+
                     currentWeight = m_Behaviours[i].Weight(this);
                     if (currentWeight > highestWeight)
                     {
@@ -109,6 +120,15 @@ namespace WizardsCode.Stats {
             CurrentBehaviour = candidateBehaviour;
             CurrentBehaviour.IsExecuting = true;
             TargetInteractable = CurrentBehaviour.CurrentInteractableTarget;
+
+            log.Append(DisplayName);
+            log.Append(" finally decided to ");
+            log.Append(TargetInteractable.InteractionName);
+            log.Append(" at ");
+            log.Append(TargetInteractable.name);
+
+            //TODO don't log brains thinking to console, cache X decisions and write the rest to a file.
+            Log(log.ToString());
         }
 
         /// <summary>
@@ -169,10 +189,22 @@ namespace WizardsCode.Stats {
             return base.TryAddInfluencer(influencer);
         }
 
+        /// <summary>
+        /// Record a decision or action in the log.
+        /// </summary>
+        /// <param name="log"></param>
+        private void Log(string log)
+        {
+            if (string.IsNullOrEmpty(log)) return;
+
+            //TODO don't log to console, log to a characters history
+            Debug.Log(log);
+        }
+
 #if UNITY_EDITOR
         string IDebug.StatusText()
         {
-            string msg = "";
+            string msg = DisplayName;
             msg += "\n\nStats";
             for (int i = 0; i < m_Stats.Count; i++)
             {

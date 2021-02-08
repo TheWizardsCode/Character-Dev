@@ -56,7 +56,12 @@ MonoBehaviour:
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
     objective: 2
-    normalizedValue: 0.75
+    m_Value: 75
+    m_NormalizedValue: 0.75
+  - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
+    objective: 2
+    m_Value: 20
+    m_NormalizedValue: 0.2
   m_RequiresInteractable: 1
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
@@ -80,7 +85,8 @@ MonoBehaviour:
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
     objective: 0
-    normalizedValue: 0.255
+    m_Value: 70
+    m_NormalizedValue: 0.7
   m_RequiresInteractable: 1
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
@@ -98,17 +104,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45e2d955ea028604c9552bc8d9e5cf47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_DisplayName: Sell Food
+  m_DisplayName: Sell Raw Food
   m_RetryFrequency: 2
   m_AbortDuration: 30
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: cf9e8ec2f416536438ba755bec4df9d6, type: 2}
     objective: 2
-    normalizedValue: 0
+    m_Value: 0
+    m_NormalizedValue: 0
   m_RequiresInteractable: 1
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
     objective: 2
+  - statTemplate: {fileID: 11400000, guid: cf9e8ec2f416536438ba755bec4df9d6, type: 2}
+    objective: 0
   awarenessRange: 40
 --- !u!114 &2242483778498595817
 MonoBehaviour:
@@ -122,17 +131,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45e2d955ea028604c9552bc8d9e5cf47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_DisplayName: Buy Food
+  m_DisplayName: Buy Raw Food
   m_RetryFrequency: 2
   m_AbortDuration: 30
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
     objective: 2
-    normalizedValue: 0.234
+    m_Value: 20
+    m_NormalizedValue: 0.2
   m_RequiresInteractable: 1
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: cf9e8ec2f416536438ba755bec4df9d6, type: 2}
     objective: 2
+  - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
+    objective: 0
   awarenessRange: 40
 --- !u!114 &4140300809958389971
 MonoBehaviour:
@@ -152,7 +164,8 @@ MonoBehaviour:
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
     objective: 0
-    normalizedValue: 1
+    m_Value: 100
+    m_NormalizedValue: 1
   m_RequiresInteractable: 1
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
@@ -176,7 +189,8 @@ MonoBehaviour:
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: 3091b91fc8dcd26428dac24f52b6116e, type: 2}
     objective: 0
-    normalizedValue: 1
+    m_Value: 100
+    m_NormalizedValue: 1
   m_RequiresInteractable: 1
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: 3091b91fc8dcd26428dac24f52b6116e, type: 2}
@@ -200,7 +214,8 @@ MonoBehaviour:
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
     objective: 2
-    normalizedValue: 0.2
+    m_Value: 30.000002
+    m_NormalizedValue: 0.3
   m_RequiresInteractable: 1
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: e7d5ac7f90040d04b892ec7dda97749d, type: 2}

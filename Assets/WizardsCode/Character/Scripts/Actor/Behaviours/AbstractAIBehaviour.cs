@@ -5,6 +5,7 @@ using WizardsCode.Stats;
 using System;
 using Random = UnityEngine.Random;
 using static WizardsCode.Character.StateSO;
+using System.Text;
 
 namespace WizardsCode.Character
 {
@@ -39,8 +40,22 @@ namespace WizardsCode.Character
 
         internal Interactable CurrentInteractableTarget = default;
 
+        internal StringBuilder reasoning = new StringBuilder();
+
 
         internal MemoryController Memory { get { return brain.Memory; } }
+
+        public string DisplayName
+        {
+            get { return m_DisplayName; }
+            set { m_DisplayName = value; }
+        }
+
+        public RequiredStat[] RequiredStats
+        {
+            get { return m_RequiredStats; }
+            set { m_RequiredStats = value; }
+        }
 
         public DesiredStatImpact[] DesiredStateImpacts {
             get {return m_DesiredStateImpacts;}
@@ -67,6 +82,8 @@ namespace WizardsCode.Character
                 if (Time.timeSinceLevelLoad < m_NextRetryTime) return false;
                 m_NextRetryTime = Time.timeSinceLevelLoad + m_RetryFrequency;
 
+                reasoning.Clear();
+
                 if (CheckCharacteHasRequiredStats())
                 {
                     if (m_RequiresInteractable)
@@ -78,6 +95,8 @@ namespace WizardsCode.Character
                     }
                 } else
                 {
+                    reasoning.AppendLine("They decide not to because they don't have the necessary stats.");
+
                     return false;
                 }
 
@@ -105,28 +124,68 @@ namespace WizardsCode.Character
             }
         }
 
+        /// <summary>
+        /// Check if the character has all the necessary stats to execute this behaviour.
+        /// </summary>
+        /// <param name="log">A string that will contain a textual description, in Ink format, describing why the character believes they can or cannot enable this behaviour.</param>
+        /// <returns>True if the behaviour can be enabled, otherwise false.</returns>
         private bool CheckCharacteHasRequiredStats()
         {
-            if (m_RequiredStats.Length == 0) return true;
+            if (m_RequiredStats.Length == 0)
+            {
+                reasoning.Append(brain.DisplayName);
+                reasoning.Append(" has no required stats for ");
+                reasoning.Append(DisplayName);
+                reasoning.AppendLine(".");
+                return true;
+            }
 
             bool requirementsMet = false;
             for (int i = 0; i < m_RequiredStats.Length; i++)
             {
+                reasoning.Append(m_RequiredStats[i].statTemplate.DisplayName);
+
                 switch (m_RequiredStats[i].objective)
                 {
                     case Objective.LessThan:
-                        requirementsMet = brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).NormalizedValue < m_RequiredStats[i].normalizedValue;
+                        requirementsMet = brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).NormalizedValue < m_RequiredStats[i].NormalizedValue;
+                        if (requirementsMet) {
+                            reasoning.Append(" is good since it is less than ");
+                        } 
+                        else
+                        {
+                            reasoning.Append(" is no good since it is not less than ");
+                        }
                         break;
                     case Objective.Approximately:
-                        requirementsMet = Mathf.Approximately(brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).NormalizedValue, m_RequiredStats[i].normalizedValue);
+                        requirementsMet = Mathf.Approximately(brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).NormalizedValue, m_RequiredStats[i].NormalizedValue);
+                        if (requirementsMet)
+                        {
+                            reasoning.Append(" is good since it is approximately equal to ");
+                        }
+                        else
+                        {
+                            reasoning.Append(" is no good since it is not approximately equal to ");
+                        }
                         break;
                     case Objective.GreaterThan:
-                        requirementsMet = brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).NormalizedValue > m_RequiredStats[i].normalizedValue;
+                        requirementsMet = brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).NormalizedValue > m_RequiredStats[i].NormalizedValue;
+                        if (requirementsMet)
+                        {
+                            reasoning.Append(" is good since it is greater than ");
+                        }
+                        else
+                        {
+                            reasoning.Append(" is no good since it is not greater than ");
+                        }
                         break;
                     default:
                         Debug.LogError("Don't know how to handle an Objective of " + m_RequiredStats[i].objective);
+                        requirementsMet = false;
+                        reasoning.Append("Error in processing " + m_RequiredStats[i] + " unrecognized objective: " + m_RequiredStats[i].objective);
                         break;
                 }
+                reasoning.AppendLine(m_RequiredStats[i].Value.ToString());
             }
 
             return requirementsMet;
@@ -299,10 +358,35 @@ namespace WizardsCode.Character
         /// <returns>True if the interactable can deliver on all desired influences</returns>
         private bool IsValidInteractable(Interactable interactable)
         {
-            bool isValid = interactable.HasSpaceFor(brain);
-            isValid &= !interactable.IsOnCooldownFor(brain);
-            isValid &= HasDesiredImpact(interactable);
-            return isValid && interactable.HasRequiredObjectStats();
+            if (!HasDesiredImpact(interactable))
+            {
+                return false;
+            }
+
+            reasoning.Append(interactable.name);
+            reasoning.Append(" is close by, maybe it's a good place to ");
+            reasoning.AppendLine(interactable.InteractionName);
+
+            if (!interactable.HasSpaceFor(brain))
+            {
+                reasoning.AppendLine("Looks like it is full.");
+                return false;
+            }
+
+            if (interactable.IsOnCooldownFor(brain))
+            {
+                reasoning.AppendLine("I Went there recently, let's try somewhere different.");
+                return false;
+            }
+
+            if (!interactable.HasRequiredObjectStats())
+            {
+                reasoning.AppendLine("Looks like they don't have what I need.");
+                return false;
+            }
+
+            reasoning.AppendLine("Looks like they have space as well as what I need.");
+            return true;
         }
 
         /// <summary>
@@ -331,7 +415,7 @@ namespace WizardsCode.Character
 
         public override string ToString()
         {
-            return m_DisplayName;
+            return DisplayName;
         }
     }
     
@@ -347,12 +431,35 @@ namespace WizardsCode.Character
     [Serializable]
     public struct RequiredStat
     {
+        // These values are hidden in the insepctor because there is a custom editor
+        // But at the time of writing it is incomplete.
         [SerializeField, Tooltip("The stat we require a value for.")]
         public StatSO statTemplate;
-        [SerializeField, Tooltip("The object for this stats value, for example, greater than, less than or approximatly equal to.")]
+        [HideInInspector, SerializeField, Tooltip("The object for this stats value, for example, greater than, less than or approximatly equal to.")]
         public Objective objective;
-        [SerializeField, Tooltip("The normalized value required for this stat. "), Range(0f,1f)]
-        public float normalizedValue;
+        [HideInInspector, SerializeField, Tooltip("The value required for this stat (used in conjunction with the objective). Note that only normalized value and value are paired, so changing one will change the other as well.")]
+        float m_Value;
+        [HideInInspector, SerializeField, Tooltip("The normalized value required for this stat  (used in conjunction with the objective). Note that only normalized value and value are paired, so changing one will change the other as well."), Range(0f,1f)]
+        float m_NormalizedValue;
+
+        public float Value
+        {
+            get { return m_Value; }
+            set { 
+                m_Value = value;
+                m_NormalizedValue = (value - statTemplate.MinValue) / (statTemplate.MaxValue - statTemplate.MinValue);
+            }
+        }
+
+        public float NormalizedValue
+        {
+            get { return m_NormalizedValue; }
+            set
+            {
+                m_NormalizedValue = value;
+                m_Value = value * (statTemplate.MaxValue - statTemplate.MinValue);
+            }
+        }
     }
 
     [Serializable]

@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c51095d4916d20d4f8b4b02cc693ecec, type: 3}
   m_Name: Hunger
   m_EditorClassIdentifier: 
-  m_displayName: Hunger
+  m_DisplayName: Hunger
   startValue: 100
-  minValue: 0
-  maxValue: 100
+  m_MinValue: 0
+  m_MaxValue: 100
+  m_AdjustsOverTime: 1
   m_BaseNormalizedValue: 1
   m_SpeedToBaseValue: 3
   m_CurrentNormalizedValue: 1

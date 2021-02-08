@@ -19,8 +19,8 @@ namespace WizardsCode.Character
 
         [Header("Stat Requirements")]
         [SerializeField, Tooltip("The name of this state")]
-        //TODO need to change name to ID and ensure it is game unique
-        string name = "No Name State";
+        //TODO need to ensure name is game unique
+        string DisplayName = "No Name State";
         [SerializeField, Tooltip("The stat that manages this state.")]
         StatSO m_Stat;
         [SerializeField, Tooltip("State objective indicates whether our target value is a minimum, maxium or goal.")]

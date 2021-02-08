@@ -174,7 +174,7 @@ namespace WizardsCode.Character
             for (int i = 0; i < ObjectInfluences.Length; i++)
             {
                 if (ObjectInfluences[i].maxChange < 0 
-                    && m_StatsTracker.GetOrCreateStat(ObjectInfluences[i].statTemplate).Value >= Math.Abs(ObjectInfluences[i].maxChange))
+                    && m_StatsTracker.GetOrCreateStat(ObjectInfluences[i].statTemplate).Value < Math.Abs(ObjectInfluences[i].maxChange))
                 {
                     isValid = false;
                     break;

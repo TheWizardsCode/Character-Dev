@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c51095d4916d20d4f8b4b02cc693ecec, type: 3}
   m_Name: Experience
   m_EditorClassIdentifier: 
-  m_displayName: Experience
+  m_DisplayName: Experience
   startValue: 1
-  minValue: 0
-  maxValue: 100
+  m_MinValue: 0
+  m_MaxValue: 100
   m_AdjustsOverTime: 0
   m_BaseNormalizedValue: 0
   m_SpeedToBaseValue: 0
-  m_CurrentNormalizedValue: 1
+  m_CurrentNormalizedValue: 0.01

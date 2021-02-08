@@ -16,6 +16,8 @@ namespace WizardsCode.Stats {
         , IDebug
 #endif
     {
+        [SerializeField, Tooltip("Name of the owner of this stats tracker. If null a name will be generated.")]
+        string m_DisplayName;
         [SerializeField, Tooltip("Desired States are the states that the actor would like to satisfy. These are, essentially, the things that drive the actor.")]
         StateSO[] m_DesiredStates = default;
 
@@ -31,6 +33,18 @@ namespace WizardsCode.Stats {
         float m_TimeOfLastUpdate = 0;
         internal float m_TimeOfNextUpdate = 0;
         
+        public string DisplayName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(m_DisplayName))
+                {
+                    m_DisplayName = GenerateName();
+                }
+                return m_DisplayName;
+            }
+        }
+
         /// <summary>
         /// Desired States are the states that the actor would like to satisfy.
         /// These are, essentially, the things that drive the actor.
@@ -260,10 +274,22 @@ namespace WizardsCode.Stats {
             return StateSO.Goal.NoAction;
         }
 
+        /// <summary>
+        /// Generate a name for the owner of this stats tracker. This
+        /// can be overridden for different kinds of stats trackers.
+        /// By default it returns the name of the game object this
+        /// component is attached to.
+        /// </summary>
+        /// <returns>A name for this stats tracker object to be used in the UI.</returns>
+        internal virtual string GenerateName()
+        {
+            return gameObject.name;
+        }
+
 #if UNITY_EDITOR
         string IDebug.StatusText()
         {
-            string msg = "";
+            string msg = DisplayName;
             msg += "\n\nStats";
             for (int i = 0; i < m_Stats.Count; i++)
             {

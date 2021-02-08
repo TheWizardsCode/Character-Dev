@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 using WizardsCode.Character;
 
 namespace WizardsCode.Stats
@@ -16,13 +17,13 @@ namespace WizardsCode.Stats
     {
         [Header("Details")]
         [SerializeField, Tooltip("The human readable name for this stat.")]
-        string m_displayName = "No Name Stat";
+        string m_DisplayName = "No Name Stat";
         [SerializeField, Tooltip("The start value for this stat (not normalized).")]
         float startValue = 100;
         [SerializeField, Tooltip("The minimum value this stat can have (not normalized).")]
-        float minValue = 0;
+        float m_MinValue = 0;
         [SerializeField, Tooltip("The maximum value this stat can have (not normalized).")]
-        float maxValue = 100;
+        float m_MaxValue = 100;
 
         [Header("Time Effects")]
         [SerializeField, Tooltip("Should the value of this stat change naturally over time even when there are no other influencers acting upon it?")]
@@ -35,28 +36,24 @@ namespace WizardsCode.Stats
         [HideInInspector, SerializeField]
         float m_CurrentNormalizedValue;
 
-        public StatChangedEvent onValueChanged = new StatChangedEvent();
-
-        /// <summary>
-        /// Get a human readable description of the current status of this stat.
-        /// That is, it's value, whether it is wihtin the desired range etc.
-        /// </summary>
-        public string statusDescription
+        public string DisplayName
         {
-            get {
-                string msg = name + " is " + Value.ToString("0.00") + " (Nomalized: " + NormalizedValue.ToString("0.00") + ")";
-                return msg; 
-            }
+            get { return m_DisplayName; }
+            set { m_DisplayName = value; }
         }
 
-        /// <summary>
-        /// Called every tick to allow for the state to be updated over time.
-        /// </summary>
-        internal virtual void OnUpdate()
-        {
-            if (!m_AdjustsOverTime || Mathf.Approximately(NormalizedValue, m_BaseNormalizedValue)) return;
+        public StatChangedEvent onValueChanged = new StatChangedEvent();
 
-            NormalizedValue += (m_BaseNormalizedValue - NormalizedValue) * (Time.deltaTime / m_SpeedToBaseValue);
+        public float MinValue
+        {
+            get { return m_MinValue; }
+            set { m_MinValue = value; }
+        }
+
+        public float MaxValue
+        {
+            get { return m_MaxValue; }
+            set { m_MaxValue = value; }
         }
 
         /// <summary>
@@ -64,7 +61,8 @@ namespace WizardsCode.Stats
         /// outside the allowable range (0 to 1) then the value will
         /// be clamped.
         /// </summary>
-        public float NormalizedValue {
+        public float NormalizedValue
+        {
             get { return m_CurrentNormalizedValue; }
             internal set
             {
@@ -84,8 +82,30 @@ namespace WizardsCode.Stats
         /// </summary>
         public float Value
         {
-            get { return ((maxValue - minValue) * NormalizedValue) + minValue; }
-            set { NormalizedValue = (value - minValue) / (maxValue - minValue); }
+            get { return ((MaxValue - MinValue) * NormalizedValue) + MinValue; }
+            set { NormalizedValue = (value - MinValue) / (MaxValue - MinValue); }
+        }
+
+        /// <summary>
+        /// Get a human readable description of the current status of this stat.
+        /// That is, it's value, whether it is wihtin the desired range etc.
+        /// </summary>
+        public string statusDescription
+        {
+            get {
+                string msg = name + " is " + Value.ToString("0.00") + " (Nomalized: " + NormalizedValue.ToString("0.00") + ")";
+                return msg; 
+            }
+        }
+
+        /// <summary>
+        /// Called every tick to allow for the state to be updated over time.
+        /// </summary>
+        internal virtual void OnUpdate()
+        {
+            if (!m_AdjustsOverTime && Mathf.Approximately(NormalizedValue, m_BaseNormalizedValue)) return;
+
+            NormalizedValue += (m_BaseNormalizedValue - NormalizedValue) * (Time.deltaTime / m_SpeedToBaseValue);
         }
 
         private void Awake()
