@@ -623,6 +623,66 @@ PrefabInstance:
       propertyPath: m_Name
       value: Eat, Sleep, Work, Play and Learn Behaviour Set
       objectReference: {fileID: 0}
+    - target: {fileID: 1031709833432347895, guid: fc96c4b3ae6ba0848816427c33e7beb8,
+        type: 3}
+      propertyPath: m_RetryFrequency
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1031709833432347895, guid: fc96c4b3ae6ba0848816427c33e7beb8,
+        type: 3}
+      propertyPath: m_RequiredStats.Array.data[0].m_Value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1031709833432347895, guid: fc96c4b3ae6ba0848816427c33e7beb8,
+        type: 3}
+      propertyPath: m_RequiredStats.Array.data[0].m_NormalizedValue
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 2242483778498595817, guid: fc96c4b3ae6ba0848816427c33e7beb8,
+        type: 3}
+      propertyPath: m_RetryFrequency
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2242483778498595817, guid: fc96c4b3ae6ba0848816427c33e7beb8,
+        type: 3}
+      propertyPath: m_RequiredStats.Array.data[0].m_Value
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 2242483778498595817, guid: fc96c4b3ae6ba0848816427c33e7beb8,
+        type: 3}
+      propertyPath: m_RequiredStats.Array.data[0].m_NormalizedValue
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3634621180718998709, guid: fc96c4b3ae6ba0848816427c33e7beb8,
+        type: 3}
+      propertyPath: m_RetryFrequency
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3634621180718998709, guid: fc96c4b3ae6ba0848816427c33e7beb8,
+        type: 3}
+      propertyPath: m_RequiredStats.Array.data[0].m_Value
+      value: 30.000002
+      objectReference: {fileID: 0}
+    - target: {fileID: 3634621180718998709, guid: fc96c4b3ae6ba0848816427c33e7beb8,
+        type: 3}
+      propertyPath: m_RequiredStats.Array.data[0].m_NormalizedValue
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7604596892291220884, guid: fc96c4b3ae6ba0848816427c33e7beb8,
+        type: 3}
+      propertyPath: m_RetryFrequency
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7604596892291220884, guid: fc96c4b3ae6ba0848816427c33e7beb8,
+        type: 3}
+      propertyPath: m_RequiredStats.Array.data[0].m_Value
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 7604596892291220884, guid: fc96c4b3ae6ba0848816427c33e7beb8,
+        type: 3}
+      propertyPath: m_RequiredStats.Array.data[0].m_NormalizedValue
+      value: 0.7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc96c4b3ae6ba0848816427c33e7beb8, type: 3}
 --- !u!4 &957637655 stripped
@@ -2682,6 +2742,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Duration
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2623149930196861744, guid: cad2c3e55e0535249b0febfa5e82702a,
+        type: 3}
+      propertyPath: m_InteractionName
+      value: Trade in Raw Food
       objectReference: {fileID: 0}
     - target: {fileID: 2623149930196861747, guid: cad2c3e55e0535249b0febfa5e82702a,
         type: 3}
@@ -5070,7 +5135,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &8444945104728732603
 GameObject:
   m_ObjectHideFlags: 0

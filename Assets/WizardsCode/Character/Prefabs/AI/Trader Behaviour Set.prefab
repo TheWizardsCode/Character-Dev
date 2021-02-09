@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 7604596892291220884}
   - component: {fileID: 6114500633455450124}
   - component: {fileID: 2242483778498595817}
-  - component: {fileID: 4140300809958389971}
   - component: {fileID: 1031709833432347895}
   - component: {fileID: 3634621180718998709}
+  - component: {fileID: 4140300809958389971}
   - component: {fileID: 1031709833432347893}
   m_Layer: 0
   m_Name: Trader Behaviour Set
@@ -146,31 +146,6 @@ MonoBehaviour:
   - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
     objective: 0
   awarenessRange: 40
---- !u!114 &4140300809958389971
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1031709833432347785}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45e2d955ea028604c9552bc8d9e5cf47, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_DisplayName: Work
-  m_RetryFrequency: 2
-  m_AbortDuration: 30
-  m_RequiredStats:
-  - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
-    objective: 0
-    m_Value: 100
-    m_NormalizedValue: 1
-  m_RequiresInteractable: 1
-  m_DesiredStateImpacts:
-  - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
-    objective: 2
-  awarenessRange: 25
 --- !u!114 &1031709833432347895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -221,6 +196,35 @@ MonoBehaviour:
   - statTemplate: {fileID: 11400000, guid: e7d5ac7f90040d04b892ec7dda97749d, type: 2}
     objective: 2
   awarenessRange: 10
+--- !u!114 &4140300809958389971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1031709833432347785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e2d955ea028604c9552bc8d9e5cf47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_DisplayName: Work
+  m_RetryFrequency: 2
+  m_AbortDuration: 30
+  m_RequiredStats:
+  - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
+    objective: 0
+    m_Value: 20
+    m_NormalizedValue: 0.2
+  - statTemplate: {fileID: 11400000, guid: cf9e8ec2f416536438ba755bec4df9d6, type: 2}
+    objective: 0
+    m_Value: 20
+    m_NormalizedValue: 0.2
+  m_RequiresInteractable: 1
+  m_DesiredStateImpacts:
+  - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
+    objective: 2
+  awarenessRange: 25
 --- !u!114 &1031709833432347893
 MonoBehaviour:
   m_ObjectHideFlags: 0

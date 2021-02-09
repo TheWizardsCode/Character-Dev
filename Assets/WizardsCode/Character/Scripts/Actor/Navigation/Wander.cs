@@ -68,7 +68,7 @@ namespace WizardsCode.Character
         {
             timeToNextWanderPathChange -= Time.deltaTime;
 
-            if (controller.HasReachedTarget)
+            if (timeToNextWanderPathChange > 0 && controller.HasReachedTarget)
             {
                 OnReachedTarget();
                 Finish();
@@ -78,6 +78,12 @@ namespace WizardsCode.Character
             {
                 UpdateMove();
             }
+        }
+
+        internal override void Finish()
+        {
+            base.Finish();
+            timeToNextWanderPathChange = float.MinValue;
         }
 
         /// <summary>

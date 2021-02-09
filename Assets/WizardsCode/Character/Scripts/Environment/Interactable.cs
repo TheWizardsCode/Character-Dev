@@ -28,8 +28,6 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("The set of character stats and the influence to apply to them when a character interacts with the object.")]
         internal StatInfluence[] m_CharacterInfluences;
 
-        Brain m_ReservedFor = null;
-
         [SerializeField, Tooltip("If the actor stays within the trigger area can they get a new influencer after the duration + cooldown has expired?")]
         bool m_IsRepeating = false;
 
@@ -40,7 +38,8 @@ namespace WizardsCode.Character
         float m_Duration = 3;
         [SerializeField, Tooltip("The cooldown time before a character can be influenced by this influencer again.")]
         float m_Cooldown = 30;
-        
+
+        Brain m_ReservedFor = null;
 
         StatsTracker m_StatsTracker;
         private Dictionary<Brain, float> m_TimeOfLastInfluence = new Dictionary<Brain, float>();
@@ -201,12 +200,23 @@ namespace WizardsCode.Character
 
         private void OnTriggerStay(Collider other)
         {
-            if (!m_IsRepeating) return;
-
-            if (other.gameObject == this.gameObject) return;
+            if (other.gameObject == this.gameObject)
+            {
+                return;
+            }
 
             Brain brain = other.GetComponentInParent<Brain>();
-            if (brain == null || !brain.ShouldInteractWith(this)) return;
+            if (brain == null
+                || (!m_IsRepeating
+                && m_CurrentInteractors.Contains(brain)))
+            {
+                return;
+            }
+
+            if (!brain.ShouldInteractWith(this))
+            {
+                return;
+            }
 
             if (!HasSpaceFor(brain))
             {

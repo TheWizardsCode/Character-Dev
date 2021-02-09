@@ -94,8 +94,7 @@ namespace WizardsCode.Stats {
             float highestWeight = float.MinValue;
             float currentWeight = 0;
 
-            log.Append(DisplayName);
-            log.AppendLine(" considered what to do next.");
+            log.AppendLine("Options considered included:");
 
             for (int i = 0; i < m_Behaviours.Length; i++)
             {
@@ -118,16 +117,24 @@ namespace WizardsCode.Stats {
             if (candidateBehaviour == null) return;
 
             CurrentBehaviour = candidateBehaviour;
+            CurrentBehaviour.EndTime = 0;
             CurrentBehaviour.IsExecuting = true;
             TargetInteractable = CurrentBehaviour.CurrentInteractableTarget;
 
-            log.Append(DisplayName);
-            log.Append(" finally decided to ");
-            log.Append(TargetInteractable.InteractionName);
-            log.Append(" at ");
-            log.Append(TargetInteractable.name);
+            log.Insert(0, "\n");
+            if (TargetInteractable != null)
+            {
+                log.Insert(0, TargetInteractable.name);
+                log.Insert(0, " at ");
+                log.Insert(0, TargetInteractable.InteractionName);
+            }
+            else
+            {
+                log.Insert(0, CurrentBehaviour.DisplayName);
+            }
+            log.Insert(0, " decided to ");
+            log.Insert(0, DisplayName);
 
-            //TODO don't log brains thinking to console, cache X decisions and write the rest to a file.
             Log(log.ToString());
         }
 
@@ -233,14 +240,15 @@ namespace WizardsCode.Stats {
                 msg += "\nLong term memories: " + Memory.GetLongTermMemories().Length;
             }
 
+            float timeLeft = Mathf.Clamp(CurrentBehaviour.EndTime - Time.timeSinceLevelLoad, 0, float.MaxValue);
             msg += "\n\nCurrent Behaviour";
-            msg += "\n" + CurrentBehaviour + " (time to abort / end " + (CurrentBehaviour.EndTime - Time.timeSinceLevelLoad).ToString("0.0") + ")";
+            msg += "\n" + CurrentBehaviour + " (time to abort / end " + timeLeft.ToString("0.0") + ")";
             if (TargetInteractable != null)
             {
-                msg += "\nTarget interactable: " + TargetInteractable.InteractionName + " at " + TargetInteractable.name;
+                msg += "\nTarget interaction: " + TargetInteractable.InteractionName + " at " + TargetInteractable.name;
             } else
             {
-                msg += "\nNo target interactable";
+                msg += "\nNo target interaction";
             }
 
             return msg;

@@ -140,7 +140,8 @@ namespace WizardsCode.Character
                 return true;
             }
 
-            bool requirementsMet = false;
+            bool allRequirementsMet = true;
+            bool thisRequirementMet = false;
             for (int i = 0; i < m_RequiredStats.Length; i++)
             {
                 reasoning.Append(m_RequiredStats[i].statTemplate.DisplayName);
@@ -148,8 +149,8 @@ namespace WizardsCode.Character
                 switch (m_RequiredStats[i].objective)
                 {
                     case Objective.LessThan:
-                        requirementsMet = brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).NormalizedValue < m_RequiredStats[i].NormalizedValue;
-                        if (requirementsMet) {
+                        thisRequirementMet = brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).NormalizedValue < m_RequiredStats[i].NormalizedValue;
+                        if (thisRequirementMet) {
                             reasoning.Append(" is good since it is less than ");
                         } 
                         else
@@ -158,8 +159,8 @@ namespace WizardsCode.Character
                         }
                         break;
                     case Objective.Approximately:
-                        requirementsMet = Mathf.Approximately(brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).NormalizedValue, m_RequiredStats[i].NormalizedValue);
-                        if (requirementsMet)
+                        thisRequirementMet = Mathf.Approximately(brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).NormalizedValue, m_RequiredStats[i].NormalizedValue);
+                        if (thisRequirementMet)
                         {
                             reasoning.Append(" is good since it is approximately equal to ");
                         }
@@ -169,8 +170,8 @@ namespace WizardsCode.Character
                         }
                         break;
                     case Objective.GreaterThan:
-                        requirementsMet = brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).NormalizedValue > m_RequiredStats[i].NormalizedValue;
-                        if (requirementsMet)
+                        thisRequirementMet = brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).NormalizedValue > m_RequiredStats[i].NormalizedValue;
+                        if (thisRequirementMet)
                         {
                             reasoning.Append(" is good since it is greater than ");
                         }
@@ -181,14 +182,15 @@ namespace WizardsCode.Character
                         break;
                     default:
                         Debug.LogError("Don't know how to handle an Objective of " + m_RequiredStats[i].objective);
-                        requirementsMet = false;
+                        thisRequirementMet = false;
                         reasoning.Append("Error in processing " + m_RequiredStats[i] + " unrecognized objective: " + m_RequiredStats[i].objective);
                         break;
                 }
                 reasoning.AppendLine(m_RequiredStats[i].Value.ToString());
+                allRequirementsMet &= thisRequirementMet;
             }
 
-            return requirementsMet;
+            return allRequirementsMet;
         }
 
         /// <summary>
@@ -407,7 +409,7 @@ namespace WizardsCode.Character
             return true;
         }
 
-        internal void Finish()
+        internal virtual void Finish()
         {
             IsExecuting = false;
             EndTime = 0;

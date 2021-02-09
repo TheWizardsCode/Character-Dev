@@ -17,6 +17,8 @@ namespace WizardsCode.Character
 
         public override void OnInspectorGUI()
         {
+            OnHeaderGUI();
+
             AbstractAIBehaviour behaviour = (AbstractAIBehaviour)target;
             RequiredStat[] stats = behaviour.RequiredStats;
 
@@ -76,6 +78,26 @@ namespace WizardsCode.Character
             EditorGUILayout.Space();
 
             base.DrawDefaultInspector();
+        }
+
+        Color darkSkinHeaderColor = (Color)new Color32(62, 62, 62, 255);
+        Color lightSkinHeaderColor = (Color)new Color32(194, 194, 194, 255);
+
+        protected override void OnHeaderGUI()
+        {
+            var rect = EditorGUILayout.GetControlRect(false, 0f);
+            rect.height = EditorGUIUtility.singleLineHeight;
+            rect.y -= rect.height * 1.4f;
+            rect.x = 60;
+            rect.xMax -= rect.x * 2f;
+
+            EditorGUI.DrawRect(rect, EditorGUIUtility.isProSkin ? darkSkinHeaderColor : lightSkinHeaderColor);
+
+            string header = (target as GenericAIBehaviour).DisplayName + " (AI Behaviour)";
+            if (string.IsNullOrEmpty(header))
+                header = target.ToString();
+
+            EditorGUI.LabelField(rect, header, EditorStyles.boldLabel);
         }
     }
 }
