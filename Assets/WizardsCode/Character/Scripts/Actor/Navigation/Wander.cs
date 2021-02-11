@@ -45,6 +45,11 @@ namespace WizardsCode.Character
             base.Init();
 
             m_StartPosition = transform.position;
+            NavMeshHit hit;
+            if (!NavMesh.SamplePosition(transform.position, out hit, transform.lossyScale.y * 2, navMeshAreaMask))
+            {
+                Debug.LogError(brain.DisplayName + " start position is not on a navmesh.");
+            }
         }
 
         /// <summary>

@@ -110,6 +110,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e5278de6e568c64cb6cddd4d1c2177d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_DisplayName: 
   m_DesiredStates:
   - {fileID: 11400000, guid: 584989cd936bbf14fadd24b5907ac279, type: 2}
   m_TimeBetweenUpdates: 0.5
@@ -135,7 +136,7 @@ MonoBehaviour:
   m_IsRepeating: 0
   m_ObjectInfluences:
   - statTemplate: {fileID: 11400000, guid: cf9e8ec2f416536438ba755bec4df9d6, type: 2}
-    maxChange: -10
+    maxChange: -1
   m_Duration: 10
   m_Cooldown: 60
 --- !u!114 &4532472690883666434

@@ -3,6 +3,6 @@ that happen to them. These memories can influence which behaviours are selected 
 
 Thw `211 Memories Scene` provides a simple example. It is almost the same as the 201 State Driven Behaviours scene, however, in this scene the actor has a memory compont (in a child object, but it could be anywhere). 
 
-The initial behaviour of the character will be the same as in the 201 scene. The actor will go straight to the table and eat. They will then start wandering. However, unlike in the 201 scene when they become hungry again they will remember the location of the table and return immedietaly.
+The initial behaviour of the character will be the same as in the 201 scene. The actor will go straight to the table and eat. They will then start wandering. Once the cooldown period is over things change. Unlike in the 201 scene when they become hungry again they will remember the location of the table and return immedietaly.
 
 They will not remember places unless they had an effect on their stats. So initially the character will not remember the bed. However, once they sleep in the bed they will remember it.

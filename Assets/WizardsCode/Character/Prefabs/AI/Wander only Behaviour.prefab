@@ -44,6 +44,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DisplayName: Wander
+  m_RetryFrequency: 2
+  m_AbortDuration: 30
   m_RequiredStats: []
   m_RequiresInteractable: 0
   m_DesiredStateImpacts: []
@@ -55,4 +57,4 @@ MonoBehaviour:
   minAngleOfRandomPathChange: -100
   maxAngleOfRandomPathChange: 100
   m_MaxWanderRange: 500
-  navMeshAreaMask: 32
+  navMeshAreaMask: -1
