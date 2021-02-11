@@ -30,6 +30,7 @@ namespace WizardsCode.Stats
 
         float m_ChangePerSecond = float.NegativeInfinity;
         private float m_TimeOfLastUpdate;
+        private string m_GeneratorName;
 
         /// <summary>
         /// The name of this interaction. Used as an ID for this interaction.
@@ -46,7 +47,16 @@ namespace WizardsCode.Stats
         public Interactable Trigger
         {
             get { return m_Trigger; }
-            set { m_Trigger = value; }
+            set { 
+                m_Trigger = value;
+                GeneratorName = Trigger.gameObject.name;
+            }
+        }
+
+        public string GeneratorName
+        {
+            get { return m_GeneratorName; }
+            set { m_GeneratorName = value; }
         }
 
         /// <summary>
@@ -55,7 +65,7 @@ namespace WizardsCode.Stats
         /// </summary>
         public GameObject Generator
         {
-            get { return m_Trigger.gameObject; }
+            get { return Trigger.gameObject; }
         }
 
         /// <summary>

@@ -118,21 +118,34 @@ namespace WizardsCode.Character
             Interactable interactable;
             List<MemorySO> memories = new List<MemorySO>();
 
-            for (int i = 0; i < m_ShortTermMemories.Count; i++)
+            for (int i = m_ShortTermMemories.Count - 1; i >= 0; i--)
             {
-                interactable = m_ShortTermMemories[i].about.GetComponent<Interactable>();
-                if (interactable != null)
+                if (m_ShortTermMemories[i].about != null)
                 {
-                    memories.Add(m_ShortTermMemories[i]);
+                    interactable = m_ShortTermMemories[i].about.GetComponent<Interactable>();
+                    if (interactable != null)
+                    {
+                        memories.Add(m_ShortTermMemories[i]);
+                    }
+                } else
+                {
+                    m_ShortTermMemories.RemoveAt(i);
                 }
             }
 
-            for (int i = 0; i < m_LongTermMemories.Count; i++)
+            for (int i = m_LongTermMemories.Count - 1; i >= 0; i--)
             {
-                interactable = m_LongTermMemories[i].about.GetComponent<Interactable>();
-                if (interactable != null)
+                if (m_LongTermMemories[i].about == null)
                 {
-                    memories.Add(m_LongTermMemories[i]);
+                    interactable = m_LongTermMemories[i].about.GetComponent<Interactable>();
+                    if (interactable != null)
+                    {
+                        memories.Add(m_LongTermMemories[i]);
+                    }
+                }
+                else
+                {
+                    m_LongTermMemories.RemoveAt(i);
                 }
             }
 

@@ -32,6 +32,8 @@ namespace WizardsCode.Character
         bool m_IsRepeating = false;
 
         [Header("Object Settings")]
+        [SerializeField, Tooltip("When an actor has finished interacting with the object should the object be destroyed?")]
+        bool m_DestroyOnUse = false;
         [SerializeField, Tooltip("The set of object stats and the influence to apply to them when a character interacts with the object.")]
         internal StatInfluence[] m_ObjectInfluences;
         [SerializeField, Tooltip("The time, in seconds, over which the influencer will be effective. The total change will occure over this time period. If duration is 0 then the total change is applied instantly")]
@@ -121,18 +123,18 @@ namespace WizardsCode.Character
         /// <param name="stateImpact">The desired state impact</param>
         /// <returns>True if the desired impact will result from interaction, otherwise false.</returns>
         public bool HasInfluenceOn(DesiredStatImpact stateImpact) {
-            for (int i = 0; i < m_CharacterInfluences.Length; i++)
+            for (int i = 0; i < CharacterInfluences.Length; i++)
             {
-                if (m_CharacterInfluences[i].statTemplate.name == stateImpact.statTemplate.name)
+                if (CharacterInfluences[i].statTemplate.name == stateImpact.statTemplate.name)
                 {
                     switch (stateImpact.objective)
                     {
                         case Objective.LessThan:
-                            return m_CharacterInfluences[i].maxChange < 0;
+                            return CharacterInfluences[i].maxChange < 0;
                         case Objective.Approximately:
-                            return Mathf.Approximately(m_CharacterInfluences[i].maxChange, 0);
+                            return Mathf.Approximately(CharacterInfluences[i].maxChange, 0);
                         case Objective.GreaterThan:
-                            return m_CharacterInfluences[i].maxChange > 0;
+                            return CharacterInfluences[i].maxChange > 0;
                         default:
                             Debug.LogError("Don't know how to handle objective " + stateImpact.objective);
                             break;
@@ -257,6 +259,10 @@ namespace WizardsCode.Character
         internal void StopCharacterInteraction(StatsTracker statsTracker)
         {
             m_CurrentInteractors.Remove(statsTracker);
+            if (m_DestroyOnUse)
+            {
+                Destroy(gameObject, 0.05f);
+            }
         }
 
         private void AddObjectInfluence()
