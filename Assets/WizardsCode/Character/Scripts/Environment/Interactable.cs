@@ -233,7 +233,7 @@ namespace WizardsCode.Character
 
         private void StartCharacterInteraction(Brain brain)
         {
-            brain.CurrentBehaviour.StartInteraction(this);
+             brain.CurrentBehaviour.StartInteraction(this);
 
             for (int i = 0; i < CharacterInfluences.Length; i++)
             {

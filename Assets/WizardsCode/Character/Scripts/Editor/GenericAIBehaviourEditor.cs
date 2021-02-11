@@ -30,7 +30,13 @@ namespace WizardsCode.Character
 
             // Required Stats section
             EditorGUILayout.BeginVertical("Box");
-            EditorGUILayout.LabelField("Required Stats (" + stats.Length + ")", EditorStyles.boldLabel);
+            if (stats != null)
+            {
+                EditorGUILayout.LabelField("Required Stats (" + stats.Length + ")", EditorStyles.boldLabel);
+            } else
+            {
+                EditorGUILayout.LabelField("No Required Stats");
+            }
             
             for (int i = 0; i < stats.Length; i++)
             {
