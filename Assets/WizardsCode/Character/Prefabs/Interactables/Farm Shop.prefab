@@ -28,7 +28,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2623149930196861747}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3, y: 0, z: 1}
   m_LocalScale: {x: 2, y: 1, z: 2}
   m_Children: []
@@ -128,7 +128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66f048bfe15920a4e9328734b8239ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_InteractionName: Sell Raw Food
+  m_InteractionName: Trade in Raw Food
   m_MaxInteractors: 1
   m_CharacterInfluences:
   - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
@@ -141,5 +141,5 @@ MonoBehaviour:
     maxChange: -5
   - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
     maxChange: 7
-  m_Duration: 0
+  m_Duration: 3
   m_Cooldown: 30

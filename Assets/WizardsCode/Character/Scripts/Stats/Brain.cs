@@ -240,15 +240,23 @@ namespace WizardsCode.Stats {
                 msg += "\nLong term memories: " + Memory.GetLongTermMemories().Length;
             }
 
-            float timeLeft = Mathf.Clamp(CurrentBehaviour.EndTime - Time.timeSinceLevelLoad, 0, float.MaxValue);
-            msg += "\n\nCurrent Behaviour";
-            msg += "\n" + CurrentBehaviour + " (time to abort / end " + timeLeft.ToString("0.0") + ")";
-            if (TargetInteractable != null)
+            if (CurrentBehaviour != null)
             {
-                msg += "\nTarget interaction: " + TargetInteractable.InteractionName + " at " + TargetInteractable.name;
+                float timeLeft = Mathf.Clamp(CurrentBehaviour.EndTime - Time.timeSinceLevelLoad, 0, float.MaxValue);
+                msg += "\n\nCurrent Behaviour";
+                msg += "\n" + CurrentBehaviour + " (time to abort / end " + timeLeft.ToString("0.0") + ")";
+                if (TargetInteractable != null)
+                {
+                    msg += "\nTarget interaction: " + TargetInteractable.InteractionName + " at " + TargetInteractable.name;
+                }
+                else
+                {
+                    msg += "\nNo target interaction";
+                }
             } else
             {
-                msg += "\nNo target interaction";
+                msg += "\n\nCurrent Behaviour";
+                msg += "\nNone";
             }
 
             return msg;

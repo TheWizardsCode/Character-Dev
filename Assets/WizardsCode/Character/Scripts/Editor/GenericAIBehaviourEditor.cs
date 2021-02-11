@@ -10,8 +10,6 @@ namespace WizardsCode.Character
     [CustomEditor(typeof(AbstractAIBehaviour), true)]
     public class GenericAIBehaviourEditor : Editor
     {
-        //TODO how do I change the title bar for this editor
-
         List<bool> showRequiredStat = new List<bool>();
         float labelWidth = 200;
 
@@ -83,6 +81,11 @@ namespace WizardsCode.Character
         Color darkSkinHeaderColor = (Color)new Color32(62, 62, 62, 255);
         Color lightSkinHeaderColor = (Color)new Color32(194, 194, 194, 255);
 
+        /// <summary>
+        /// This creates an overlapping label with the title bar for this
+        /// component which allows us to overwrite the title. unfortunately
+        /// it only works when the component is expanded.
+        /// </summary>
         protected override void OnHeaderGUI()
         {
             var rect = EditorGUILayout.GetControlRect(false, 0f);
