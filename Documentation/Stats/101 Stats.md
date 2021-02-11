@@ -1,0 +1,1 @@
+In this demo single characters is controlled by point and click. The gold dome will make them happy and we will see their memories and stats reflect this. The red dome will make them unhappy.
