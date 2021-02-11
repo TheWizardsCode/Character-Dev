@@ -50,6 +50,8 @@ namespace WizardsCode.Character
             {
                 Debug.LogError(brain.DisplayName + " start position is not on a navmesh.");
             }
+
+            timeToNextWanderPathChange = float.MinValue;
         }
 
         /// <summary>

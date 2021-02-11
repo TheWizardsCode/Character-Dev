@@ -79,6 +79,12 @@ namespace WizardsCode.Character
                         return true;
                     }
                 }
+                
+                if (!m_Agent.hasPath && !m_Agent.pathPending)
+                {
+                    return true;
+                }
+                
                 return false;
             }
         }
