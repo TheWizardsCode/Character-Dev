@@ -254,7 +254,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Press SPACE to remove this text and start the demo
+  m_text: 'Fly the camera using mouse, WASD and QE.
+
+    Press SPACE to remove this
+    text and start the demo'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -282,7 +285,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 44.75
+  m_fontSize: 53.4
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -320,15 +323,15 @@ MonoBehaviour:
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: -71.075806, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 5049930526358636008}
-    characterCount: 50
+    characterCount: 91
     spriteCount: 0
-    spaceCount: 9
-    wordCount: 10
+    spaceCount: 17
+    wordCount: 18
     linkCount: 0
-    lineCount: 1
+    lineCount: 2
     pageCount: 1
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
@@ -410,22 +413,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "The 101 scene shows the absolute minimal setup for a Wizards Code character.
-    also known as an Actor. \r\n\r\n\r\n# Required Components\r\n\r\n## Actor Controller\r\n\r\nThis
-    is resonsible for controlling the movement and animation of the character. It
-    requires a NavMeshAgent component be attached.\r\n\r\n## Brain\r\n\r\nThe brain
-    tracks all the characters stats and makes decisions about what the charcter will
-    do.\r\n\r\n## Animator\r\n\r\nThis is a standard Unity Animtor component. You
-    can use any animation controller you want as long as it uses the parameters setup
-    in the Actor Controller. If you want to get going quickly you can use the Basic
-    Humanoid Controller that is part of the Wizards Code Animation pack (also open
-    source).\r\n\r\n# NavMeshAgent\r\n\r\nA standard Unity NavMeshAgent used by the
-    Actor Controller to move the actor.\r\n\r\n# Capsule Collider\r\n\r\nRequired
-    by NavMeshAgent\r\n\r\n# Rigidbody\r\n\r\nRequired to ensure colliders and triggers
-    are effective in the scene.\r\n\r\n# Audio Source\r\n\r\nA standard unity Audio
-    Source allowing the Actor to make sound.\r\n\r\n# Optional Components\r\n\r\n##
-    DebugInfo\r\n\r\nThis is a useful component when in development. If this component
-    is attached to your character an gizmo containing debug info will be shown.\r\n\r\n"
+  m_text: Create a text asset and point to it in the controller in the Help Canvas
+    root object to replace this text.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -453,7 +442,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 21.8
+  m_fontSize: 72
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -491,15 +480,15 @@ MonoBehaviour:
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 76.686935}
+  m_margin: {x: 0, y: 0, z: 0, w: 158.53189}
   m_textInfo:
     textComponent: {fileID: 1213389838596476775}
-    characterCount: 1222
+    characterCount: 106
     spriteCount: 0
-    spaceCount: 214
-    wordCount: 183
+    spaceCount: 20
+    wordCount: 21
     linkCount: 0
-    lineCount: 40
+    lineCount: 2
     pageCount: 1
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0

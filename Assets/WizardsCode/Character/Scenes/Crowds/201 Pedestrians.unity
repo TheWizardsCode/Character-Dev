@@ -10619,6 +10619,7 @@ GameObject:
   - component: {fileID: 1200447070}
   - component: {fileID: 1200447069}
   - component: {fileID: 1200447068}
+  - component: {fileID: 1200447071}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -10691,6 +10692,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1200447071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1200447067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea049d4f27439fa45ab218eabde0fc79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraSensitivity: 90
+  climbSpeed: 4
+  normalMoveSpeed: 10
+  slowMoveFactor: 0.25
+  fastMoveFactor: 3
 --- !u!1 &1221175215
 GameObject:
   m_ObjectHideFlags: 0
@@ -11353,6 +11371,10 @@ PrefabInstance:
       propertyPath: documentationFilename
       value: Crowds/Pedestrians.md
       objectReference: {fileID: 0}
+    - target: {fileID: 1066203504, guid: 565f3debb24a0b24bb53067f704ee61d, type: 3}
+      propertyPath: documentation
+      value: 
+      objectReference: {fileID: 4900000, guid: 88d7f19c3331ae44d8b3577cb996cdcc, type: 3}
     - target: {fileID: 5049930525238412879, guid: 565f3debb24a0b24bb53067f704ee61d,
         type: 3}
       propertyPath: m_LocalPosition.x

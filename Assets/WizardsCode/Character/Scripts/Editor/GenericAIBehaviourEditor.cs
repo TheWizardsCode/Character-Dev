@@ -102,7 +102,7 @@ namespace WizardsCode.Character
 
             EditorGUI.DrawRect(rect, EditorGUIUtility.isProSkin ? darkSkinHeaderColor : lightSkinHeaderColor);
 
-            string header = (target as GenericAIBehaviour).DisplayName + " (AI Behaviour)";
+            string header = (target as AbstractAIBehaviour).DisplayName + " (AI Behaviour)";
             if (string.IsNullOrEmpty(header))
                 header = target.ToString();
 
