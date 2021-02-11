@@ -279,7 +279,7 @@ namespace WizardsCode.Character
             Interactable[] currentInteractables;
             for (int i = 0; i < hitColliders.Length; i++)
             {
-                currentInteractables = hitColliders[i].GetComponents<Interactable>();
+                currentInteractables = hitColliders[i].GetComponentsInParent<Interactable>();
                 for (int idx = 0; idx < currentInteractables.Length; idx++)
                 {
                     if (currentInteractables[idx].HasSpaceFor(brain))

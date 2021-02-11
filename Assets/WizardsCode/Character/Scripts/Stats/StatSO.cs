@@ -103,7 +103,8 @@ namespace WizardsCode.Stats
         /// </summary>
         internal virtual void OnUpdate()
         {
-            if (!m_AdjustsOverTime && Mathf.Approximately(NormalizedValue, m_BaseNormalizedValue)) return;
+            if (!m_AdjustsOverTime) return;
+            if (Mathf.Approximately(NormalizedValue, m_BaseNormalizedValue)) return;
 
             NormalizedValue += (m_BaseNormalizedValue - NormalizedValue) * (Time.deltaTime / m_SpeedToBaseValue);
         }

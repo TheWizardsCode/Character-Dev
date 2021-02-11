@@ -32,7 +32,7 @@ namespace WizardsCode.Utility.UI
                 documentationTextGUI.text = documentation.text;
             }
 
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (Input.GetKeyDown(KeyCode.Space))
             {
                 gameObject.SetActive(false);
                 Time.timeScale = 1;
