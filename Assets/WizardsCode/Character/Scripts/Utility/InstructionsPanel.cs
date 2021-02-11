@@ -13,8 +13,9 @@ namespace WizardsCode.Utility.UI
     [ExecuteAlways]
     public class InstructionsPanel : MonoBehaviour
     {
-        [SerializeField, Tooltip("If the documentation is to be loaded from a file in the Documentation folder enter its name here. The content of this file will be placed into the UI on startup.")]
-        string documentationFilename = "";
+        [SerializeField, Tooltip("The text asset containing the content to be displayed as help.")]
+        TextAsset documentation;
+
         [SerializeField, Tooltip("If the documentation is to be loaded from a file this is the text component to load the content into.")]
         TMP_Text documentationTextGUI;
 
@@ -26,17 +27,9 @@ namespace WizardsCode.Utility.UI
         // Update is called once per frame
         void Update()
         {
-            if (!string.IsNullOrEmpty(documentationFilename) && documentationTextGUI)
+            if (documentation && documentationTextGUI)
             {
-                //TODO don't hardcode the path to the documentation folder
-                TextAsset content = (TextAsset)AssetDatabase.LoadAssetAtPath("Assets/WizardsCode/Character/Documentation/" + documentationFilename, typeof(TextAsset));
-                if (content != null)
-                {
-                    documentationTextGUI.text = content.text;
-                } else
-                {
-                    Debug.LogError("Unable to find documentation file '" + documentationFilename + "' configured in " + this);
-                }
+                documentationTextGUI.text = documentation.text;
             }
 
             if (Input.GetKeyDown(KeyCode.Escape))

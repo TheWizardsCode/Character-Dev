@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WizardsCode.Character;
+using WizardsCode.Character.Stats;
 
 namespace WizardsCode.Stats
 {
@@ -11,6 +13,8 @@ namespace WizardsCode.Stats
     [CreateAssetMenu(fileName ="New Stats Influencer", menuName = "Wizards Code/Stats/New Influencer")]
     public class StatInfluencerSO : ScriptableObject
     {
+        [SerializeField, Tooltip("The name of the interaction that created this influencer.")]
+        string m_InteractionName;
         [SerializeField, Tooltip("The Stat this influencer acts upon.")]
         StatSO m_stat;
         [SerializeField, Tooltip("The maximum amount of change this influencer will impart upon the stat. If the stat will never be taken beyond its maximum and minimum allowable values.")]
@@ -22,19 +26,36 @@ namespace WizardsCode.Stats
 
         [HideInInspector, SerializeField]
         float m_InfluenceApplied = 0;
-        GameObject m_Generator;
+        Interactable m_Trigger;
 
         float m_ChangePerSecond = float.NegativeInfinity;
         private float m_TimeOfLastUpdate;
 
         /// <summary>
+        /// The name of this interaction. Used as an ID for this interaction.
+        /// </summary>
+        public string InteractionName
+        {
+            get { return m_InteractionName; }
+            set { m_InteractionName = value; }
+        }
+
+        /// <summary>
+        /// Get or set the StatsInfluencerTrigger that imparted this influencer on the actor.
+        /// </summary>
+        public Interactable Trigger
+        {
+            get { return m_Trigger; }
+            set { m_Trigger = value; }
+        }
+
+        /// <summary>
         /// Get the game object that imparted this influencer on the actor.
         /// This is used in the memory system to remember good/bad results of interations with objects.
         /// </summary>
-        public GameObject generator
+        public GameObject Generator
         {
-            get { return m_Generator; }
-            set { m_Generator = value; }
+            get { return m_Trigger.gameObject; }
         }
 
         /// <summary>
@@ -110,10 +131,10 @@ namespace WizardsCode.Stats
         /// Apply a change from a stat influencer.
         /// </summary>
         /// 
-        /// <param name="brain">The brain managing the stats to be changed.</param>
-        internal void ChangeStat(Brain brain)
+        /// <param name="statsTracker">The brain managing the stats to be changed.</param>
+        internal void ChangeStat(StatsTracker statsTracker)
         {
-            StatSO statToUpdate = brain.GetOrCreateStat(stat);
+            StatSO statToUpdate = statsTracker.GetOrCreateStat(stat);
             float change;
 
             if (duration > 0)

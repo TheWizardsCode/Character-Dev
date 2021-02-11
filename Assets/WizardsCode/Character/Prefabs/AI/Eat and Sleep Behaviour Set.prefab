@@ -46,10 +46,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DisplayName: Eat
+  m_RetryFrequency: 2
+  m_AbortDuration: 30
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
     objective: 2
-    normalizedValue: 0.75
+    m_Value: 60.000004
+    m_NormalizedValue: 0.6
   m_RequiresInteractable: 1
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
@@ -68,10 +71,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DisplayName: Sleep
+  m_RetryFrequency: 2
+  m_AbortDuration: 30
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
     objective: 0
-    normalizedValue: 0.255
+    m_Value: 70
+    m_NormalizedValue: 0.7
   m_RequiresInteractable: 1
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
@@ -90,6 +96,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DisplayName: Wander
+  m_RetryFrequency: 2
+  m_AbortDuration: 30
   m_RequiredStats: []
   m_RequiresInteractable: 0
   m_DesiredStateImpacts: []

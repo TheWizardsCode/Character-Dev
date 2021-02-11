@@ -24,7 +24,7 @@ namespace WizardsCode
         {
             if (components == null) return;
 
-            string msg = gameObject.name;
+            string msg = "";
             for (int i = 0; i < components.Length; i++)
             {
                 string status = components[i].StatusText();

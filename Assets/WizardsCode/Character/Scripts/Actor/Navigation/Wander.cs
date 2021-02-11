@@ -45,6 +45,11 @@ namespace WizardsCode.Character
             base.Init();
 
             m_StartPosition = transform.position;
+            NavMeshHit hit;
+            if (!NavMesh.SamplePosition(transform.position, out hit, transform.lossyScale.y * 2, navMeshAreaMask))
+            {
+                Debug.LogError(brain.DisplayName + " start position is not on a navmesh.");
+            }
         }
 
         /// <summary>
@@ -68,7 +73,7 @@ namespace WizardsCode.Character
         {
             timeToNextWanderPathChange -= Time.deltaTime;
 
-            if (controller.HasReachedTarget)
+            if (timeToNextWanderPathChange > 0 && controller.HasReachedTarget)
             {
                 OnReachedTarget();
                 Finish();
@@ -78,6 +83,12 @@ namespace WizardsCode.Character
             {
                 UpdateMove();
             }
+        }
+
+        internal override void Finish()
+        {
+            base.Finish();
+            timeToNextWanderPathChange = float.MinValue;
         }
 
         /// <summary>

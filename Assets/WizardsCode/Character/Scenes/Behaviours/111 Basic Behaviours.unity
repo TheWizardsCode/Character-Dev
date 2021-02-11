@@ -120,7 +120,7 @@ NavMeshSettings:
     accuratePlacement: 0
     debug:
       m_Flags: 0
-  m_NavMeshData: {fileID: 23800000, guid: b5c70bf2b3f38954e997abde76567b5c, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 299d2f62551979e449963173da40f0ba, type: 2}
 --- !u!1001 &176872965
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -385,6 +385,10 @@ PrefabInstance:
       propertyPath: documentationFilename
       value: Behaviours/111 Basic Behaviours.md
       objectReference: {fileID: 0}
+    - target: {fileID: 1066203504, guid: 565f3debb24a0b24bb53067f704ee61d, type: 3}
+      propertyPath: documentation
+      value: 
+      objectReference: {fileID: 4900000, guid: 5b022296540d9c14c9beded7855635da, type: 3}
     - target: {fileID: 5049930525238412879, guid: 565f3debb24a0b24bb53067f704ee61d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1897,6 +1901,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7588304404055048798, guid: 5946825c01ac14c4b8a72b03526b1f70,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8444945103901806786, guid: 5946825c01ac14c4b8a72b03526b1f70,
         type: 3}

@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 8590167545941654455}
   - component: {fileID: 8590167545941654456}
   - component: {fileID: 8590167545941654457}
-  - component: {fileID: 8590167545941654458}
   m_Layer: 0
   m_Name: Library
   m_TagString: Untagged
@@ -61,7 +60,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: c4241e6eac28a9d468812920efd2109b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -107,21 +106,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66f048bfe15920a4e9328734b8239ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8590167545941654458
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8590167545941654459}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fbb5dc72a190ae42ad56b00e2f1304d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  influences:
+  m_InteractionName: Read a Book
+  m_MaxInteractors: 1
+  m_CharacterInfluences:
   - statTemplate: {fileID: 11400000, guid: 3091b91fc8dcd26428dac24f52b6116e, type: 2}
     maxChange: 1
+  m_IsRepeating: 0
+  m_ObjectInfluences: []
   m_Duration: 30
   m_Cooldown: 120
-  m_IsRepeating: 0

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using WizardsCode.Character;
 using WizardsCode.Character.Stats;
@@ -11,40 +12,19 @@ namespace WizardsCode.Stats {
     /// The Brain is responsible for tracking the stats and goal states of the character and
     /// making decisions and plans to reach those goal stats.
     /// </summary>
-    public class Brain : MonoBehaviour
+    public class Brain : StatsTracker
 #if UNITY_EDITOR
         , IDebug
 #endif
     {
-        [Header("Personality")]
-        [SerializeField, Tooltip("Desired States are the states that the actor would like to satisfy. These are, essentially, the things that drive the actor.")]
-        StateSO[] m_DesiredStates = default;
-
-        [Header("Optimization")]
-        [SerializeField, Tooltip("How often stats should be processed for changes.")]
-        float m_TimeBetweenUpdates = 0.5f;
-
-        [HideInInspector, SerializeField]
-        List<StatSO> m_Stats = new List<StatSO>();
-        [HideInInspector, SerializeField]
-        List<StatInfluencerSO> m_StatsInfluencers = new List<StatInfluencerSO>();
-
-        float m_TimeOfLastUpdate = 0;
-        float m_TimeOfNextUpdate = 0;
         ActorController m_Controller;
         AbstractAIBehaviour[] m_Behaviours = default;
-        private AbstractAIBehaviour m_CurrentBehaviour;
         private Interactable m_TargetInteractable;
+
+        public AbstractAIBehaviour CurrentBehaviour { get; set; }
 
         public MemoryController Memory { get; private set; }
 
-        /// <summary>
-        /// Desired States are the states that the actor would like to satisfy.
-        /// These are, essentially, the things that drive the actor.
-        /// </summary>
-        public StateSO[] DesiredStates { get { return m_DesiredStates; } }
-
-        public StateSO[] UnsatisfiedDesiredStates { get; internal set; }
         internal Interactable TargetInteractable
         {
             get { return m_TargetInteractable; }
@@ -53,8 +33,11 @@ namespace WizardsCode.Stats {
                 if (m_Controller != null
                     && value != null)
                 {
-                    //TODO move to an interaction point not to the transform position
-                    m_Controller.TargetPosition = value.transform.position;
+                    if (value.ReserveFor(this))
+                    {
+                        //TODO move to an interaction point not to the transform position
+                        m_Controller.TargetPosition = value.transform.position;
+                    }
                 }
 
                 m_TargetInteractable = value;
@@ -71,11 +54,10 @@ namespace WizardsCode.Stats {
         /// <summary>
         /// Decide whether the actor should interact with an influencer trigger they just entered.
         /// </summary>
-        /// <param name="statsInfluencerTrigger">The influencer trigger that was activated and can now be interacted with.</param>
+        /// <param name="interactable">The influencer trigger that was activated and can now be interacted with.</param>
         /// <returns></returns>
-        internal bool ShouldInteractWith(StatsInfluencerTrigger statsInfluencerTrigger)
+        internal bool ShouldInteractWith(Interactable interactable)
         {
-            Interactable interactable = statsInfluencerTrigger.gameObject.GetComponent<Interactable>();
             if (interactable != null && GameObject.ReferenceEquals(interactable, TargetInteractable))
             {
                 return true;
@@ -85,7 +67,7 @@ namespace WizardsCode.Stats {
             }
         }
 
-        private void Update()
+        internal override void Update()
         {
             if (Time.timeSinceLevelLoad < m_TimeOfNextUpdate) return;
 
@@ -94,34 +76,9 @@ namespace WizardsCode.Stats {
                 m_Controller.TargetPosition = TargetInteractable.transform.position;
             }
 
-            for (int i = 0; i < m_Stats.Count; i++)
-            {
-                m_Stats[i].OnUpdate();
-            }
-
-            // Apply stat influencers
-            for (int i = 0; i < m_StatsInfluencers.Count; i++)
-            {
-                if (m_StatsInfluencers[i] != null)
-                {
-                    m_StatsInfluencers[i].ChangeStat(this);
-
-                    if (Mathf.Abs(m_StatsInfluencers[i].influenceApplied) >= Mathf.Abs(m_StatsInfluencers[i].maxChange))
-                    {
-                        m_StatsInfluencers.RemoveAt(i);
-                    }
-                } else
-                {
-                    m_StatsInfluencers.RemoveAt(i);
-                }
-            }
-
-            UpdateUnsatisfiedStates();
+            base.Update();
 
             UpdateActiveBehaviour();
-
-            m_TimeOfLastUpdate = Time.timeSinceLevelLoad;
-            m_TimeOfNextUpdate = Time.timeSinceLevelLoad + m_TimeBetweenUpdates;
         }
 
         /// <summary>
@@ -130,15 +87,24 @@ namespace WizardsCode.Stats {
         private void UpdateActiveBehaviour()
         {
             //TODO Allow tasks to be interuptable
-            if (m_CurrentBehaviour != null && m_CurrentBehaviour.IsExecuting) return;
+            if (CurrentBehaviour != null && CurrentBehaviour.IsExecuting) return;
 
+            StringBuilder log = new StringBuilder();
             AbstractAIBehaviour candidateBehaviour = null;
             float highestWeight = float.MinValue;
             float currentWeight = 0;
+
+            log.AppendLine("Options considered included:");
+
             for (int i = 0; i < m_Behaviours.Length; i++)
             {
                 if (m_Behaviours[i].IsAvailable)
                 {
+                    log.Append("Option ");
+                    log.AppendLine((i + 1).ToString());
+                    log.AppendLine(m_Behaviours[i].DisplayName);
+                    log.AppendLine(m_Behaviours[i].reasoning.ToString());
+
                     currentWeight = m_Behaviours[i].Weight(this);
                     if (currentWeight > highestWeight)
                     {
@@ -150,102 +116,26 @@ namespace WizardsCode.Stats {
 
             if (candidateBehaviour == null) return;
 
-            m_CurrentBehaviour = candidateBehaviour;
-            m_CurrentBehaviour.IsExecuting = true;
-        }
+            CurrentBehaviour = candidateBehaviour;
+            CurrentBehaviour.EndTime = 0;
+            CurrentBehaviour.IsExecuting = true;
+            TargetInteractable = CurrentBehaviour.CurrentInteractableTarget;
 
-        /// <summary>
-        /// Iterates over all the desired stated and checks to see if they are currently satsified.
-        /// Unsatisfied states are caches in `UnsatisfiedStates`.
-        /// </summary>
-        private void UpdateUnsatisfiedStates()
-        {
-            List<StateSO> states = new List<StateSO>();
-            for (int i = 0; i < DesiredStates.Length; i++)
+            log.Insert(0, "\n");
+            if (TargetInteractable != null)
             {
-                if (!DesiredStates[i].IsSatisfiedFor(this))
-                {
-                    states.Add(DesiredStates[i]);
-                }
+                log.Insert(0, TargetInteractable.name);
+                log.Insert(0, " at ");
+                log.Insert(0, TargetInteractable.InteractionName);
             }
-            UnsatisfiedDesiredStates = states.ToArray();
-        }
-
-        /// <summary>
-        /// Get a list of stats that are currently outside the desired state for that stat.
-        /// This can be used, for example. by AI deciding what action to take next.
-        /// </summary>
-        /// <returns>A list of stats that are not in a desired state.</returns>
-        [Obsolete("This method needs to be replaced with one that identifies whether the stat is satisfied or needs to increase or decrease. Or perhaps it is not needed at all since it is currently only used in WanderWithIntent. Maybe that behaviour should look for places the brain has identified for it.")]
-        public StatSO[] GetStatsNotInDesiredState()
-        {
-            List<StatSO> stats = new List<StatSO>();
-            for (int i = 0; i < UnsatisfiedDesiredStates.Length; i++)
+            else
             {
-                stats.AddRange(GetStatsDesiredForState(UnsatisfiedDesiredStates[i]));
+                log.Insert(0, CurrentBehaviour.DisplayName);
             }
-            return stats.ToArray();
-        }
+            log.Insert(0, " decided to ");
+            log.Insert(0, DisplayName);
 
-        private List<StatSO> GetStatsDesiredForState(StateSO state)
-        {
-            List<StatSO> stats = new List<StatSO>();
-            if (state.statTemplate != null)
-            {
-                StatSO stat = GetOrCreateStat(state.statTemplate);
-                if (GetGoalFor(state.statTemplate) != StateSO.Goal.NoAction)
-                {
-                    stats.Add(stat);
-                }
-            }
-
-            for (int idx = 1; idx < state.SubStates.Length; idx++)
-            {
-                stats.AddRange(GetStatsDesiredForState(state.SubStates[idx]));
-            }
-            return stats;
-        }
-
-        /// <summary>
-        /// Get the Stat of a given type.
-        /// </summary>
-        /// <param name="name">The name of the stat we want to retrieve</param>
-        /// <returns>The stat, if it exists, or null.</returns>
-        public StatSO GetStat(StatSO template)
-        {
-            for (int i = 0; i < m_Stats.Count; i++)
-            {
-                if (template != null)
-                {
-                    if (m_Stats[i].name == template.name)
-                    {
-                        return m_Stats[i];
-                    }
-                }
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Get the stat object representing a named stat. If it does not already
-        /// exist it will be created with a base value.
-        /// </summary>
-        /// <param name="name">Tha name of the stat to Get or Create for this controller</param>
-        /// <returns>A StatSO representing the named stat</returns>
-        public StatSO GetOrCreateStat(StatSO template, float? value = null)
-        {
-            StatSO stat = GetStat(template);
-            if (stat != null) return stat;
-
-            stat = Instantiate(template);
-            stat.name = template.name;
-            if (value != null)
-            {
-                stat.NormalizedValue = (float)value;
-            }
-
-            m_Stats.Add(stat);
-            return stat;
+            Log(log.ToString());
         }
 
         /// <summary>
@@ -254,11 +144,11 @@ namespace WizardsCode.Stats {
         /// </summary>
         /// <param name="influencer">The influencer to add.</param>
         /// <returns>True if the influencer was added, otherwise false.</returns>
-        public bool TryAddInfluencer(StatInfluencerSO influencer)
+        public override bool TryAddInfluencer(StatInfluencerSO influencer)
         {
-            if (Memory != null && influencer.generator != null)
+            if (Memory != null && influencer.Trigger != null)
             {
-                MemorySO[] memories = Memory.GetAllMemoriesAbout(influencer.generator);
+                MemorySO[] memories = Memory.GetAllMemoriesAbout(influencer.Generator);
                 for (int i = 0; i < memories.Length; i++)
                 {
                     if (memories[i].stat == influencer.stat && memories[i].time + memories[i].cooldown > Time.timeSinceLevelLoad)
@@ -271,7 +161,7 @@ namespace WizardsCode.Stats {
             if (Memory != null)
             {
                 StatSO stat = GetOrCreateStat(influencer.stat);
-                List<StateSO> states = GetStatesFor(stat);
+                List<StateSO> states = GetDesiredStatesFor(stat);
                 bool isGood = true;
                 for (int i = 0; i < states.Count; i++)
                 {
@@ -303,99 +193,32 @@ namespace WizardsCode.Stats {
                 }
             }
 
-            m_StatsInfluencers.Add(influencer);
-
-            return true;
-        }
-
-        private List<StateSO> GetStatesFor(StatSO stat)
-        {
-            List<StateSO> states = new List<StateSO>();
-
-            for (int i = 0; i < DesiredStates.Length; i++)
-            {
-                if (DesiredStates[i].statTemplate != null && stat.name == DesiredStates[i].statTemplate.name)
-                {
-                    states.Add(DesiredStates[i]);
-                    break;
-                }
-            }
-
-            return states;
+            return base.TryAddInfluencer(influencer);
         }
 
         /// <summary>
-        /// Get the current goal for a given stat. That is do we currently want to 
-        /// increase, decrease or maintaint his stat.
-        /// If there are multiple desired states then an attempt is made to create 
-        /// a meaningful goal. For example, if there are multiple greater than goals
-        /// then the target will be the highest goal. 
-        /// 
-        /// If there are conflicting goals,
-        /// such as a greater than and a less than then lessThan will take preference
-        /// over greaterThan, but approximately will always be given prefernce.
+        /// Record a decision or action in the log.
         /// </summary>
-        /// <returns>The current goal for the stat.</returns>
-        public Goal GetGoalFor(StatSO stat)
+        /// <param name="log"></param>
+        private void Log(string log)
         {
-            float lessThan = float.MaxValue;
-            float greaterThan = float.MinValue;
+            if (string.IsNullOrEmpty(log)) return;
 
-            List<StateSO> states = GetStatesFor(stat);
-            for (int i = 0; i < states.Count; i++)
-            {
-                switch (states[i].objective)
-                {
-                    case Objective.LessThan:
-                        if (stat.NormalizedValue >= states[i].normalizedTargetValue && states[i].normalizedTargetValue < lessThan)
-                        {
-                            lessThan = states[i].normalizedTargetValue;
-                        }
-                        break;
-
-                    case Objective.Approximately:
-                        if (Mathf.Approximately(stat.NormalizedValue, states[i].normalizedTargetValue)) {
-                            if (stat.NormalizedValue > states[i].normalizedTargetValue)
-                            {
-                                return StateSO.Goal.Decrease;
-                            } else
-                            {
-                                return StateSO.Goal.Increase;
-                            }
-                        }
-                        break;
-
-                    case Objective.GreaterThan:
-                        if (stat.NormalizedValue <= states[i].normalizedTargetValue && states[i].normalizedTargetValue > greaterThan)
-                        {
-                            greaterThan = states[i].normalizedTargetValue;
-                        }
-                        break;
-                }
-            }
-
-            if (lessThan != float.MaxValue) return StateSO.Goal.Decrease;
-            if (greaterThan != float.MinValue) return StateSO.Goal.Increase;
-
-            return StateSO.Goal.NoAction;
+            //TODO don't log to console, log to a characters history
+            Debug.Log(log);
         }
 
 #if UNITY_EDITOR
         string IDebug.StatusText()
         {
-            string msg = "";
+            string msg = DisplayName;
             msg += "\n\nStats";
             for (int i = 0; i < m_Stats.Count; i++)
             {
                 msg += "\n" + m_Stats[i].statusDescription;
             }
 
-            msg += "\n\nActive Influencers";
-            if (m_StatsInfluencers.Count == 0) msg += "\nNone";
-            for (int i = 0; i < m_StatsInfluencers.Count; i++)
-            {
-                msg += "\n" + m_StatsInfluencers[i].stat.name + " changed by " + m_StatsInfluencers[i].maxChange + " at " + m_StatsInfluencers[i].changePerSecond + " per second (" + Mathf.Round((m_StatsInfluencers[i].influenceApplied / m_StatsInfluencers[i].maxChange) * 100) + "% applied)";
-            }
+            msg += GetActiveInfluencersDescription();
 
             msg += "\n\nUnsatisfied Desired States";
             if (UnsatisfiedDesiredStates.Length == 0) msg += "\nNone";
@@ -417,8 +240,16 @@ namespace WizardsCode.Stats {
                 msg += "\nLong term memories: " + Memory.GetLongTermMemories().Length;
             }
 
+            float timeLeft = Mathf.Clamp(CurrentBehaviour.EndTime - Time.timeSinceLevelLoad, 0, float.MaxValue);
             msg += "\n\nCurrent Behaviour";
-            msg += "\n" + m_CurrentBehaviour;
+            msg += "\n" + CurrentBehaviour + " (time to abort / end " + timeLeft.ToString("0.0") + ")";
+            if (TargetInteractable != null)
+            {
+                msg += "\nTarget interaction: " + TargetInteractable.InteractionName + " at " + TargetInteractable.name;
+            } else
+            {
+                msg += "\nNo target interaction";
+            }
 
             return msg;
         }

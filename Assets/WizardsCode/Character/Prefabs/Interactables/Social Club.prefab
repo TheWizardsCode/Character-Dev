@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 7956340786451236147}
   - component: {fileID: 7956340786451236146}
   - component: {fileID: 7956340786451236149}
-  - component: {fileID: 7956340786451236148}
+  - component: {fileID: 494245768}
+  - component: {fileID: 494245769}
   m_Layer: 0
   m_Name: Social Club
   m_TagString: Untagged
@@ -61,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: eccda66d307240c45bd11ad5c623d06d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -107,7 +108,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66f048bfe15920a4e9328734b8239ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &7956340786451236148
+  m_InteractionName: Socialize with Food
+  m_MaxInteractors: 10
+  m_CharacterInfluences:
+  - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
+    maxChange: -10
+  - statTemplate: {fileID: 11400000, guid: e7d5ac7f90040d04b892ec7dda97749d, type: 2}
+    maxChange: 15
+  - statTemplate: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
+    maxChange: -20
+  m_IsRepeating: 0
+  m_ObjectInfluences:
+  - statTemplate: {fileID: 11400000, guid: cf9e8ec2f416536438ba755bec4df9d6, type: 2}
+    maxChange: -7
+  m_Duration: 20
+  m_Cooldown: 100
+--- !u!114 &494245768
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -116,16 +132,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 7956340786451236150}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fbb5dc72a190ae42ad56b00e2f1304d, type: 3}
+  m_Script: {fileID: 11500000, guid: 1e5278de6e568c64cb6cddd4d1c2177d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  influences:
-  - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
-    maxChange: -10
-  - statTemplate: {fileID: 11400000, guid: e7d5ac7f90040d04b892ec7dda97749d, type: 2}
-    maxChange: 15
-  - statTemplate: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
-    maxChange: -20
-  m_Duration: 30
-  m_Cooldown: 120
-  m_IsRepeating: 0
+  m_DisplayName: 
+  m_DesiredStates:
+  - {fileID: 11400000, guid: 584989cd936bbf14fadd24b5907ac279, type: 2}
+  m_TimeBetweenUpdates: 0.5
+  m_Stats: []
+  m_StatsInfluencers: []
+--- !u!114 &494245769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7956340786451236150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d83f3ce966261b4888d7b2737f98b11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
