@@ -658,6 +658,8 @@ MonoBehaviour:
     one then they will chop it down. This uses a fair amount of energy but wood is
     vital to survival.
   m_DisplayName: Fell Tree
+  m_OnStartCue: {fileID: 0}
+  m_OnEndCue: {fileID: 0}
   m_RetryFrequency: 2
   m_AbortDuration: 30
   m_RequiredStats:
@@ -716,6 +718,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Description: 
   m_DisplayName: Build a Home
+  m_OnStartCue: {fileID: 0}
+  m_OnEndCue: {fileID: 0}
   m_RetryFrequency: 2
   m_AbortDuration: 30
   m_RequiredStats:
@@ -2758,6 +2762,28 @@ PrefabInstance:
       value: The actor needs to take a rest because they are tired. If they can find
         a comfortable place within a decent range they will go there, otherwise they
         will just lay down where they are and chill for a while.
+      objectReference: {fileID: 0}
+    - target: {fileID: 942846213194399283, guid: c76425f2fc23a7a4490ae59aecf6d864,
+        type: 3}
+      propertyPath: m_Description
+      value: The actor tries to find a place to go to sleep for the night.
+      objectReference: {fileID: 0}
+    - target: {fileID: 942846213194399283, guid: c76425f2fc23a7a4490ae59aecf6d864,
+        type: 3}
+      propertyPath: m_OnStartCue
+      value: 
+      objectReference: {fileID: 11400000, guid: 34b713355e2d4da44a2b698ca034bdc9,
+        type: 2}
+    - target: {fileID: 942846213194399283, guid: c76425f2fc23a7a4490ae59aecf6d864,
+        type: 3}
+      propertyPath: m_OnEndCue
+      value: 
+      objectReference: {fileID: 11400000, guid: 2cbd918a3c0f4cf4aac8a8085c31f539,
+        type: 2}
+    - target: {fileID: 942846213194399283, guid: c76425f2fc23a7a4490ae59aecf6d864,
+        type: 3}
+      propertyPath: m_DisplayName
+      value: Sleep
       objectReference: {fileID: 0}
     - target: {fileID: 2855058571791122945, guid: c76425f2fc23a7a4490ae59aecf6d864,
         type: 3}
