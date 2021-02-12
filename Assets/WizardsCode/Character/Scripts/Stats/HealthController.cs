@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using WizardsCode.Stats;
 using System;
+using UnityEngine.AI;
 
 namespace WizardsCode.Character.Stats
 {
@@ -60,6 +61,22 @@ namespace WizardsCode.Character.Stats
             if (m_Animator != null && health.NormalizedValue == 0)
             {
                 m_Animator.SetTrigger(deathTriggerID);
+
+                Brain brain = GetComponent<Brain>();
+                if (brain)
+                {
+                    brain.enabled = false;
+                }
+                else
+                {
+                    Debug.LogWarning("No brain found, so could not disable it on death.");
+                }
+
+                NavMeshAgent agent = GetComponent<NavMeshAgent>();
+                if (agent != null)
+                {
+                    agent.isStopped = true;
+                }
             }
         }
 

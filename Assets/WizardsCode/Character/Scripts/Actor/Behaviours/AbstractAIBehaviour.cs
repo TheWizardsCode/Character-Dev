@@ -168,7 +168,7 @@ namespace WizardsCode.Character
             get { return m_IsExecuting; }
             internal set
             {
-                if (value && !m_IsExecuting)
+                if (value && !IsExecuting)
                 {
                     EndTime = Time.timeSinceLevelLoad + m_AbortDuration;
                 }
