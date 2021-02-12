@@ -12,13 +12,16 @@ namespace WizardsCode.Character
 {
     public abstract class AbstractAIBehaviour : MonoBehaviour
     {
-        [SerializeField, Tooltip("A documentation string for use in the inspector. This has no use in the game, it is only used in the editor.")]
+        [SerializeField, Tooltip("A player readable description of the behaviour.")]
         [TextArea(3, 10)]
-        [FormerlySerializedAs("m_EditorDocumentation")]
         string m_Description;
         [SerializeField, Tooltip("The name to use in the User Interface.")]
         string m_DisplayName = "Unnamed AI Behaviour";
-        [SerializeField, Tooltip("How frequentlys, in seconds, this behaviour should be tested for activation."), Range(0.01f,5f)]
+        [SerializeField, Tooltip("An actor cue to send to the actor upon the start of this interaction.")]
+        ActorCue m_OnStartCue;
+        [SerializeField, Tooltip("An actor cue to send to the actor upon the ending of this interaction.")]
+        ActorCue m_OnEndCue;
+        [SerializeField, Tooltip("How frequently, in seconds, this behaviour should be tested for activation."), Range(0.01f,5f)]
         float m_RetryFrequency = 2;
         [SerializeField, Tooltip("Time until execution of this behaviour is aborted. " +
             "This is used as a safeguard in case something prevents the actor from completing " +
@@ -220,6 +223,10 @@ namespace WizardsCode.Character
 
                 brain.TryAddInfluencer(influencer);
             }
+
+            if (m_OnStartCue != null) {
+                m_OnStartCue.Prompt(brain.Actor);
+            }
         }
 
         /// <summary>
@@ -259,7 +266,7 @@ namespace WizardsCode.Character
         {
             if (EndTime < Time.timeSinceLevelLoad)
             {
-                Finish();
+                FinishBehaviour();
             }
         }
 
@@ -285,10 +292,15 @@ namespace WizardsCode.Character
             return true;
         }
 
-        internal virtual void Finish()
+        internal virtual void FinishBehaviour()
         {
             IsExecuting = false;
             EndTime = 0;
+
+            if (m_OnEndCue != null)
+            {
+                m_OnEndCue.Prompt(brain.Actor);
+            }
         }
 
         public override string ToString()

@@ -17,9 +17,9 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("The prefab to spawn when the build is complete.")]
         GameObject m_BuiltPrefab;
 
-        internal override void Finish()
+        internal override void FinishBehaviour()
         {
-            base.Finish();
+            base.FinishBehaviour();
 
             GameObject go = Instantiate(m_BuiltPrefab, transform.position, Quaternion.identity);
         }

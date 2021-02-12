@@ -30,18 +30,22 @@ namespace WizardsCode.Stats {
             get { return m_TargetInteractable; }
             set
             {
-                if (m_Controller != null
+                if (Actor != null
                     && value != null)
                 {
                     if (value.ReserveFor(this))
                     {
                         //TODO move to an interaction point not to the transform position
-                        m_Controller.TargetPosition = value.transform.position;
+                        Actor.TargetPosition = value.transform.position;
                     }
                 }
 
                 m_TargetInteractable = value;
             }
+        }
+
+        public ActorController Actor {
+            get { return m_Controller; } 
         }
 
         private void Awake()
@@ -71,9 +75,9 @@ namespace WizardsCode.Stats {
         {
             if (Time.timeSinceLevelLoad < m_TimeOfNextUpdate) return;
 
-            if (TargetInteractable != null && Vector3.SqrMagnitude(TargetInteractable.transform.position - m_Controller.TargetPosition) > 0.7f)
+            if (TargetInteractable != null && Vector3.SqrMagnitude(TargetInteractable.transform.position - Actor.TargetPosition) > 0.7f)
             {
-                m_Controller.TargetPosition = TargetInteractable.transform.position;
+                Actor.TargetPosition = TargetInteractable.transform.position;
             }
 
             base.Update();
