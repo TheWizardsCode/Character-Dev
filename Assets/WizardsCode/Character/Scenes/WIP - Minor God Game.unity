@@ -587,12 +587,17 @@ MonoBehaviour:
   m_DisplayName: Fell Tree
   m_RetryFrequency: 2
   m_AbortDuration: 30
-  m_RequiredStats: []
+  m_RequiredStats:
+  - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
+    objective: 2
+    m_Value: 50
+    m_NormalizedValue: 0
   m_RequiresInteractable: 1
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: 3a65fd83ea52d7c4db1e8cc4c0ffafa0, type: 2}
     objective: 2
   awarenessRange: 10
+  m_CharacterInfluences: []
 --- !u!1001 &1392659231
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -711,7 +716,7 @@ PrefabInstance:
     - target: {fileID: 1524781527, guid: 7a17c6bb2ca7c2748860603b4499aa21, type: 3}
       propertyPath: character
       value: 
-      objectReference: {fileID: 5138420288927203902}
+      objectReference: {fileID: 2015344047193441797}
     - target: {fileID: 1524781528, guid: 7a17c6bb2ca7c2748860603b4499aa21, type: 3}
       propertyPath: m_ChildControlHeight
       value: 1
@@ -1699,7 +1704,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_DisplayName: Neo man
   m_DesiredStates:
-  - {fileID: 11400000, guid: 948d94a14ea7edc4799acdafce3e2df1, type: 2}
+  - {fileID: 11400000, guid: ef3549760720a984e9098abc3d3bfb11, type: 2}
   - {fileID: 11400000, guid: 948d94a14ea7edc4799acdafce3e2df1, type: 2}
   m_TimeBetweenUpdates: 0.5
   m_Stats: []
@@ -1837,7 +1842,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2394742091190126639
 Transform:
   m_ObjectHideFlags: 0
@@ -2486,6 +2491,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5734867740029182947}
     m_Modifications:
+    - target: {fileID: 942846213194399283, guid: c76425f2fc23a7a4490ae59aecf6d864,
+        type: 3}
+      propertyPath: m_RequiredStats.Array.data[0].m_Value
+      value: 35
+      objectReference: {fileID: 0}
     - target: {fileID: 6440944259599993319, guid: c76425f2fc23a7a4490ae59aecf6d864,
         type: 3}
       propertyPath: m_Name

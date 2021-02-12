@@ -119,7 +119,13 @@ namespace WizardsCode.Stats {
             CurrentBehaviour = candidateBehaviour;
             CurrentBehaviour.EndTime = 0;
             CurrentBehaviour.IsExecuting = true;
-            TargetInteractable = CurrentBehaviour.CurrentInteractableTarget;
+            if (CurrentBehaviour.RequiresInteractable)
+            {
+                TargetInteractable = CurrentBehaviour.CurrentInteractableTarget;
+            } else
+            {
+                CurrentBehaviour.StartBehaviour();
+            }
 
             log.Insert(0, "\n");
             if (TargetInteractable != null)

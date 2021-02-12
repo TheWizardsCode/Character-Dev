@@ -38,7 +38,13 @@ namespace WizardsCode.Character
                 {
                     if (i >= showRequiredStat.Count) showRequiredStat.Add(false);
 
-                    string label = stats[i].statTemplate.DisplayName;
+                    string label;
+                    if (stats[i].statTemplate == null)
+                    {
+                        label = "TBD";
+                    } else {
+                        label = stats[i].statTemplate.DisplayName;
+                    }
                     switch (stats[i].objective)
                     {
                         case Objective.GreaterThan:

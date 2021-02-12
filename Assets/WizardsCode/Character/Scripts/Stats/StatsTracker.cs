@@ -81,7 +81,10 @@ namespace WizardsCode.Stats {
 
                     if (Mathf.Abs(StatsInfluencers[i].influenceApplied) >= Mathf.Abs(StatsInfluencers[i].maxChange))
                     {
-                        StatsInfluencers[i].Trigger.StopCharacterInteraction(this);
+                        if (StatsInfluencers[i].Trigger)
+                        {
+                            StatsInfluencers[i].Trigger.StopCharacterInteraction(this);
+                        }
                         StatsInfluencers.RemoveAt(i);
                     }
                 }

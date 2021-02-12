@@ -29,7 +29,9 @@ namespace WizardsCode.Character
         DesiredStatImpact[] m_DesiredStateImpacts = new DesiredStatImpact[0];
         [SerializeField, Tooltip("The range within which the Actor can sense interactables that this behaviour can impact. This does not affect interactables that are recalled from memory.")]
         float awarenessRange = 10;
-        
+        [SerializeField, Tooltip("The set of character stats and the influence to apply to them when a character chooses this behaviour AND the behaviour does not require an interactable (influences come from the interactable if one is requried).")]
+        internal StatInfluence[] m_CharacterInfluences;
+
         internal Brain brain;
         internal ActorController controller;
         private bool m_IsExecuting = false;
@@ -59,6 +61,11 @@ namespace WizardsCode.Character
 
         public DesiredStatImpact[] DesiredStateImpacts {
             get {return m_DesiredStateImpacts;}
+        }
+
+        public bool RequiresInteractable
+        {
+            get { return m_RequiresInteractable; }
         }
 
         public float EndTime { 
@@ -231,9 +238,38 @@ namespace WizardsCode.Character
         /// where animations, sounds, FX and similar should be started.
         /// </summary>
         /// <param name="interactable">The interactable we are working on.</param>
-        internal virtual void StartInteraction(Interactable interactable)
+        internal virtual void StartBehaviour(Interactable interactable)
         {
             EndTime = Time.timeSinceLevelLoad + interactable.Duration;
+        }
+
+        /// <summary>
+        /// Start this behaviour without an interactable. If this behaviour requires
+        /// an interactable and somehow this method gets called it will return with no
+        /// actions (after logging a warning).
+        /// </summary>
+        internal virtual void StartBehaviour()
+        {
+            if (m_RequiresInteractable)
+            {
+                Debug.LogWarning(DisplayName + " was started by " + brain.DisplayName + " without an interactable, yet one is required.");
+                return;
+            }
+
+            EndTime = Time.timeSinceLevelLoad + m_AbortDuration;
+
+            for (int i = 0; i < m_CharacterInfluences.Length; i++)
+            {
+                StatInfluencerSO influencer = ScriptableObject.CreateInstance<StatInfluencerSO>();
+                influencer.InteractionName = m_CharacterInfluences[i].statTemplate.name + " influencer from " + DisplayName;
+                influencer.Trigger = null;
+                influencer.stat = m_CharacterInfluences[i].statTemplate;
+                influencer.maxChange = m_CharacterInfluences[i].maxChange;
+                influencer.duration = m_AbortDuration;
+                influencer.cooldown = 0;
+
+                brain.TryAddInfluencer(influencer);
+            }
         }
 
         /// <summary>
@@ -437,11 +473,11 @@ namespace WizardsCode.Character
         // But at the time of writing it is incomplete.
         [SerializeField, Tooltip("The stat we require a value for.")]
         public StatSO statTemplate;
-        [HideInInspector, SerializeField, Tooltip("The object for this stats value, for example, greater than, less than or approximatly equal to.")]
+        [SerializeField, Tooltip("The object for this stats value, for example, greater than, less than or approximatly equal to.")]
         public Objective objective;
-        [HideInInspector, SerializeField, Tooltip("The value required for this stat (used in conjunction with the objective). Note that only normalized value and value are paired, so changing one will change the other as well.")]
+        [SerializeField, Tooltip("The value required for this stat (used in conjunction with the objective). Note that only normalized value and value are paired, so changing one will change the other as well.")]
         float m_Value;
-        [HideInInspector, SerializeField, Tooltip("The normalized value required for this stat  (used in conjunction with the objective). Note that only normalized value and value are paired, so changing one will change the other as well."), Range(0f,1f)]
+        [SerializeField, Tooltip("The normalized value required for this stat  (used in conjunction with the objective). Note that only normalized value and value are paired, so changing one will change the other as well."), Range(0f,1f)]
         float m_NormalizedValue;
 
         public float Value
@@ -449,7 +485,13 @@ namespace WizardsCode.Character
             get { return m_Value; }
             set { 
                 m_Value = value;
-                m_NormalizedValue = (value - statTemplate.MinValue) / (statTemplate.MaxValue - statTemplate.MinValue);
+                if (statTemplate != null)
+                {
+                    m_NormalizedValue = (value - statTemplate.MinValue) / (statTemplate.MaxValue - statTemplate.MinValue);
+                } else
+                {
+                    m_NormalizedValue = 0;
+                }
             }
         }
 
@@ -459,7 +501,13 @@ namespace WizardsCode.Character
             set
             {
                 m_NormalizedValue = value;
-                m_Value = value * (statTemplate.MaxValue - statTemplate.MinValue);
+                if (statTemplate != null)
+                {
+                    m_Value = value * (statTemplate.MaxValue - statTemplate.MinValue);
+                } else
+                {
+                    m_Value = 0;
+                }
             }
         }
     }
