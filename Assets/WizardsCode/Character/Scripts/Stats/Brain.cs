@@ -124,7 +124,7 @@ namespace WizardsCode.Stats {
             } else
             {
                 TargetInteractable = null;
-                CurrentBehaviour.StartBehaviour();
+                CurrentBehaviour.StartBehaviour(CurrentBehaviour.AbortDuration);
             }
 
             log.Insert(0, "\n");

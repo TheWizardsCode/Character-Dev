@@ -31,6 +31,11 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("The impacts we need an interactable to have on states for this behaviour to be enabled by it.")]
         DesiredStatImpact[] m_DesiredStateImpacts = new DesiredStatImpact[0];
 
+        public float AbortDuration
+        {
+            get { return m_AbortDuration; }
+        }
+
         public DesiredStatImpact[] DesiredStateImpacts
         {
             get { return m_DesiredStateImpacts; }
@@ -195,32 +200,22 @@ namespace WizardsCode.Character
         }
 
         /// <summary>
-        /// Start an interaction with a given object as part of this behaviour. This is
-        /// where animations, sounds, FX and similar should be started.
-        /// </summary>
-        /// <param name="interactable">The interactable we are working on.</param>
-        internal virtual void StartBehaviour(Interactable interactable)
-        {
-            EndTime = Time.timeSinceLevelLoad + interactable.Duration;
-        }
-
-        /// <summary>
         /// Start this behaviour without an interactable. If this behaviour requires
         /// an interactable and somehow this method gets called it will return with no
         /// actions (after logging a warning).
         /// </summary>
-        internal virtual void StartBehaviour()
+        internal virtual void StartBehaviour(float duration)
         {
-            EndTime = Time.timeSinceLevelLoad + m_AbortDuration;
+            EndTime = Time.timeSinceLevelLoad + duration;
 
             for (int i = 0; i < m_CharacterInfluences.Length; i++)
             {
                 StatInfluencerSO influencer = ScriptableObject.CreateInstance<StatInfluencerSO>();
-                influencer.InteractionName = m_CharacterInfluences[i].statTemplate.name + " influencer from " + DisplayName;
+                influencer.InteractionName = m_CharacterInfluences[i].statTemplate.name;
                 influencer.Trigger = null;
                 influencer.stat = m_CharacterInfluences[i].statTemplate;
                 influencer.maxChange = m_CharacterInfluences[i].maxChange;
-                influencer.duration = m_AbortDuration;
+                influencer.duration = duration;
                 influencer.cooldown = 0;
 
                 brain.TryAddInfluencer(influencer);

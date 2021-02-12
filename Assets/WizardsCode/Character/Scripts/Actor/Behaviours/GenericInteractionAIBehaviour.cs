@@ -23,6 +23,16 @@ namespace WizardsCode.Character
         private List<Interactable> nearbyInteractablesCache = new List<Interactable>();
         internal Interactable CurrentInteractableTarget = default;
 
+        /// <summary>
+        /// Start an interaction with a given object as part of this behaviour. This is
+        /// where animations, sounds, FX and similar should be started.
+        /// </summary>
+        /// <param name="interactable">The interactable we are working on.</param>
+        internal virtual void StartBehaviour(Interactable interactable)
+        {
+            StartBehaviour(interactable.Duration);
+        }
+
         public override bool IsAvailable
         {
             get

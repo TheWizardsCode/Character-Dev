@@ -336,7 +336,9 @@ namespace WizardsCode.Stats {
                 msg.Append(StatsInfluencers[i].maxChange);
                 msg.Append(" at ");
                 msg.Append(StatsInfluencers[i].changePerSecond);
-                msg.Append(" per second (");
+                msg.Append(" per second for ");
+                msg.Append(StatsInfluencers[i].duration);
+                msg.Append(" seconds (");
                 msg.Append(Mathf.Round((StatsInfluencers[i].influenceApplied / StatsInfluencers[i].maxChange) * 100));
                 msg.AppendLine("% applied)");
             }
