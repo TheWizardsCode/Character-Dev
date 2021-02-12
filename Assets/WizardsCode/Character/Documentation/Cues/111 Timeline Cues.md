@@ -1,3 +1,1 @@
-The Cues System allows the game to provide instructions to actors. These instructions control the characters movements and animations They do not change the actors statistics (see Behaviours and Interactables).
-
-In this scene we have a single actor and a director. The actor responds to cues from the director, moving between three points.
+In this scene rather than having triggering cues from a UI button we trigger them from a timeline. This allows sequencues of ques to be played with a single in-game event.
