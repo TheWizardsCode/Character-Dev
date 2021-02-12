@@ -49,6 +49,11 @@ namespace WizardsCode.Character
         /// </summary>
         public void Prompt()
         {
+            if (cues.Length == 0)
+            {
+                return;
+            }
+
             ActorCue cue = cues[cueIndex];
             cue.Prompt(actor);
             SetupNextCue();
