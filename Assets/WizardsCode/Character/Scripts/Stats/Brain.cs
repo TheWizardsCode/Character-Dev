@@ -86,7 +86,6 @@ namespace WizardsCode.Stats {
         /// </summary>
         private void UpdateActiveBehaviour()
         {
-            //TODO Allow tasks to be interuptable
             if (CurrentBehaviour != null && CurrentBehaviour.IsExecuting) return;
 
             StringBuilder log = new StringBuilder();
@@ -119,11 +118,12 @@ namespace WizardsCode.Stats {
             CurrentBehaviour = candidateBehaviour;
             CurrentBehaviour.EndTime = 0;
             CurrentBehaviour.IsExecuting = true;
-            if (CurrentBehaviour.RequiresInteractable)
+            if (CurrentBehaviour is GenericInteractionAIBehaviour)
             {
-                TargetInteractable = CurrentBehaviour.CurrentInteractableTarget;
+                TargetInteractable = ((GenericInteractionAIBehaviour)CurrentBehaviour).CurrentInteractableTarget;
             } else
             {
+                TargetInteractable = null;
                 CurrentBehaviour.StartBehaviour();
             }
 
