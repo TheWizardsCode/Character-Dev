@@ -67,11 +67,23 @@ namespace WizardsCode.Stats
 
         /// <summary>
         /// Get the game object that imparted this influencer on the actor.
-        /// This is used in the memory system to remember good/bad results of interations with objects.
+        /// If no interactor is required for the behaviour that impartaed this
+        /// influencer then this will be null.
+        /// This is used in the memory system to remember good/bad results of 
+        /// interations with objects.
         /// </summary>
         public GameObject Generator
         {
-            get { return Trigger.gameObject; }
+            get {
+                if (Trigger != null)
+                {
+                    return Trigger.gameObject;
+                } else
+                {
+                    return null;
+                }
+            }
+
         }
 
         /// <summary>

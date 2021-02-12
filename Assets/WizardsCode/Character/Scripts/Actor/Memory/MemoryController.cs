@@ -299,6 +299,8 @@ namespace WizardsCode.Character
         /// <param name="isGood">Is this a good memory that represents an experience to be repeated?</param>
         internal void AddMemory(StatInfluencerSO influencer, bool isGood)
         {
+            if (influencer.Generator == null) return; // don't hold memories about behaviours only influencers
+
             MemorySO memory = ScriptableObject.CreateInstance<MemorySO>();
             memory.about = influencer.Generator;
             memory.interactionName = influencer.InteractionName;

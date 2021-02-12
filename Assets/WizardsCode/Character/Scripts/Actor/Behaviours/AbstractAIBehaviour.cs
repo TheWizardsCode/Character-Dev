@@ -156,7 +156,7 @@ namespace WizardsCode.Character
                 switch (m_RequiredStats[i].objective)
                 {
                     case Objective.LessThan:
-                        thisRequirementMet = brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).NormalizedValue < m_RequiredStats[i].NormalizedValue;
+                        thisRequirementMet = brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).Value < m_RequiredStats[i].Value;
                         if (thisRequirementMet) {
                             reasoning.Append(" is good since it is less than ");
                         } 
@@ -166,7 +166,7 @@ namespace WizardsCode.Character
                         }
                         break;
                     case Objective.Approximately:
-                        thisRequirementMet = Mathf.Approximately(brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).NormalizedValue, m_RequiredStats[i].NormalizedValue);
+                        thisRequirementMet = Mathf.Approximately(brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).Value, m_RequiredStats[i].Value);
                         if (thisRequirementMet)
                         {
                             reasoning.Append(" is good since it is approximately equal to ");
@@ -177,7 +177,7 @@ namespace WizardsCode.Character
                         }
                         break;
                     case Objective.GreaterThan:
-                        thisRequirementMet = brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).NormalizedValue > m_RequiredStats[i].NormalizedValue;
+                        thisRequirementMet = brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).Value > m_RequiredStats[i].Value;
                         if (thisRequirementMet)
                         {
                             reasoning.Append(" is good since it is greater than ");
