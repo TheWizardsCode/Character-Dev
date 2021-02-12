@@ -1,10 +1,11 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 
 namespace WizardsCode.Character.MiniGodGame
 {
-    public class ClickToPlace : MonoBehaviour
+    public class ClickToSpawn : MonoBehaviour
     {
         [SerializeField, Tooltip("Surface to place objects onto.")]
         GameObject ground;
@@ -21,6 +22,11 @@ namespace WizardsCode.Character.MiniGodGame
         {
             if (Input.GetMouseButtonDown(0))
             {
+                if (EventSystem.current.IsPointerOverGameObject())
+                {
+                    return;
+                }
+
                 RaycastHit hit;
 
                 if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100))
