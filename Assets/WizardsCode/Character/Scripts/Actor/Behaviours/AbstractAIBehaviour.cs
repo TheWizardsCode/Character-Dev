@@ -6,11 +6,16 @@ using System;
 using Random = UnityEngine.Random;
 using static WizardsCode.Character.StateSO;
 using System.Text;
+using UnityEngine.Serialization;
 
 namespace WizardsCode.Character
 {
     public abstract class AbstractAIBehaviour : MonoBehaviour
     {
+        [SerializeField, Tooltip("A documentation string for use in the inspector. This has no use in the game, it is only used in the editor.")]
+        [TextArea(3, 10)]
+        [FormerlySerializedAs("m_EditorDocumentation")]
+        string m_Description;
         [SerializeField, Tooltip("The name to use in the User Interface.")]
         string m_DisplayName = "Unnamed AI Behaviour";
         [SerializeField, Tooltip("How frequentlys, in seconds, this behaviour should be tested for activation."), Range(0.01f,5f)]
@@ -317,30 +322,29 @@ namespace WizardsCode.Character
         public Objective objective;
         [SerializeField, Tooltip("The value required for this stat (used in conjunction with the objective). Note that only normalized value and value are paired, so changing one will change the other as well.")]
         float m_Value;
-        [SerializeField, Tooltip("The normalized value required for this stat  (used in conjunction with the objective). Note that only normalized value and value are paired, so changing one will change the other as well."), Range(0f,1f)]
-        float m_NormalizedValue;
 
         public float Value
         {
             get { return m_Value; }
             set { 
                 m_Value = value;
-                if (statTemplate != null)
-                {
-                    m_NormalizedValue = (value - statTemplate.MinValue) / (statTemplate.MaxValue - statTemplate.MinValue);
-                } else
-                {
-                    m_NormalizedValue = 0;
-                }
             }
         }
 
         public float NormalizedValue
         {
-            get { return m_NormalizedValue; }
+            get {
+                if (statTemplate != null)
+                {
+                    return (Value - statTemplate.MinValue) / (statTemplate.MaxValue - statTemplate.MinValue);
+                }
+                else
+                {
+                    return 0;
+                }
+            }
             set
             {
-                m_NormalizedValue = value;
                 if (statTemplate != null)
                 {
                     m_Value = value * (statTemplate.MaxValue - statTemplate.MinValue);

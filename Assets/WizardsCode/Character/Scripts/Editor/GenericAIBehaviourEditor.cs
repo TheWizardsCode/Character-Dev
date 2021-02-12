@@ -13,6 +13,7 @@ namespace WizardsCode.Character
         List<bool> showRequiredStat = new List<bool>();
         float labelWidth = 200;
 
+        /*
         public override void OnInspectorGUI()
         {
             OnHeaderGUI();
@@ -90,6 +91,7 @@ namespace WizardsCode.Character
 
             base.DrawDefaultInspector();
         }
+        */
 
         Color darkSkinHeaderColor = (Color)new Color32(62, 62, 62, 255);
         Color lightSkinHeaderColor = (Color)new Color32(194, 194, 194, 255);

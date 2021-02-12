@@ -584,6 +584,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45e2d955ea028604c9552bc8d9e5cf47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_EditorDocumentation: The actor needs wood and will look for a tree to fell. If
+    they find one then they will chop it down. This uses a fair amount of energy
+    but wood is vital to survival.
   m_DisplayName: Fell Tree
   m_RetryFrequency: 2
   m_AbortDuration: 30
@@ -642,6 +645,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c1975602ac29e745898da24569dd426, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_EditorDocumentation: 
   m_DisplayName: Build a Home
   m_RetryFrequency: 2
   m_AbortDuration: 30
@@ -2544,6 +2548,18 @@ PrefabInstance:
         type: 3}
       propertyPath: m_RequiredStats.Array.data[0].m_Value
       value: 35
+      objectReference: {fileID: 0}
+    - target: {fileID: 942846213194399283, guid: c76425f2fc23a7a4490ae59aecf6d864,
+        type: 3}
+      propertyPath: m_EditorDocumentation
+      value: The actor needs to take a rest because they are tired. If they can find
+        a comfortable place within a decent range they will go there, otherwise they
+        will just lay down where they are and chill for a while.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2855058571791122945, guid: c76425f2fc23a7a4490ae59aecf6d864,
+        type: 3}
+      propertyPath: m_EditorDocumentation
+      value: The actor has nothing to do, so they may as well go for a wander.
       objectReference: {fileID: 0}
     - target: {fileID: 6440944259599993319, guid: c76425f2fc23a7a4490ae59aecf6d864,
         type: 3}
