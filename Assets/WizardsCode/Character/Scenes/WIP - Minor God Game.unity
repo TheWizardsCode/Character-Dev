@@ -570,7 +570,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5734867740029182947}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1284096466
 MonoBehaviour:
@@ -598,6 +598,69 @@ MonoBehaviour:
     objective: 2
   awarenessRange: 10
   m_CharacterInfluences: []
+--- !u!1 &1290601637
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1290601638}
+  - component: {fileID: 1290601639}
+  m_Layer: 0
+  m_Name: Building Behaviours
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1290601638
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1290601637}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 5734867740029182947}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1290601639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1290601637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c1975602ac29e745898da24569dd426, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_DisplayName: Build a Home
+  m_RetryFrequency: 2
+  m_AbortDuration: 30
+  m_RequiredStats:
+  - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
+    objective: 2
+    m_Value: 30.000002
+    m_NormalizedValue: 0.3
+  - statTemplate: {fileID: 11400000, guid: 3a65fd83ea52d7c4db1e8cc4c0ffafa0, type: 2}
+    objective: 2
+    m_Value: 15.000001
+    m_NormalizedValue: 0.3
+  m_RequiresInteractable: 1
+  m_DesiredStateImpacts: []
+  awarenessRange: 10
+  m_CharacterInfluences:
+  - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
+    maxChange: -10
+  m_BuiltPrefab: {fileID: 1494473663186943003, guid: 9c2231e74c892ce44847b2cd9a480f8f,
+    type: 3}
 --- !u!1001 &1392659231
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2539,7 +2602,7 @@ PrefabInstance:
     - target: {fileID: 7096533203176342199, guid: c76425f2fc23a7a4490ae59aecf6d864,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7096533203176342199, guid: c76425f2fc23a7a4490ae59aecf6d864,
         type: 3}
@@ -2744,6 +2807,7 @@ Transform:
   - {fileID: 7047057422368110502}
   - {fileID: 1942006272224708807}
   - {fileID: 955246082}
+  - {fileID: 1290601638}
   - {fileID: 1284096465}
   - {fileID: 701813318}
   m_Father: {fileID: 0}

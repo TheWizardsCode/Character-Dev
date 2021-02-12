@@ -195,7 +195,10 @@ namespace WizardsCode.Stats {
                             break;
                     }
 
-                    Memory.AddMemory(influencer, isGood);
+                    if (influencer.Generator != null)
+                    {
+                        Memory.AddMemory(influencer, isGood);
+                    }
                 }
             }
 

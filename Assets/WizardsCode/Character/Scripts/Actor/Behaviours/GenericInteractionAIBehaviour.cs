@@ -12,7 +12,7 @@ namespace WizardsCode.Character
     /// 
     /// Upon arrival the interactable should impart an influencer on the actor.
     /// </summary>
-    public class GenericAIBehaviour : AbstractAIBehaviour
+    public class GenericInteractionAIBehaviour : AbstractAIBehaviour
     {
     }
 }
