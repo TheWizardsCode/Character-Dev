@@ -2751,45 +2751,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5734867740029182947}
     m_Modifications:
-    - target: {fileID: 942846213194399283, guid: c76425f2fc23a7a4490ae59aecf6d864,
-        type: 3}
-      propertyPath: m_RequiredStats.Array.data[0].m_Value
-      value: 35
-      objectReference: {fileID: 0}
-    - target: {fileID: 942846213194399283, guid: c76425f2fc23a7a4490ae59aecf6d864,
-        type: 3}
-      propertyPath: m_EditorDocumentation
-      value: The actor needs to take a rest because they are tired. If they can find
-        a comfortable place within a decent range they will go there, otherwise they
-        will just lay down where they are and chill for a while.
-      objectReference: {fileID: 0}
-    - target: {fileID: 942846213194399283, guid: c76425f2fc23a7a4490ae59aecf6d864,
-        type: 3}
-      propertyPath: m_Description
-      value: The actor tries to find a place to go to sleep for the night.
-      objectReference: {fileID: 0}
-    - target: {fileID: 942846213194399283, guid: c76425f2fc23a7a4490ae59aecf6d864,
-        type: 3}
-      propertyPath: m_OnStartCue
-      value: 
-      objectReference: {fileID: 11400000, guid: 34b713355e2d4da44a2b698ca034bdc9,
-        type: 2}
-    - target: {fileID: 942846213194399283, guid: c76425f2fc23a7a4490ae59aecf6d864,
-        type: 3}
-      propertyPath: m_OnEndCue
-      value: 
-      objectReference: {fileID: 11400000, guid: 2cbd918a3c0f4cf4aac8a8085c31f539,
-        type: 2}
-    - target: {fileID: 942846213194399283, guid: c76425f2fc23a7a4490ae59aecf6d864,
-        type: 3}
-      propertyPath: m_DisplayName
-      value: Sleep
-      objectReference: {fileID: 0}
-    - target: {fileID: 2855058571791122945, guid: c76425f2fc23a7a4490ae59aecf6d864,
-        type: 3}
-      propertyPath: m_EditorDocumentation
-      value: The actor has nothing to do, so they may as well go for a wander.
-      objectReference: {fileID: 0}
     - target: {fileID: 6440944259599993319, guid: c76425f2fc23a7a4490ae59aecf6d864,
         type: 3}
       propertyPath: m_Name
