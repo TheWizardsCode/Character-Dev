@@ -90,7 +90,13 @@ namespace WizardsCode.Stats {
         /// </summary>
         private void UpdateActiveBehaviour()
         {
-            if (CurrentBehaviour != null && CurrentBehaviour.IsExecuting) return;
+            if (CurrentBehaviour != null && CurrentBehaviour.IsExecuting && !CurrentBehaviour.IsInteruptable) return;
+
+            bool isInterupting = false;
+            if (CurrentBehaviour != null && CurrentBehaviour.IsExecuting)
+            {
+                isInterupting = true;
+            }
 
             StringBuilder log = new StringBuilder();
             AbstractAIBehaviour candidateBehaviour = null;
@@ -118,6 +124,11 @@ namespace WizardsCode.Stats {
             }
 
             if (candidateBehaviour == null) return;
+
+            if (isInterupting && candidateBehaviour != CurrentBehaviour)
+            {
+                CurrentBehaviour.FinishBehaviour();
+            }
 
             CurrentBehaviour = candidateBehaviour;
             CurrentBehaviour.EndTime = 0;

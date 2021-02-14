@@ -1,4 +1,5 @@
 using UnityEngine;
+
 using System.Collections;
 using System.Collections.Generic;
 using WizardsCode.Stats;
@@ -23,6 +24,8 @@ namespace WizardsCode.Character
         ActorCue m_OnEndCue;
         [SerializeField, Tooltip("How frequently, in seconds, this behaviour should be tested for activation."), Range(0.01f,5f)]
         float m_RetryFrequency = 2;
+        [SerializeField, Tooltip("Is this behaviour interuptable. That is if the actor decides something else is more important can this behaviour be finished early.")]
+        bool m_isInteruptable = false;
         [SerializeField, Tooltip("Time until execution of this behaviour is aborted. " +
             "This is used as a safeguard in case something prevents the actor from completing " +
             "the actions associated with this behaviour, e.g. if they are unable to reach the chosen interactable.")]
@@ -37,6 +40,11 @@ namespace WizardsCode.Character
         public float AbortDuration
         {
             get { return m_AbortDuration; }
+        }
+
+        public bool IsInteruptable
+        {
+            get { return m_isInteruptable; }
         }
 
         public DesiredStatImpact[] DesiredStateImpacts
