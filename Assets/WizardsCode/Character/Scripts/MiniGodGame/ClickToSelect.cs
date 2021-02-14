@@ -7,6 +7,11 @@ namespace WizardsCode.Character
 {
     public class ClickToSelect : MonoBehaviour
     {
+        [SerializeField, Tooltip("Should the camera attach to the selected object?")]
+        bool m_IsFollowCamera = true;
+        [SerializeField, Tooltip("If the camera is to follow the selected object then offset it by this vector.")]
+        Vector3 m_CameraOffset = new Vector3(0, 3, -7);
+
         Transform m_CurrentlySelected;
 
         public GameObject CurrentlySelected
@@ -39,6 +44,13 @@ namespace WizardsCode.Character
                 {
                     m_CurrentlySelected = hit.collider.transform.root;
                 }
+            }
+
+            if (m_IsFollowCamera && m_CurrentlySelected != null)
+            {
+                //TODO don't use camera.main
+                Camera.main.transform.position = m_CurrentlySelected.position + m_CameraOffset;
+                Camera.main.transform.LookAt(m_CurrentlySelected);
             }
         }
     }
