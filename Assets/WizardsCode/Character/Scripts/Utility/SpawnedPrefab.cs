@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace WizardsCode.Utility
+namespace WizardsCode.Character
 {
     /// <summary>
     /// A representation of an object that can be spawned by the spawner.
