@@ -6,4 +6,8 @@ You start out with 2 people in your population. Fortunately, one is male and the
 
 Simply point and click to plant trees.
 
-The male (red) character will go an chop the trees down. But this takes up alowt of energy. When he's tired he will lie down to rest.
+The male (red) character will go an chop the trees down. But this takes up alot of energy. When he's tired he will lie down to rest.
+
+When he has enough wood he will build a house and will be able to go to sleep and rest properly.
+
+If his energy levels go too low he will start to loose health. If his health reaches 0 he will die.

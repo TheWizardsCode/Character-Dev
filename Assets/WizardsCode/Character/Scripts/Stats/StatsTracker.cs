@@ -65,7 +65,7 @@ namespace WizardsCode.Stats {
 
             UpdateAllStats();
             ApplyStatInfluencerEffects();
-            UpdateUnsatisfiedStates();
+            UpdateDesiredStatesList();
 
             m_TimeOfLastUpdate = Time.timeSinceLevelLoad;
             m_TimeOfNextUpdate = Time.timeSinceLevelLoad + m_TimeBetweenUpdates;
@@ -105,18 +105,31 @@ namespace WizardsCode.Stats {
 
 
         /// <summary>
-        /// Iterates over all the desired stated and checks to see if they are currently satsified.
-        /// Unsatisfied states are caches in `UnsatisfiedStates`.
+        /// Iterates over all the desired stated and checks to see if they are currently satisified.
+        /// Apply any influencers that are needed and cache unsatisfied states are caches in `UnsatisfiedStates`.
         /// </summary>
-        private void UpdateUnsatisfiedStates()
+        private void UpdateDesiredStatesList()
         {
+            StatInfluencerSO[] influencers;
             List<StateSO> states = new List<StateSO>();
             for (int i = 0; i < DesiredStates.Length; i++)
             {
-                if (!DesiredStates[i].IsSatisfiedFor(this))
+                if (DesiredStates[i].IsSatisfiedFor(this))
                 {
+                    influencers = DesiredStates[i].InfluencersToApplyWhenInDesiredState;
+                }
+                else
+                {
+                    influencers = DesiredStates[i].InfluencersToApplyWhenNotInDesiredState;
                     states.Add(DesiredStates[i]);
                 }
+
+                /*
+                for (int idx = 0; idx < influencers.Length; i++)
+                {
+                    TryAddInfluencer(influencers[idx]);
+                }
+                */
             }
             UnsatisfiedDesiredStates = states.ToArray();
         }
