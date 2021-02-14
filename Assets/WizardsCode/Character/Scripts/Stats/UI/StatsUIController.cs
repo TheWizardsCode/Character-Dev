@@ -55,21 +55,25 @@ namespace WizardsCode.Character.Stats
             }
 
             //TODO: don't update every frame
-            StateSO[] states = m_SelectedCharacter.DesiredStates;
-            for (int i = 0; i < states.Length; i++)
+            if (m_SelectedCharacter != null)
             {
-                if (states[i].statTemplate == null) continue;
+                StateSO[] states = m_SelectedCharacter.DesiredStates;
+                for (int i = 0; i < states.Length; i++)
+                {
+                    if (states[i].statTemplate == null) continue;
 
-                //TODO cache results rather than grabbing stat every cycle
-                StatSO stat = m_SelectedCharacter.GetOrCreateStat(states[i].statTemplate);
+                    //TODO cache results rather than grabbing stat every cycle
+                    StatSO stat = m_SelectedCharacter.GetOrCreateStat(states[i].statTemplate);
 
-                StatUIPanel stateUI;
-                if (!stateUIObjects.TryGetValue(stat, out stateUI)) {
-                    stateUI = Instantiate(statePanelTemplate, transform).GetComponent<StatUIPanel>();
-                    stateUI.stat = stat;
-                    stateUI.gameObject.SetActive(true);
+                    StatUIPanel stateUI;
+                    if (!stateUIObjects.TryGetValue(stat, out stateUI))
+                    {
+                        stateUI = Instantiate(statePanelTemplate, transform).GetComponent<StatUIPanel>();
+                        stateUI.stat = stat;
+                        stateUI.gameObject.SetActive(true);
 
-                    stateUIObjects.Add(stat, stateUI);
+                        stateUIObjects.Add(stat, stateUI);
+                    }
                 }
             }
         }
