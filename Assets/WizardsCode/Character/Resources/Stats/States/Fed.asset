@@ -12,8 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19d0479af55690b459aa37cc281af882, type: 3}
   m_Name: Fed
   m_EditorClassIdentifier: 
-  name: Fed (not hungry)
+  DisplayName: No Name State
+  m_Stat: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
   m_Objective: 0
   m_NormalizeTargetValue: 0.735
-  m_Stat: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
+  m_NotInDesiredState:
+  - {fileID: 11400000, guid: 75c55611f4e170d45828971529345d6a, type: 2}
+  m_InDesiredState: []
   m_SubStates: []
