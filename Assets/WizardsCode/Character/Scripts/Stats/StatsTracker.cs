@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using WizardsCode.Character;
 using WizardsCode.Character.Stats;
@@ -32,7 +33,12 @@ namespace WizardsCode.Stats {
 
         float m_TimeOfLastUpdate = 0;
         internal float m_TimeOfNextUpdate = 0;
-        
+
+        internal List<StatInfluencerSO> StatsInfluencers
+        {
+            get { return m_StatsInfluencers; }
+        }
+
         public string DisplayName
         {
             get
@@ -59,7 +65,7 @@ namespace WizardsCode.Stats {
 
             UpdateAllStats();
             ApplyStatInfluencerEffects();
-            UpdateUnsatisfiedStates();
+            UpdateDesiredStatesList();
 
             m_TimeOfLastUpdate = Time.timeSinceLevelLoad;
             m_TimeOfNextUpdate = Time.timeSinceLevelLoad + m_TimeBetweenUpdates;
@@ -67,21 +73,24 @@ namespace WizardsCode.Stats {
 
         internal void ApplyStatInfluencerEffects()
         {
-            for (int i = 0; i < m_StatsInfluencers.Count; i++)
+            for (int i = StatsInfluencers.Count - 1; i >= 0; i--)
             {
-                if (m_StatsInfluencers[i] != null)
+                if (StatsInfluencers[i] != null)
                 {
-                    m_StatsInfluencers[i].ChangeStat(this);
+                    StatsInfluencers[i].ChangeStat(this);
 
-                    if (Mathf.Abs(m_StatsInfluencers[i].influenceApplied) >= Mathf.Abs(m_StatsInfluencers[i].maxChange))
+                    if (Mathf.Abs(StatsInfluencers[i].influenceApplied) >= Mathf.Abs(StatsInfluencers[i].maxChange))
                     {
-                        m_StatsInfluencers[i].Trigger.StopCharacterInteraction(this);
-                        m_StatsInfluencers.RemoveAt(i);
+                        if (StatsInfluencers[i].Trigger)
+                        {
+                            StatsInfluencers[i].Trigger.StopCharacterInteraction(this);
+                        }
+                        StatsInfluencers.RemoveAt(i);
                     }
                 }
                 else
                 {
-                    m_StatsInfluencers.RemoveAt(i);
+                    StatsInfluencers.RemoveAt(i);
                 }
             }
         }
@@ -96,18 +105,31 @@ namespace WizardsCode.Stats {
 
 
         /// <summary>
-        /// Iterates over all the desired stated and checks to see if they are currently satsified.
-        /// Unsatisfied states are caches in `UnsatisfiedStates`.
+        /// Iterates over all the desired stated and checks to see if they are currently satisified.
+        /// Apply any influencers that are needed and cache unsatisfied states are caches in `UnsatisfiedStates`.
         /// </summary>
-        private void UpdateUnsatisfiedStates()
+        private void UpdateDesiredStatesList()
         {
+            StatInfluencerSO[] influencers;
             List<StateSO> states = new List<StateSO>();
             for (int i = 0; i < DesiredStates.Length; i++)
             {
-                if (!DesiredStates[i].IsSatisfiedFor(this))
+                if (DesiredStates[i].IsSatisfiedFor(this))
                 {
+                    influencers = DesiredStates[i].InfluencersToApplyWhenInDesiredState;
+                }
+                else
+                {
+                    influencers = DesiredStates[i].InfluencersToApplyWhenNotInDesiredState;
                     states.Add(DesiredStates[i]);
                 }
+
+                /*
+                for (int idx = 0; idx < influencers.Length; i++)
+                {
+                    TryAddInfluencer(influencers[idx]);
+                }
+                */
             }
             UnsatisfiedDesiredStates = states.ToArray();
         }
@@ -197,7 +219,7 @@ namespace WizardsCode.Stats {
         /// <returns>True if the influencer was added, otherwise false.</returns>
         public virtual bool TryAddInfluencer(StatInfluencerSO influencer)
         {
-            m_StatsInfluencers.Add(influencer);
+            StatsInfluencers.Add(influencer);
 
             return true;
         }
@@ -313,15 +335,28 @@ namespace WizardsCode.Stats {
 
         internal string GetActiveInfluencersDescription()
         {
-            string msg = "\n\nActive Influencers";
-            if (m_StatsInfluencers.Count == 0) msg += "\nNone";
-            for (int i = 0; i < m_StatsInfluencers.Count; i++)
+            StringBuilder msg = new StringBuilder("\n\nActive Influencers\n");
+            if (StatsInfluencers.Count == 0) msg.AppendLine("None");
+            for (int i = 0; i < StatsInfluencers.Count; i++)
             {
-                msg += "\n" + m_StatsInfluencers[i].InteractionName + " at " + m_StatsInfluencers[i].Generator.name; ;
-                msg += "\n\t - " + m_StatsInfluencers[i].stat.name + " changed by " + m_StatsInfluencers[i].maxChange + " at " + m_StatsInfluencers[i].changePerSecond + " per second (" + Mathf.Round((m_StatsInfluencers[i].influenceApplied / m_StatsInfluencers[i].maxChange) * 100) + "% applied)";
+                msg.Append(StatsInfluencers[i].InteractionName);
+                msg.Append(" at ");
+                msg.Append(StatsInfluencers[i].GeneratorName);
+                msg.AppendLine();
+                msg.Append("\t - ");
+                msg.Append(StatsInfluencers[i].stat.name);
+                msg.Append(" changed by ");
+                msg.Append(StatsInfluencers[i].maxChange);
+                msg.Append(" at ");
+                msg.Append(StatsInfluencers[i].changePerSecond);
+                msg.Append(" per second for ");
+                msg.Append(StatsInfluencers[i].duration);
+                msg.Append(" seconds (");
+                msg.Append(Mathf.Round((StatsInfluencers[i].influenceApplied / StatsInfluencers[i].maxChange) * 100));
+                msg.AppendLine("% applied)");
             }
 
-            return msg;
+            return msg.ToString();
         }
 #endif
     }

@@ -49,7 +49,7 @@ namespace WizardsCode.Character
                 //Debug.Log(stats[i].name + " is currently " + stats[i].value);
 
                 // Find the nearest place that is in current memory that helps achieve one of the characters goals
-                MemorySO[] memories = Memory.GetMemoriesInfluencingStat(stats[i].name);
+                MemorySO[] memories = Memory.GetMemoriesInfluencingStat(stats[i]);
                 for (int y = 0; y < memories.Length; y++)
                 {
                     if (memories[y].readyToReturn)

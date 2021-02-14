@@ -78,7 +78,7 @@ namespace WizardsCode.Character
             if (timeToNextWanderPathChange > 0 && controller.HasReachedTarget)
             {
                 OnReachedTarget();
-                Finish();
+                FinishBehaviour();
             }
 
             if (timeToNextWanderPathChange <= 0) //  || !m_Agent.hasPath || m_Agent.pathStatus == NavMeshPathStatus.PathInvalid
@@ -87,9 +87,9 @@ namespace WizardsCode.Character
             }
         }
 
-        internal override void Finish()
+        internal override void FinishBehaviour()
         {
-            base.Finish();
+            base.FinishBehaviour();
             timeToNextWanderPathChange = float.MinValue;
         }
 

@@ -107,11 +107,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_InteractionName: Read a Book
-  m_MaxInteractors: 1
+  m_MaxInteractors: 10
   m_CharacterInfluences:
   - statTemplate: {fileID: 11400000, guid: 3091b91fc8dcd26428dac24f52b6116e, type: 2}
     maxChange: 1
   m_IsRepeating: 0
+  m_DestroyOnUse: 0
   m_ObjectInfluences: []
   m_Duration: 30
   m_Cooldown: 120

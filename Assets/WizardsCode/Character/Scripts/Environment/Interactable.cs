@@ -19,8 +19,9 @@ namespace WizardsCode.Character
     public class Interactable : MonoBehaviour
     {
         [Header("Overview")]
-        [SerializeField, Tooltip("The name of the interaction that will produce this result.")]
-        string m_InteractionName = "Name of Interaction";
+        [SerializeField, Tooltip("The name of the interaction from the perspective of the actor interacting with this item.")]
+        [FormerlySerializedAs("m_InteractionName")]
+        string m_InteractionNameFromActorsPerspective = "";
 
         [Header("Character Settings")]
         [SerializeField, Tooltip("How many characters can interact using this influencer at any one time.")]
@@ -32,6 +33,8 @@ namespace WizardsCode.Character
         bool m_IsRepeating = false;
 
         [Header("Object Settings")]
+        [SerializeField, Tooltip("When an actor has finished interacting with the object should the object be destroyed?")]
+        bool m_DestroyOnUse = false;
         [SerializeField, Tooltip("The set of object stats and the influence to apply to them when a character interacts with the object.")]
         internal StatInfluence[] m_ObjectInfluences;
         [SerializeField, Tooltip("The time, in seconds, over which the influencer will be effective. The total change will occure over this time period. If duration is 0 then the total change is applied instantly")]
@@ -52,13 +55,19 @@ namespace WizardsCode.Character
             get { return m_CharacterInfluences; }
         }
 
+        public string DisplayName
+        {
+            //TODO allow the designer to customize this name
+            get { return gameObject.name; }
+        }
+
         /// <summary>
         /// The name of this interaction. Used as an ID for this interaction.
         /// </summary>
         public string InteractionName
         {
-            get { return m_InteractionName; }
-            set { m_InteractionName = value; }
+            get { return m_InteractionNameFromActorsPerspective; }
+            set { m_InteractionNameFromActorsPerspective = value; }
         }
 
         /// <summary>
@@ -121,18 +130,18 @@ namespace WizardsCode.Character
         /// <param name="stateImpact">The desired state impact</param>
         /// <returns>True if the desired impact will result from interaction, otherwise false.</returns>
         public bool HasInfluenceOn(DesiredStatImpact stateImpact) {
-            for (int i = 0; i < m_CharacterInfluences.Length; i++)
+            for (int i = 0; i < CharacterInfluences.Length; i++)
             {
-                if (m_CharacterInfluences[i].statTemplate.name == stateImpact.statTemplate.name)
+                if (CharacterInfluences[i].statTemplate.name == stateImpact.statTemplate.name)
                 {
                     switch (stateImpact.objective)
                     {
                         case Objective.LessThan:
-                            return m_CharacterInfluences[i].maxChange < 0;
+                            return CharacterInfluences[i].maxChange < 0;
                         case Objective.Approximately:
-                            return Mathf.Approximately(m_CharacterInfluences[i].maxChange, 0);
+                            return Mathf.Approximately(CharacterInfluences[i].maxChange, 0);
                         case Objective.GreaterThan:
-                            return m_CharacterInfluences[i].maxChange > 0;
+                            return CharacterInfluences[i].maxChange > 0;
                         default:
                             Debug.LogError("Don't know how to handle objective " + stateImpact.objective);
                             break;
@@ -233,7 +242,8 @@ namespace WizardsCode.Character
 
         private void StartCharacterInteraction(Brain brain)
         {
-             brain.CurrentBehaviour.StartInteraction(this);
+            GenericInteractionAIBehaviour behaviour = (GenericInteractionAIBehaviour)brain.CurrentBehaviour;
+            behaviour.StartBehaviour(this);
 
             for (int i = 0; i < CharacterInfluences.Length; i++)
             {
@@ -257,6 +267,10 @@ namespace WizardsCode.Character
         internal void StopCharacterInteraction(StatsTracker statsTracker)
         {
             m_CurrentInteractors.Remove(statsTracker);
+            if (m_DestroyOnUse)
+            {
+                Destroy(gameObject, 0.05f);
+            }
         }
 
         private void AddObjectInfluence()

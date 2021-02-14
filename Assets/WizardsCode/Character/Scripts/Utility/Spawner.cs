@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using WizardsCode.Character;
 
-namespace WizardsCode.Utility
+namespace WizardsCode.Character
 {
     /// <summary>
     /// A really simple spawner that will create a number of a given prefab within a defined area.
@@ -21,8 +22,20 @@ namespace WizardsCode.Utility
         [HideInInspector, SerializeField, Tooltip("The area mask that indicates NavMesh areas that the spawner can spawn characters into.")]
         public int navMeshAreaMask = NavMesh.AllAreas;
 
+        List<Transform> m_Spawned = new List<Transform>();
+
+        /// <summary>
+        /// Get all the objects spawned by this spawner.
+        /// </summary>
+        public List<Transform> Spawned
+        {
+            get { return m_Spawned; }
+        }
+
         private void Start()
         {
+            ActorManager.Instance.RegisterSpawner(this);
+
             for (int i = 0; i < m_Number; i++)
             {
                 Vector3? position = GetPosition();
@@ -37,6 +50,8 @@ namespace WizardsCode.Utility
                         {
                             GameObject go = Instantiate(spawnedPrefab.prefab, (Vector3)position, rotation);
                             go.name += " " + i;
+
+                            m_Spawned.Add(go.transform);
 
                             if (spawnedPrefab.stopSpawning)
                             {

@@ -30,18 +30,22 @@ namespace WizardsCode.Stats {
             get { return m_TargetInteractable; }
             set
             {
-                if (m_Controller != null
+                if (Actor != null
                     && value != null)
                 {
                     if (value.ReserveFor(this))
                     {
                         //TODO move to an interaction point not to the transform position
-                        m_Controller.TargetPosition = value.transform.position;
+                        Actor.TargetPosition = value.transform.position;
                     }
                 }
 
                 m_TargetInteractable = value;
             }
+        }
+
+        public ActorController Actor {
+            get { return m_Controller; } 
         }
 
         private void Awake()
@@ -71,9 +75,9 @@ namespace WizardsCode.Stats {
         {
             if (Time.timeSinceLevelLoad < m_TimeOfNextUpdate) return;
 
-            if (TargetInteractable != null && Vector3.SqrMagnitude(TargetInteractable.transform.position - m_Controller.TargetPosition) > 0.7f)
+            if (TargetInteractable != null && Vector3.SqrMagnitude(TargetInteractable.transform.position - Actor.TargetPosition) > 0.7f)
             {
-                m_Controller.TargetPosition = TargetInteractable.transform.position;
+                Actor.TargetPosition = TargetInteractable.transform.position;
             }
 
             base.Update();
@@ -86,23 +90,25 @@ namespace WizardsCode.Stats {
         /// </summary>
         private void UpdateActiveBehaviour()
         {
-            //TODO Allow tasks to be interuptable
-            if (CurrentBehaviour != null && CurrentBehaviour.IsExecuting) return;
+            if (CurrentBehaviour != null && CurrentBehaviour.IsExecuting && !CurrentBehaviour.IsInteruptable) return;
+
+            bool isInterupting = false;
+            if (CurrentBehaviour != null && CurrentBehaviour.IsExecuting)
+            {
+                isInterupting = true;
+            }
 
             StringBuilder log = new StringBuilder();
             AbstractAIBehaviour candidateBehaviour = null;
             float highestWeight = float.MinValue;
             float currentWeight = 0;
 
-            log.AppendLine("Options considered included:");
-
             for (int i = 0; i < m_Behaviours.Length; i++)
             {
+                log.Append("Considering: ");
+                log.AppendLine(m_Behaviours[i].DisplayName);
                 if (m_Behaviours[i].IsAvailable)
                 {
-                    log.Append("Option ");
-                    log.AppendLine((i + 1).ToString());
-                    log.AppendLine(m_Behaviours[i].DisplayName);
                     log.AppendLine(m_Behaviours[i].reasoning.ToString());
 
                     currentWeight = m_Behaviours[i].Weight(this);
@@ -112,14 +118,27 @@ namespace WizardsCode.Stats {
                         highestWeight = currentWeight;
                     }
                 }
+                log.AppendLine(m_Behaviours[i].reasoning.ToString());
             }
 
             if (candidateBehaviour == null) return;
 
+            if (isInterupting && candidateBehaviour != CurrentBehaviour)
+            {
+                CurrentBehaviour.FinishBehaviour();
+            }
+
             CurrentBehaviour = candidateBehaviour;
             CurrentBehaviour.EndTime = 0;
             CurrentBehaviour.IsExecuting = true;
-            TargetInteractable = CurrentBehaviour.CurrentInteractableTarget;
+            if (CurrentBehaviour is GenericInteractionAIBehaviour)
+            {
+                TargetInteractable = ((GenericInteractionAIBehaviour)CurrentBehaviour).CurrentInteractableTarget;
+            } else
+            {
+                TargetInteractable = null;
+                CurrentBehaviour.StartBehaviour(CurrentBehaviour.AbortDuration);
+            }
 
             log.Insert(0, "\n");
             if (TargetInteractable != null)
@@ -189,7 +208,10 @@ namespace WizardsCode.Stats {
                             break;
                     }
 
-                    Memory.AddMemory(influencer, isGood);
+                    if (influencer.Generator != null)
+                    {
+                        Memory.AddMemory(influencer, isGood);
+                    }
                 }
             }
 
