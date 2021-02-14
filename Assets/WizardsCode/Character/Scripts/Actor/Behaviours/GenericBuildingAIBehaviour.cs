@@ -10,6 +10,8 @@ namespace WizardsCode.Character
     /// in the environment. It extends the AbstractAIBehaviour and thus provides
     /// all the same configuration options. But adds information about how to
     /// manage the build process.
+    /// 
+    /// Items that an actor build will go into their memory.
     /// </summary>
     public class GenericBuildingAIBehaviour : AbstractAIBehaviour
     {
@@ -22,6 +24,12 @@ namespace WizardsCode.Character
             base.FinishBehaviour();
 
             GameObject go = Instantiate(m_BuiltPrefab, transform.position, Quaternion.identity);
+            MemorySO memory = ScriptableObject.CreateInstance<MemorySO>();
+            memory.about = this.gameObject;
+            memory.interactionName = DisplayName;
+            memory.isGood = true;
+
+            brain.Memory.AddMemory(memory);
         }
     }
 }

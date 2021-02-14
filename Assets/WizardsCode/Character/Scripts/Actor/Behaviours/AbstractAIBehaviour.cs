@@ -79,7 +79,7 @@ namespace WizardsCode.Character
             internal set; 
         }
 
-        private void Start()
+        private void Awake()
         {
             Init();
         }
@@ -194,7 +194,7 @@ namespace WizardsCode.Character
         }
 
         /// <summary>
-        /// Called when the behaviour is started, from the `Start` method of the underlying
+        /// Called when the behaviour is awoken, from the `Awake` method of the underlying
         /// `MonoBehaviour`.
         /// </summary>
         protected virtual void Init()
