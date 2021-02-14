@@ -19,8 +19,9 @@ namespace WizardsCode.Character
     public class Interactable : MonoBehaviour
     {
         [Header("Overview")]
-        [SerializeField, Tooltip("The name of the interaction that will produce this result.")]
-        string m_InteractionName = "Name of Interaction";
+        [SerializeField, Tooltip("The name of the interaction from the perspective of the actor interacting with this item.")]
+        [FormerlySerializedAs("m_InteractionName")]
+        string m_InteractionNameFromActorsPerspective = "";
 
         [Header("Character Settings")]
         [SerializeField, Tooltip("How many characters can interact using this influencer at any one time.")]
@@ -54,13 +55,19 @@ namespace WizardsCode.Character
             get { return m_CharacterInfluences; }
         }
 
+        public string DisplayName
+        {
+            //TODO allow the designer to customize this name
+            get { return gameObject.name; }
+        }
+
         /// <summary>
         /// The name of this interaction. Used as an ID for this interaction.
         /// </summary>
         public string InteractionName
         {
-            get { return m_InteractionName; }
-            set { m_InteractionName = value; }
+            get { return m_InteractionNameFromActorsPerspective; }
+            set { m_InteractionNameFromActorsPerspective = value; }
         }
 
         /// <summary>

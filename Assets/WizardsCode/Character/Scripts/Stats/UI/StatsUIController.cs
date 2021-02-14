@@ -63,7 +63,7 @@ namespace WizardsCode.Character.Stats
             {
                 if (m_BehaviourLabel != null)
                 {
-                    m_BehaviourLabel.text = m_SelectedCharacter.CurrentBehaviour.DisplayName;
+                    m_BehaviourLabel.text = m_SelectedCharacter.DisplayName + " - " + m_SelectedCharacter.CurrentBehaviour.DisplayName;
                 }
 
                 StateSO[] states = m_SelectedCharacter.DesiredStates;

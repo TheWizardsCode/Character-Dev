@@ -830,7 +830,7 @@ MonoBehaviour:
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
     objective: 0
-  awarenessRange: 10
+  awarenessRange: 30
 --- !u!114 &2406324291477590185
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -858,7 +858,7 @@ MonoBehaviour:
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
     objective: 2
-  awarenessRange: 30
+  awarenessRange: 50
 --- !u!114 &6337383507754000084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -886,7 +886,7 @@ MonoBehaviour:
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
     objective: 2
-  awarenessRange: 10
+  awarenessRange: 30
 --- !u!114 &5097319431477371338
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -909,12 +909,12 @@ MonoBehaviour:
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: 3091b91fc8dcd26428dac24f52b6116e, type: 2}
     objective: 0
-    m_Value: 1
+    m_Value: 100
   m_CharacterInfluences: []
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: 3091b91fc8dcd26428dac24f52b6116e, type: 2}
     objective: 2
-  awarenessRange: 10
+  awarenessRange: 20
 --- !u!114 &8835159839768932744
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -972,7 +972,7 @@ MonoBehaviour:
   minAngleOfRandomPathChange: -60
   maxAngleOfRandomPathChange: 60
   m_MaxWanderRange: 200
-  navMeshAreaMask: -1
+  navMeshAreaMask: 32
 --- !u!1 &6036382173779259909
 GameObject:
   m_ObjectHideFlags: 0

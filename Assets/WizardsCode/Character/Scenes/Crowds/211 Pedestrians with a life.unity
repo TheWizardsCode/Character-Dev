@@ -3876,11 +3876,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 6
       objectReference: {fileID: 0}
-    - target: {fileID: 5532425919257431215, guid: bba3d4a695ae49b4ba09c44006b5f155,
-        type: 3}
-      propertyPath: m_InteractionName
-      value: Eat a meal
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bba3d4a695ae49b4ba09c44006b5f155, type: 3}
 --- !u!1 &365315555
@@ -7408,7 +7403,7 @@ PrefabInstance:
     - target: {fileID: 3628273535258001664, guid: cc0162875590e544d9503846bf7f3506,
         type: 3}
       propertyPath: m_Number
-      value: 100
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 3628273535258001664, guid: cc0162875590e544d9503846bf7f3506,
         type: 3}
@@ -11781,6 +11776,16 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 6592101848022270179, guid: bba3d4a695ae49b4ba09c44006b5f155,
+        type: 3}
+      propertyPath: m_InteractionName
+      value: Sell Raw Food
+      objectReference: {fileID: 0}
+    - target: {fileID: 6592101848022270179, guid: bba3d4a695ae49b4ba09c44006b5f155,
+        type: 3}
+      propertyPath: m_InteractionNameFromActorsPerspective
+      value: Sell Raw Food
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bba3d4a695ae49b4ba09c44006b5f155, type: 3}
 --- !u!1 &1060078414
@@ -15132,6 +15137,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 2.11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7014658200170685761, guid: 6c62da03d4f0ca84cbb61af35af54a76,
+        type: 3}
+      propertyPath: m_InteractionName
+      value: Buy raw food
+      objectReference: {fileID: 0}
+    - target: {fileID: 7014658200170685761, guid: 6c62da03d4f0ca84cbb61af35af54a76,
+        type: 3}
+      propertyPath: m_InteractionNameFromActorsPerspective
+      value: Buy raw food
       objectReference: {fileID: 0}
     - target: {fileID: 7014658200170685762, guid: 6c62da03d4f0ca84cbb61af35af54a76,
         type: 3}
@@ -20599,7 +20614,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1941538876}
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -39.9, y: 0.000000018626, z: 0}
+  m_LocalPosition: {x: -39.9, y: 0.01, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 948729471}

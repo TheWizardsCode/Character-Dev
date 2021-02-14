@@ -61,7 +61,18 @@ namespace WizardsCode.Character
                     }
                 }
 
-                return CurrentInteractableTarget != null; ;
+                if (CurrentInteractableTarget == null)
+                {
+                    reasoning.AppendLine("Couldn't see or recall a suitable interactable nearby.");
+                    return false;
+                } else
+                {
+                    reasoning.Append("Maybe go to ");
+                    reasoning.Append(CurrentInteractableTarget.DisplayName);
+                    reasoning.Append(" to ");
+                    reasoning.AppendLine(DisplayName);
+                    return true;
+                }
             }
         }
 
@@ -93,12 +104,18 @@ namespace WizardsCode.Character
                 for (int i = 0; i < memories.Length; i++)
                 {
                     interactable = memories[i].about.GetComponentInChildren<Interactable>();
+                    reasoning.Append("I remember ");
+                    reasoning.Append(interactable.DisplayName);
 
                     //TODO if memory is of an already cached interactable we can skip
 
                     if (IsValidInteractable(interactable))
                     {
                         cachedAvailableInteractables.Add(interactable);
+                        reasoning.AppendLine(" is near here, that's a good place.");
+                    } else
+                    {
+                        reasoning.AppendLine(" is near here, but it's not a suitable place.");
                     }
                 }
             }
@@ -120,7 +137,7 @@ namespace WizardsCode.Character
             }
 
             reasoning.Append(interactable.name);
-            reasoning.Append(" is close by, maybe it's a good place to ");
+            reasoning.Append(" might be a good place to ");
             reasoning.AppendLine(interactable.InteractionName);
 
             if (!interactable.HasSpaceFor(brain))

@@ -834,7 +834,7 @@ MonoBehaviour:
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
     objective: 0
-  awarenessRange: 10
+  awarenessRange: 40
 --- !u!114 &2332644279983961303
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -862,7 +862,7 @@ MonoBehaviour:
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
     objective: 2
-  awarenessRange: 10
+  awarenessRange: 50
 --- !u!114 &2093279812822493519
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -892,7 +892,7 @@ MonoBehaviour:
     objective: 2
   - statTemplate: {fileID: 11400000, guid: cf9e8ec2f416536438ba755bec4df9d6, type: 2}
     objective: 0
-  awarenessRange: 40
+  awarenessRange: 60
 --- !u!114 &6253569233166842538
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -922,7 +922,7 @@ MonoBehaviour:
     objective: 2
   - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
     objective: 0
-  awarenessRange: 40
+  awarenessRange: 60
 --- !u!114 &5153980171199940020
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -950,7 +950,7 @@ MonoBehaviour:
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: 3091b91fc8dcd26428dac24f52b6116e, type: 2}
     objective: 2
-  awarenessRange: 10
+  awarenessRange: 20
 --- !u!114 &8910098895151388150
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -978,7 +978,7 @@ MonoBehaviour:
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: e7d5ac7f90040d04b892ec7dda97749d, type: 2}
     objective: 2
-  awarenessRange: 10
+  awarenessRange: 30
 --- !u!114 &8116206359505029520
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1009,7 +1009,7 @@ MonoBehaviour:
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
     objective: 2
-  awarenessRange: 25
+  awarenessRange: 20
 --- !u!114 &5153980171199940022
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1039,7 +1039,7 @@ MonoBehaviour:
   minAngleOfRandomPathChange: -60
   maxAngleOfRandomPathChange: 60
   m_MaxWanderRange: 200
-  navMeshAreaMask: -1
+  navMeshAreaMask: 32
 --- !u!1 &5980293455161031958
 GameObject:
   m_ObjectHideFlags: 0

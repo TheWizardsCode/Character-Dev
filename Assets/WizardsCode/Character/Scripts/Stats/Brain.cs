@@ -103,15 +103,12 @@ namespace WizardsCode.Stats {
             float highestWeight = float.MinValue;
             float currentWeight = 0;
 
-            log.AppendLine("Options considered included:");
-
             for (int i = 0; i < m_Behaviours.Length; i++)
             {
+                log.Append("Considering: ");
+                log.AppendLine(m_Behaviours[i].DisplayName);
                 if (m_Behaviours[i].IsAvailable)
                 {
-                    log.Append("Option ");
-                    log.AppendLine((i + 1).ToString());
-                    log.AppendLine(m_Behaviours[i].DisplayName);
                     log.AppendLine(m_Behaviours[i].reasoning.ToString());
 
                     currentWeight = m_Behaviours[i].Weight(this);
@@ -121,6 +118,7 @@ namespace WizardsCode.Stats {
                         highestWeight = currentWeight;
                     }
                 }
+                log.AppendLine(m_Behaviours[i].reasoning.ToString());
             }
 
             if (candidateBehaviour == null) return;

@@ -135,33 +135,33 @@ namespace WizardsCode.Character
                     case Objective.LessThan:
                         thisRequirementMet = brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).Value < m_RequiredStats[i].Value;
                         if (thisRequirementMet) {
-                            reasoning.Append(" is good since it is less than ");
+                            reasoning.Append(" is in the right range since it is less than ");
                         } 
                         else
                         {
-                            reasoning.Append(" is no good since it is not less than ");
+                            reasoning.Append(" is not in the right range since it is not less than ");
                         }
                         break;
                     case Objective.Approximately:
                         thisRequirementMet = Mathf.Approximately(brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).Value, m_RequiredStats[i].Value);
                         if (thisRequirementMet)
                         {
-                            reasoning.Append(" is good since it is approximately equal to ");
+                            reasoning.Append(" is in the right range since it is approximately equal to ");
                         }
                         else
                         {
-                            reasoning.Append(" is no good since it is not approximately equal to ");
+                            reasoning.Append(" is not in the right range since it is not approximately equal to ");
                         }
                         break;
                     case Objective.GreaterThan:
                         thisRequirementMet = brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).Value > m_RequiredStats[i].Value;
                         if (thisRequirementMet)
                         {
-                            reasoning.Append(" is good since it is greater than ");
+                            reasoning.Append(" is in the right range since it is greater than ");
                         }
                         else
                         {
-                            reasoning.Append(" is no good since it is not greater than ");
+                            reasoning.Append(" is in the right range since it is not greater than ");
                         }
                         break;
                     default:
@@ -254,10 +254,21 @@ namespace WizardsCode.Character
             {
                 for (int idx = 0; idx < DesiredStateImpacts.Length; idx++)
                 {
-                    if (brain.UnsatisfiedDesiredStates[i].name == DesiredStateImpacts[idx].statTemplate.name) weight++;
+                    if (brain.UnsatisfiedDesiredStates[i].name == DesiredStateImpacts[idx].statTemplate.name)
+                    {
+                        reasoning.Append("They are not ");
+                        reasoning.Append(brain.UnsatisfiedDesiredStates[i].name);
+                        reasoning.AppendLine(" and this behaviour will help.");
+                        weight++;
+                    }
                 }
             }
-            return weight / brain.UnsatisfiedDesiredStates.Length;
+            weight /= brain.UnsatisfiedDesiredStates.Length;
+
+            reasoning.Append("Total weight for this behaviour is ");
+            reasoning.AppendLine(weight.ToString("0.000"));
+
+            return weight;
         }
 
         public void Update()
