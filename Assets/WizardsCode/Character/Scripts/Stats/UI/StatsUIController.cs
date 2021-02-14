@@ -15,9 +15,13 @@ namespace WizardsCode.Character.Stats
         [SerializeField, Tooltip("The selection manager in the scene.")]
         ClickToSelect m_SelectionManager;
 
-        [Header("UI Templates")]
+        [Header("UI Elements")]
+        [SerializeField, Tooltip("The text element to display the desription of the actors current behaviour.")]
+        TextMeshProUGUI m_BehaviourLabel;
         [SerializeField, Tooltip("The UI template to use to display a stat.")]
-        RectTransform statePanelTemplate;
+        [FormerlySerializedAs("statePanelTemplate")]
+        RectTransform statPanelTemplate;
+
 
         private void Awake()
         {
@@ -57,6 +61,11 @@ namespace WizardsCode.Character.Stats
             //TODO: don't update every frame
             if (m_SelectedCharacter != null)
             {
+                if (m_BehaviourLabel != null)
+                {
+                    m_BehaviourLabel.text = m_SelectedCharacter.CurrentBehaviour.DisplayName;
+                }
+
                 StateSO[] states = m_SelectedCharacter.DesiredStates;
                 for (int i = 0; i < states.Length; i++)
                 {
@@ -68,7 +77,7 @@ namespace WizardsCode.Character.Stats
                     StatUIPanel stateUI;
                     if (!stateUIObjects.TryGetValue(stat, out stateUI))
                     {
-                        stateUI = Instantiate(statePanelTemplate, transform).GetComponent<StatUIPanel>();
+                        stateUI = Instantiate(statPanelTemplate, transform).GetComponent<StatUIPanel>();
                         stateUI.stat = stat;
                         stateUI.gameObject.SetActive(true);
 
