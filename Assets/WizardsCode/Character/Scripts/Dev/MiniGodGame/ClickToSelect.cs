@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
+using WizardsCode.Stats;
 
 namespace WizardsCode.Character
 {
@@ -42,7 +43,13 @@ namespace WizardsCode.Character
 
                 if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100))
                 {
-                    m_CurrentlySelected = hit.collider.transform.root;
+                    if (hit.collider.transform.root.GetComponent<Brain>())
+                    {
+                        m_CurrentlySelected = hit.collider.transform.root;
+                    } else
+                    {
+                        m_CurrentlySelected = null;
+                    }
                 }
             }
 
