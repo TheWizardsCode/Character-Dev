@@ -41,7 +41,7 @@ namespace WizardsCode.Character.Stats
         Dictionary<StatSO, StatUIPanel> stateUIObjects = new Dictionary<StatSO, StatUIPanel>();
         void Update()
         {
-            if (m_SelectionManager != null && m_SelectionManager.CurrentlySelected != null && !GameObject.ReferenceEquals(m_SelectedCharacter.gameObject, m_SelectionManager.CurrentlySelected))
+            if (m_SelectionManager != null && m_SelectionManager.CurrentlySelected != null && (m_SelectedCharacter == null || !GameObject.ReferenceEquals(m_SelectedCharacter.gameObject, m_SelectionManager.CurrentlySelected)))
             {
                 m_SelectedCharacter = m_SelectionManager.CurrentlySelected.GetComponentInChildren<Brain>();
 
