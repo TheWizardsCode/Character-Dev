@@ -1330,6 +1330,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5311139743032274596}
     m_Modifications:
+    - target: {fileID: 942846213194399283, guid: c76425f2fc23a7a4490ae59aecf6d864,
+        type: 3}
+      propertyPath: awarenessRange
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 5520724305333876447, guid: c76425f2fc23a7a4490ae59aecf6d864,
+        type: 3}
+      propertyPath: m_DesiredStateImpacts.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6440944259599993319, guid: c76425f2fc23a7a4490ae59aecf6d864,
         type: 3}
       propertyPath: m_Name
