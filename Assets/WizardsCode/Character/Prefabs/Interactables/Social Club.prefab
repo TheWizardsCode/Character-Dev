@@ -109,7 +109,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_InteractionName: Socialize with Food
-  m_MaxInteractors: 10
+  m_MaxInteractors: 20
   m_CharacterInfluences:
   - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
     maxChange: -10
@@ -118,6 +118,7 @@ MonoBehaviour:
   - statTemplate: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
     maxChange: -20
   m_IsRepeating: 0
+  m_DestroyOnUse: 0
   m_ObjectInfluences:
   - statTemplate: {fileID: 11400000, guid: cf9e8ec2f416536438ba755bec4df9d6, type: 2}
     maxChange: -7

@@ -494,7 +494,7 @@ NavMeshAgent:
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: -0.09
-  m_WalkableMask: 4294967295
+  m_WalkableMask: 109
   m_ObstacleAvoidanceType: 4
 --- !u!136 &65197130774289628
 CapsuleCollider:
@@ -959,13 +959,13 @@ MonoBehaviour:
   m_RequiredStats: []
   m_CharacterInfluences: []
   m_DesiredStateImpacts: []
-  minTimeBetweenRandomPathChanges: 5
-  maxTimeBetweenRandomPathChanges: 15
-  minDistanceOfRandomPathChange: 10
-  maxDistanceOfRandomPathChange: 20
+  minTimeBetweenRandomPathChanges: 7
+  maxTimeBetweenRandomPathChanges: 20
+  minDistanceOfRandomPathChange: 50
+  maxDistanceOfRandomPathChange: 100
   minAngleOfRandomPathChange: -60
   maxAngleOfRandomPathChange: 60
-  m_MaxWanderRange: 50
+  m_MaxWanderRange: 200
   navMeshAreaMask: -1
 --- !u!1 &6036382173779259909
 GameObject:
