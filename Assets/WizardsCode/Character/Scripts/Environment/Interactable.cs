@@ -253,7 +253,7 @@ namespace WizardsCode.Character
                 influencer.stat = CharacterInfluences[i].statTemplate;
                 influencer.maxChange = CharacterInfluences[i].maxChange;
                 influencer.duration = m_Duration;
-                influencer.cooldown = m_Cooldown;
+                influencer.CooldownDuration = m_Cooldown;
 
                 if (brain.TryAddInfluencer(influencer))
                 {
@@ -283,7 +283,7 @@ namespace WizardsCode.Character
                 influencer.stat = ObjectInfluences[i].statTemplate;
                 influencer.maxChange = ObjectInfluences[i].maxChange;
                 influencer.duration = m_Duration;
-                influencer.cooldown = m_Cooldown;
+                influencer.CooldownDuration = m_Cooldown;
 
                 m_StatsTracker.TryAddInfluencer(influencer);
             }

@@ -243,8 +243,8 @@ namespace WizardsCode.Stats {
             msg += GetActiveInfluencersDescription();
 
             msg += "\n\nUnsatisfied Desired States";
-            if (UnsatisfiedDesiredStates.Length == 0) msg += "\nNone";
-            for (int i = 0; i < UnsatisfiedDesiredStates.Length; i++)
+            if (UnsatisfiedDesiredStates.Count == 0) msg += "\nNone";
+            for (int i = 0; i < UnsatisfiedDesiredStates.Count; i++)
             {
                 StatSO stat = GetOrCreateStat(UnsatisfiedDesiredStates[i].statTemplate);
                 msg += "\nIs not ";

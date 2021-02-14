@@ -306,7 +306,7 @@ namespace WizardsCode.Character
             memory.interactionName = influencer.InteractionName;
             memory.stat = influencer.stat;
             memory.influence = influencer.maxChange;
-            memory.cooldown = influencer.cooldown;
+            memory.cooldown = influencer.CooldownDuration;
             memory.isGood = isGood;
             AddMemory(memory);
         }

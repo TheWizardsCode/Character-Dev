@@ -30,22 +30,22 @@ namespace WizardsCode.Character
 
         [Header("Influencers")]
         [SerializeField, Tooltip("An influencer to apply whenever this state is not in the desired state. This can be used to do things like decrease health if a character is below a given energy threshold.")]
-        StatInfluencerSO[] m_NotInDesiredState;
+        List<StatInfluencerSO> m_NotInDesiredState = new List<StatInfluencerSO>();
         [SerializeField, Tooltip("An influencer to apply whenever this state is in the desired state. This can be used to do things like increase health if a character is above a given energy threshold.")]
-        StatInfluencerSO[] m_InDesiredState;
+        List<StatInfluencerSO> m_InDesiredState = new List<StatInfluencerSO>();
 
         [Header("Sub States")]
         [SerializeField, Tooltip("A collection of states that must also be satisfied for this state to be satisfied.")]
         List<StateSO> m_SubStates = new List<StateSO>(); 
 
-        public StatInfluencerSO[] InfluencersToApplyWhenNotInDesiredState
+        public List<StatInfluencerSO> InfluencersToApplyWhenNotInDesiredState
         {
             get
             {
                 return m_NotInDesiredState;
             }
         }
-        public StatInfluencerSO[] InfluencersToApplyWhenInDesiredState
+        public List<StatInfluencerSO> InfluencersToApplyWhenInDesiredState
         {
             get
             {

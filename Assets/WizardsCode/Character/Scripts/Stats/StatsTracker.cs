@@ -33,6 +33,7 @@ namespace WizardsCode.Stats {
 
         float m_TimeOfLastUpdate = 0;
         internal float m_TimeOfNextUpdate = 0;
+        private List<StateSO> m_UnsatisfiedDesiredStatesCache = new List<StateSO>();
 
         internal List<StatInfluencerSO> StatsInfluencers
         {
@@ -57,8 +58,12 @@ namespace WizardsCode.Stats {
         /// </summary>
         public StateSO[] DesiredStates { get { return m_DesiredStates; } }
 
-        public StateSO[] UnsatisfiedDesiredStates { get; internal set; }
-        
+        public List<StateSO> UnsatisfiedDesiredStates
+        {
+            get { return m_UnsatisfiedDesiredStatesCache; }
+            internal set { m_UnsatisfiedDesiredStatesCache = value; }
+        }
+
         internal virtual void Update()
         {
             if (Time.timeSinceLevelLoad < m_TimeOfNextUpdate) return;
@@ -110,8 +115,9 @@ namespace WizardsCode.Stats {
         /// </summary>
         private void UpdateDesiredStatesList()
         {
-            StatInfluencerSO[] influencers;
-            List<StateSO> states = new List<StateSO>();
+            List<StatInfluencerSO> influencers = new List<StatInfluencerSO>();
+            UnsatisfiedDesiredStates.Clear();
+
             for (int i = 0; i < DesiredStates.Length; i++)
             {
                 if (DesiredStates[i].IsSatisfiedFor(this))
@@ -121,17 +127,14 @@ namespace WizardsCode.Stats {
                 else
                 {
                     influencers = DesiredStates[i].InfluencersToApplyWhenNotInDesiredState;
-                    states.Add(DesiredStates[i]);
+                    UnsatisfiedDesiredStates.Add(DesiredStates[i]);
                 }
 
-                /*
-                for (int idx = 0; idx < influencers.Length; i++)
+                for (int idx = 0; idx < influencers.Count; idx++)
                 {
-                    TryAddInfluencer(influencers[idx]);
+                    TryAddInfluencer(ScriptableObject.Instantiate(influencers[idx]));
                 }
-                */
             }
-            UnsatisfiedDesiredStates = states.ToArray();
         }
 
         /// <summary>
@@ -143,7 +146,7 @@ namespace WizardsCode.Stats {
         public StatSO[] GetStatsNotInDesiredState()
         {
             List<StatSO> stats = new List<StatSO>();
-            for (int i = 0; i < UnsatisfiedDesiredStates.Length; i++)
+            for (int i = 0; i < UnsatisfiedDesiredStates.Count; i++)
             {
                 stats.AddRange(GetStatsDesiredForState(UnsatisfiedDesiredStates[i]));
             }
@@ -213,13 +216,36 @@ namespace WizardsCode.Stats {
 
         /// <summary>
         /// Add an influencer to this controller. If this controller is not managing the required stat then 
+        /// do nothing. If we already added an influencer of this type within the cooldown time then
         /// do nothing.
         /// </summary>
         /// <param name="influencer">The influencer to add.</param>
         /// <returns>True if the influencer was added, otherwise false.</returns>
         public virtual bool TryAddInfluencer(StatInfluencerSO influencer)
         {
-            StatsInfluencers.Add(influencer);
+            bool exists = false;
+            // check that if an influencer already exists we are not in a cooldown period for this influencer
+            for (int i = 0; i < StatsInfluencers.Count; i++)
+            {
+                if (StatsInfluencers[i].InteractionName == influencer.InteractionName)
+                {
+                    exists = true;
+                    if (Time.timeSinceLevelLoad > StatsInfluencers[i].CooldownCompleteTime)
+                    {
+                        StatsInfluencers.Add(influencer);
+                    } else
+                    {
+                        // it already exists and we are in cooldown, don't add again.
+                        return false;
+                    }
+                }
+            }
+
+            // If the influencer doesn't already exist add it
+            if (!exists)
+            {
+                StatsInfluencers.Add(influencer);
+            }
 
             return true;
         }
@@ -321,8 +347,8 @@ namespace WizardsCode.Stats {
             msg += GetActiveInfluencersDescription();
 
             msg += "\n\nUnsatisfied Desired States";
-            if (UnsatisfiedDesiredStates.Length == 0) msg += "\nNone";
-            for (int i = 0; i < UnsatisfiedDesiredStates.Length; i++)
+            if (UnsatisfiedDesiredStates.Count == 0) msg += "\nNone";
+            for (int i = 0; i < UnsatisfiedDesiredStates.Count; i++)
             {
                 StatSO stat = GetOrCreateStat(UnsatisfiedDesiredStates[i].statTemplate);
                 msg += "\nIs not ";

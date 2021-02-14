@@ -227,7 +227,7 @@ namespace WizardsCode.Character
                 influencer.stat = m_CharacterInfluences[i].statTemplate;
                 influencer.maxChange = m_CharacterInfluences[i].maxChange;
                 influencer.duration = duration;
-                influencer.cooldown = 0;
+                influencer.CooldownDuration = 0;
 
                 brain.TryAddInfluencer(influencer);
             }
@@ -250,7 +250,7 @@ namespace WizardsCode.Character
         public virtual float Weight(Brain brain)
         {
             float weight = 0.01f;
-            for (int i = 0; i < brain.UnsatisfiedDesiredStates.Length; i++)
+            for (int i = 0; i < brain.UnsatisfiedDesiredStates.Count; i++)
             {
                 for (int idx = 0; idx < DesiredStateImpacts.Length; idx++)
                 {
@@ -263,7 +263,7 @@ namespace WizardsCode.Character
                     }
                 }
             }
-            weight /= brain.UnsatisfiedDesiredStates.Length;
+            weight /= brain.UnsatisfiedDesiredStates.Count;
 
             reasoning.Append("Total weight for this behaviour is ");
             reasoning.AppendLine(weight.ToString("0.000"));

@@ -20,9 +20,9 @@ namespace WizardsCode.Stats
         [SerializeField, Tooltip("The maximum amount of change this influencer will impart upon the stat. If the stat will never be taken beyond its maximum and minimum allowable values.")]
         float m_MaxChange = 10;
         [SerializeField, Tooltip("The time, in seconds, over which the influencer will be effective. The change will occur over this time period, up to the limit of the stat or the maxChange of this influencer. If duration is 0 then the total change is applied instantly.")]
-        float m_Duration = 0;
+        float m_Duration = 5;
         [SerializeField, Tooltip("The cooldown period before a character can be influenced by this same influencer again, in seconds.")]
-        float m_Cooldown = 5;
+        float m_CooldownDuration = 5;
 
         [HideInInspector, SerializeField]
         float m_InfluenceApplied = 0;
@@ -31,6 +31,13 @@ namespace WizardsCode.Stats
         float m_ChangePerSecond = float.NegativeInfinity;
         private float m_TimeOfLastUpdate;
         private string m_GeneratorName;
+        private float m_CooldownCompleteTime;
+
+        private void OnEnable()
+        {
+            m_ChangePerSecond = m_MaxChange / m_Duration;
+            CooldownCompleteTime = Time.timeSinceLevelLoad + CooldownDuration;
+        }
 
         /// <summary>
         /// The name of this interaction. Used as an ID for this interaction.
@@ -116,10 +123,10 @@ namespace WizardsCode.Stats
         /// <summary>
         /// The minimum time that must pass before a character can be influenced by this same influencer again.
         /// </summary>
-        public float cooldown
+        public float CooldownDuration
         {
-            get { return m_Cooldown; }
-            set { m_Cooldown = value; }
+            get { return m_CooldownDuration; }
+            set { m_CooldownDuration = value; }
         }
 
         /// <summary>
@@ -201,6 +208,11 @@ namespace WizardsCode.Stats
             }
         }
 
-        internal Brain controller { get; set; }
+        internal Brain StatTracker { get; set; }
+
+        public float CooldownCompleteTime {
+            get { return m_CooldownCompleteTime; }
+            internal set { m_CooldownCompleteTime = value; } 
+        }
     }
 }
