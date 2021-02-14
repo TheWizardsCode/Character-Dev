@@ -80,12 +80,17 @@ namespace WizardsCode.Character
 
                 for (int i = 0; i < SpawnedBrains.Count; i++)
                 {
-                    key = SpawnedBrains[i].CurrentBehaviour.DisplayName;
-                    if (result.ContainsKey(key))
+                    if (SpawnedBrains[i].CurrentBehaviour != null)
                     {
-                        result[key] = result[key] + 1;
-                    } else {
-                        result.Add(key, 1);
+                        key = SpawnedBrains[i].CurrentBehaviour.DisplayName;
+                        if (result.ContainsKey(key))
+                        {
+                            result[key] = result[key] + 1;
+                        }
+                        else
+                        {
+                            result.Add(key, 1);
+                        }
                     }
                 }
 
