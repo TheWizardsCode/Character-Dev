@@ -139,7 +139,7 @@ namespace WizardsCode.Character
                         } 
                         else
                         {
-                            reasoning.Append(" is not in the right range since it is not less than ");
+                            reasoning.Append(" is in the wrong range since it is not less than ");
                         }
                         break;
                     case Objective.Approximately:
@@ -150,7 +150,7 @@ namespace WizardsCode.Character
                         }
                         else
                         {
-                            reasoning.Append(" is not in the right range since it is not approximately equal to ");
+                            reasoning.Append(" is in the wrong range since it is not approximately equal to ");
                         }
                         break;
                     case Objective.GreaterThan:
@@ -161,7 +161,7 @@ namespace WizardsCode.Character
                         }
                         else
                         {
-                            reasoning.Append(" is in the right range since it is not greater than ");
+                            reasoning.Append(" is in the wrong range since it is not greater than ");
                         }
                         break;
                     default:
