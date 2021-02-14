@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using WizardsCode.Utility;
+using WizardsCode.Stats;
 
 namespace WizardsCode.Character
 {
@@ -12,6 +13,10 @@ namespace WizardsCode.Character
     public class ActorManager : AbstractSingleton<ActorManager>
     {
         List<Spawner> m_Spawners = new List<Spawner>();
+
+        List<Brain> m_CachedBrains = new List<Brain>();
+        private float m_NextSpawnedItemsCacheUpdateTime;
+        private List<Brain> m_SpawnedBrainsCache = new List<Brain>();
 
         public void RegisterSpawner(Spawner spawner)
         {
@@ -33,18 +38,55 @@ namespace WizardsCode.Character
         }
 
         /// <summary>
-        /// Get all items spawned into this world.
+        /// Get all brains spawned into this world.
         /// </summary>
-        public List<Transform> SpawnedItems
+        public List<Brain> SpawnedBrains
         {
             get
             {
-                List<Transform> result = new List<Transform>();
+                if (Time.realtimeSinceStartup < m_NextSpawnedItemsCacheUpdateTime) return m_SpawnedBrainsCache;
 
-                //TODO cache the spawned items for a time
+                m_NextSpawnedItemsCacheUpdateTime = Time.realtimeSinceStartup + 5;
+                m_SpawnedBrainsCache.Clear();
+
+                Brain brain;
                 for (int i = 0; i < Spawners.Count; i++)
                 {
-                    result.AddRange(Spawners[i].Spawned);
+                    for (int idx = 0; idx < Spawners[i].Spawned.Count; idx ++)
+                    {
+                        brain = Spawners[i].Spawned[idx].GetComponent<Brain>();
+                        if (brain != null)
+                        {
+                            m_SpawnedBrainsCache.Add(brain);
+                        }
+                    }
+                }
+
+                return m_SpawnedBrainsCache;
+            }
+        }
+
+        /// <summary>
+        /// Get a dictionary of behaviour names (key) and count of brains carrying out
+        /// that behaviour (value).
+        /// </summary>
+        public Dictionary<string, int> ActiveBehaviours
+        {
+            get
+            {
+                //TODO Cache behaviour counts
+                Dictionary<string, int> result = new Dictionary<string, int>();
+                string key;
+
+                for (int i = 0; i < SpawnedBrains.Count; i++)
+                {
+                    key = SpawnedBrains[i].CurrentBehaviour.DisplayName;
+                    if (result.ContainsKey(key))
+                    {
+                        result[key] = result[key] + 1;
+                    } else {
+                        result.Add(key, 1);
+                    }
                 }
 
                 return result;

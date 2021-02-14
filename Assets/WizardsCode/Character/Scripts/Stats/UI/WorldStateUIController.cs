@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using System.Text;
+using System.Linq;
 
 namespace WizardsCode.Character
 {
@@ -21,8 +22,14 @@ namespace WizardsCode.Character
                 m_TimeOfNextUpdate = Time.realtimeSinceStartup + m_FrequencyOfUpdates;
 
                 StringBuilder stateSummary = new StringBuilder();
-                stateSummary.Append("Spawned Items: ");
-                stateSummary.Append(ActorManager.Instance.SpawnedItems.Count);
+                stateSummary.Append("Spawned Brains: ");
+                stateSummary.Append(ActorManager.Instance.SpawnedBrains.Count);
+                for (int i = 0; i < ActorManager.Instance.ActiveBehaviours.Count; i++) {
+                    stateSummary.Append(" ");
+                    stateSummary.Append(ActorManager.Instance.ActiveBehaviours.ElementAt(i).Key);
+                    stateSummary.Append(": ");
+                    stateSummary.Append(ActorManager.Instance.ActiveBehaviours.ElementAt(i).Value);
+                }
 
                 stateSummaryLabel.text = stateSummary.ToString();
             }
