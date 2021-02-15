@@ -6,6 +6,7 @@ using WizardsCode.Character.Stats;
 using System;
 using static WizardsCode.Character.StateSO;
 using UnityEngine.Serialization;
+using WizardsCode.Character.WorldState;
 
 namespace WizardsCode.Character
 {
@@ -19,6 +20,8 @@ namespace WizardsCode.Character
     public class Interactable : MonoBehaviour
     {
         [Header("Overview")]
+        [SerializeField, Tooltip("The type of this interactable, this is used for sorting and filtering world state. This should represent the primary purpose of this interactable, there may be other interactables on the same object and there may be additional effects from this interactable. However, the type represents the primary purpose.")]
+        InteractableTypeSO m_Type;
         [SerializeField, Tooltip("The name of the interaction from the perspective of the actor interacting with this item.")]
         [FormerlySerializedAs("m_InteractionName")]
         string m_InteractionNameFromActorsPerspective = "";
@@ -88,9 +91,15 @@ namespace WizardsCode.Character
             }
         }
 
+        public InteractableTypeSO Type 
+        { 
+            get { return m_Type; }
+        }
+
         void Awake()
         {
             m_StatsTracker = GetComponentInParent<StatsTracker>();
+            InteractableManager.Instance.Register(this);
         }
 
         /// <summary>

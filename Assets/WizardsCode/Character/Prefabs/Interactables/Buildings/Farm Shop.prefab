@@ -107,7 +107,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66f048bfe15920a4e9328734b8239ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_InteractionName: Work in the Farm Shop
+  m_Type: {fileID: 11400000, guid: f07cbb5b1ed50e1468bdbcbaf7495007, type: 2}
+  m_InteractionNameFromActorsPerspective: Work in the Farm Shop
   m_MaxInteractors: 1
   m_CharacterInfluences:
   - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
@@ -129,7 +130,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66f048bfe15920a4e9328734b8239ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_InteractionName: Trade in Raw Food
+  m_Type: {fileID: 11400000, guid: 5a1a557cc882a7b488cc4c9b9212870d, type: 2}
+  m_InteractionNameFromActorsPerspective: Trade in Raw Food
   m_MaxInteractors: 1
   m_CharacterInfluences:
   - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}

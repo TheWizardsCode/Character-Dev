@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using System.Text;
 using System.Linq;
+using WizardsCode.Character.WorldState;
 
 namespace WizardsCode.Character
 {

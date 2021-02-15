@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using WizardsCode.Character;
+using WizardsCode.Character.WorldState;
 
 namespace WizardsCode.Character
 {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using WizardsCode.Utility;
 using WizardsCode.Stats;
 
-namespace WizardsCode.Character
+namespace WizardsCode.Character.WorldState
 {
     /// <summary>
     /// The ActorManager keeps tracks of all the actors in the world. It provides references to
