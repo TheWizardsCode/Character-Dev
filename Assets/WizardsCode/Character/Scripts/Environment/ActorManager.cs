@@ -18,6 +18,14 @@ namespace WizardsCode.Character.WorldState
         private float m_NextSpawnedItemsCacheUpdateTime;
         private List<Brain> m_SpawnedBrainsCache = new List<Brain>();
 
+        /// <summary>
+        /// Get a count of the currently tracked active brains in the world.
+        /// </summary>
+        public int ActiveBrainsCount
+        {
+            get { return m_SpawnedBrainsCache.Count; }
+        }
+
         public void RegisterSpawner(Spawner spawner)
         {
             if (m_Spawners.Contains(spawner))

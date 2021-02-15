@@ -8,6 +8,7 @@ using Random = UnityEngine.Random;
 using static WizardsCode.Character.StateSO;
 using System.Text;
 using UnityEngine.Serialization;
+using WizardsCode.Character.WorldState;
 
 namespace WizardsCode.Character
 {
@@ -30,12 +31,15 @@ namespace WizardsCode.Character
             "This is used as a safeguard in case something prevents the actor from completing " +
             "the actions associated with this behaviour, e.g. if they are unable to reach the chosen interactable.")]
         float m_AbortDuration = 30;
+        
         [SerializeField, Tooltip("The required stats to enable this behaviour. Here you should set minimum, maximum or approximate values for stats that are needed for this behaviour to fire. For example, buying items is only possible if the actor has cash.")]
         RequiredStat[] m_RequiredStats = default;
         [SerializeField, Tooltip("The set of character stats and the influence to apply to them when a character chooses this behaviour AND the behaviour does not require an interactable (influences come from the interactable if one is requried).")]
         internal StatInfluence[] m_CharacterInfluences;
         [SerializeField, Tooltip("The impacts we need an interactable to have on states for this behaviour to be enabled by it.")]
         DesiredStatImpact[] m_DesiredStateImpacts = new DesiredStatImpact[0];
+        [SerializeField, Tooltip("The conitions required in the worldstate for this behaviour to be valid.")]
+        WorldStateSO[] m_RequiredWorldState;
 
         public float AbortDuration
         {
@@ -97,15 +101,33 @@ namespace WizardsCode.Character
 
                 reasoning.Clear();
 
-                if (CheckCharacteHasRequiredStats())
+                if (CheckWorldState() && CheckCharacteHasRequiredStats())
                 {
                     return true;
                 } else
                 {
-                    reasoning.AppendLine("They decide not to because they don't have the necessary stats.");
                     return false;
                 }
             }
+        }
+
+        /// <summary>
+        /// If any required world states are defined check they are valid.
+        /// If found to be invalid the reasining log will have details.
+        /// </summary>
+        /// <returns>True if all world states are valid.</returns>
+        public bool CheckWorldState()
+        {
+            for (int i = 0; i < m_RequiredWorldState.Length; i++)
+            {
+                if (!m_RequiredWorldState[i].IsValid)
+                {
+                    reasoning.Append(m_RequiredWorldState[i].DisplayName);
+                    reasoning.AppendLine(" is not a valid world state.");
+                    return false;
+                }
+            }
+            return true;
         }
 
         /// <summary>

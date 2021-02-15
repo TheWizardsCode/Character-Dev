@@ -92,6 +92,7 @@ MonoBehaviour:
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
     objective: 0
+  m_RequiredWorldState: []
   awarenessRange: 10
 --- !u!114 &442094553812782229
 MonoBehaviour:
@@ -124,6 +125,7 @@ MonoBehaviour:
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: 3a65fd83ea52d7c4db1e8cc4c0ffafa0, type: 2}
     objective: 2
+  m_RequiredWorldState: []
   awarenessRange: 10
 --- !u!1 &442094553814632930
 GameObject:
@@ -188,6 +190,8 @@ MonoBehaviour:
   - statTemplate: {fileID: 11400000, guid: 3a65fd83ea52d7c4db1e8cc4c0ffafa0, type: 2}
     maxChange: -15
   m_DesiredStateImpacts: []
+  m_RequiredWorldState:
+  - {fileID: 11400000, guid: ef4f7c82ea0e1404a844c100e4a28c48, type: 2}
   m_BuiltPrefab: {fileID: 1494473663186943003, guid: 9c2231e74c892ce44847b2cd9a480f8f,
     type: 3}
 --- !u!1 &1230700983341931292
