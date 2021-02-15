@@ -39,5 +39,22 @@ namespace WizardsCode.Character.WorldState
                 }
             }
         }
+
+        /// <summary>
+        /// Get the number of interactables in the world of a specific type.
+        /// </summary>
+        /// <param name="type">The type of the interactable we are looking for.</param>
+        /// <returns>The number of interactables of this type in this world.</returns>
+        internal int GetCount(InteractableTypeSO type)
+        {
+            List<Interactable> all;
+            if (m_InteractablesByType.TryGetValue(type, out all))
+            {
+                return all.Count;
+            } else
+            {
+                return 0;
+            }
+        }
     }
 }
