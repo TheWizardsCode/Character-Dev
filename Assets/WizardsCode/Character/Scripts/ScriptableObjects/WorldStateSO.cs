@@ -26,7 +26,7 @@ namespace WizardsCode.Character.WorldState
         {
             get
             {
-                float countPerBrain = InteractableManager.Instance.GetCount(m_Type) / ActorManager.Instance.ActiveBrainsCount;
+                float countPerBrain = InteractableManager.Instance.GetCount(m_Type) / (float)ActorManager.Instance.ActiveBrainsCount;
                 return countPerBrain < m_MaxNumberRequiredPerBrain;
             }
         }

@@ -44,8 +44,9 @@ GameObject:
   - component: {fileID: 442094553812782230}
   - component: {fileID: 2521776758077593251}
   - component: {fileID: 442094553812782229}
+  - component: {fileID: 5385255250056365246}
   m_Layer: 0
-  m_Name: Gathering Behaviours
+  m_Name: Base Needs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -124,6 +125,37 @@ MonoBehaviour:
     maxChange: -15
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: 3a65fd83ea52d7c4db1e8cc4c0ffafa0, type: 2}
+    objective: 2
+  m_RequiredWorldState: []
+  awarenessRange: 10
+--- !u!114 &5385255250056365246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 442094553812782231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e2d955ea028604c9552bc8d9e5cf47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Description: When two actors love one another they may try to make babies.
+  m_DisplayName: Make Babies
+  m_OnStartCue: {fileID: 0}
+  m_OnEndCue: {fileID: 0}
+  m_RetryFrequency: 2
+  m_isInteruptable: 0
+  m_AbortDuration: 30
+  m_RequiredStats:
+  - statTemplate: {fileID: 11400000, guid: e7d5ac7f90040d04b892ec7dda97749d, type: 2}
+    objective: 2
+    m_Value: 60
+  m_CharacterInfluences:
+  - statTemplate: {fileID: 11400000, guid: e7d5ac7f90040d04b892ec7dda97749d, type: 2}
+    maxChange: 15
+  m_DesiredStateImpacts:
+  - statTemplate: {fileID: 11400000, guid: 2f5d19bc19f76514ea83b23aa9d7d7a1, type: 2}
     objective: 2
   m_RequiredWorldState: []
   awarenessRange: 10
@@ -675,7 +707,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1e48fdd6a2da76549a0dfc5f9ff1b692, type: 2}
+  - {fileID: 2100000, guid: 1f830811c94f7f2409c9b39240aedcf5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -996,7 +1028,7 @@ GameObject:
   - component: {fileID: 7974437015794142173}
   - component: {fileID: 8824904008053220136}
   m_Layer: 0
-  m_Name: Neo Man for Mini God Game
+  m_Name: Neo Woman for Mini God Game
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1201,13 +1233,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c16293aed1528d24aad933246e10feee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_DisplayName: Neo man
+  m_DisplayName: Neo woman
   m_DesiredStates:
   - {fileID: 11400000, guid: 53dc65a468340dd458f231254029ab52, type: 2}
   - {fileID: 11400000, guid: ecc69f49e6bf0de4aa6a4d2cd85c971b, type: 2}
   - {fileID: 11400000, guid: ef3549760720a984e9098abc3d3bfb11, type: 2}
-  - {fileID: 11400000, guid: 948d94a14ea7edc4799acdafce3e2df1, type: 2}
   - {fileID: 11400000, guid: dafe8a104efbb6b4c9db8348013f854c, type: 2}
+  - {fileID: 11400000, guid: 90d7fc55a0f71514a873361a8ed060fe, type: 2}
+  - {fileID: 11400000, guid: 948d94a14ea7edc4799acdafce3e2df1, type: 2}
   m_TimeBetweenUpdates: 0.5
   m_Stats: []
   m_StatsInfluencers: []

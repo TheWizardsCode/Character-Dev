@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1494473663186942997}
   - component: {fileID: 1494473663186942996}
   - component: {fileID: 1494473663186942992}
+  - component: {fileID: 2162832554504584954}
   m_Layer: 0
   m_Name: Home
   m_TagString: Untagged
@@ -117,3 +118,28 @@ MonoBehaviour:
   m_ObjectInfluences: []
   m_Duration: 60
   m_Cooldown: 30
+--- !u!114 &2162832554504584954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1494473663186943003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66f048bfe15920a4e9328734b8239ff0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Type: {fileID: 11400000, guid: 94b9a4d508a7bc245a9928924a168b96, type: 2}
+  m_InteractionNameFromActorsPerspective: Make Babies
+  m_MaxInteractors: 2
+  m_CharacterInfluences:
+  - statTemplate: {fileID: 11400000, guid: e7d5ac7f90040d04b892ec7dda97749d, type: 2}
+    maxChange: 20
+  - statTemplate: {fileID: 11400000, guid: 2f5d19bc19f76514ea83b23aa9d7d7a1, type: 2}
+    maxChange: 5
+  m_IsRepeating: 0
+  m_DestroyOnUse: 0
+  m_ObjectInfluences: []
+  m_Duration: 90
+  m_Cooldown: 480

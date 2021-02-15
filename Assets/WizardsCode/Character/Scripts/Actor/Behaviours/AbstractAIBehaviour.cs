@@ -32,6 +32,7 @@ namespace WizardsCode.Character
             "the actions associated with this behaviour, e.g. if they are unable to reach the chosen interactable.")]
         float m_AbortDuration = 30;
         
+        [Header("Conditions")]
         [SerializeField, Tooltip("The required stats to enable this behaviour. Here you should set minimum, maximum or approximate values for stats that are needed for this behaviour to fire. For example, buying items is only possible if the actor has cash.")]
         RequiredStat[] m_RequiredStats = default;
         [SerializeField, Tooltip("The set of character stats and the influence to apply to them when a character chooses this behaviour AND the behaviour does not require an interactable (influences come from the interactable if one is requried).")]
@@ -368,7 +369,7 @@ namespace WizardsCode.Character
         public StatSO statTemplate;
         [SerializeField, Tooltip("The object for this stats value, for example, greater than, less than or approximatly equal to.")]
         public Objective objective;
-        [SerializeField, Tooltip("The value required for this stat (used in conjunction with the objective). Note that only normalized value and value are paired, so changing one will change the other as well.")]
+        [SerializeField, Tooltip("The value required for this stat (used in conjunction with the objective).")]
         float m_Value;
 
         public float Value
