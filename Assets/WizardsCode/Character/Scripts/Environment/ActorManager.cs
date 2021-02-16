@@ -15,9 +15,7 @@ namespace WizardsCode.Character.WorldState
     {
         List<Spawner> m_Spawners = new List<Spawner>();
 
-        List<Brain> m_CachedBrains = new List<Brain>();
-        private float m_NextSpawnedItemsCacheUpdateTime;
-        private List<Brain> m_SpawnedBrainsCache = new List<Brain>();
+        private List<Brain> m_ActiveBrains = new List<Brain>();
 
         /// <summary>
         /// Get a count of the currently tracked active brains in the world.
@@ -29,7 +27,24 @@ namespace WizardsCode.Character.WorldState
 
         public List<Brain> ActiveBrains
         {
-            get { return m_SpawnedBrainsCache; }
+            get { return m_ActiveBrains; }
+        }
+
+        public void RegisterBrain(Brain brain)
+        {
+            if (m_ActiveBrains.Contains(brain))
+            {
+                Debug.LogWarning("Attempted to register a brain that is already registered, ignoring: " + brain);
+            }
+            else
+            {
+                m_ActiveBrains.Add(brain);
+            }
+        }
+
+        public bool DeregisterBrain(Brain brain)
+        {
+            return m_ActiveBrains.Remove(brain);
         }
 
         internal List<Brain> GetAllActorsWith(StatSO statTemplate)
@@ -65,34 +80,6 @@ namespace WizardsCode.Character.WorldState
             get { return m_Spawners; }
         }
 
-        /// <summary>
-        /// Get all brains spawned into this world.
-        /// </summary>
-        public List<Brain> SpawnedBrains
-        {
-            get
-            {
-                if (Time.realtimeSinceStartup < m_NextSpawnedItemsCacheUpdateTime) return m_SpawnedBrainsCache;
-
-                m_NextSpawnedItemsCacheUpdateTime = Time.realtimeSinceStartup + 5;
-                m_SpawnedBrainsCache.Clear();
-
-                Brain brain;
-                for (int i = 0; i < Spawners.Count; i++)
-                {
-                    for (int idx = 0; idx < Spawners[i].Spawned.Count; idx ++)
-                    {
-                        brain = Spawners[i].Spawned[idx].GetComponent<Brain>();
-                        if (brain != null)
-                        {
-                            m_SpawnedBrainsCache.Add(brain);
-                        }
-                    }
-                }
-
-                return m_SpawnedBrainsCache;
-            }
-        }
 
         /// <summary>
         /// Get a dictionary of behaviour names (key) and count of brains carrying out
@@ -106,11 +93,11 @@ namespace WizardsCode.Character.WorldState
                 Dictionary<string, int> result = new Dictionary<string, int>();
                 string key;
 
-                for (int i = 0; i < SpawnedBrains.Count; i++)
+                for (int i = 0; i < ActiveBrains.Count; i++)
                 {
-                    if (SpawnedBrains[i].CurrentBehaviour != null)
+                    if (ActiveBrains[i].ActiveBlockingBehaviour != null)
                     {
-                        key = SpawnedBrains[i].CurrentBehaviour.DisplayName;
+                        key = ActiveBrains[i].ActiveBlockingBehaviour.DisplayName;
                         if (result.ContainsKey(key))
                         {
                             result[key] = result[key] + 1;

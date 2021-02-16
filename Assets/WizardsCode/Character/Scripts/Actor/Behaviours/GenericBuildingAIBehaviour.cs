@@ -29,7 +29,7 @@ namespace WizardsCode.Character
             memory.interactionName = DisplayName;
             memory.isGood = true;
 
-            brain.Memory.AddMemory(memory);
+            Brain.Memory.AddMemory(memory);
         }
     }
 }

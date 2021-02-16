@@ -251,7 +251,7 @@ namespace WizardsCode.Character
 
         private void StartCharacterInteraction(Brain brain)
         {
-            GenericInteractionAIBehaviour behaviour = (GenericInteractionAIBehaviour)brain.CurrentBehaviour;
+            GenericInteractionAIBehaviour behaviour = (GenericInteractionAIBehaviour)brain.ActiveBlockingBehaviour;
             behaviour.StartBehaviour(this);
 
             for (int i = 0; i < CharacterInfluences.Length; i++)

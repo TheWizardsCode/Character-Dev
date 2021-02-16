@@ -125,23 +125,44 @@ namespace WizardsCode.Stats {
         private void UpdateDesiredStatesList()
         {
             List<StatInfluencerSO> influencers = new List<StatInfluencerSO>();
+            List<AbstractAIBehaviour> behaviours = new List<AbstractAIBehaviour>();
+            bool isSatisfied;
             UnsatisfiedDesiredStates.Clear();
 
             for (int i = 0; i < DesiredStates.Length; i++)
             {
+                behaviours = DesiredStates[i].SatisfiedBehaviours;
                 if (DesiredStates[i].IsSatisfiedFor(this))
                 {
                     influencers = DesiredStates[i].InfluencersToApplyWhenInDesiredState;
+                    isSatisfied = true;
                 }
                 else
                 {
                     influencers = DesiredStates[i].InfluencersToApplyWhenNotInDesiredState;
                     UnsatisfiedDesiredStates.Add(DesiredStates[i]);
+                    isSatisfied = false;
                 }
 
                 for (int idx = 0; idx < influencers.Count; idx++)
                 {
                     TryAddInfluencer(ScriptableObject.Instantiate(influencers[idx]));
+                }
+
+                Transform behaviourT;
+                for (int idx = 0; idx < behaviours.Count; idx++)
+                {
+                    string behaviourName = behaviours[idx].DisplayName + " behaviours from desired state " + DesiredStates[i].name;
+                    behaviourT = transform.Find(behaviourName);
+                    if (isSatisfied && behaviourT == null)
+                    {   
+                        Instantiate(behaviours[idx].gameObject, transform).name = behaviourName;
+                        //TODO register the behaviours with the statstracker
+                    } else if (!isSatisfied && behaviourT != null)
+                    {
+                        Destroy(behaviourT.gameObject);
+                        //TODO deregister the behaviours with the stats tracker
+                    }
                 }
             }
         }

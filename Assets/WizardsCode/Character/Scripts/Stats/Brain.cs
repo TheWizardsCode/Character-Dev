@@ -5,6 +5,7 @@ using System.Text;
 using UnityEngine;
 using WizardsCode.Character;
 using WizardsCode.Character.Stats;
+using WizardsCode.Character.WorldState;
 using static WizardsCode.Character.StateSO;
 
 namespace WizardsCode.Stats {
@@ -18,10 +19,16 @@ namespace WizardsCode.Stats {
 #endif
     {
         ActorController m_Controller;
-        AbstractAIBehaviour[] m_Behaviours = default;
+        List<AbstractAIBehaviour> m_AvailableBehaviours = new List<AbstractAIBehaviour>();
+        List<AbstractAIBehaviour> m_ActiveNonBlockingBehaviours = new List<AbstractAIBehaviour>();
         private Interactable m_TargetInteractable;
 
-        public AbstractAIBehaviour CurrentBehaviour { get; set; }
+        public AbstractAIBehaviour ActiveBlockingBehaviour { get; set; }
+
+        public List<AbstractAIBehaviour> ActiveNonBlockingBehaviours
+        {
+            get { return m_ActiveNonBlockingBehaviours; }
+        }
 
         public MemoryController Memory { get; private set; }
 
@@ -52,7 +59,37 @@ namespace WizardsCode.Stats {
         {
             m_Controller = GetComponent<ActorController>();
             Memory = GetComponentInChildren<MemoryController>();
-            m_Behaviours = GetComponentsInChildren<AbstractAIBehaviour>();
+        }
+
+        private void OnEnable()
+        {
+            ActorManager.Instance.RegisterBrain(this);
+        }
+
+        private void OnDisable()
+        {
+            ActorManager.Instance.DeregisterBrain(this);
+        }
+
+        /// <summary>
+        /// Register a behaviour as being active for this brain. All registered behaviours will
+        /// be evaluated for execution according to the brains decision making cycle.
+        /// </summary>
+        /// <param name="behaviour">The behaviour to register.</param>
+        public void RegisterBehaviour(AbstractAIBehaviour behaviour)
+        {
+            m_AvailableBehaviours.Add(behaviour);
+        }
+
+        /// <summary>
+        /// Deegister a behaviour from the active list for this brain. Only registered behaviours will
+        /// be evaluated for execution according to the brains decision making cycle.
+        /// </summary>
+        /// <param name="behaviour">The behaviour to deregister.</param>
+        /// <returns>True if removed from the active list of behaviours.</returns>
+        public bool DeregisterBehaviour(AbstractAIBehaviour behaviour)
+        {
+            return m_AvailableBehaviours.Remove(behaviour);
         }
 
         /// <summary>
@@ -90,10 +127,10 @@ namespace WizardsCode.Stats {
         /// </summary>
         private void UpdateActiveBehaviour()
         {
-            if (CurrentBehaviour != null && CurrentBehaviour.IsExecuting && !CurrentBehaviour.IsInteruptable) return;
+            if (ActiveBlockingBehaviour != null && ActiveBlockingBehaviour.IsExecuting && !ActiveBlockingBehaviour.IsInteruptable) return;
 
             bool isInterupting = false;
-            if (CurrentBehaviour != null && CurrentBehaviour.IsExecuting)
+            if (ActiveBlockingBehaviour != null && ActiveBlockingBehaviour.IsExecuting)
             {
                 isInterupting = true;
             }
@@ -103,41 +140,58 @@ namespace WizardsCode.Stats {
             float highestWeight = float.MinValue;
             float currentWeight = 0;
 
-            for (int i = 0; i < m_Behaviours.Length; i++)
+            for (int i = 0; i < m_AvailableBehaviours.Count; i++)
             {
                 log.Append("Considering: ");
-                log.AppendLine(m_Behaviours[i].DisplayName);
-                if (m_Behaviours[i].IsAvailable)
-                {
-                    log.AppendLine(m_Behaviours[i].reasoning.ToString());
+                log.AppendLine(m_AvailableBehaviours[i].DisplayName);
 
-                    currentWeight = m_Behaviours[i].Weight(this);
+                if (m_AvailableBehaviours[i].IsExecuting)
+                {
+                    log.AppendLine("Already executing no need to start it again.");
+                    continue;
+                }
+
+                if (m_AvailableBehaviours[i].IsAvailable)
+                {
+                    log.AppendLine(m_AvailableBehaviours[i].reasoning.ToString());
+
+                    currentWeight = m_AvailableBehaviours[i].Weight(this);
                     if (currentWeight > highestWeight)
                     {
-                        candidateBehaviour = m_Behaviours[i];
+                        candidateBehaviour = m_AvailableBehaviours[i];
                         highestWeight = currentWeight;
                     }
                 }
-                log.AppendLine(m_Behaviours[i].reasoning.ToString());
+                log.AppendLine(m_AvailableBehaviours[i].reasoning.ToString());
             }
 
             if (candidateBehaviour == null) return;
 
-            if (isInterupting && candidateBehaviour != CurrentBehaviour)
+            if (isInterupting && candidateBehaviour != ActiveBlockingBehaviour)
             {
-                CurrentBehaviour.FinishBehaviour();
+                ActiveBlockingBehaviour.FinishBehaviour();
             }
 
-            CurrentBehaviour = candidateBehaviour;
-            CurrentBehaviour.EndTime = 0;
-            CurrentBehaviour.IsExecuting = true;
-            if (CurrentBehaviour is GenericInteractionAIBehaviour)
+            if (candidateBehaviour.IsBlocking)
             {
-                TargetInteractable = ((GenericInteractionAIBehaviour)CurrentBehaviour).CurrentInteractableTarget;
+                ActiveBlockingBehaviour = candidateBehaviour;
+                ActiveBlockingBehaviour.EndTime = 0;
+                ActiveBlockingBehaviour.IsExecuting = true;
+                if (ActiveBlockingBehaviour is GenericInteractionAIBehaviour)
+                {
+                    TargetInteractable = ((GenericInteractionAIBehaviour)ActiveBlockingBehaviour).CurrentInteractableTarget;
+                }
+                else
+                {
+                    TargetInteractable = null;
+                    ActiveBlockingBehaviour.StartBehaviour(ActiveBlockingBehaviour.MaximumExecutionTime);
+                }
             } else
             {
-                TargetInteractable = null;
-                CurrentBehaviour.StartBehaviour(CurrentBehaviour.AbortDuration);
+                candidateBehaviour.EndTime = 0;
+                candidateBehaviour.IsExecuting = true;
+                candidateBehaviour.StartBehaviour(ActiveBlockingBehaviour.MaximumExecutionTime);
+                ActiveNonBlockingBehaviours.Add(candidateBehaviour);
             }
 
             log.Insert(0, "\n");
@@ -149,7 +203,7 @@ namespace WizardsCode.Stats {
             }
             else
             {
-                log.Insert(0, CurrentBehaviour.DisplayName);
+                log.Insert(0, candidateBehaviour.DisplayName);
             }
             log.Insert(0, " decided to ");
             log.Insert(0, DisplayName);
@@ -262,11 +316,11 @@ namespace WizardsCode.Stats {
                 msg += "\nLong term memories: " + Memory.GetLongTermMemories().Length;
             }
 
-            if (CurrentBehaviour != null)
+            if (ActiveBlockingBehaviour != null)
             {
-                float timeLeft = Mathf.Clamp(CurrentBehaviour.EndTime - Time.timeSinceLevelLoad, 0, float.MaxValue);
+                float timeLeft = Mathf.Clamp(ActiveBlockingBehaviour.EndTime - Time.timeSinceLevelLoad, 0, float.MaxValue);
                 msg += "\n\nCurrent Behaviour";
-                msg += "\n" + CurrentBehaviour + " (time to abort / end " + timeLeft.ToString("0.0") + ")";
+                msg += "\n" + ActiveBlockingBehaviour + " (time to abort / end " + timeLeft.ToString("0.0") + ")";
                 if (TargetInteractable != null)
                 {
                     msg += "\nTarget interaction: " + TargetInteractable.InteractionName + " at " + TargetInteractable.name;

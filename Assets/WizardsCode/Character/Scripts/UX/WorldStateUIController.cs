@@ -27,7 +27,7 @@ namespace WizardsCode.Character
 
                 StringBuilder stateSummary = new StringBuilder();
                 stateSummary.Append("Active Brains: ");
-                stateSummary.Append(ActorManager.Instance.SpawnedBrains.Count);
+                stateSummary.Append(ActorManager.Instance.ActiveBrains.Count);
                 for (int i = 0; i < ActorManager.Instance.ActiveBehaviours.Count; i++) {
                     stateSummary.Append(" ");
                     stateSummary.Append(ActorManager.Instance.ActiveBehaviours.ElementAt(i).Key);

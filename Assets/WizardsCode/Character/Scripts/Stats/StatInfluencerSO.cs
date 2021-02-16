@@ -166,7 +166,7 @@ namespace WizardsCode.Stats
         /// Apply a change from a stat influencer.
         /// </summary>
         /// 
-        /// <param name="statsTracker">The brain managing the stats to be changed.</param>
+        /// <param name="statsTracker">The stats tracker managing the stats to be changed.</param>
         internal void ChangeStat(StatsTracker statsTracker)
         {
             StatSO statToUpdate = statsTracker.GetOrCreateStat(stat);

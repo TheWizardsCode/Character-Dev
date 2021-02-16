@@ -140,13 +140,13 @@ namespace WizardsCode.Character
             reasoning.Append(" might be a good place to ");
             reasoning.AppendLine(interactable.InteractionName);
 
-            if (!interactable.HasSpaceFor(brain))
+            if (!interactable.HasSpaceFor(Brain))
             {
                 reasoning.AppendLine("Looks like it is full.");
                 return false;
             }
 
-            if (interactable.IsOnCooldownFor(brain))
+            if (interactable.IsOnCooldownFor(Brain))
             {
                 reasoning.AppendLine("I Went there recently, let's try somewhere different.");
                 return false;
@@ -185,7 +185,7 @@ namespace WizardsCode.Character
                 currentInteractables = hitColliders[i].GetComponentsInParent<Interactable>();
                 for (int idx = 0; idx < currentInteractables.Length; idx++)
                 {
-                    if (currentInteractables[idx].HasSpaceFor(brain))
+                    if (currentInteractables[idx].HasSpaceFor(Brain))
                     {
                         nearbyInteractablesCache.Add(currentInteractables[idx]);
                     }

@@ -19,20 +19,33 @@ namespace WizardsCode.Character
         string m_Description;
         [SerializeField, Tooltip("The name to use in the User Interface.")]
         string m_DisplayName = "Unnamed AI Behaviour";
+
+        [Header("Controls")]
+        [SerializeField, Tooltip("How frequently, in seconds, this behaviour should be tested for activation."), Range(0.01f, 5f)]
+        float m_RetryFrequency = 2;
+        [SerializeField, Tooltip("Is this behaviour interuptable. That is if the actor decides something else is more important can this behaviour be finished early.")]
+        bool m_isInteruptable = false;
+        [SerializeField, Tooltip("Time until execution of this behaviour is ended. " +
+            "For behaviours that act on the self rather than another interaction this is the duration of the behaviour." +
+            "For behaviours that involve an interaction this is also used as a safeguard in case something prevents the actor from completing " +
+            "the actions associated with this behaviour, e.g. if they are unable to reach the chosen interactable.")]
+        float m_MaximumExecutionTime = 30;
+        [SerializeField, Tooltip("If a behaviour is blocking it means no other blocking behaviour can be carried out at the same time. Most behaviours are blocking, however, some special behaviours, such as being preganant, do not entirely block other behaviours.")]
+        bool m_IsBlocking = true;
+
+        [Header("Actions")]
         [SerializeField, Tooltip("An actor cue to send to the actor upon the start of this interaction.")]
         ActorCue m_OnStartCue;
         [SerializeField, Tooltip("An actor cue to send to the actor upon the ending of this interaction.")]
         ActorCue m_OnEndCue;
-        [SerializeField, Tooltip("How frequently, in seconds, this behaviour should be tested for activation."), Range(0.01f,5f)]
-        float m_RetryFrequency = 2;
-        [SerializeField, Tooltip("Is this behaviour interuptable. That is if the actor decides something else is more important can this behaviour be finished early.")]
-        bool m_isInteruptable = false;
-        [SerializeField, Tooltip("Time until execution of this behaviour is aborted. " +
-            "This is used as a safeguard in case something prevents the actor from completing " +
-            "the actions associated with this behaviour, e.g. if they are unable to reach the chosen interactable.")]
-        float m_AbortDuration = 30;
-        
+
         [Header("Conditions")]
+        [SerializeField, Tooltip("The minimum weight (from 0 to 1) that this behaviour can have. " +
+            "This will default to 0, but if you want to force a behaviour to be firest whenever it " +
+            "exists then set to 1. Of course you can also set it to any value in between to increase " +
+            "the likelyhood of this actor enacting this behaviour. Note that the minimum weight " +
+            "only has an effect if all other conditions are met.")]
+        float m_MinimumWeight = 0;
         [SerializeField, Tooltip("The required stats to enable this behaviour. Here you should set minimum, maximum or approximate values for stats that are needed for this behaviour to fire. For example, buying items is only possible if the actor has cash.")]
         RequiredStat[] m_RequiredStats = default;
         [SerializeField, Tooltip("The set of character stats and the influence to apply to them when a character chooses this behaviour AND the behaviour does not require an interactable (influences come from the interactable if one is requried).")]
@@ -42,9 +55,18 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("The conitions required in the worldstate for this behaviour to be valid.")]
         WorldStateSO[] m_RequiredWorldState;
 
-        public float AbortDuration
+        public float MaximumExecutionTime
         {
-            get { return m_AbortDuration; }
+            get { return m_MaximumExecutionTime; }
+        }
+
+        /// <summary>
+        /// Is this a blocking behaviour? There can only be one blocking behaviour active at any one time.
+        /// However, there can be multipl non-blocking behaviours active at once.
+        /// </summary>
+        public bool IsBlocking
+        {
+            get { return m_IsBlocking; }
         }
 
         public bool IsInteruptable
@@ -57,7 +79,7 @@ namespace WizardsCode.Character
             get { return m_DesiredStateImpacts; }
         }
 
-        internal Brain brain;
+        Brain m_Brain;
         internal ActorController controller;
         private bool m_IsExecuting = false;
         private float m_NextRetryTime;
@@ -65,7 +87,21 @@ namespace WizardsCode.Character
         internal StringBuilder reasoning = new StringBuilder();
 
 
-        internal MemoryController Memory { get { return brain.Memory; } }
+        internal MemoryController Memory { get { return Brain.Memory; } }
+
+        /// <summary>
+        /// Get the brain this behaviour is being managed by.
+        /// </summary>
+        internal Brain Brain
+        {
+            get
+            {
+                if (m_Brain == null) {
+                    m_Brain = GetComponentInParent<Brain>();
+                }
+                return m_Brain;
+            }
+        }
 
         public string DisplayName
         {
@@ -140,7 +176,7 @@ namespace WizardsCode.Character
         {
             if (m_RequiredStats.Length == 0)
             {
-                reasoning.Append(brain.DisplayName);
+                reasoning.Append(Brain.DisplayName);
                 reasoning.Append(" has no required stats for ");
                 reasoning.Append(DisplayName);
                 reasoning.AppendLine(".");
@@ -156,7 +192,7 @@ namespace WizardsCode.Character
                 switch (m_RequiredStats[i].objective)
                 {
                     case Objective.LessThan:
-                        thisRequirementMet = brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).Value < m_RequiredStats[i].Value;
+                        thisRequirementMet = Brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).Value < m_RequiredStats[i].Value;
                         if (thisRequirementMet) {
                             reasoning.Append(" is in the right range since it is less than ");
                         } 
@@ -166,7 +202,7 @@ namespace WizardsCode.Character
                         }
                         break;
                     case Objective.Approximately:
-                        thisRequirementMet = Mathf.Approximately(brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).Value, m_RequiredStats[i].Value);
+                        thisRequirementMet = Mathf.Approximately(Brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).Value, m_RequiredStats[i].Value);
                         if (thisRequirementMet)
                         {
                             reasoning.Append(" is in the right range since it is approximately equal to ");
@@ -177,7 +213,7 @@ namespace WizardsCode.Character
                         }
                         break;
                     case Objective.GreaterThan:
-                        thisRequirementMet = brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).Value > m_RequiredStats[i].Value;
+                        thisRequirementMet = Brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).Value > m_RequiredStats[i].Value;
                         if (thisRequirementMet)
                         {
                             reasoning.Append(" is in the right range since it is greater than ");
@@ -209,7 +245,7 @@ namespace WizardsCode.Character
             {
                 if (value && !IsExecuting)
                 {
-                    EndTime = Time.timeSinceLevelLoad + m_AbortDuration;
+                    EndTime = Time.timeSinceLevelLoad + m_MaximumExecutionTime;
                 }
 
                 m_IsExecuting = value;
@@ -222,8 +258,7 @@ namespace WizardsCode.Character
         /// </summary>
         protected virtual void Init()
         {
-            brain = GetComponentInParent<Brain>();
-            if (brain == null)
+            if (Brain == null)
             {
                 if (DesiredStateImpacts.Length > 0)
                 {
@@ -241,22 +276,34 @@ namespace WizardsCode.Character
         internal virtual void StartBehaviour(float duration)
         {
             EndTime = Time.timeSinceLevelLoad + duration;
+            AddCharacterInfluencers(duration);
 
+            if (m_OnStartCue != null)
+            {
+                m_OnStartCue.Prompt(Brain.Actor);
+            }
+        }
+
+        /// <summary>
+        /// Add all the character influencers that operate over time from this behaviour to the stats tracker.
+        /// </summary>
+        /// <param name="duration">The time over which the influencers should be applied</param>
+        private void AddCharacterInfluencers(float duration)
+        {
             for (int i = 0; i < m_CharacterInfluences.Length; i++)
             {
-                StatInfluencerSO influencer = ScriptableObject.CreateInstance<StatInfluencerSO>();
-                influencer.InteractionName = m_CharacterInfluences[i].statTemplate.name;
-                influencer.Trigger = null;
-                influencer.stat = m_CharacterInfluences[i].statTemplate;
-                influencer.maxChange = m_CharacterInfluences[i].maxChange;
-                influencer.duration = duration;
-                influencer.CooldownDuration = 0;
+                if (!m_CharacterInfluences[i].applyOnCompletion)
+                {
+                    StatInfluencerSO influencer = ScriptableObject.CreateInstance<StatInfluencerSO>();
+                    influencer.InteractionName = m_CharacterInfluences[i].statTemplate.name;
+                    influencer.Trigger = null;
+                    influencer.stat = m_CharacterInfluences[i].statTemplate;
+                    influencer.maxChange = m_CharacterInfluences[i].maxChange;
+                    influencer.duration = duration;
+                    influencer.CooldownDuration = 0;
 
-                brain.TryAddInfluencer(influencer);
-            }
-
-            if (m_OnStartCue != null) {
-                m_OnStartCue.Prompt(brain.Actor);
+                    Brain.TryAddInfluencer(influencer);
+                }
             }
         }
 
@@ -287,6 +334,7 @@ namespace WizardsCode.Character
                 }
             }
             weight /= brain.UnsatisfiedDesiredStates.Count;
+            weight = Mathf.Clamp(weight, m_MinimumWeight, 1);
 
             reasoning.Append("Total weight for this behaviour is ");
             reasoning.AppendLine(weight.ToString("0.000"));
@@ -312,9 +360,15 @@ namespace WizardsCode.Character
             }
         }
 
-        
+        private void OnEnable()
+        {
+            Brain.RegisterBehaviour(this);
+        }
 
-        
+        private void OnDisable()
+        {
+            Brain.DeregisterBehaviour(this);
+        }
 
         /// <summary>
         /// Does the interactable have the desired impact to satisfy this behaviour.
@@ -339,9 +393,19 @@ namespace WizardsCode.Character
             IsExecuting = false;
             EndTime = 0;
 
+            for (int i = 0; i < m_CharacterInfluences.Length; i++)
+            {
+                if (m_CharacterInfluences[i].applyOnCompletion)
+                {
+                    StatSO stat = Brain.GetOrCreateStat(m_CharacterInfluences[i].statTemplate);
+                    stat.Value += m_CharacterInfluences[i].maxChange;
+                }
+
+            }
+
             if (m_OnEndCue != null)
             {
-                m_OnEndCue.Prompt(brain.Actor);
+                m_OnEndCue.Prompt(Brain.Actor);
             }
         }
 
@@ -412,5 +476,7 @@ namespace WizardsCode.Character
         public StatSO statTemplate;
         [SerializeField, Tooltip("The maximum amount of change this influencer will impart upon the trait, to the limit of the stats allowable value.")]
         public float maxChange;
+        [SerializeField, Tooltip("Should the influence be applied gradually over the duration of the behaviour or upon completion of the behaviour?")]
+        public bool applyOnCompletion;
     }
 }

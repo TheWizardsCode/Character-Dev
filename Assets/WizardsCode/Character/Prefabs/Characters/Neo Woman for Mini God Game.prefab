@@ -80,11 +80,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Description: If the actor is hungry then gather berries from bushes to eat.
   m_DisplayName: Gather Berries
-  m_OnStartCue: {fileID: 0}
-  m_OnEndCue: {fileID: 0}
   m_RetryFrequency: 2
   m_isInteruptable: 0
   m_AbortDuration: 30
+  m_IsBlocking: 1
+  m_OnStartCue: {fileID: 0}
+  m_OnEndCue: {fileID: 0}
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
     objective: 2
@@ -111,11 +112,12 @@ MonoBehaviour:
     one then they will chop it down. This uses a fair amount of energy but wood is
     vital to survival.
   m_DisplayName: Fell Tree
-  m_OnStartCue: {fileID: 0}
-  m_OnEndCue: {fileID: 0}
   m_RetryFrequency: 2
   m_isInteruptable: 0
   m_AbortDuration: 30
+  m_IsBlocking: 1
+  m_OnStartCue: {fileID: 0}
+  m_OnEndCue: {fileID: 0}
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
     objective: 2
@@ -142,11 +144,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Description: When two actors love one another they may try to make babies.
   m_DisplayName: Make Babies
-  m_OnStartCue: {fileID: 0}
-  m_OnEndCue: {fileID: 0}
   m_RetryFrequency: 2
   m_isInteruptable: 0
   m_AbortDuration: 30
+  m_IsBlocking: 1
+  m_OnStartCue: {fileID: 0}
+  m_OnEndCue: {fileID: 0}
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: e7d5ac7f90040d04b892ec7dda97749d, type: 2}
     objective: 2
@@ -204,11 +207,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Description: Build a home for oneself and other actors.
   m_DisplayName: Build a Home
-  m_OnStartCue: {fileID: 0}
-  m_OnEndCue: {fileID: 0}
   m_RetryFrequency: 2
   m_isInteruptable: 0
   m_AbortDuration: 30
+  m_IsBlocking: 1
+  m_OnStartCue: {fileID: 0}
+  m_OnEndCue: {fileID: 0}
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
     objective: 2
