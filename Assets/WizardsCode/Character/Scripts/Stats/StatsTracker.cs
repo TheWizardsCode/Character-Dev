@@ -63,6 +63,15 @@ namespace WizardsCode.Stats {
             get { return m_UnsatisfiedDesiredStatesCache; }
             internal set { m_UnsatisfiedDesiredStatesCache = value; }
         }
+        /// <summary>
+        /// Tests to see if this stats tracker satisfies the requirements of a state.
+        /// </summary>
+        /// <param name="stateTemplate">The state to test against.</param>
+        /// <returns>True if the requirements are satisfied, otherwise false.</returns>
+        internal bool SatisfiesState(StateSO stateTemplate)
+        {
+            return !UnsatisfiedDesiredStates.Contains(stateTemplate);
+        }
 
         internal virtual void Update()
         {
@@ -190,6 +199,16 @@ namespace WizardsCode.Stats {
                 }
             }
             return null;
+        }
+
+        /// <summary>
+        /// Test if the stat tracker is currently tracking the stat provided in the template.
+        /// </summary>
+        /// <param name="statTemplate">The stat to test for</param>
+        /// <returns>True if the stat is currently being tracked.</returns>
+        internal bool HasStat(StatSO statTemplate)
+        {
+            return GetStat(statTemplate) != null;
         }
 
         /// <summary>

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using WizardsCode.Utility;
 using WizardsCode.Stats;
+using System;
 
 namespace WizardsCode.Character.WorldState
 {
@@ -23,7 +24,26 @@ namespace WizardsCode.Character.WorldState
         /// </summary>
         public int ActiveBrainsCount
         {
-            get { return m_SpawnedBrainsCache.Count; }
+            get { return ActiveBrains.Count; }
+        }
+
+        public List<Brain> ActiveBrains
+        {
+            get { return m_SpawnedBrainsCache; }
+        }
+
+        internal List<Brain> GetAllActorsWith(StatSO statTemplate)
+        {
+            //TODO cache the results of this filter
+            List<Brain> results = new List<Brain>();
+            for (int i = 0; i < ActiveBrains.Count; i++)
+            {
+                if (ActiveBrains[i].HasStat(statTemplate))
+                {
+                    results.Add(ActiveBrains[i]);
+                }
+            }
+            return results;
         }
 
         public void RegisterSpawner(Spawner spawner)
