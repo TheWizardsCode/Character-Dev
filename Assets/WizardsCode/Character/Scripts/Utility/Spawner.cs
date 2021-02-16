@@ -5,17 +5,17 @@ using UnityEngine.AI;
 using WizardsCode.Character;
 using WizardsCode.Character.WorldState;
 
-namespace WizardsCode.Character
+namespace WizardsCode.Utility
 {
     /// <summary>
     /// A really simple spawner that will create a number of a given prefab within a defined area.
     /// </summary>
     public class Spawner : MonoBehaviour
     {
-        [SerializeField, Tooltip("The prefab to spawn.")]
-        SpawnedPrefab[] m_SpawnedPrefabs;
-        [SerializeField, Tooltip("The number of the prefab to create.")]
-        int m_Number = 10;
+        [SerializeField, Tooltip("The rules this spawner should obey when spawning.")]
+        SpawnerDefinition m_SpawnDefinition;
+        [SerializeField, Tooltip("The number of spawns to place, note that depending on the Spawn Definition each spawn may be more than one prefab.")]
+        int m_NumberOfSpawns = 10;
         [SerializeField, Tooltip("The radius within which to spawn")]
         float m_Radius = 10;
         [SerializeField, Tooltip("Should the character only be placed on a NavMesh?")]
@@ -37,28 +37,17 @@ namespace WizardsCode.Character
         {
             ActorManager.Instance.RegisterSpawner(this);
 
-            for (int i = 0; i < m_Number; i++)
+            for (int i = 0; i < m_NumberOfSpawns; i++)
             {
                 Vector3? position = GetPosition();
+
                 if (position != null)
                 {
-                    Quaternion rotation = Quaternion.Euler(new Vector3(0, Random.Range(0, 359.9f), 0));
-
-                    for (int prefabIdx = 0; prefabIdx < m_SpawnedPrefabs.Length; prefabIdx++)
+                    GameObject[] spawned = m_SpawnDefinition.InstantiatePrefabs((Vector3)position);
+                    for (int idx = 0; idx < spawned.Length; idx++)
                     {
-                        SpawnedPrefab spawnedPrefab = m_SpawnedPrefabs[prefabIdx];
-                        if (spawnedPrefab.probability >= Random.value)
-                        {
-                            GameObject go = Instantiate(spawnedPrefab.prefab, (Vector3)position, rotation);
-                            go.name += " " + i;
-
-                            m_Spawned.Add(go.transform);
-
-                            if (spawnedPrefab.stopSpawning)
-                            {
-                                break;
-                            }
-                        }
+                        spawned[idx].name += " " + idx;
+                        m_Spawned.Add(spawned[idx].transform);
                     }
                 }
             }

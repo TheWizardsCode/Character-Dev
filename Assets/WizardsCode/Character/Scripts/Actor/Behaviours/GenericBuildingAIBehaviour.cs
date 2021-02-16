@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using WizardsCode.Character;
+using WizardsCode.Utility;
 
 namespace WizardsCode.Character
 {
@@ -17,13 +18,13 @@ namespace WizardsCode.Character
     {
         [Header("Built Object")]
         [SerializeField, Tooltip("The prefab to spawn when the build is complete.")]
-        GameObject m_BuiltPrefab;
+        SpawnerDefinition m_BuiltPrefab;
 
         internal override void FinishBehaviour()
         {
             base.FinishBehaviour();
 
-            GameObject go = Instantiate(m_BuiltPrefab, transform.position, Quaternion.identity);
+            m_BuiltPrefab.InstantiatePrefabs(transform.position);
             MemorySO memory = ScriptableObject.CreateInstance<MemorySO>();
             memory.about = this.gameObject;
             memory.interactionName = DisplayName;

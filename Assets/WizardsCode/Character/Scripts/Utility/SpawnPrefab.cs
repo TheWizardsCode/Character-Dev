@@ -2,13 +2,13 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace WizardsCode.Character
+namespace WizardsCode.Utility
 {
     /// <summary>
     /// A representation of an object that can be spawned by the spawner.
     /// </summary>
-    [CreateAssetMenu(fileName = "Spawned Prefab Config", menuName = "Wizards Code/Spawned Prefab", order = 1)]
-    public class SpawnedPrefab : ScriptableObject
+    [CreateAssetMenu(fileName = "Spawned Prefab Config", menuName = "Wizards Code/Spawner/New Spawned Prefab", order = 1)]
+    public class SpawnPrefab : ScriptableObject
     {
         [SerializeField, Tooltip("The prefab to spawn.")]
         internal GameObject prefab;
