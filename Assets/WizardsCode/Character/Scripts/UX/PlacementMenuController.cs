@@ -24,6 +24,7 @@ namespace WizardsCode.Character.UX
         public RectTransform m_ButtonTemplate;
 
         public Interactable[] m_PossibleInteractables;
+        private Vector3 m_PlacementPosition;
 
         private void Start()
         {
@@ -33,17 +34,17 @@ namespace WizardsCode.Character.UX
 
         private void ShowMenu()
         {
-            Vector3 pos = Input.mousePosition;
-            if (pos.x + m_MenuRect.rect.width > Screen.width)
+            m_PlacementPosition = Input.mousePosition;
+            if (m_PlacementPosition.x + m_MenuRect.rect.width > Screen.width)
             {
-                pos.x -= m_MenuRect.rect.width - 10;
+                m_PlacementPosition.x -= m_MenuRect.rect.width - 10;
             }
-            if (pos.y < m_MenuRect.rect.height)
+            if (m_PlacementPosition.y < m_MenuRect.rect.height)
             {
-                pos.y += m_MenuRect.rect.height + 10;
+                m_PlacementPosition.y += m_MenuRect.rect.height + 10;
             }
 
-            m_MenuRect.position = pos;
+            m_MenuRect.position = m_PlacementPosition;
 
             m_MenuRect.gameObject.SetActive(true);
         }
@@ -84,7 +85,7 @@ namespace WizardsCode.Character.UX
         private void SpawnPrefab(Interactable interactable)
         {
             RaycastHit hit;
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100))
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(m_PlacementPosition), out hit, 100))
             {
                 GameObject go = Instantiate(interactable.gameObject, hit.point, Quaternion.identity);
             }
