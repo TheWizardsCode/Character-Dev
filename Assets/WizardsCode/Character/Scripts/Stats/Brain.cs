@@ -135,25 +135,25 @@ namespace WizardsCode.Stats {
                 isInterupting = true;
             }
 
-            StringBuilder log = new StringBuilder();
+            //StringBuilder log = new StringBuilder();
             AbstractAIBehaviour candidateBehaviour = null;
             float highestWeight = float.MinValue;
             float currentWeight = 0;
 
             for (int i = 0; i < m_AvailableBehaviours.Count; i++)
             {
-                log.Append("Considering: ");
-                log.AppendLine(m_AvailableBehaviours[i].DisplayName);
+                //log.Append("Considering: ");
+                //log.AppendLine(m_AvailableBehaviours[i].DisplayName);
 
                 if (m_AvailableBehaviours[i].IsExecuting)
                 {
-                    log.AppendLine("Already executing no need to start it again.");
+                    //log.AppendLine("Already executing no need to start it again.");
                     continue;
                 }
 
                 if (m_AvailableBehaviours[i].IsAvailable)
                 {
-                    log.AppendLine(m_AvailableBehaviours[i].reasoning.ToString());
+                    //log.AppendLine(m_AvailableBehaviours[i].reasoning.ToString());
 
                     currentWeight = m_AvailableBehaviours[i].Weight(this);
                     if (currentWeight > highestWeight)
@@ -162,7 +162,7 @@ namespace WizardsCode.Stats {
                         highestWeight = currentWeight;
                     }
                 }
-                log.AppendLine(m_AvailableBehaviours[i].reasoning.ToString());
+                //log.AppendLine(m_AvailableBehaviours[i].reasoning.ToString());
             }
 
             if (candidateBehaviour == null) return;
@@ -194,21 +194,21 @@ namespace WizardsCode.Stats {
                 ActiveNonBlockingBehaviours.Add(candidateBehaviour);
             }
 
-            log.Insert(0, "\n");
+            //log.Insert(0, "\n");
             if (TargetInteractable != null)
             {
-                log.Insert(0, TargetInteractable.name);
-                log.Insert(0, " at ");
-                log.Insert(0, TargetInteractable.InteractionName);
+                //log.Insert(0, TargetInteractable.name);
+                //log.Insert(0, " at ");
+                //log.Insert(0, TargetInteractable.InteractionName);
             }
             else
             {
-                log.Insert(0, candidateBehaviour.DisplayName);
+                //log.Insert(0, candidateBehaviour.DisplayName);
             }
-            log.Insert(0, " decided to ");
-            log.Insert(0, DisplayName);
+            //log.Insert(0, " decided to ");
+            //log.Insert(0, DisplayName);
 
-            Log(log.ToString());
+            //Log(log.ToString());
         }
 
         /// <summary>

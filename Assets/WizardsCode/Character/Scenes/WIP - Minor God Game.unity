@@ -164,12 +164,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 532aff806919ab44eaa441a2daaa8363, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SpawnedPrefabs:
-  - {fileID: 11400000, guid: 7d7813f9a3a1f484bb8c7c830f6924e8, type: 2}
-  - {fileID: 11400000, guid: 0a5bc133e8a550f45b8309ad14f0ccee, type: 2}
-  m_Number: 1
+  m_SpawnDefinition: {fileID: 11400000, guid: d5d05916506514644828bd1276116049, type: 2}
+  m_NumberOfSpawns: 1
   m_Radius: 10
-  onNavMesh: 0
+  onNavMesh: 1
   navMeshAreaMask: -1
 --- !u!1 &122276757 stripped
 GameObject:

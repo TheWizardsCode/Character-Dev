@@ -44,7 +44,13 @@ namespace WizardsCode.Stats
         /// </summary>
         public string InteractionName
         {
-            get { return m_InteractionName; }
+            get { 
+                if (string.IsNullOrEmpty(m_InteractionName))
+                {
+                    m_InteractionName = name;
+                }
+                return m_InteractionName; 
+            }
             set { m_InteractionName = value; }
         }
 

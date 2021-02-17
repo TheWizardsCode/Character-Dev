@@ -31,7 +31,6 @@ namespace WizardsCode.Stats {
         [HideInInspector, SerializeField]
         internal List<StatInfluencerSO> m_StatsInfluencers = new List<StatInfluencerSO>();
 
-        float m_TimeOfLastUpdate = 0;
         internal float m_TimeOfNextUpdate = 0;
         private List<StateSO> m_UnsatisfiedDesiredStatesCache = new List<StateSO>();
 
@@ -81,7 +80,6 @@ namespace WizardsCode.Stats {
             ApplyStatInfluencerEffects();
             UpdateDesiredStatesList();
 
-            m_TimeOfLastUpdate = Time.timeSinceLevelLoad;
             m_TimeOfNextUpdate = Time.timeSinceLevelLoad + m_TimeBetweenUpdates;
         }
 
@@ -150,18 +148,17 @@ namespace WizardsCode.Stats {
                 }
 
                 Transform behaviourT;
+                string behaviourName;
                 for (int idx = 0; idx < behaviours.Count; idx++)
                 {
-                    string behaviourName = behaviours[idx].DisplayName + " behaviours from desired state " + DesiredStates[i].name;
+                    behaviourName = behaviours[idx].DisplayName + " behaviours from desired state " + DesiredStates[i].name;
                     behaviourT = transform.Find(behaviourName);
                     if (isSatisfied && behaviourT == null)
                     {   
                         Instantiate(behaviours[idx].gameObject, transform).name = behaviourName;
-                        //TODO register the behaviours with the statstracker
                     } else if (!isSatisfied && behaviourT != null)
                     {
                         Destroy(behaviourT.gameObject);
-                        //TODO deregister the behaviours with the stats tracker
                     }
                 }
             }
@@ -265,7 +262,7 @@ namespace WizardsCode.Stats {
         {
             bool exists = false;
             // check that if an influencer already exists we are not in a cooldown period for this influencer
-            for (int i = 0; i < StatsInfluencers.Count; i++)
+            for (int i = StatsInfluencers.Count -1; i >= 0; i--)
             {
                 if (StatsInfluencers[i].InteractionName == influencer.InteractionName)
                 {
@@ -286,7 +283,6 @@ namespace WizardsCode.Stats {
             {
                 StatsInfluencers.Add(influencer);
             }
-
             return true;
         }
 
