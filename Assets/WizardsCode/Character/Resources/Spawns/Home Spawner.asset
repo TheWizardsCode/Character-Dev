@@ -10,18 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ba49fb3df4b7a244090097f880942ad3, type: 3}
-  m_Name: Neo Workers of three types
+  m_Name: Home Spawner
   m_EditorClassIdentifier: 
   m_SpawnObjectDefinitions:
-  - prefab: {fileID: 4458132007330252999, guid: 5618c34a1eee75b46ace99f7db0d928c,
-      type: 3}
-    probability: 0.4
-    stopSpawning: 1
-  - prefab: {fileID: 4388119967545133012, guid: 7139a43d9b70e6043a4bac01842dbad5,
-      type: 3}
-    probability: 0.4
-    stopSpawning: 1
-  - prefab: {fileID: 4712245637082726072, guid: a2c823ebf5bd06846bae8f5602119f9f,
+  - prefab: {fileID: 1494473663186943003, guid: 9c2231e74c892ce44847b2cd9a480f8f,
       type: 3}
     probability: 1
     stopSpawning: 1
+  m_SpawnPrefabs:
+  - {fileID: 11400000, guid: c0b8fa1baf1dd3d4190226265e46bc44, type: 2}

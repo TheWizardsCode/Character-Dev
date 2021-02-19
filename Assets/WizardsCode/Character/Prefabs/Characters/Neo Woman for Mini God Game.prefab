@@ -82,10 +82,11 @@ MonoBehaviour:
   m_DisplayName: Gather Berries
   m_RetryFrequency: 2
   m_isInteruptable: 0
-  m_AbortDuration: 30
+  m_MaximumExecutionTime: 30
   m_IsBlocking: 1
   m_OnStartCue: {fileID: 0}
   m_OnEndCue: {fileID: 0}
+  m_MinimumWeight: 0
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
     objective: 2
@@ -114,10 +115,11 @@ MonoBehaviour:
   m_DisplayName: Fell Tree
   m_RetryFrequency: 2
   m_isInteruptable: 0
-  m_AbortDuration: 30
+  m_MaximumExecutionTime: 30
   m_IsBlocking: 1
   m_OnStartCue: {fileID: 0}
   m_OnEndCue: {fileID: 0}
+  m_MinimumWeight: 0
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
     objective: 2
@@ -125,6 +127,7 @@ MonoBehaviour:
   m_CharacterInfluences:
   - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
     maxChange: -15
+    applyOnCompletion: 0
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: 3a65fd83ea52d7c4db1e8cc4c0ffafa0, type: 2}
     objective: 2
@@ -146,10 +149,11 @@ MonoBehaviour:
   m_DisplayName: Make Babies
   m_RetryFrequency: 2
   m_isInteruptable: 0
-  m_AbortDuration: 30
+  m_MaximumExecutionTime: 30
   m_IsBlocking: 1
   m_OnStartCue: {fileID: 0}
   m_OnEndCue: {fileID: 0}
+  m_MinimumWeight: 0
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: e7d5ac7f90040d04b892ec7dda97749d, type: 2}
     objective: 2
@@ -157,6 +161,7 @@ MonoBehaviour:
   m_CharacterInfluences:
   - statTemplate: {fileID: 11400000, guid: e7d5ac7f90040d04b892ec7dda97749d, type: 2}
     maxChange: 15
+    applyOnCompletion: 0
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: 2f5d19bc19f76514ea83b23aa9d7d7a1, type: 2}
     objective: 2
@@ -209,10 +214,11 @@ MonoBehaviour:
   m_DisplayName: Build a Home
   m_RetryFrequency: 2
   m_isInteruptable: 0
-  m_AbortDuration: 30
+  m_MaximumExecutionTime: 30
   m_IsBlocking: 1
   m_OnStartCue: {fileID: 0}
   m_OnEndCue: {fileID: 0}
+  m_MinimumWeight: 0
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
     objective: 2
@@ -223,13 +229,14 @@ MonoBehaviour:
   m_CharacterInfluences:
   - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
     maxChange: -30
+    applyOnCompletion: 0
   - statTemplate: {fileID: 11400000, guid: 3a65fd83ea52d7c4db1e8cc4c0ffafa0, type: 2}
     maxChange: -15
+    applyOnCompletion: 0
   m_DesiredStateImpacts: []
   m_RequiredWorldState:
   - {fileID: 11400000, guid: ef4f7c82ea0e1404a844c100e4a28c48, type: 2}
-  m_BuiltPrefab: {fileID: 1494473663186943003, guid: 9c2231e74c892ce44847b2cd9a480f8f,
-    type: 3}
+  m_BuiltPrefab: {fileID: 11400000, guid: dd7d1b540b247bf44812512bef13f0b5, type: 2}
 --- !u!1 &1230700983341931292
 GameObject:
   m_ObjectHideFlags: 0

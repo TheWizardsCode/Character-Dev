@@ -12,7 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba49fb3df4b7a244090097f880942ad3, type: 3}
   m_Name: Wandering Neo's in three colours
   m_EditorClassIdentifier: 
-  m_SpawnPrefabs:
-  - {fileID: 11400000, guid: 71f9aff0334ad9e468deb07692f48674, type: 2}
-  - {fileID: 11400000, guid: f04fdb1f8d76d464790d1d0aee98cdb4, type: 2}
-  - {fileID: 11400000, guid: c02469633128b1b4e9bcff3896610ed2, type: 2}
+  m_SpawnObjectDefinitions:
+  - prefab: {fileID: 8444945103901806786, guid: 38b807bd7db917b4494c7d369bc1950c,
+      type: 3}
+    probability: 0.33
+    stopSpawning: 1
+  - prefab: {fileID: 8444945103901806786, guid: 11f7fbc1940fbae44936c7bd0aaf16a6,
+      type: 3}
+    probability: 0.33
+    stopSpawning: 1
+  - prefab: {fileID: 8444945103901806786, guid: 9e537dd4c99336343be5ab8bf775f10b,
+      type: 3}
+    probability: 1
+    stopSpawning: 1
