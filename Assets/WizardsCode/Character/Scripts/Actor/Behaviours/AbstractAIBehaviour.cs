@@ -9,6 +9,7 @@ using static WizardsCode.Character.StateSO;
 using System.Text;
 using UnityEngine.Serialization;
 using WizardsCode.Character.WorldState;
+using WizardsCode.Character.AI;
 
 namespace WizardsCode.Character
 {
@@ -46,13 +47,16 @@ namespace WizardsCode.Character
             "the likelyhood of this actor enacting this behaviour. Note that the minimum weight " +
             "only has an effect if all other conditions are met.")]
         float m_MinimumWeight = 0;
+        [SerializeField, Tooltip("The required senses about the current world state around the actor. For example, we may have a sense for whether there is a willing mate nearby which will permit a make babies  behaviour to fire. Another example is that a" +
+            "character will only sleep in the open if they sense there are no threats nearby.")]
+        AbstractSense[] m_RequiredSenses;
         [SerializeField, Tooltip("The required stats to enable this behaviour. Here you should set minimum, maximum or approximate values for stats that are needed for this behaviour to fire. For example, buying items is only possible if the actor has cash.")]
         RequiredStat[] m_RequiredStats = default;
         [SerializeField, Tooltip("The set of character stats and the influence to apply to them when a character chooses this behaviour AND the behaviour does not require an interactable (influences come from the interactable if one is requried).")]
         internal StatInfluence[] m_CharacterInfluences;
         [SerializeField, Tooltip("The impacts we need an interactable to have on states for this behaviour to be enabled by it.")]
         DesiredStatImpact[] m_DesiredStateImpacts = new DesiredStatImpact[0];
-        [SerializeField, Tooltip("The conitions required in the worldstate for this behaviour to be valid.")]
+        [SerializeField, Tooltip("The conditions required in the worldstate for this behaviour to be valid.")]
         WorldStateSO[] m_RequiredWorldState;
 
         public float MaximumExecutionTime
@@ -138,7 +142,7 @@ namespace WizardsCode.Character
 
                 reasoning.Clear();
 
-                if (CheckWorldState() && CheckCharacteHasRequiredStats())
+                if (CheckWorldState() && CheckCharacteHasRequiredStats() && CheckSenses())
                 {
                     return true;
                 } else
@@ -146,6 +150,24 @@ namespace WizardsCode.Character
                     return false;
                 }
             }
+        }
+
+        /// <summary>
+        /// Check that all the required senses of the world around the cahracter are true.
+        /// </summary>
+        /// <returns>True if all senses are true</returns>
+        public bool CheckSenses()
+        {
+            for (int i = 0; i < m_RequiredSenses.Length; i++)
+            {
+                if (!m_RequiredSenses[i].HasSensed)
+                {
+                    reasoning.Append(m_RequiredSenses[i].logName);
+                    reasoning.AppendLine(" has not sensed what it needs recently.");
+                    return false;
+                }
+            }
+            return true;
         }
 
         /// <summary>
@@ -193,32 +215,20 @@ namespace WizardsCode.Character
                 {
                     case Objective.LessThan:
                         thisRequirementMet = Brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).Value < m_RequiredStats[i].Value;
-                        if (thisRequirementMet) {
-                            reasoning.Append(" is in the right range since it is less than ");
-                        } 
-                        else
-                        {
+                        if (!thisRequirementMet) {
                             reasoning.Append(" is in the wrong range since it is not less than ");
                         }
                         break;
                     case Objective.Approximately:
                         thisRequirementMet = Mathf.Approximately(Brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).Value, m_RequiredStats[i].Value);
-                        if (thisRequirementMet)
-                        {
-                            reasoning.Append(" is in the right range since it is approximately equal to ");
-                        }
-                        else
+                        if (!thisRequirementMet)
                         {
                             reasoning.Append(" is in the wrong range since it is not approximately equal to ");
                         }
                         break;
                     case Objective.GreaterThan:
                         thisRequirementMet = Brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).Value > m_RequiredStats[i].Value;
-                        if (thisRequirementMet)
-                        {
-                            reasoning.Append(" is in the right range since it is greater than ");
-                        }
-                        else
+                        if (!thisRequirementMet)
                         {
                             reasoning.Append(" is in the wrong range since it is not greater than ");
                         }
