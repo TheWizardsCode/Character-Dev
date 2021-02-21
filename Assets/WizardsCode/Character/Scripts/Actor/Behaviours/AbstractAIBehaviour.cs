@@ -290,7 +290,7 @@ namespace WizardsCode.Character
 
             if (m_OnStartCue != null)
             {
-                m_OnStartCue.Prompt(Brain.Actor);
+                Brain.Actor.Prompt(m_OnStartCue);
             }
         }
 
@@ -415,7 +415,7 @@ namespace WizardsCode.Character
 
             if (m_OnEndCue != null)
             {
-                m_OnEndCue.Prompt(Brain.Actor);
+                 Brain.Actor.Prompt(m_OnStartCue);
             }
         }
 

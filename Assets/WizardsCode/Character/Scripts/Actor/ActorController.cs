@@ -8,7 +8,6 @@ namespace WizardsCode.Character
     /// A character actor performs for the camera and takes cues from a director.
     /// Converts NavMesh movement to animation controller parameters.
     /// </summary>
-    [RequireComponent(typeof(Animator))]
     [RequireComponent(typeof(NavMeshAgent))]
     [RequireComponent(typeof(Brain))]
     public class ActorController : MonoBehaviour
@@ -25,6 +24,11 @@ namespace WizardsCode.Character
         private NavMeshAgent m_Agent;
         private Brain m_Brain;
 
+        internal Animator Animator
+        {
+            get { return m_Animator; }
+        }
+
         internal Vector3 TargetPosition
         {
             get { return m_Agent.destination; }
@@ -34,9 +38,23 @@ namespace WizardsCode.Character
             }
         }
 
+        /// <summary>
+        /// Prompt the actor to enact a cue. A cue describes
+        /// a position and actions that an actor should take.
+        /// </summary>
+        /// <param name="cue">The cue to enact.</param>
+        internal void Prompt(ActorCue cue)
+        {
+            System.Collections.IEnumerator coroutine = cue.Prompt(this);
+            if (coroutine != null)
+            {
+                StartCoroutine(coroutine);
+            }
+        }
+
         protected virtual void Start()
         {
-            m_Animator = GetComponent<Animator>();
+            m_Animator = GetComponentInChildren<Animator>();
             m_Agent = GetComponent<NavMeshAgent>();
             m_Brain = GetComponent<Brain>();
             TargetPosition = transform.position;

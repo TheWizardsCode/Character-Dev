@@ -24,7 +24,7 @@ namespace WizardsCode.Character
 
             if (!isPrompted)
             {
-                cue.Prompt(actor);
+                actor.Prompt(cue);
                 isPrompted = true;
             }
         }

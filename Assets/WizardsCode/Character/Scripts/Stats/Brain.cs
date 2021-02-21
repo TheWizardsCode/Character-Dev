@@ -68,7 +68,10 @@ namespace WizardsCode.Stats {
 
         private void OnDisable()
         {
-            ActorManager.Instance.DeregisterBrain(this);
+            if (ActorManager.Instance != null)
+            {
+                ActorManager.Instance.DeregisterBrain(this);
+            }
         }
 
         /// <summary>

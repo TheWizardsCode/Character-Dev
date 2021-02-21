@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -21,6 +22,14 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("Dialogue to speak on this cue."), TextArea(10, 20)]
         public string dialogue;
 
+        [Header("Animation Layers")]
+        [SerializeField, Tooltip("The name of the layer to control the weight of. An emptry field means the layer weight has no effect.")]
+        string m_LayerName = "";
+        [SerializeField, Tooltip("The weight of the layer")]
+        float m_LayerWeight = 1;
+        [SerializeField, Range(0.01f, 20), Tooltip("The speed at which we will change fromt he current layer weight to the new layer weight. Larger is faster.")]
+        float m_LayerChangeSpeed = 5;
+
         public enum ParameterType { Float, Int, Bool, Trigger }
         [Header("Animation Parameters")]
         [SerializeField, Tooltip("The name of the animation parameter to set the value to.")]
@@ -41,16 +50,44 @@ namespace WizardsCode.Character
         public int animationLayer;
         [SerializeField, Tooltip("The normalized time from which to start the animation.")]
         public float animationNormalizedTime = 0;
+        private IEnumerator coroutine;
 
         /// <summary>
         /// Prompt and actor to enact the actions identified in this cue.
         /// </summary>
-        public virtual void Prompt(ActorController actor)
+        /// <returns>An optional coroutine that shouold be started by the calling MonoBehaviour</returns>
+        public virtual IEnumerator Prompt(ActorController actor)
         {
             ProcessMove(actor);
             ProcessAudio(actor);
+            ProcessAnimationLayerWeights(actor);
             ProcessAnimationParameters(actor);
             ProcessAnimationClips(actor);
+
+            return coroutine;
+        }
+
+        private void ProcessAnimationLayerWeights(ActorController actor)
+        {
+            int layerIndex = actor.Animator.GetLayerIndex(m_LayerName);
+            if (actor.Animator.GetLayerWeight(layerIndex) != m_LayerWeight)
+            {
+                coroutine = ChangeLayerWeight(layerIndex, m_LayerWeight, actor);
+            }
+        }
+
+        internal IEnumerator ChangeLayerWeight(int layerIndex, float targetWeight, ActorController actor)
+        {
+            float currentWeight = actor.Animator.GetLayerWeight(layerIndex);
+            while (!Mathf.Approximately(currentWeight, m_LayerWeight))
+            {
+                currentWeight = actor.Animator.GetLayerWeight(layerIndex);
+                float delta = (m_LayerWeight - currentWeight) * (Time.deltaTime * m_LayerChangeSpeed);
+                actor.Animator.SetLayerWeight(layerIndex, currentWeight + delta);
+                yield return new WaitForEndOfFrame();
+            }
+
+            actor.Animator.SetLayerWeight(layerIndex, m_LayerWeight);
         }
 
         /// <summary>
@@ -61,20 +98,19 @@ namespace WizardsCode.Character
         {
             if (!string.IsNullOrWhiteSpace(paramName))
             {
-                Animator animator = actor.GetComponent<Animator>();
                 switch (paramType)
                 {
                     case ActorCue.ParameterType.Trigger:
-                        animator.SetTrigger(paramName);
+                        actor.Animator.SetTrigger(paramName);
                         break;
                     case ActorCue.ParameterType.Bool:
-                        animator.SetBool(paramName, paramBoolValue);
+                        actor.Animator.SetBool(paramName, paramBoolValue);
                         break;
                     case ActorCue.ParameterType.Int:
-                        animator.SetInteger(paramName, paramIntValue);
+                        actor.Animator.SetInteger(paramName, paramIntValue);
                         break;
                     case ActorCue.ParameterType.Float:
-                        animator.SetBool(paramName, paramBoolValue);
+                        actor.Animator.SetBool(paramName, paramBoolValue);
                         break;
                 }
             }
@@ -88,8 +124,7 @@ namespace WizardsCode.Character
         {
             if (string.IsNullOrWhiteSpace(animationClipName))
             {
-                Animator animator = actor.GetComponent<Animator>();
-                animator.Play(animationClipName, animationLayer, animationNormalizedTime);
+                actor.Animator.Play(animationClipName, animationLayer, animationNormalizedTime);
             }
         }
 

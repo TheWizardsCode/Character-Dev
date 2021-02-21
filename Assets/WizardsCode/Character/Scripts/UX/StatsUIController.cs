@@ -61,7 +61,7 @@ namespace WizardsCode.Character.Stats
             //TODO: don't update every frame
             if (m_SelectedCharacter != null)
             {
-                if (m_BehaviourLabel != null)
+                if (m_BehaviourLabel != null && m_SelectedCharacter.ActiveBlockingBehaviour != null)
                 {
                     string duration = Mathf.Clamp(m_SelectedCharacter.ActiveBlockingBehaviour.EndTime - Time.timeSinceLevelLoad, 0, float.MaxValue).ToString("0.0");
                     m_BehaviourLabel.text = m_SelectedCharacter.DisplayName + " - " + m_SelectedCharacter.ActiveBlockingBehaviour.DisplayName + " Finishes in " + duration;

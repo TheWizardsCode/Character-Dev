@@ -1,0 +1,3 @@
+# Animations
+
+We have been unable to find a good range of animations to include with this open source project. We would love your contributions. In the meantime you can find free, though not open source, animations on https://mixamo.com We have used them extensively in the demo scenes. In order to use them you will need to download and install the animations used. Unfortunately Mixamo does not provide deep links and so we cannot provide a set of links to appropriate animations. We have tried to use meaningful names that will allow you to search for the right one. But unless you have a better idea I'm afraid that's the best we can do.
