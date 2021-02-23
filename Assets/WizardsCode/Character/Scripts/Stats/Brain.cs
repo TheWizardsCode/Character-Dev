@@ -22,7 +22,7 @@ namespace WizardsCode.Stats {
         List<AbstractAIBehaviour> m_AvailableBehaviours = new List<AbstractAIBehaviour>();
         List<AbstractAIBehaviour> m_ActiveNonBlockingBehaviours = new List<AbstractAIBehaviour>();
         private Interactable m_TargetInteractable;
-
+        
         public AbstractAIBehaviour ActiveBlockingBehaviour { get; set; }
 
         public List<AbstractAIBehaviour> ActiveNonBlockingBehaviours
@@ -53,6 +53,19 @@ namespace WizardsCode.Stats {
 
         public ActorController Actor {
             get { return m_Controller; } 
+        }
+
+        /// <summary>
+        /// Test whether the currently active behaviour is interuptable or not. 
+        /// Interuptable behaviours can be stopped at any time to allow another higher priority behaviour to take over.
+        /// </summary>
+        public bool IsInteruptable
+        {
+            get
+            {
+                if (ActiveBlockingBehaviour == null) return true;
+                return ActiveBlockingBehaviour.IsInteruptable;
+            }
         }
 
         private void Awake()

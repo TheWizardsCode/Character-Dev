@@ -27,7 +27,7 @@ namespace WizardsCode.Character
         string m_LayerName = "";
         [SerializeField, Tooltip("The weight of the layer")]
         float m_LayerWeight = 1;
-        [SerializeField, Range(0.01f, 20), Tooltip("The speed at which we will change fromt he current layer weight to the new layer weight. Larger is faster.")]
+        [SerializeField, Range(0.1f, 20), Tooltip("The speed at which we will change fromt he current layer weight to the new layer weight. Larger is faster.")]
         float m_LayerChangeSpeed = 5;
 
         public enum ParameterType { Float, Int, Bool, Trigger }

@@ -24,7 +24,7 @@ namespace WizardsCode.Character.AI
         internal string logName;
         private List<Transform> m_SensedObjects = new List<Transform>();
 
-        internal List<Transform> SensedObjects
+        internal List<Transform> SensedThings
         {
             get { return m_SensedObjects; }
         }
@@ -34,7 +34,7 @@ namespace WizardsCode.Character.AI
         /// </summary>
         internal virtual bool HasSensed
         {
-            get { return SensedObjects.Count > 0; }
+            get { return SensedThings.Count > 0; }
         }
 
         internal virtual void Awake()

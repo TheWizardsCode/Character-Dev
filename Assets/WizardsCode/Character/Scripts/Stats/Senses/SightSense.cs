@@ -14,7 +14,6 @@ namespace WizardsCode.Character.AI
 
         bool isValid = true;
         private Type m_ComponentType;
-        float m_DistanceToClosestSensedObject;
         Transform m_closestSensedObject;
 
         internal Type ComponentType
@@ -41,18 +40,17 @@ namespace WizardsCode.Character.AI
         internal override void OnUpdate()
         {
             m_closestSensedObject = null;
-            m_DistanceToClosestSensedObject = float.PositiveInfinity;
             float minSqrMag = float.PositiveInfinity;
             float currentSqrMag;
-            for (int i = SensedObjects.Count - 1; i >= 0; i--)
+            for (int i = SensedThings.Count - 1; i >= 0; i--)
             {
-                if (SensedObjects[i].GetComponent(ComponentType))
+                if (SensedThings[i].GetComponent(ComponentType))
                 {
-                    currentSqrMag = Vector3.SqrMagnitude(SensedObjects[i].position - transform.position);
+                    currentSqrMag = Vector3.SqrMagnitude(SensedThings[i].position - transform.position);
                     if (currentSqrMag < minSqrMag)
                     {
                         minSqrMag = currentSqrMag;
-                        m_closestSensedObject = SensedObjects[i];
+                        m_closestSensedObject = SensedThings[i];
                     }
                 }
             }

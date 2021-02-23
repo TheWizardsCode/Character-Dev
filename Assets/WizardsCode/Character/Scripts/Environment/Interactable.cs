@@ -20,6 +20,8 @@ namespace WizardsCode.Character
     public class Interactable : MonoBehaviour
     {
         [Header("Overview")]
+        [SerializeField, TextArea, Tooltip("A description of this interactable action.")]
+        string m_Description;
         [SerializeField, Tooltip("The type of this interactable, this is used for sorting and filtering world state. This should represent the primary purpose of this interactable, there may be other interactables on the same object and there may be additional effects from this interactable. However, the type represents the primary purpose.")]
         InteractableTypeSO m_Type;
         [SerializeField, Tooltip("The name of the interaction from the perspective of the actor interacting with this item.")]

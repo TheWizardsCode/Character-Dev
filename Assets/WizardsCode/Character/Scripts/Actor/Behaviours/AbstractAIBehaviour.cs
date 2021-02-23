@@ -90,6 +90,21 @@ namespace WizardsCode.Character
 
         internal StringBuilder reasoning = new StringBuilder();
 
+        /// <summary>
+        /// Get an array of all the things that have been recently sensed
+        /// using the RequireSenses of this actor.
+        /// </summary>
+        internal List<Transform> SensedThings
+        {
+            get {
+                List<Transform> result = new List<Transform>();
+                for (int i = 0; i < m_RequiredSenses.Length; i++)
+                {
+                    result.AddRange(m_RequiredSenses[i].SensedThings);
+                }
+                return result;
+            }
+        }
 
         internal MemoryController Memory { get { return Brain.Memory; } }
 
@@ -415,7 +430,7 @@ namespace WizardsCode.Character
 
             if (m_OnEndCue != null)
             {
-                 Brain.Actor.Prompt(m_OnStartCue);
+                 Brain.Actor.Prompt(m_OnEndCue);
             }
         }
 
