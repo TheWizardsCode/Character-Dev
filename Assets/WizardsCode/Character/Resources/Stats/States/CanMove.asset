@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19d0479af55690b459aa37cc281af882, type: 3}
   m_Name: CanMove
   m_EditorClassIdentifier: 
-  name: Can Move
-  m_Objective: 0
-  m_TargetValue: 0
-  m_Stat: {fileID: 0}
+  DisplayName: Can Move
+  m_Stat: {fileID: 11400000, guid: 4cf63de4e2fa1b1469bf45c8150329bd, type: 2}
+  m_Objective: 2
+  m_NormalizeTargetValue: 0.109
+  m_NotInDesiredState: []
+  m_InDesiredState: []
+  m_SatisfiedBehaviours: []
   m_SubStates:
   - {fileID: 11400000, guid: 53dc65a468340dd458f231254029ab52, type: 2}

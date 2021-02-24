@@ -29,6 +29,7 @@ namespace WizardsCode.Character.AI
         float m_CooldownEndTime = float.MinValue;
         List<Brain> participants = new List<Brain>();
         private NavMeshAgent m_Agent;
+        private Vector3 interactionPoint;
 
         public override bool IsAvailable
         {
@@ -60,6 +61,11 @@ namespace WizardsCode.Character.AI
         {
             UpdateParticipantsList();
             MoveToInteractionPoint();
+
+            Vector3 relativePos = interactionPoint - Brain.transform.position;
+            relativePos.y = Brain.transform.position.y;
+            Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
+            Brain.transform.rotation = rotation;
 
             // at the time of writing this comment we don't support adding participants during an interaction, this is here to accomodate for that when we do support it
             if (participants.Count > m_MaxGroupSize)
@@ -103,7 +109,8 @@ namespace WizardsCode.Character.AI
                 NavMeshHit hit;
                 if (NavMesh.SamplePosition(new Vector3(centerX, 0, centerZ), out hit, 5, NavMesh.AllAreas))
                 {
-                    m_Agent.SetDestination(hit.position);
+                    interactionPoint = hit.position;
+                    m_Agent.SetDestination(interactionPoint);
                 }
                 else
                 {
