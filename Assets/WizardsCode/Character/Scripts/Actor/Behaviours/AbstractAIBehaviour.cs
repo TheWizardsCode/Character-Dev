@@ -36,9 +36,9 @@ namespace WizardsCode.Character
 
         [Header("Actions")]
         [SerializeField, Tooltip("An actor cue to send to the actor upon the start of this interaction.")]
-        ActorCue m_OnStartCue;
+        protected ActorCue m_OnStartCue;
         [SerializeField, Tooltip("An actor cue to send to the actor upon the ending of this interaction.")]
-        ActorCue m_OnEndCue;
+        protected ActorCue m_OnEndCue;
 
         [Header("Conditions")]
         [SerializeField, Tooltip("The minimum weight (from 0 to 1) that this behaviour can have. " +

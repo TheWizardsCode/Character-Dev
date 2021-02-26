@@ -29,7 +29,9 @@ namespace WizardsCode.Character.AI
         float m_CooldownEndTime = float.MinValue;
         List<Brain> participants = new List<Brain>();
         private NavMeshAgent m_Agent;
+        private string interactionPointName;
         private Vector3 interactionPoint;
+        private Transform interactionPointT;
 
         public override bool IsAvailable
         {
@@ -55,6 +57,7 @@ namespace WizardsCode.Character.AI
             base.Init();
 
             m_Agent = GetComponentInParent<NavMeshAgent>();
+            interactionPointName = Brain.DisplayName + " interaction point";
         }
 
         protected override void OnUpdate()
@@ -92,30 +95,40 @@ namespace WizardsCode.Character.AI
         }
 
         private void MoveToInteractionPoint()
-        {
+        {// Find a point where we will meet the actos to interact
+            var totalX = transform.position.x;
+            var totalY = transform.position.y;
+            for (int i = 0; i < participants.Count; i++)
+            {
+                totalX += participants[i].transform.position.x;
+                totalY += participants[i].transform.position.z;
+            }
+            var centerX = totalX / (participants.Count + 1);
+            var centerZ = totalY / (participants.Count + 1);
+
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(new Vector3(centerX, 0, centerZ), out hit, 5, NavMesh.AllAreas))
+            {
+                interactionPoint = hit.position;
+            }
+            else
+            {
+                FinishBehaviour();
+            }
+
+            if (m_OnStartCue != null)
+            {
+                if (interactionPointT == null)
+                {
+                    interactionPointT = new GameObject(interactionPointName).transform;
+                    interactionPointT.position = interactionPoint;
+                }
+                m_OnStartCue.Mark = interactionPointName;
+            }
+
             if (m_Agent != null)
             {
-                // Find a point where we will meet the actos to interact
-                var totalX = transform.position.x;
-                var totalY = transform.position.y;
-                for (int i = 0; i < participants.Count; i++)
-                {
-                    totalX += participants[i].transform.position.x;
-                    totalY += participants[i].transform.position.z;
-                }
-                var centerX = totalX / (participants.Count + 1);
-                var centerZ = totalY / (participants.Count + 1);
-
-                NavMeshHit hit;
-                if (NavMesh.SamplePosition(new Vector3(centerX, 0, centerZ), out hit, 5, NavMesh.AllAreas))
-                {
-                    interactionPoint = hit.position;
-                    m_Agent.SetDestination(interactionPoint);
-                }
-                else
-                {
-                    FinishBehaviour();
-                }
+                m_Agent.SetDestination(interactionPoint);
             }
         }
 

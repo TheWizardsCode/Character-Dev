@@ -12,7 +12,7 @@ namespace WizardsCode.Character
     {
         [Header("Movement")]
         [SerializeField, Tooltip("The name of the mark the actor should move to on this cue.")]
-        public string markName;
+        string markName;
 
         [Header("Sound")]
         [SerializeField, Tooltip("Audio files for spoken lines")]
@@ -51,6 +51,17 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("The normalized time from which to start the animation.")]
         public float animationNormalizedTime = 0;
         private IEnumerator coroutine;
+
+        /// <summary>
+        /// Get or set the mark name, that is the name of an object in the scene the character should move to when this cue is prompted.
+        /// Note that changing the Mark during execution of this cue will
+        /// have no effect until it is prompted the next time.
+        /// </summary>
+        public string Mark
+        {
+            get { return markName; }
+            set { markName = value; }
+        }
 
         /// <summary>
         /// Prompt and actor to enact the actions identified in this cue.
@@ -129,7 +140,7 @@ namespace WizardsCode.Character
         }
 
         /// <summary>
-        /// If this cue has any audio defined within it then have an actor enact play that audio.
+        /// If this cue has a mark defined move to it.
         /// </summary>
         void ProcessMove(ActorController actor)
         {
@@ -137,7 +148,13 @@ namespace WizardsCode.Character
             {
                 NavMeshAgent agent = actor.GetComponent<NavMeshAgent>();
                 Transform mark = GameObject.Find(markName).transform;
-                agent.SetDestination(mark.position);
+                if (mark != null)
+                {
+                    agent.SetDestination(mark.position);
+                } else
+                {
+                    Debug.LogWarning(actor.name + "  has a mark set, but the mark doesn't exist in the scene. The name set is " + Mark);
+                }
             }
         }
 
