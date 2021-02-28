@@ -106,11 +106,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66f048bfe15920a4e9328734b8239ff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_InteractionName: Read a Book
+  m_Description: 
+  m_Type: {fileID: 11400000, guid: f2636cce3b9a1ef4a81b053aa69b3ee7, type: 2}
+  m_InteractionNameFromActorsPerspective: Read a Book
   m_MaxInteractors: 10
   m_CharacterInfluences:
   - statTemplate: {fileID: 11400000, guid: 3091b91fc8dcd26428dac24f52b6116e, type: 2}
     maxChange: 1
+    applyOnCompletion: 0
   m_IsRepeating: 0
   m_DestroyOnUse: 0
   m_ObjectInfluences: []

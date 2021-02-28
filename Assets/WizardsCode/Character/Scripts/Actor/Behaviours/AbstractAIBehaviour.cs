@@ -15,11 +15,14 @@ namespace WizardsCode.Character
 {
     public abstract class AbstractAIBehaviour : MonoBehaviour
     {
+        [Header("UI")]
         [SerializeField, Tooltip("A player readable description of the behaviour.")]
         [TextArea(3, 10)]
         string m_Description;
         [SerializeField, Tooltip("The name to use in the User Interface.")]
         string m_DisplayName = "Unnamed AI Behaviour";
+        [SerializeField, Tooltip("Icon for this behaviour.")]
+        internal Sprite Icon;
 
         [Header("Controls")]
         [SerializeField, Tooltip("How frequently, in seconds, this behaviour should be tested for activation."), Range(0.01f, 5f)]
@@ -115,9 +118,6 @@ namespace WizardsCode.Character
         {
             get
             {
-                if (m_Brain == null) {
-                    m_Brain = GetComponentInParent<Brain>();
-                }
                 return m_Brain;
             }
         }
@@ -225,27 +225,28 @@ namespace WizardsCode.Character
             for (int i = 0; i < m_RequiredStats.Length; i++)
             {
                 reasoning.Append(m_RequiredStats[i].statTemplate.DisplayName);
+                reasoning.Append(" is ");
 
                 switch (m_RequiredStats[i].objective)
                 {
                     case Objective.LessThan:
                         thisRequirementMet = Brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).Value < m_RequiredStats[i].Value;
                         if (!thisRequirementMet) {
-                            reasoning.Append(" is in the wrong range since it is not less than ");
+                            reasoning.Append("in the wrong range since it is not less than ");
                         }
                         break;
                     case Objective.Approximately:
                         thisRequirementMet = Mathf.Approximately(Brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).Value, m_RequiredStats[i].Value);
                         if (!thisRequirementMet)
                         {
-                            reasoning.Append(" is in the wrong range since it is not approximately equal to ");
+                            reasoning.Append("in the wrong range since it is not approximately equal to ");
                         }
                         break;
                     case Objective.GreaterThan:
                         thisRequirementMet = Brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).Value > m_RequiredStats[i].Value;
                         if (!thisRequirementMet)
                         {
-                            reasoning.Append(" is in the wrong range since it is not greater than ");
+                            reasoning.Append("is in the wrong range since it is not greater than ");
                         }
                         break;
                     default:
@@ -283,11 +284,16 @@ namespace WizardsCode.Character
         /// </summary>
         protected virtual void Init()
         {
-            if (Brain == null)
+
+            if (m_Brain == null)
             {
-                if (DesiredStateImpacts.Length > 0)
+                m_Brain = transform.root.GetComponentInChildren<Brain>();
+                if (m_Brain != null)
                 {
-                    Debug.LogError(gameObject.name + " has desired states defined but has no StatsTracker against which to check these states.");
+                    Debug.LogWarning("Brain was not configured in " + DisplayName + ". " + m_Brain.DisplayName + " was automatically discovered. It is safer to set the brain in the inspector.");
+                } else
+                {
+                    Debug.LogWarning("Brain was not configured in " + DisplayName + ". Set the brain in the inspector.");
                 }
             }
             controller = GetComponentInParent<ActorController>();
@@ -334,35 +340,33 @@ namespace WizardsCode.Character
 
         /// <summary>
         /// Calculates the current weight for this behaviour between 0 (don't execute)
-        /// and 1 (really want to execute). By default this is directly proportional to,
-        /// the number of unsatisfied desired states in the brain that this behaviour 
+        /// and 1infinity (really want to execute). By default this is directly proportional to,
+        /// the number of unsatisfied stats within desired states in the brain that this behaviour 
         /// impacts.
         /// 
-        /// If there are no unsatisfiedDesiredStates then the weight will be 0.01
-        /// 
-        /// This should nearly always be overridden in specific behaviour implementations.
+        /// If there are no unsatisfiedDesiredStates then the weight will be 1
         /// </summary>
         public virtual float Weight(Brain brain)
         {
-            float weight = 0.01f;
+            float weight = 1f;
             for (int i = 0; i < brain.UnsatisfiedDesiredStates.Count; i++)
             {
                 for (int idx = 0; idx < DesiredStateImpacts.Length; idx++)
                 {
-                    if (brain.UnsatisfiedDesiredStates[i].name == DesiredStateImpacts[idx].statTemplate.name)
+                    if (brain.UnsatisfiedDesiredStates[i].statTemplate == DesiredStateImpacts[idx].statTemplate)
                     {
                         reasoning.Append("They are not ");
                         reasoning.Append(brain.UnsatisfiedDesiredStates[i].name);
                         reasoning.AppendLine(" and this behaviour will help.");
-                        weight++;
+                        //TODO higher weight should be given to behaviours that will bring the stat into the desired state
+                        weight += (brain.UnsatisfiedDesiredStates.Count - i);
                     }
                 }
             }
-            weight /= brain.UnsatisfiedDesiredStates.Count;
-            weight = Mathf.Clamp(weight, m_MinimumWeight, 1);
 
-            reasoning.Append("Total weight for this behaviour is ");
-            reasoning.AppendLine(weight.ToString("0.000"));
+            reasoning.Append(DisplayName); 
+            reasoning.Append(" total weight is ");
+            reasoning.AppendLine(weight.ToString("0.0"));
 
             return weight;
         }

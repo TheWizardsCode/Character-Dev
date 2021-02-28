@@ -147,13 +147,13 @@ namespace WizardsCode.Character
             if (!string.IsNullOrWhiteSpace(markName))
             {
                 NavMeshAgent agent = actor.GetComponent<NavMeshAgent>();
-                Transform mark = GameObject.Find(markName).transform;
-                if (mark != null)
+                GameObject go = GameObject.Find(markName);
+                if (go != null)
                 {
-                    agent.SetDestination(mark.position);
+                    agent.SetDestination(go.transform.position);
                 } else
                 {
-                    Debug.LogWarning(actor.name + "  has a mark set, but the mark doesn't exist in the scene. The name set is " + Mark);
+                    Debug.LogWarning(actor.name + "  has a mark set, but the mark doesn't exist in the scene. The name set is " + markName);
                 }
             }
         }

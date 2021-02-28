@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Serialization;
 using WizardsCode.Character;
-using WizardsCode.Character.Stats;
 using WizardsCode.Character.WorldState;
-using static WizardsCode.Character.StateSO;
 
 namespace WizardsCode.Stats {
     /// <summary>
@@ -18,11 +15,23 @@ namespace WizardsCode.Stats {
         , IDebug
 #endif
     {
+        [Header("UI")]
+        [SerializeField, Tooltip("Should the character render an icon that indicates their current behaviour.")]
+        bool m_ShowBehaviourIcon = true;
+        [SerializeField, Tooltip("A place to display an icon to communicate this actors behaviour or mood.")]
+        SpriteRenderer m_IconUI;
+        [SerializeField, Tooltip("Default icon to display when the active behaviour is null.")]
+        [FormerlySerializedAs("m_defaultIcon")]
+        Sprite m_DefaultIcon;
+        [SerializeField, Tooltip("The icon to use when there is an active blocking behaviour, but that behaviour does not have an icon.")]
+        Sprite m_MissingIcon;
+
         ActorController m_Controller;
         List<AbstractAIBehaviour> m_AvailableBehaviours = new List<AbstractAIBehaviour>();
         List<AbstractAIBehaviour> m_ActiveNonBlockingBehaviours = new List<AbstractAIBehaviour>();
         private Interactable m_TargetInteractable;
-        
+        Camera m_Camera;
+
         public AbstractAIBehaviour ActiveBlockingBehaviour { get; set; }
 
         public List<AbstractAIBehaviour> ActiveNonBlockingBehaviours
@@ -70,8 +79,19 @@ namespace WizardsCode.Stats {
 
         private void Awake()
         {
-            m_Controller = GetComponent<ActorController>();
+            m_Camera = Camera.main;
+
+            m_Controller = GetComponentInParent<ActorController>();
             Memory = GetComponentInChildren<MemoryController>();
+
+            if (m_IconUI == null)
+            {
+                GameObject go = new GameObject("Behaviour Icon");
+                go.transform.parent = transform;
+                //TODO height of the actor should be available in the actor controller.
+                go.transform.localPosition = new Vector3(0, 2, 0);
+                m_IconUI = go.AddComponent<SpriteRenderer>();
+            }
         }
 
         private void OnEnable()
@@ -138,6 +158,33 @@ namespace WizardsCode.Stats {
             UpdateActiveBehaviour();
         }
 
+        void LateUpdate()
+        {
+            if (!m_ShowBehaviourIcon) return;
+
+            if (ActiveBlockingBehaviour != null)
+            {
+                if (ActiveBlockingBehaviour.Icon != null)
+                {
+                    m_IconUI.sprite = ActiveBlockingBehaviour.Icon;
+                }
+                else
+                {
+                    m_IconUI.sprite = m_MissingIcon;
+                }
+            }
+            else if (m_DefaultIcon != null)
+            {
+                m_IconUI.sprite = m_DefaultIcon;
+            }
+
+            if (m_IconUI.sprite != null)
+            {
+                m_IconUI.gameObject.transform.LookAt(m_IconUI.gameObject.transform.position + m_Camera.transform.rotation * Vector3.forward,
+                  m_Camera.transform.rotation * Vector3.up);
+            }
+        }
+
         /// <summary>
         /// Iterates over all the behaviours available to this actor and picks the most important one to be executed next.
         /// </summary>
@@ -191,7 +238,6 @@ namespace WizardsCode.Stats {
             if (candidateBehaviour.IsBlocking)
             {
                 ActiveBlockingBehaviour = candidateBehaviour;
-                ActiveBlockingBehaviour.EndTime = 0;
                 ActiveBlockingBehaviour.IsExecuting = true;
                 if (ActiveBlockingBehaviour is GenericInteractionAIBehaviour)
                 {
@@ -211,6 +257,7 @@ namespace WizardsCode.Stats {
             }
 
             log.Insert(0, "\n");
+            // Note this section is inserted in reverse as we want it at the start of the string.
             if (TargetInteractable != null)
             {
                 log.Insert(0, TargetInteractable.name);

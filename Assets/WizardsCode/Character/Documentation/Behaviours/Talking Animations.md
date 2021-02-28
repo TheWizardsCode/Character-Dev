@@ -1,1 +1,0 @@
-Two characters talk in the street.

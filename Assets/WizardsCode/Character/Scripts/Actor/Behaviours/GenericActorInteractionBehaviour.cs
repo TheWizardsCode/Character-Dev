@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using WizardsCode.Character;
 using WizardsCode.Stats;
 using UnityEngine.AI;
+using WizardsCode.Utility;
 
 namespace WizardsCode.Character.AI
 {
@@ -25,6 +26,8 @@ namespace WizardsCode.Character.AI
 
         [SerializeField, Tooltip("How long before this actor can fire this same behaviour?")]
         float m_CooldownDuration = 60;
+        [SerializeField, NavMeshAreaMask, Tooltip("The area mask that indicates NavMesh areas that this interaction can take place.")]
+        public int m_NavMeshMask = NavMesh.AllAreas;
 
         float m_CooldownEndTime = float.MinValue;
         List<Brain> participants = new List<Brain>();
@@ -107,7 +110,7 @@ namespace WizardsCode.Character.AI
             var centerZ = totalY / (participants.Count + 1);
 
             NavMeshHit hit;
-            if (NavMesh.SamplePosition(new Vector3(centerX, 0, centerZ), out hit, 5, NavMesh.AllAreas))
+            if (NavMesh.SamplePosition(new Vector3(centerX, 0, centerZ), out hit, 5, m_NavMeshMask))
             {
                 interactionPoint = hit.position;
             }

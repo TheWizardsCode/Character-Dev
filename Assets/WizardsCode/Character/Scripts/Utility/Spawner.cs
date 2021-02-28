@@ -46,7 +46,7 @@ namespace WizardsCode.Utility
                     GameObject[] spawned = m_SpawnDefinition.InstantiatePrefabs((Vector3)position);
                     for (int idx = 0; idx < spawned.Length; idx++)
                     {
-                        spawned[idx].name += " " + idx;
+                        spawned[idx].name += " " + i;
                         m_Spawned.Add(spawned[idx].transform);
                     }
                 }

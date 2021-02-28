@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using WizardsCode.Character.Stats;
+using WizardsCode.Utility;
 
 namespace WizardsCode.Character
 {
@@ -32,7 +33,7 @@ namespace WizardsCode.Character
         private float maxAngleOfRandomPathChange = 60;
         [SerializeField, Tooltip("The approximate maximum range the agent will normally wander from their start position.")]
         private float m_MaxWanderRange = 50f;
-        [HideInInspector, SerializeField, Tooltip("The area mask for allowed areas for this agent to wander within.")]
+        [SerializeField, NavMeshAreaMask, Tooltip("The area mask for allowed areas for this agent to wander within.")]
         public int navMeshAreaMask = NavMesh.AllAreas;
 
         private Vector3 m_TargetPosition;

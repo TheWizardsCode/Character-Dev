@@ -9,7 +9,6 @@ namespace WizardsCode.Character
     /// Converts NavMesh movement to animation controller parameters.
     /// </summary>
     [RequireComponent(typeof(NavMeshAgent))]
-    [RequireComponent(typeof(Brain))]
     public class ActorController : MonoBehaviour
     {
         [Header("Animation")]

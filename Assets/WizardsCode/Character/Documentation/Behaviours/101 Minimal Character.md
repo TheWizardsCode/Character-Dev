@@ -1,4 +1,4 @@
-The 101 scene shows the absolute minimal setup for a Wizards Code character. also known as an Actor. 
+The 101 scene shows the absolute minimal setup for a Wizards Code character. also known as an Actor.  This actor will not exhibit any behaviours. They are a blank slare for your creation of an AI.
 
 
 # Required Components

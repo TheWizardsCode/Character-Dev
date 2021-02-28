@@ -205,7 +205,7 @@ namespace WizardsCode.Character
         {
             if (other.gameObject == this.gameObject) return;
 
-            Brain brain = other.GetComponentInParent<Brain>();
+            Brain brain = other.transform.root.GetComponentInChildren<Brain>();
             if (brain == null || !brain.ShouldInteractWith(this)) return;
 
             if (!HasSpaceFor(brain))
@@ -225,7 +225,7 @@ namespace WizardsCode.Character
                 return;
             }
 
-            Brain brain = other.GetComponentInParent<Brain>();
+            Brain brain = other.transform.root.GetComponentInChildren<Brain>();
             if (brain == null
                 || (!m_IsRepeating
                 && m_CurrentInteractors.Contains(brain)))
