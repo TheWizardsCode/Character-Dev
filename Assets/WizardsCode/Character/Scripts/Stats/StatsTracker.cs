@@ -367,7 +367,7 @@ namespace WizardsCode.Stats {
         /// <returns>A name for this stats tracker object to be used in the UI.</returns>
         internal virtual string GenerateName()
         {
-            return gameObject.name;
+            return transform.root.gameObject.name;
         }
 
 #if UNITY_EDITOR

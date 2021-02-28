@@ -32,7 +32,30 @@ namespace WizardsCode.Stats {
         private Interactable m_TargetInteractable;
         Camera m_Camera;
 
-        public AbstractAIBehaviour ActiveBlockingBehaviour { get; set; }
+        private AbstractAIBehaviour m_ActiveBlockingBehaviour;
+        public AbstractAIBehaviour ActiveBlockingBehaviour {
+            get { return m_ActiveBlockingBehaviour; }
+            set {
+                if (m_ActiveBlockingBehaviour == value) return;
+
+                m_ActiveBlockingBehaviour = value;
+                if (m_ActiveBlockingBehaviour != null)
+                {
+                    if (m_ActiveBlockingBehaviour.Icon != null)
+                    {
+                        m_IconUI.sprite = m_ActiveBlockingBehaviour.Icon;
+                    }
+                    else
+                    {
+                        m_IconUI.sprite = m_MissingIcon;
+                    }
+                }
+                else if (m_DefaultIcon != null)
+                {
+                    m_IconUI.sprite = m_DefaultIcon;
+                }
+            } 
+        }
 
         public List<AbstractAIBehaviour> ActiveNonBlockingBehaviours
         {
@@ -161,22 +184,6 @@ namespace WizardsCode.Stats {
         void LateUpdate()
         {
             if (!m_ShowBehaviourIcon) return;
-
-            if (ActiveBlockingBehaviour != null)
-            {
-                if (ActiveBlockingBehaviour.Icon != null)
-                {
-                    m_IconUI.sprite = ActiveBlockingBehaviour.Icon;
-                }
-                else
-                {
-                    m_IconUI.sprite = m_MissingIcon;
-                }
-            }
-            else if (m_DefaultIcon != null)
-            {
-                m_IconUI.sprite = m_DefaultIcon;
-            }
 
             if (m_IconUI.sprite != null)
             {

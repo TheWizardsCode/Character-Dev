@@ -44,12 +44,8 @@ namespace WizardsCode.Character
         protected ActorCue m_OnEndCue;
 
         [Header("Conditions")]
-        [SerializeField, Tooltip("The minimum weight (from 0 to 1) that this behaviour can have. " +
-            "This will default to 0, but if you want to force a behaviour to be firest whenever it " +
-            "exists then set to 1. Of course you can also set it to any value in between to increase " +
-            "the likelyhood of this actor enacting this behaviour. Note that the minimum weight " +
-            "only has an effect if all other conditions are met.")]
-        float m_MinimumWeight = 0;
+        [SerializeField, Range(0.01f, 5), Tooltip("The Weight Multuplier is used to lower or higher the priority of this behaviour relative to others the actor has. The higher this multiplier is the more likely it is the behaviour will be fired. The lower, the less likely.")]
+        float m_WeightMultiplier = 1;
         [SerializeField, Tooltip("The required senses about the current world state around the actor. For example, we may have a sense for whether there is a willing mate nearby which will permit a make babies  behaviour to fire. Another example is that a" +
             "character will only sleep in the open if they sense there are no threats nearby.")]
         AbstractSense[] m_RequiredSenses;
@@ -319,7 +315,7 @@ namespace WizardsCode.Character
         /// Add all the character influencers that operate over time from this behaviour to the stats tracker.
         /// </summary>
         /// <param name="duration">The time over which the influencers should be applied</param>
-        private void AddCharacterInfluencers(float duration)
+        internal void AddCharacterInfluencers(float duration)
         {
             for (int i = 0; i < m_CharacterInfluences.Length; i++)
             {
@@ -340,13 +336,31 @@ namespace WizardsCode.Character
 
         /// <summary>
         /// Calculates the current weight for this behaviour between 0 (don't execute)
-        /// and 1infinity (really want to execute). By default this is directly proportional to,
+        /// and infinity (really want to execute). By default this is directly proportional to,
         /// the number of unsatisfied stats within desired states in the brain that this behaviour 
         /// impacts.
         /// 
-        /// If there are no unsatisfiedDesiredStates then the weight will be 1
+        /// This is the base weight multiplied by the weight multiplier.
+        /// 
+        /// If there are no unsatisfiedDesiredStates then the weight will be 1 * the multiplier
         /// </summary>
-        public virtual float Weight(Brain brain)
+        internal virtual float Weight(Brain brain)
+        {
+            float weight = BaseWeight(brain) * m_WeightMultiplier;
+
+            reasoning.Append(DisplayName);
+            reasoning.Append(" total weight is ");
+            reasoning.AppendLine(weight.ToString("0.0"));
+
+            return weight;
+        }
+        
+        /// <summary>
+        /// The base weight is the weight befre the multiplier is applied.
+        /// </summary>
+        /// <param name="brain">The brain containing the stats to be applied</param>
+        /// <returns>The base weight, before the multiplier is applied.</returns>
+        protected virtual float BaseWeight(Brain brain)
         {
             float weight = 1f;
             for (int i = 0; i < brain.UnsatisfiedDesiredStates.Count; i++)
@@ -363,10 +377,6 @@ namespace WizardsCode.Character
                     }
                 }
             }
-
-            reasoning.Append(DisplayName); 
-            reasoning.Append(" total weight is ");
-            reasoning.AppendLine(weight.ToString("0.0"));
 
             return weight;
         }

@@ -19,17 +19,21 @@ namespace WizardsCode.Character.AI
     public class GenericActorInteractionBehaviour : AbstractAIBehaviour
     {
         [Header("Actor Interaction Config")]
-        [SerializeField, Tooltip("What is the minimum number of actors need in the group carrying out this behaviour. Before starting this behaviour at least this many actors need to have agreed to participate in the shared behaviour. The group members are identified in the Senses definitions.")]
-        int m_MinGroupSize = 1;
-        [SerializeField, Tooltip("What is the maximum number of actors need in the group carrying out this behaviour. Before starting this behaviour at most this many actors need to have agreed to participate in the shared behaviour. The group members are identified in the Senses definitions.")]
+        [SerializeField, Tooltip("What is the minimum number of actors need in the group carrying out this behaviour, including this actor. Before starting this behaviour at least this many actors need to have agreed to participate in the shared behaviour. The group members are identified in the Senses definitions.")]
+        int m_MinGroupSize = 2;
+        [SerializeField, Tooltip("What is the maximum number of actors need in the group carrying out this behaviour, including this actor. Before starting this behaviour at most this many actors need to have agreed to participate in the shared behaviour. The group members are identified in the Senses definitions.")]
         int m_MaxGroupSize = 5;
-
+        [SerializeField, Tooltip("How long will the actor wait for handshaking to complete. If this time has passed and the minimum group size has not been met then the behaviour will be aborted.")]
+        float m_HandshakeTimeout = 4;
         [SerializeField, Tooltip("How long before this actor can fire this same behaviour?")]
         float m_CooldownDuration = 60;
         [SerializeField, NavMeshAreaMask, Tooltip("The area mask that indicates NavMesh areas that this interaction can take place.")]
         public int m_NavMeshMask = NavMesh.AllAreas;
 
         float m_CooldownEndTime = float.MinValue;
+        private float m_Duration;
+        private float m_HandshakeEndTime;
+        private bool m_IsHandshaking = false;
         List<Brain> participants = new List<Brain>();
         private NavMeshAgent m_Agent;
         private string interactionPointName;
@@ -42,6 +46,7 @@ namespace WizardsCode.Character.AI
             {
                 if (Time.timeSinceLevelLoad < m_CooldownEndTime)
                 {
+                    reasoning.Clear();
                     reasoning.AppendLine("Still on cooldown for " + this.DisplayName);
                     return false;
                 }
@@ -66,7 +71,29 @@ namespace WizardsCode.Character.AI
         protected override void OnUpdate()
         {
             UpdateParticipantsList();
-            MoveToInteractionPoint();
+
+            if (m_IsHandshaking)
+            {
+                if (participants.Count >= m_MinGroupSize)
+                {
+                    m_IsHandshaking = false;
+
+                    m_CooldownEndTime = m_CooldownDuration + Time.timeSinceLevelLoad;
+                    EndTime = Time.timeSinceLevelLoad + m_Duration;
+                    AddCharacterInfluencers(m_Duration);
+                    MoveToInteractionPoint();
+                    if (m_OnStartCue != null)
+                    {
+                        StartCoroutine(m_OnStartCue.Prompt(Brain.Actor));
+                    }
+                }
+                else if (Time.timeSinceLevelLoad > m_HandshakeEndTime)
+                {
+                    m_IsHandshaking = false;
+                    FinishBehaviour();
+                }
+                return;
+            }
 
             Vector3 relativePos = interactionPoint - Brain.transform.position;
             relativePos.y = Brain.transform.position.y;
@@ -82,7 +109,7 @@ namespace WizardsCode.Character.AI
             // If this is an interuptable behaviour participants may finish early, leaving us with a group that is too small
             if (participants.Count < m_MinGroupSize)
             {
-                Debug.Log("Stopping behaviour because group size is too small");
+                Debug.Log(Brain.DisplayName + " is stopping " + DisplayName + " because the group size is too small");
                 FinishBehaviour();
                 return;
             }
@@ -92,13 +119,56 @@ namespace WizardsCode.Character.AI
 
         internal override void StartBehaviour(float duration)
         {
-            m_CooldownEndTime = m_CooldownDuration + Time.timeSinceLevelLoad;
+            m_Duration = duration;
+            m_HandshakeEndTime = Time.timeSinceLevelLoad + m_HandshakeTimeout;
+            m_IsHandshaking = true;
 
-            base.StartBehaviour(duration);
+            GenericActorInteractionBehaviour[] behaviours;
+            for (int i = 0; i < SensedThings.Count; i++)
+            {
+                //TODO would be more efficient to pull the behaviours from the target brain
+                //TODO this is duplicated in UpdateParticipantsList
+                behaviours = SensedThings[i].GetComponentsInChildren<GenericActorInteractionBehaviour>();
+                if (behaviours.Length == 0)
+                {
+                    continue;
+                }
+
+                for (int idx = 0; idx < behaviours.Length; idx++)
+                {
+                    if (behaviours[idx].DisplayName == this.DisplayName)
+                    {
+                        behaviours[idx].InviteToGroup(Brain);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Invite this actor to join a group proposing to enact this behaviour.
+        /// </summary>
+        /// <param name="brain">The brain extending the invite.</param>
+        internal void InviteToGroup(Brain brain)
+        {
+            //TODO actors should be more likley to engage with other actors they like or who have valuable information. The m_IsHanshaking status impacts this behaviours weight. Increase it more for some actor invitations.
+            m_IsHandshaking = true;
+        }
+
+        protected override float BaseWeight(Brain brain)
+        {
+            float weight = base.BaseWeight(brain);
+            if (m_IsHandshaking)
+            {
+                return weight * 1.2f;
+            } else
+            {
+                return weight;
+            }
         }
 
         private void MoveToInteractionPoint()
-        {// Find a point where we will meet the actos to interact
+        {
+            // Find a point where we will meet the actors to interact
             var totalX = transform.position.x;
             var totalY = transform.position.y;
             for (int i = 0; i < participants.Count; i++)
@@ -127,9 +197,7 @@ namespace WizardsCode.Character.AI
                     interactionPointT.position = interactionPoint;
                 }
                 m_OnStartCue.Mark = interactionPointName;
-            }
-
-            if (m_Agent != null)
+            } else  if (m_Agent != null)
             {
                 m_Agent.SetDestination(interactionPoint);
             }
@@ -138,17 +206,20 @@ namespace WizardsCode.Character.AI
         private void UpdateParticipantsList()
         {
             participants.Clear();
+            participants.Add(Brain);
 
             GenericActorInteractionBehaviour[] behaviours;
             for (int i = 0; i < SensedThings.Count; i++)
             {
-                // check the other actor has this behaviour
+                //TODO would be more efficient to pull the behaviours from the target brain
+                //TODO this is duplicated in StartBehaviour
                 behaviours = SensedThings[i].GetComponentsInChildren<GenericActorInteractionBehaviour>();
                 if (behaviours.Length == 0)
                 {
                     continue;
                 }
 
+                //TODO Don't test if the currently active behaviour is the same. Instead have a "handshake" protocol in which both actors agree to participate in the same behaviour on the next frame.
                 AbstractAIBehaviour behaviour = behaviours[0].Brain.ActiveBlockingBehaviour;
                 if (behaviour != null && behaviour.DisplayName == this.DisplayName)
                 {

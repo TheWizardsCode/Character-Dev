@@ -21,15 +21,19 @@ MonoBehaviour:
   m_IsBlocking: 1
   m_OnStartCue: {fileID: 11400000, guid: 716b34414e14a5b4e92780860e1caf54, type: 2}
   m_OnEndCue: {fileID: 11400000, guid: c220bd84de21d764baaf6455d6a576a8, type: 2}
-  m_MinimumWeight: 0
+  m_WeightMultiplier: 1
   m_RequiredSenses:
   - {fileID: 6169127672608557278}
   m_RequiredStats: []
-  m_CharacterInfluences: []
+  m_CharacterInfluences:
+  - statTemplate: {fileID: 11400000, guid: e7d5ac7f90040d04b892ec7dda97749d, type: 2}
+    maxChange: 3
+    applyOnCompletion: 0
   m_DesiredStateImpacts: []
   m_RequiredWorldState: []
   m_MinGroupSize: 2
   m_MaxGroupSize: 5
+  m_HandshakeTimeout: 4
   m_CooldownDuration: 60
   m_NavMeshMask: -1
 --- !u!1001 &4433615639517283308
@@ -43,6 +47,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: 101 Talking Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 3077675384217984573, guid: 2b88bfbec379c82449dc3e21f40cedf2,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 3369241727798939185, guid: 2b88bfbec379c82449dc3e21f40cedf2,
         type: 3}
@@ -103,6 +112,22 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Wander Behaviour
+      objectReference: {fileID: 0}
+    - target: {fileID: 7774908259111573700, guid: 2b88bfbec379c82449dc3e21f40cedf2,
+        type: 3}
+      propertyPath: m_DesiredStates.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7774908259111573700, guid: 2b88bfbec379c82449dc3e21f40cedf2,
+        type: 3}
+      propertyPath: m_DesiredStates.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: dafe8a104efbb6b4c9db8348013f854c,
+        type: 2}
+    - target: {fileID: 7774908259111573700, guid: 2b88bfbec379c82449dc3e21f40cedf2,
+        type: 3}
+      propertyPath: m_ShowBehaviourIcon
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2b88bfbec379c82449dc3e21f40cedf2, type: 3}

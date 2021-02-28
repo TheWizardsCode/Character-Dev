@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3454999400584466692}
   - component: {fileID: 3454999400584466693}
   m_Layer: 0
-  m_Name: Wander only Behaviour
+  m_Name: Wander On Pavements Behaviour
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -52,7 +52,7 @@ MonoBehaviour:
   m_IsBlocking: 1
   m_OnStartCue: {fileID: 0}
   m_OnEndCue: {fileID: 0}
-  m_MinimumWeight: 0
+  m_WeightMultiplier: 0.01
   m_RequiredSenses: []
   m_RequiredStats: []
   m_CharacterInfluences: []
