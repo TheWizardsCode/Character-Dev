@@ -34,6 +34,9 @@ namespace WizardsCode.Character
 
 		void Start()
 		{
+			// X and Y are reversed deliberatly, it's maths, don't ask me!
+			rotationX = transform.rotation.eulerAngles.y;
+			rotationY = -transform.rotation.eulerAngles.x;
 		}
 
 		void Update()
