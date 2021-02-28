@@ -42,20 +42,13 @@ namespace WizardsCode.Character.Stats
             }
         }
 
-        Dictionary<StatSO, StatUIPanel> stateUIObjects = new Dictionary<StatSO, StatUIPanel>();
+        Dictionary<string, StatUIPanel> stateUIObjects = new Dictionary<string, StatUIPanel>();
         void Update()
         {
             if (m_SelectionManager != null && m_SelectionManager.CurrentlySelected != null && (m_SelectedCharacter == null || !GameObject.ReferenceEquals(m_SelectedCharacter.gameObject, m_SelectionManager.CurrentlySelected)))
             {
                 m_SelectedCharacter = m_SelectionManager.CurrentlySelected.GetComponentInChildren<Brain>();
-
-                stateUIObjects.Clear();
-
-                for (int i = transform.childCount - 1; i >= 0; --i)
-                {
-                    GameObject.Destroy(transform.GetChild(i).gameObject);
-                }
-                transform.DetachChildren();
+                ClearStatesUI();
             }
 
             //TODO: don't update every frame
@@ -68,24 +61,38 @@ namespace WizardsCode.Character.Stats
                 }
 
                 StateSO[] states = m_SelectedCharacter.DesiredStates;
-                for (int i = 0; i < states.Length; i++)
+                if (states.Length != transform.childCount)
                 {
-                    if (states[i].statTemplate == null) continue;
-
-                    //TODO cache results rather than grabbing stat every cycle
-                    StatSO stat = m_SelectedCharacter.GetOrCreateStat(states[i].statTemplate);
-
-                    StatUIPanel stateUI;
-                    if (!stateUIObjects.TryGetValue(stat, out stateUI))
+                    ClearStatesUI();
+                    for (int i = 0; i < states.Length; i++)
                     {
-                        stateUI = Instantiate(statPanelTemplate, transform).GetComponent<StatUIPanel>();
-                        stateUI.stat = stat;
-                        stateUI.gameObject.SetActive(true);
+                        if (states[i].statTemplate == null) continue;
 
-                        stateUIObjects.Add(stat, stateUI);
+                        //TODO cache results rather than grabbing stat every cycle
+                        StatSO stat = m_SelectedCharacter.GetOrCreateStat(states[i].statTemplate);
+
+                        StatUIPanel stateUI;
+                        if (!stateUIObjects.TryGetValue(stat.DisplayName, out stateUI))
+                        {
+                            stateUI = Instantiate(statPanelTemplate, transform).GetComponent<StatUIPanel>();
+                            stateUI.stat = stat;
+                            stateUI.gameObject.SetActive(true);
+
+                            stateUIObjects.Add(stat.DisplayName, stateUI);
+                        }
                     }
                 }
             }
+        }
+
+        private void ClearStatesUI()
+        {
+            stateUIObjects.Clear();
+            for (int i = transform.childCount - 1; i >= 0; --i)
+            {
+                GameObject.Destroy(transform.GetChild(i).gameObject);
+            }
+            transform.DetachChildren();
         }
     }
 }
