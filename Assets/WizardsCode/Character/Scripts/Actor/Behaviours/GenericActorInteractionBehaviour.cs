@@ -81,10 +81,8 @@ namespace WizardsCode.Character.AI
                 {
                     m_IsHandshaking = false;
 
-                    m_CooldownEndTime = m_CooldownDuration + Time.timeSinceLevelLoad;
                     EndTime = Time.timeSinceLevelLoad + m_Duration;
                     AddCharacterInfluencers(m_Duration);
-                    UpdateGroupPositions(false);
                     if (m_OnStartCue != null)
                     {
                         StartCoroutine(m_OnStartCue.Prompt(Brain.Actor));
@@ -123,6 +121,7 @@ namespace WizardsCode.Character.AI
         internal override void StartBehaviour(float duration)
         {
             m_Duration = duration;
+            m_CooldownEndTime = m_CooldownDuration + Time.timeSinceLevelLoad;
             m_HandshakeEndTime = Time.timeSinceLevelLoad + m_HandshakeTimeout;
             m_IsHandshaking = true;
 
