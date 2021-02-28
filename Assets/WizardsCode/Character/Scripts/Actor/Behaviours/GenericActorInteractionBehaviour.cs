@@ -23,6 +23,8 @@ namespace WizardsCode.Character.AI
         int m_MinGroupSize = 2;
         [SerializeField, Tooltip("What is the maximum number of actors need in the group carrying out this behaviour, including this actor. Before starting this behaviour at most this many actors need to have agreed to participate in the shared behaviour. The group members are identified in the Senses definitions.")]
         int m_MaxGroupSize = 5;
+        [SerializeField, Tooltip("The distance from the centre of the interacting group that this actor should stand.")]
+        float m_GroupDistance;
         [SerializeField, Tooltip("How long will the actor wait for handshaking to complete. If this time has passed and the minimum group size has not been met then the behaviour will be aborted.")]
         float m_HandshakeTimeout = 4;
         [SerializeField, Tooltip("How long before this actor can fire this same behaviour?")]
@@ -37,7 +39,7 @@ namespace WizardsCode.Character.AI
         List<Brain> participants = new List<Brain>();
         private NavMeshAgent m_Agent;
         private string interactionPointName;
-        private Vector3 interactionPoint;
+        private Vector3 groupCenter;
         private Transform interactionPointT;
 
         public override bool IsAvailable
@@ -71,6 +73,7 @@ namespace WizardsCode.Character.AI
         protected override void OnUpdate()
         {
             UpdateParticipantsList();
+            UpdateGroupPositions(true);
 
             if (m_IsHandshaking)
             {
@@ -81,7 +84,7 @@ namespace WizardsCode.Character.AI
                     m_CooldownEndTime = m_CooldownDuration + Time.timeSinceLevelLoad;
                     EndTime = Time.timeSinceLevelLoad + m_Duration;
                     AddCharacterInfluencers(m_Duration);
-                    MoveToInteractionPoint();
+                    UpdateGroupPositions(false);
                     if (m_OnStartCue != null)
                     {
                         StartCoroutine(m_OnStartCue.Prompt(Brain.Actor));
@@ -95,10 +98,10 @@ namespace WizardsCode.Character.AI
                 return;
             }
 
-            Vector3 relativePos = interactionPoint - Brain.transform.position;
-            relativePos.y = Brain.transform.position.y;
+            Vector3 relativePos = groupCenter - Brain.Actor.transform.position;
+            relativePos.y = Brain.Actor.transform.position.y;
             Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
-            Brain.transform.rotation = rotation;
+            Brain.Actor.transform.rotation = rotation;
 
             // at the time of writing this comment we don't support adding participants during an interaction, this is here to accomodate for that when we do support it
             if (participants.Count > m_MaxGroupSize)
@@ -166,40 +169,53 @@ namespace WizardsCode.Character.AI
             }
         }
 
-        private void MoveToInteractionPoint()
+        private void UpdateGroupPositions(bool setOnNavMesh)
         {
             // Find a point where we will meet the actors to interact
-            var totalX = transform.position.x;
-            var totalY = transform.position.y;
+            float totalX = 0;
+            float totalY = 0;
             for (int i = 0; i < participants.Count; i++)
             {
                 totalX += participants[i].transform.position.x;
                 totalY += participants[i].transform.position.z;
             }
-            var centerX = totalX / (participants.Count + 1);
-            var centerZ = totalY / (participants.Count + 1);
+
+            float centerX = totalX / (participants.Count + 1);
+            float centerZ = totalY / (participants.Count + 1);
+            groupCenter = new Vector3(centerX, 0, centerZ);
+            Vector3 interactionPoint = groupCenter + (-m_GroupDistance * Brain.Actor.transform.forward);
 
             NavMeshHit hit;
-            if (NavMesh.SamplePosition(new Vector3(centerX, 0, centerZ), out hit, 5, m_NavMeshMask))
+            if (NavMesh.SamplePosition(interactionPoint, out hit, 5, m_NavMeshMask))
             {
                 interactionPoint = hit.position;
             }
             else
             {
                 FinishBehaviour();
+                return;
+            }
+
+            if (interactionPointT == null)
+            {
+                interactionPointT = new GameObject(interactionPointName).transform;
+                interactionPointT.position = interactionPoint;
             }
 
             if (m_OnStartCue != null)
             {
-                if (interactionPointT == null)
-                {
-                    interactionPointT = new GameObject(interactionPointName).transform;
-                    interactionPointT.position = interactionPoint;
-                }
                 m_OnStartCue.Mark = interactionPointName;
-            } else  if (m_Agent != null)
+            } 
+            
+            if (setOnNavMesh)
             {
-                m_Agent.SetDestination(interactionPoint);
+                if (m_Agent != null)
+                {
+                    m_Agent.SetDestination(interactionPoint);
+                } else
+                {
+                    Debug.LogError(Brain.DisplayName + " is attempting to set an interaction point on the navmesh but does not have a NavMeshAgent component.");
+                }
             }
         }
 
