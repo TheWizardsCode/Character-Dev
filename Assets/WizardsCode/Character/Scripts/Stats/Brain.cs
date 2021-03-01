@@ -167,9 +167,27 @@ namespace WizardsCode.Stats {
             }
         }
 
+        internal bool IsReadyToUpdateBehaviour
+        {
+            get
+            {
+                if (ActiveBlockingBehaviour == null)
+                {
+                    return true;
+                }
+
+                if (!ActiveBlockingBehaviour.IsExecuting || ActiveBlockingBehaviour.IsInteruptable)
+                {
+                    return true;
+                }
+
+                return Time.timeSinceLevelLoad > m_TimeOfNextUpdate;
+            }
+        }
+
         internal override void Update()
         {
-            if (Time.timeSinceLevelLoad < m_TimeOfNextUpdate) return;
+            if (!IsReadyToUpdateBehaviour) return;
 
             if (TargetInteractable != null && Vector3.SqrMagnitude(TargetInteractable.transform.position - Actor.TargetPosition) > 0.7f)
             {

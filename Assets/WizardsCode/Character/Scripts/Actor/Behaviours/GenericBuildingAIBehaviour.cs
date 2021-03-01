@@ -24,7 +24,7 @@ namespace WizardsCode.Character
         {
             base.FinishBehaviour();
 
-            m_BuiltPrefab.InstantiatePrefabs(transform.position);
+            m_BuiltPrefab.InstantiatePrefabs(transform.position, "built by " + Brain.Actor.name);
             MemorySO memory = ScriptableObject.CreateInstance<MemorySO>();
             memory.about = this.gameObject;
             memory.interactionName = DisplayName;

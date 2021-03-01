@@ -38,9 +38,10 @@ namespace WizardsCode.Character.AI
         private bool m_IsHandshaking = false;
         List<Brain> participants = new List<Brain>();
         private NavMeshAgent m_Agent;
-        private string interactionPointName;
         private Vector3 groupCenter;
         private Transform interactionPointT;
+
+        private string InteractionPointName { get; set; }
 
         public override bool IsAvailable
         {
@@ -67,7 +68,7 @@ namespace WizardsCode.Character.AI
             base.Init();
 
             m_Agent = GetComponentInParent<NavMeshAgent>();
-            interactionPointName = Brain.DisplayName + " interaction point";
+            InteractionPointName = Brain.DisplayName + " - Interaction point";
         }
 
         protected override void OnUpdate()
@@ -96,10 +97,9 @@ namespace WizardsCode.Character.AI
                 return;
             }
 
-            Vector3 relativePos = groupCenter - Brain.Actor.transform.position;
-            relativePos.y = Brain.Actor.transform.position.y;
-            Quaternion rotation = Quaternion.LookRotation(relativePos, Vector3.up);
-            Brain.Actor.transform.rotation = rotation;
+            Vector3 lookTarget = groupCenter;
+            lookTarget.y = Brain.Actor.transform.position.y;
+            Brain.Actor.transform.LookAt(lookTarget);
 
             // at the time of writing this comment we don't support adding participants during an interaction, this is here to accomodate for that when we do support it
             if (participants.Count > m_MaxGroupSize)
@@ -179,8 +179,8 @@ namespace WizardsCode.Character.AI
                 totalY += participants[i].transform.position.z;
             }
 
-            float centerX = totalX / (participants.Count + 1);
-            float centerZ = totalY / (participants.Count + 1);
+            float centerX = totalX / participants.Count;
+            float centerZ = totalY / participants.Count;
             groupCenter = new Vector3(centerX, 0, centerZ);
             Vector3 interactionPoint = groupCenter + (-m_GroupDistance * Brain.Actor.transform.forward);
 
@@ -195,15 +195,15 @@ namespace WizardsCode.Character.AI
                 return;
             }
 
-            if (interactionPointT == null)
+            if (!interactionPointT)
             {
-                interactionPointT = new GameObject(interactionPointName).transform;
-                interactionPointT.position = interactionPoint;
+                interactionPointT = new GameObject(InteractionPointName).transform;
             }
+            interactionPointT.position = interactionPoint;
 
             if (m_OnStartCue != null)
             {
-                m_OnStartCue.Mark = interactionPointName;
+                m_OnStartCue.Mark = InteractionPointName;
             } 
             
             if (setOnNavMesh)

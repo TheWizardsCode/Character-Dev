@@ -52,7 +52,7 @@ MonoBehaviour:
   m_IsBlocking: 1
   m_OnStartCue: {fileID: 11400000, guid: 716b34414e14a5b4e92780860e1caf54, type: 2}
   m_OnEndCue: {fileID: 11400000, guid: c220bd84de21d764baaf6455d6a576a8, type: 2}
-  m_MinimumWeight: 0
+  m_WeightMultiplier: 1
   m_RequiredSenses:
   - {fileID: 0}
   m_RequiredStats: []
@@ -63,6 +63,8 @@ MonoBehaviour:
   m_DesiredStateImpacts: []
   m_RequiredWorldState: []
   m_MinGroupSize: 1
-  m_MaxGroupSize: 5
+  m_MaxGroupSize: 3
+  m_GroupDistance: 0
+  m_HandshakeTimeout: 4
   m_CooldownDuration: 60
   m_NavMeshMask: 32

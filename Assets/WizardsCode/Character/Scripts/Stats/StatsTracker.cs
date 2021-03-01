@@ -45,7 +45,7 @@ namespace WizardsCode.Stats {
             {
                 if (string.IsNullOrEmpty(m_DisplayName))
                 {
-                    m_DisplayName = GenerateName();
+                    return transform.root.gameObject.name + " - Brain";
                 }
                 return m_DisplayName;
             }

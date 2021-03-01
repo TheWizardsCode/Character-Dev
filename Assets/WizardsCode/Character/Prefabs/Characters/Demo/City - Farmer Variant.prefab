@@ -93,6 +93,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: City - Farmer Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 2959679729133948924, guid: 14de40540db20504189c2c08ed9f59ce,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 13
+      objectReference: {fileID: 0}
     - target: {fileID: 3954965600900789198, guid: 14de40540db20504189c2c08ed9f59ce,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -153,10 +158,20 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4739704030405272878, guid: 14de40540db20504189c2c08ed9f59ce,
+        type: 3}
+      propertyPath: m_MaxGroupSize
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 5099526883017597008, guid: 14de40540db20504189c2c08ed9f59ce,
         type: 3}
       propertyPath: navMeshAreaMask
       value: 32
+      objectReference: {fileID: 0}
+    - target: {fileID: 5771798962798145767, guid: 14de40540db20504189c2c08ed9f59ce,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 14de40540db20504189c2c08ed9f59ce, type: 3}
@@ -238,5 +253,10 @@ PrefabInstance:
       propertyPath: m_RequiredSenses.Array.data[0]
       value: 
       objectReference: {fileID: 7070847229558523531}
+    - target: {fileID: 4480479654926369997, guid: 7a084f62096bdbd4eb786975c21a6fd3,
+        type: 3}
+      propertyPath: m_MaxGroupSize
+      value: 4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7a084f62096bdbd4eb786975c21a6fd3, type: 3}
