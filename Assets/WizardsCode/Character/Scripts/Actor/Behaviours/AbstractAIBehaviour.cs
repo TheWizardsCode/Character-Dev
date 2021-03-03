@@ -44,7 +44,7 @@ namespace WizardsCode.Character
         protected ActorCue m_OnEndCue;
 
         [Header("Conditions")]
-        [SerializeField, Range(0.01f, 5), Tooltip("The Weight Multuplier is used to lower or higher the priority of this behaviour relative to others the actor has. The higher this multiplier is the more likely it is the behaviour will be fired. The lower, the less likely.")]
+        [SerializeField, Range(0.1f, 5), Tooltip("The Weight Multiplier is used to lower or higher the priority of this behaviour relative to others the actor has. The higher this multiplier is the more likely it is the behaviour will be fired. The lower, the less likely.")]
         float m_WeightMultiplier = 1;
         [SerializeField, Tooltip("The required senses about the current world state around the actor. For example, we may have a sense for whether there is a willing mate nearby which will permit a make babies  behaviour to fire. Another example is that a" +
             "character will only sleep in the open if they sense there are no threats nearby.")]
@@ -261,7 +261,7 @@ namespace WizardsCode.Character
         /// <summary>
         /// Is this behaviour the currently executing behaviour?
         /// </summary>
-        public bool IsExecuting {
+        public virtual bool IsExecuting {
             get { return m_IsExecuting; }
             internal set
             {
@@ -302,6 +302,7 @@ namespace WizardsCode.Character
         /// </summary>
         internal virtual void StartBehaviour(float duration)
         {
+            IsExecuting = true;
             EndTime = Time.timeSinceLevelLoad + duration;
             AddCharacterInfluencers(duration);
 
@@ -369,11 +370,12 @@ namespace WizardsCode.Character
                 {
                     if (brain.UnsatisfiedDesiredStates[i].statTemplate == DesiredStateImpacts[idx].statTemplate)
                     {
+                        float impact = Math.Abs(brain.UnsatisfiedDesiredStates[i].normalizedTargetValue - brain.GetStat(brain.UnsatisfiedDesiredStates[i].statTemplate).NormalizedValue);
                         reasoning.Append("They are not ");
                         reasoning.Append(brain.UnsatisfiedDesiredStates[i].name);
                         reasoning.AppendLine(" and this behaviour will help.");
                         //TODO higher weight should be given to behaviours that will bring the stat into the desired state
-                        weight += (brain.UnsatisfiedDesiredStates.Count - i);
+                        weight += impact;
                     }
                 }
             }

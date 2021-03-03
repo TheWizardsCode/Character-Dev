@@ -120,6 +120,7 @@ namespace WizardsCode.Character.AI
 
         internal override void StartBehaviour(float duration)
         {
+            IsExecuting = true;
             m_Duration = duration;
             m_CooldownEndTime = m_CooldownDuration + Time.timeSinceLevelLoad;
             m_HandshakeEndTime = Time.timeSinceLevelLoad + m_HandshakeTimeout;
@@ -152,7 +153,7 @@ namespace WizardsCode.Character.AI
         /// <param name="brain">The brain extending the invite.</param>
         internal void InviteToGroup(Brain brain)
         {
-            //TODO actors should be more likley to engage with other actors they like or who have valuable information. The m_IsHanshaking status impacts this behaviours weight. Increase it more for some actor invitations.
+            //TODO actors should be more likley to engage with other actors they like or who have valuable information.             
             m_IsHandshaking = true;
         }
 

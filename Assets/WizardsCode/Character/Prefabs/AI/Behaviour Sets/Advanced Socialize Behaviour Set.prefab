@@ -53,7 +53,7 @@ MonoBehaviour:
   m_IsBlocking: 1
   m_OnStartCue: {fileID: 0}
   m_OnEndCue: {fileID: 0}
-  m_WeightMultiplier: 1
+  m_WeightMultiplier: 0.3
   m_RequiredSenses: []
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
@@ -86,7 +86,7 @@ MonoBehaviour:
   m_IsBlocking: 1
   m_OnStartCue: {fileID: 11400000, guid: 716b34414e14a5b4e92780860e1caf54, type: 2}
   m_OnEndCue: {fileID: 11400000, guid: c220bd84de21d764baaf6455d6a576a8, type: 2}
-  m_WeightMultiplier: 1
+  m_WeightMultiplier: 0.3
   m_RequiredSenses:
   - {fileID: 0}
   m_RequiredStats: []
@@ -94,7 +94,9 @@ MonoBehaviour:
   - statTemplate: {fileID: 11400000, guid: e7d5ac7f90040d04b892ec7dda97749d, type: 2}
     maxChange: 3
     applyOnCompletion: 0
-  m_DesiredStateImpacts: []
+  m_DesiredStateImpacts:
+  - statTemplate: {fileID: 11400000, guid: e7d5ac7f90040d04b892ec7dda97749d, type: 2}
+    objective: 2
   m_RequiredWorldState: []
   m_MinGroupSize: 2
   m_MaxGroupSize: 4

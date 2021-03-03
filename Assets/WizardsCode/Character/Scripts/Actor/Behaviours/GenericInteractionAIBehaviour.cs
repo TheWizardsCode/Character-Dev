@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using WizardsCode.Character;
+using WizardsCode.Stats;
 
 namespace WizardsCode.Character
 {
@@ -63,9 +64,10 @@ namespace WizardsCode.Character
 
                 if (CurrentInteractableTarget == null)
                 {
-                    reasoning.AppendLine("Couldn't see or recall a suitable interactable nearby.");
-                    return false;
-                } else
+                    reasoning.AppendLine("Couldn't see or recall a suitable interactable nearby, will have to find one first.");
+                    return true;
+                }
+                else
                 {
                     reasoning.Append("Maybe go to ");
                     reasoning.Append(CurrentInteractableTarget.DisplayName);
@@ -73,6 +75,17 @@ namespace WizardsCode.Character
                     reasoning.AppendLine(DisplayName);
                     return true;
                 }
+            }
+        }
+
+        internal override float Weight(Brain brain)
+        {
+            if (CurrentInteractableTarget != null)
+            {
+                return base.Weight(brain);
+            } else
+            {
+                return base.Weight(brain) / 2;
             }
         }
 

@@ -173,6 +173,11 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 12
       objectReference: {fileID: 0}
+    - target: {fileID: 8342120185442673979, guid: 14de40540db20504189c2c08ed9f59ce,
+        type: 3}
+      propertyPath: m_FallbackBehaviour
+      value: 
+      objectReference: {fileID: 3279869537399870096}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 14de40540db20504189c2c08ed9f59ce, type: 3}
 --- !u!4 &6747407209180496142 stripped
@@ -181,6 +186,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 7728536887392580288}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3279869537399870096 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5099526883017597008, guid: 14de40540db20504189c2c08ed9f59ce,
+    type: 3}
+  m_PrefabInstance: {fileID: 7728536887392580288}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74c88fa94d915b74baa4e2395df4111f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &8404173501500763462
 PrefabInstance:
   m_ObjectHideFlags: 0

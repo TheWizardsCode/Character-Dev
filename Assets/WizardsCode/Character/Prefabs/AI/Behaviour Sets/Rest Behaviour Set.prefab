@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 190556795456077444}
   - component: {fileID: 190556795456077563}
   m_Layer: 0
-  m_Name: Resting Behaviour Set
+  m_Name: Rest Behaviour Set
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -52,7 +52,7 @@ MonoBehaviour:
   m_IsBlocking: 1
   m_OnStartCue: {fileID: 0}
   m_OnEndCue: {fileID: 0}
-  m_MinimumWeight: 0
+  m_WeightMultiplier: 1
   m_RequiredSenses: []
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
@@ -64,3 +64,4 @@ MonoBehaviour:
     objective: 2
   m_RequiredWorldState: []
   awarenessRange: 10
+  m_NoInteractableBehaviour: {fileID: 0}

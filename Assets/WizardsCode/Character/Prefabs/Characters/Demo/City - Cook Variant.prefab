@@ -171,6 +171,11 @@ PrefabInstance:
       propertyPath: m_MaxGroupSize
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 8422524214271675392, guid: 67bb0574aa4ea444a86d7a5fa07d7b8b,
+        type: 3}
+      propertyPath: m_FallbackBehaviour
+      value: 
+      objectReference: {fileID: 8436170406192787387}
     - target: {fileID: 8911331064041948197, guid: 67bb0574aa4ea444a86d7a5fa07d7b8b,
         type: 3}
       propertyPath: m_RootOrder
@@ -184,6 +189,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 3815006139154573008}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8436170406192787387 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4747589603936340331, guid: 67bb0574aa4ea444a86d7a5fa07d7b8b,
+    type: 3}
+  m_PrefabInstance: {fileID: 3815006139154573008}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74c88fa94d915b74baa4e2395df4111f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &8633388821196651647
 PrefabInstance:
   m_ObjectHideFlags: 0

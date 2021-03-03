@@ -15,6 +15,10 @@ namespace WizardsCode.Stats {
         , IDebug
 #endif
     {
+        [Header("Behaviour Manager")]
+        [SerializeField, Tooltip("If the actor has an interaction behaviour as the preferred behaviour and no interactable is nearby then this behaviour will become the active behaviour. This will typically be a search behaviour of some form.")]
+        AbstractAIBehaviour m_FallbackBehaviour;
+
         [Header("UI")]
         [SerializeField, Tooltip("Should the character render an icon that indicates their current behaviour.")]
         bool m_ShowBehaviourIcon = true;
@@ -222,7 +226,7 @@ namespace WizardsCode.Stats {
             {
                 isInterupting = true;
             }
-
+             
             StringBuilder log = new StringBuilder();
             AbstractAIBehaviour candidateBehaviour = null;
             float highestWeight = float.MinValue;
@@ -244,6 +248,9 @@ namespace WizardsCode.Stats {
                     log.AppendLine(m_AvailableBehaviours[i].reasoning.ToString());
 
                     currentWeight = m_AvailableBehaviours[i].Weight(this);
+                    log.Append(m_AvailableBehaviours[i].DisplayName);
+                    log.Append(" has a weight of ");
+                    log.AppendLine(currentWeight.ToString());
                     if (currentWeight > highestWeight)
                     {
                         candidateBehaviour = m_AvailableBehaviours[i];
@@ -263,23 +270,33 @@ namespace WizardsCode.Stats {
             if (candidateBehaviour.IsBlocking)
             {
                 ActiveBlockingBehaviour = candidateBehaviour;
-                ActiveBlockingBehaviour.IsExecuting = true;
                 if (ActiveBlockingBehaviour is GenericInteractionAIBehaviour)
                 {
                     TargetInteractable = ((GenericInteractionAIBehaviour)ActiveBlockingBehaviour).CurrentInteractableTarget;
+                    if (TargetInteractable == null)
+                    {
+                        ActiveBlockingBehaviour = m_FallbackBehaviour;
+                        ActiveBlockingBehaviour.StartBehaviour(ActiveBlockingBehaviour.MaximumExecutionTime);
+                    } else
+                    {
+                        ActiveBlockingBehaviour.IsExecuting = true;
+                        // Don't start the behaviour since we need the interactable to trigger the start.
+                    }
                 }
                 else
                 {
                     TargetInteractable = null;
                     ActiveBlockingBehaviour.StartBehaviour(ActiveBlockingBehaviour.MaximumExecutionTime);
                 }
-            } else
+            }
+            else
             {
                 candidateBehaviour.EndTime = 0;
                 candidateBehaviour.IsExecuting = true;
                 candidateBehaviour.StartBehaviour(ActiveBlockingBehaviour.MaximumExecutionTime);
                 ActiveNonBlockingBehaviours.Add(candidateBehaviour);
             }
+
 
             log.Insert(0, "\n");
             // Note this section is inserted in reverse as we want it at the start of the string.
@@ -291,7 +308,13 @@ namespace WizardsCode.Stats {
             }
             else
             {
-                log.Insert(0, candidateBehaviour.DisplayName);
+                if (ActiveBlockingBehaviour == candidateBehaviour) {
+                    log.Insert(0, candidateBehaviour.DisplayName);
+                } else
+                {
+                    log.Insert(0, candidateBehaviour.DisplayName);
+                    log.Insert(0, " look for a place to ");
+                }
             }
             log.Insert(0, " decided to ");
             log.Insert(0, DisplayName);
