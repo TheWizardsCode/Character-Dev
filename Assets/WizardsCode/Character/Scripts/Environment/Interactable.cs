@@ -47,11 +47,11 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("The cooldown time before a character can be influenced by this influencer again.")]
         float m_Cooldown = 30;
 
-        Brain m_ReservedFor = null;
+        List<StatsTracker> m_Reservations = new List<StatsTracker>();
 
         StatsTracker m_StatsTracker;
         private Dictionary<Brain, float> m_TimeOfLastInfluence = new Dictionary<Brain, float>();
-        private List<StatsTracker> m_CurrentInteractors = new List<StatsTracker>();
+        private List<StatsTracker> m_ActiveInteractors = new List<StatsTracker>();
 
         /// <summary>
         /// Get the StatInfluences that act upon a character interacting with this item.
@@ -106,32 +106,29 @@ namespace WizardsCode.Character
 
         /// <summary>
         /// Reserve this interactable for a given actor. This actor should
-        /// be on their way to the interactable. No other actor can reserve
-        /// this interactable until the reservation has been cleared with
-        /// a call to ClearReservation(brain).
+        /// be on their way to the interactable. Only a limited number of actors can reserve
+        /// this interactable. Once a reservation is no longer needed then call to ClearReservation(brain).
         /// </summary>
-        /// <param name="brain">The actor who reseved this interactable.</param>
+        /// <param name="statsTracker">The actor who reseved this interactable.</param>
         /// <returns>True if the the reservation was succesful.</returns>
-        internal bool ReserveFor(Brain brain)
+        internal bool ReserveFor(StatsTracker statsTracker)
         {
-            if (m_ReservedFor == null)
-            {
-                m_ReservedFor = brain;
-                return true;
-            }
-            else
+            if (m_Reservations.Count + m_ActiveInteractors.Count >= m_MaxInteractors)
             {
                 return false;
             }
+
+            m_Reservations.Add(statsTracker);
+            return true;
         }
 
         /// <summary>
         /// Clears any reservation for this interactable by an actor using
         /// the ReservedFor(brain) method;
         /// </summary>
-        internal void ClearReservation()
+        internal void ClearReservation(Brain brain)
         {
-            m_ReservedFor = null;
+            m_Reservations.Remove(brain);
         }
 
         /// <summary>
@@ -181,10 +178,15 @@ namespace WizardsCode.Character
             }
         }
 
+        /// <summary>
+        /// Tests to see if the interactable has space in the reservation queue 
+        /// for this actor.
+        /// </summary>
+        /// <param name="brain"></param>
+        /// <returns></returns>
         public bool HasSpaceFor(Brain brain)
         {
-            return (m_ReservedFor == null || m_ReservedFor == brain)
-                && m_MaxInteractors > m_CurrentInteractors.Count; 
+            return m_MaxInteractors > m_ActiveInteractors.Count + m_Reservations.Count; 
         }
 
         internal bool HasRequiredObjectStats()
@@ -228,7 +230,7 @@ namespace WizardsCode.Character
             Brain brain = other.transform.root.GetComponentInChildren<Brain>();
             if (brain == null
                 || (!m_IsRepeating
-                && m_CurrentInteractors.Contains(brain)))
+                && m_ActiveInteractors.Contains(brain)))
             {
                 return;
             }
@@ -268,7 +270,8 @@ namespace WizardsCode.Character
 
                 if (brain.TryAddInfluencer(influencer))
                 {
-                    m_CurrentInteractors.Add(brain);
+                    m_Reservations.Remove(brain);
+                    m_ActiveInteractors.Add(brain);
                     m_TimeOfLastInfluence.Remove(brain);
                     m_TimeOfLastInfluence.Add(brain, Time.timeSinceLevelLoad);
                 }
@@ -277,7 +280,7 @@ namespace WizardsCode.Character
 
         internal void StopCharacterInteraction(StatsTracker statsTracker)
         {
-            m_CurrentInteractors.Remove(statsTracker);
+            m_ActiveInteractors.Remove(statsTracker);
             if (m_DestroyOnUse)
             {
                 Destroy(gameObject, 0.05f);
