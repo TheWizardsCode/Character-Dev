@@ -58,11 +58,11 @@ MonoBehaviour:
   m_CharacterInfluences: []
   m_DesiredStateImpacts: []
   m_RequiredWorldState: []
-  minTimeBetweenRandomPathChanges: 5
-  maxTimeBetweenRandomPathChanges: 15
+  minTimeBetweenRandomPathChanges: 30
+  maxTimeBetweenRandomPathChanges: 45
   minDistanceOfRandomPathChange: 30
   maxDistanceOfRandomPathChange: 100
   minAngleOfRandomPathChange: -100
   maxAngleOfRandomPathChange: 100
   m_MaxWanderRange: 500
-  navMeshAreaMask: -1
+  navMeshAreaMask: 32

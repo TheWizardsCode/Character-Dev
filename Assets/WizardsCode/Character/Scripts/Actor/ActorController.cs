@@ -38,6 +38,14 @@ namespace WizardsCode.Character
         }
 
         /// <summary>
+        /// Stop the actor from moving. Clearing the current path if there is one.
+        /// </summary>
+        internal void StopMoving()
+        {
+            m_Agent.ResetPath();
+        }
+
+        /// <summary>
         /// Prompt the actor to enact a cue. A cue describes
         /// a position and actions that an actor should take.
         /// </summary>

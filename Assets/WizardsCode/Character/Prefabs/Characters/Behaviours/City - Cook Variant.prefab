@@ -161,10 +161,25 @@ PrefabInstance:
       propertyPath: m_Name
       value: Wander Behaviour
       objectReference: {fileID: 0}
+    - target: {fileID: 4747589603936340329, guid: 67bb0574aa4ea444a86d7a5fa07d7b8b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4747589603936340331, guid: 67bb0574aa4ea444a86d7a5fa07d7b8b,
         type: 3}
       propertyPath: navMeshAreaMask
       value: 32
+      objectReference: {fileID: 0}
+    - target: {fileID: 4747589603936340331, guid: 67bb0574aa4ea444a86d7a5fa07d7b8b,
+        type: 3}
+      propertyPath: minTimeBetweenRandomPathChanges
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 4747589603936340331, guid: 67bb0574aa4ea444a86d7a5fa07d7b8b,
+        type: 3}
+      propertyPath: maxTimeBetweenRandomPathChanges
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 7670803640006332908, guid: 67bb0574aa4ea444a86d7a5fa07d7b8b,
         type: 3}
@@ -175,7 +190,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_FallbackBehaviour
       value: 
-      objectReference: {fileID: 8436170406192787387}
+      objectReference: {fileID: 6812425837069543323}
     - target: {fileID: 8911331064041948197, guid: 67bb0574aa4ea444a86d7a5fa07d7b8b,
         type: 3}
       propertyPath: m_RootOrder
@@ -189,11 +204,115 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 3815006139154573008}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8436170406192787387 stripped
+--- !u!1001 &8176292348670473886
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 375127689290169381}
+    m_Modifications:
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.003282249
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.12968259
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466693, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: minTimeBetweenRandomPathChanges
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466693, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: maxTimeBetweenRandomPathChanges
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466693, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_MaxWanderRange
+      value: 250
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466693, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: minDistanceOfRandomPathChange
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466693, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: maxDistanceOfRandomPathChange
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466693, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: minAngleOfRandomPathChange
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466693, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: maxAngleOfRandomPathChange
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466695, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_Name
+      value: Wander On Pavements Behaviour
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4, type: 3}
+--- !u!114 &6812425837069543323 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4747589603936340331, guid: 67bb0574aa4ea444a86d7a5fa07d7b8b,
+  m_CorrespondingSourceObject: {fileID: 3454999400584466693, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
     type: 3}
-  m_PrefabInstance: {fileID: 3815006139154573008}
+  m_PrefabInstance: {fileID: 8176292348670473886}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1

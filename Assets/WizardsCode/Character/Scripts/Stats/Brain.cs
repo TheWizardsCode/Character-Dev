@@ -109,7 +109,7 @@ namespace WizardsCode.Stats {
             m_Camera = Camera.main;
 
             m_Controller = GetComponentInParent<ActorController>();
-            Memory = GetComponentInChildren<MemoryController>();
+            Memory = transform.root.GetComponentInChildren<MemoryController>();
 
             if (m_IconUI == null)
             {
@@ -180,9 +180,9 @@ namespace WizardsCode.Stats {
                     return true;
                 }
 
-                if (!ActiveBlockingBehaviour.IsExecuting || ActiveBlockingBehaviour.IsInteruptable)
+                if (ActiveBlockingBehaviour.IsExecuting && !ActiveBlockingBehaviour.IsInteruptable)
                 {
-                    return true;
+                    return false;
                 }
 
                 return Time.timeSinceLevelLoad > m_TimeOfNextUpdate;
@@ -191,7 +191,7 @@ namespace WizardsCode.Stats {
 
         internal override void Update()
         {
-            if (!IsReadyToUpdateBehaviour) return;
+             if (!IsReadyToUpdateBehaviour) return;
 
             if (TargetInteractable != null && Vector3.SqrMagnitude(TargetInteractable.transform.position - Actor.TargetPosition) > 0.7f)
             {
@@ -239,16 +239,30 @@ namespace WizardsCode.Stats {
 
                 if (m_AvailableBehaviours[i].IsExecuting)
                 {
-                    log.AppendLine("Already executing no need to start it again.");
-                    continue;
+                    if (m_AvailableBehaviours[i].IsInteruptable)
+                    {
+                        log.AppendLine("Already executing but can interupt - checking requirements are still valid.");
+                    }
+                    else
+                    {
+                        log.AppendLine("Already executing and cannot interupt - no need to start it again though.");
+                        if (m_AvailableBehaviours[i].Weight(this) > highestWeight)
+                        {
+                            candidateBehaviour = m_AvailableBehaviours[i];
+                            highestWeight = m_AvailableBehaviours[i].Weight(this);
+                            log.Append(m_AvailableBehaviours[i].DisplayName);
+                            log.Append(" has a weight of ");
+                            log.AppendLine(currentWeight.ToString());
+                        }
+                        continue;
+                    }
                 }
 
                 if (m_AvailableBehaviours[i].IsAvailable)
                 {
                     log.AppendLine(m_AvailableBehaviours[i].reasoning.ToString());
 
-                    currentWeight = m_AvailableBehaviours[i].Weight(this);
-                    log.Append(m_AvailableBehaviours[i].DisplayName);
+                    currentWeight = m_AvailableBehaviours[i].Weight(this); log.Append(m_AvailableBehaviours[i].DisplayName);
                     log.Append(" has a weight of ");
                     log.AppendLine(currentWeight.ToString());
                     if (currentWeight > highestWeight)
@@ -260,7 +274,7 @@ namespace WizardsCode.Stats {
                 log.AppendLine(m_AvailableBehaviours[i].reasoning.ToString());
             }
 
-            if (candidateBehaviour == null) return;
+            if (candidateBehaviour == null) return; 
 
             if (isInterupting && candidateBehaviour != ActiveBlockingBehaviour)
             {

@@ -91,6 +91,7 @@ namespace WizardsCode.Character
         internal override void FinishBehaviour()
         {
             base.FinishBehaviour();
+            Brain.Actor.StopMoving();
             timeToNextWanderPathChange = float.MinValue;
         }
 
@@ -148,7 +149,7 @@ namespace WizardsCode.Character
                     }
 
                     NavMeshHit hit;
-                    if (!NavMesh.SamplePosition(position, out hit, transform.lossyScale.y * 2, navMeshAreaMask))
+                    if (!NavMesh.SamplePosition(position, out hit, transform.lossyScale.y * 5, navMeshAreaMask))
                     {
                         // This is not a valid NavMesh position, abort for this frame
                         continue;

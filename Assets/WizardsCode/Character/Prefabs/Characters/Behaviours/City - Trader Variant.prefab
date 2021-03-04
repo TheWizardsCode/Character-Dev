@@ -237,6 +237,11 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 12
       objectReference: {fileID: 0}
+    - target: {fileID: 6513592285425570505, guid: a01951924c6df5f449266d89b9cf2415,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6513592285425570507, guid: a01951924c6df5f449266d89b9cf2415,
         type: 3}
       propertyPath: navMeshAreaMask
@@ -267,3 +272,97 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74c88fa94d915b74baa4e2395df4111f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1001 &7212527088540269581
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 9065966882998488872}
+    m_Modifications:
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.003282249
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.12968259
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466693, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: minDistanceOfRandomPathChange
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466693, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: maxDistanceOfRandomPathChange
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466693, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_MaxWanderRange
+      value: 250
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466693, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: minAngleOfRandomPathChange
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466693, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: maxAngleOfRandomPathChange
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466695, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_Name
+      value: Wander On Pavements Behaviour
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4, type: 3}
