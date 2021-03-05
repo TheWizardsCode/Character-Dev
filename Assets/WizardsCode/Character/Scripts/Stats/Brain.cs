@@ -205,7 +205,11 @@ namespace WizardsCode.Stats {
 
         void LateUpdate()
         {
-            if (!m_ShowBehaviourIcon) return;
+            if (!m_ShowBehaviourIcon)
+            {
+                m_IconUI.gameObject.SetActive(false);
+                return;
+            }
 
             if (m_IconUI.sprite != null)
             {
@@ -257,7 +261,7 @@ namespace WizardsCode.Stats {
                         continue;
                     }
                 }
-
+                
                 if (m_AvailableBehaviours[i].IsAvailable)
                 {
                     log.AppendLine(m_AvailableBehaviours[i].reasoning.ToString());

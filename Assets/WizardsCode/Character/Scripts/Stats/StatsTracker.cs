@@ -17,8 +17,6 @@ namespace WizardsCode.Stats {
         , IDebug
 #endif
     {
-        [SerializeField, Tooltip("Name of the owner of this stats tracker. If null a name will be generated.")]
-        string m_DisplayName;
         [SerializeField, Tooltip("Desired States are the states that the actor would like to satisfy. These are, essentially, the things that drive the actor.")]
         StateSO[] m_DesiredStates = default;
 
@@ -43,11 +41,7 @@ namespace WizardsCode.Stats {
         {
             get
             {
-                if (string.IsNullOrEmpty(m_DisplayName))
-                {
-                    return transform.root.gameObject.name + " - Brain";
-                }
-                return m_DisplayName;
+                return transform.root.gameObject.name;
             }
         }
 

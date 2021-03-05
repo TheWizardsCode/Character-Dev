@@ -24,6 +24,11 @@ namespace WizardsCode.Utility.UI
             Time.timeScale = 0;
         }
 
+        private void OnDestroy()
+        {
+            Time.timeScale = 1;
+        }
+
         // Update is called once per frame
         void Update()
         {
