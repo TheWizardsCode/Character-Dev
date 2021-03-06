@@ -52,7 +52,7 @@ namespace WizardsCode.Character
         /// a position and actions that an actor should take.
         /// </summary>
         /// <param name="cue">The cue to enact.</param>
-        internal void Prompt(ActorCue cue)
+        public void Prompt(ActorCue cue)
         {
             cueCoroutine = cue.Prompt(this);
             if (cueCoroutine != null)
