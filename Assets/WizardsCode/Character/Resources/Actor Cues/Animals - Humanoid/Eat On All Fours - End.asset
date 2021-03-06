@@ -10,13 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 95162dea08fa43a42b2ebe0dbe2ab9a2, type: 3}
-  m_Name: Wake Up
+  m_Name: Eat On All Fours - End
   m_EditorClassIdentifier: 
   markName: 
   audioClip: {fileID: 0}
   dialogue: 
-  paramName: Sleeping
-  paramType: 2
+  m_LayerName: 
+  m_LayerWeight: 1
+  m_LayerChangeSpeed: 5
+  paramName: Reset
+  paramType: 3
   paramFloatValue: 0
   paramIntValue: 0
   paramBoolValue: 0

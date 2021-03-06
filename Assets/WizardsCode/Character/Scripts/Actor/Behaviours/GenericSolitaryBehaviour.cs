@@ -11,6 +11,27 @@ namespace WizardsCode.Character
     /// </summary>
     public class GenericSolitaryBehaviour : AbstractAIBehaviour
     {
+        [Header("Solitary Action Controls")]
+        [SerializeField, Tooltip("The time, in seconds, between possible executions of this behaviour.")]
+        float m_CooldownDuration = 60;
 
+        float m_EndCooldownTime = float.MaxValue;
+
+        public override bool IsAvailable
+        {
+            get {
+                if (m_EndCooldownTime < Time.timeSinceLevelLoad)
+                {
+                    return false;
+                }
+                return base.IsAvailable; 
+            }
+        }
+
+        internal override void StartBehaviour(float duration)
+        {
+            m_EndCooldownTime = Time.timeSinceLevelLoad + m_CooldownDuration;
+            base.StartBehaviour(duration);
+        }
     }
 }

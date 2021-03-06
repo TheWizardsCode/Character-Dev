@@ -50,7 +50,9 @@ namespace WizardsCode.Character
         public int animationLayer;
         [SerializeField, Tooltip("The normalized time from which to start the animation.")]
         public float animationNormalizedTime = 0;
-        private IEnumerator coroutine;
+
+        private ActorController m_Actor;
+        private int m_LayerIndex;
 
         /// <summary>
         /// Get or set the mark name, that is the name of an object in the scene the character should move to when this cue is prompted.
@@ -69,59 +71,60 @@ namespace WizardsCode.Character
         /// <returns>An optional coroutine that shouold be started by the calling MonoBehaviour</returns>
         public virtual IEnumerator Prompt(ActorController actor)
         {
-            ProcessMove(actor);
-            ProcessAudio(actor);
-            ProcessAnimationLayerWeights(actor);
-            ProcessAnimationParameters(actor);
-            ProcessAnimationClips(actor);
+            m_Actor = actor;
 
-            return coroutine;
+            ProcessMove();
+            ProcessAudio();
+            ProcessAnimationLayerWeights();
+            ProcessAnimationParameters();
+            ProcessAnimationClips();
+
+            return UpdateCoroutine();
         }
 
-        private void ProcessAnimationLayerWeights(ActorController actor)
+        private void ProcessAnimationLayerWeights()
         {
-            int layerIndex = actor.Animator.GetLayerIndex(m_LayerName);
-            if (actor.Animator.GetLayerWeight(layerIndex) != m_LayerWeight)
-            {
-                coroutine = ChangeLayerWeight(layerIndex, m_LayerWeight, actor);
-            }
+            m_LayerIndex = m_Actor.Animator.GetLayerIndex(m_LayerName);
         }
 
-        internal IEnumerator ChangeLayerWeight(int layerIndex, float targetWeight, ActorController actor)
+        internal IEnumerator UpdateCoroutine()
         {
-            float currentWeight = actor.Animator.GetLayerWeight(layerIndex);
-            while (!Mathf.Approximately(currentWeight, m_LayerWeight))
+            // Process Layers
+            if (m_LayerIndex >= 0 && m_Actor.Animator.GetLayerWeight(m_LayerIndex) != m_LayerWeight)
             {
-                currentWeight = actor.Animator.GetLayerWeight(layerIndex);
-                float delta = (m_LayerWeight - currentWeight) * (Time.deltaTime * m_LayerChangeSpeed);
-                actor.Animator.SetLayerWeight(layerIndex, currentWeight + delta);
-                yield return new WaitForEndOfFrame();
+                float originalWeight = m_Actor.Animator.GetLayerWeight(m_LayerIndex);
+                float currentWeight = originalWeight;
+                while (!Mathf.Approximately(currentWeight, m_LayerWeight))
+                {
+                    currentWeight = m_Actor.Animator.GetLayerWeight(m_LayerIndex);
+                    float delta = (m_LayerWeight - currentWeight) * (Time.deltaTime * m_LayerChangeSpeed);
+                    m_Actor.Animator.SetLayerWeight(m_LayerIndex, currentWeight + delta);
+                    yield return new WaitForEndOfFrame();
+                }
             }
-
-            actor.Animator.SetLayerWeight(layerIndex, m_LayerWeight);
         }
 
         /// <summary>
         /// If this cue has any animation parameter changes then have an actor make those changes.
         /// </summary>
-        /// <param name="actor">The actor to enact the animation changes.</param>
-        private void ProcessAnimationParameters(ActorController actor)
+        /// <param name="m_Actor">The actor to enact the animation changes.</param>
+        private void ProcessAnimationParameters()
         {
             if (!string.IsNullOrWhiteSpace(paramName))
             {
                 switch (paramType)
                 {
                     case ActorCue.ParameterType.Trigger:
-                        actor.Animator.SetTrigger(paramName);
+                        m_Actor.Animator.SetTrigger(paramName);
                         break;
                     case ActorCue.ParameterType.Bool:
-                        actor.Animator.SetBool(paramName, paramBoolValue);
+                        m_Actor.Animator.SetBool(paramName, paramBoolValue);
                         break;
                     case ActorCue.ParameterType.Int:
-                        actor.Animator.SetInteger(paramName, paramIntValue);
+                        m_Actor.Animator.SetInteger(paramName, paramIntValue);
                         break;
                     case ActorCue.ParameterType.Float:
-                        actor.Animator.SetBool(paramName, paramBoolValue);
+                        m_Actor.Animator.SetBool(paramName, paramBoolValue);
                         break;
                 }
             }
@@ -130,39 +133,39 @@ namespace WizardsCode.Character
         /// <summary>
         /// The name of an animation clip to play upon this cue.
         /// </summary>
-        /// <param name="actor">The actor to enact the animation changes.</param>
-        private void ProcessAnimationClips(ActorController actor)
+        /// <param name="m_Actor">The actor to enact the animation changes.</param>
+        private void ProcessAnimationClips()
         {
-            if (string.IsNullOrWhiteSpace(animationClipName))
+            if (!string.IsNullOrWhiteSpace(animationClipName))
             {
-                actor.Animator.Play(animationClipName, animationLayer, animationNormalizedTime);
+                m_Actor.Animator.Play(animationClipName, animationLayer, animationNormalizedTime);
             }
         }
 
         /// <summary>
         /// If this cue has a mark defined move to it.
         /// </summary>
-        void ProcessMove(ActorController actor)
+        void ProcessMove()
         {
             if (!string.IsNullOrWhiteSpace(markName))
             {
-                NavMeshAgent agent = actor.GetComponent<NavMeshAgent>();
+                NavMeshAgent agent = m_Actor.GetComponent<NavMeshAgent>();
                 GameObject go = GameObject.Find(markName);
                 if (go != null)
                 {
                     agent.SetDestination(go.transform.position);
                 } else
                 {
-                    Debug.LogWarning(actor.name + "  has a mark set, but the mark doesn't exist in the scene. The name set is " + markName);
+                    Debug.LogWarning(m_Actor.name + "  has a mark set, but the mark doesn't exist in the scene. The name set is " + markName);
                 }
             }
         }
 
-        void ProcessAudio(ActorController actor)
+        void ProcessAudio()
         {
             if (audioClip != null)
             {
-                AudioSource source = actor.GetComponent<AudioSource>();
+                AudioSource source = m_Actor.GetComponent<AudioSource>();
                 source.clip = audioClip;
                 source.Play();
             }

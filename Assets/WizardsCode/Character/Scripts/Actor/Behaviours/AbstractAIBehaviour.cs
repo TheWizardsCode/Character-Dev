@@ -40,7 +40,7 @@ namespace WizardsCode.Character
         [Header("Actions")]
         [SerializeField, Tooltip("An actor cue to send to the actor upon the start of this interaction.")]
         protected ActorCue m_OnStartCue;
-        [SerializeField, Tooltip("An actor cue to send to the actor upon the ending of this interaction.")]
+        [SerializeField, Tooltip("An actor cue to send to the actor upon the ending of this interaction. This should set the character back to their default state.")]
         protected ActorCue m_OnEndCue;
 
         [Header("Conditions")]
@@ -441,7 +441,6 @@ namespace WizardsCode.Character
                     StatSO stat = Brain.GetOrCreateStat(m_CharacterInfluences[i].statTemplate);
                     stat.Value += m_CharacterInfluences[i].maxChange;
                 }
-
             }
 
             if (m_OnEndCue != null)

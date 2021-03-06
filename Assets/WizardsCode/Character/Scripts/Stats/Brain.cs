@@ -294,7 +294,10 @@ namespace WizardsCode.Stats {
                     if (TargetInteractable == null)
                     {
                         ActiveBlockingBehaviour = m_FallbackBehaviour;
-                        ActiveBlockingBehaviour.StartBehaviour(ActiveBlockingBehaviour.MaximumExecutionTime);
+                        if (ActiveBlockingBehaviour != null)
+                        {
+                            ActiveBlockingBehaviour.StartBehaviour(ActiveBlockingBehaviour.MaximumExecutionTime);
+                        }
                     } else
                     {
                         ActiveBlockingBehaviour.IsExecuting = true;

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 using WizardsCode.Stats;
@@ -45,6 +46,7 @@ namespace WizardsCode.Character
             m_Agent.ResetPath();
         }
 
+        System.Collections.IEnumerator cueCoroutine;
         /// <summary>
         /// Prompt the actor to enact a cue. A cue describes
         /// a position and actions that an actor should take.
@@ -52,10 +54,10 @@ namespace WizardsCode.Character
         /// <param name="cue">The cue to enact.</param>
         internal void Prompt(ActorCue cue)
         {
-            System.Collections.IEnumerator coroutine = cue.Prompt(this);
-            if (coroutine != null)
+            cueCoroutine = cue.Prompt(this);
+            if (cueCoroutine != null)
             {
-                StartCoroutine(coroutine);
+                StartCoroutine(cueCoroutine);
             }
         }
 
@@ -67,10 +69,10 @@ namespace WizardsCode.Character
             TargetPosition = transform.position;
         }
 
+        [Obsolete("Use an ActorCue that plays the chosen Emote.")] // v0.0.9
         public void PlayEmote(string name)
         {
             Animator animator = GetComponent<Animator>();
-
             animator.Play(name);
         }
 

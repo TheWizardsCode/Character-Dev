@@ -23,9 +23,9 @@ namespace WizardsCode.Character
                         End:    Toggle cursor locking to screen (you can also press Ctrl+P to toggle play mode on and off).
 	*/
 
-		public float cameraSensitivity = 120;
-		public float climbSpeed = 20;
-		public float normalMoveSpeed = 50;
+		public float cameraSensitivity = 100;
+		public float climbSpeed = 15;
+		public float normalMoveSpeed = 30;
 		public float slowMoveFactor = 0.25f;
 		public float fastMoveFactor = 3;
 
