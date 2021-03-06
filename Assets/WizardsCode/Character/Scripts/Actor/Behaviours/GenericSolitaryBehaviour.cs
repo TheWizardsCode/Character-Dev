@@ -15,12 +15,12 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("The time, in seconds, between possible executions of this behaviour.")]
         float m_CooldownDuration = 60;
 
-        float m_EndCooldownTime = float.MaxValue;
+        float m_EndCooldownTime = float.MinValue;
 
         public override bool IsAvailable
         {
             get {
-                if (m_EndCooldownTime < Time.timeSinceLevelLoad)
+                if (m_EndCooldownTime > Time.timeSinceLevelLoad)
                 {
                     return false;
                 }
