@@ -1389,9 +1389,13 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 751989585, guid: 7a17c6bb2ca7c2748860603b4499aa21, type: 3}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 1524781526, guid: 7a17c6bb2ca7c2748860603b4499aa21, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 55733185629990233, guid: 7a17c6bb2ca7c2748860603b4499aa21,
         type: 3}
@@ -1678,6 +1682,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8392813533236377092, guid: 7a17c6bb2ca7c2748860603b4499aa21,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 8517978229585790132, guid: 7a17c6bb2ca7c2748860603b4499aa21,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -1775,8 +1784,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75a6172e8d90e96499bbadb79b70e514, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  character: {fileID: 0}
-  statePanelTemplate: {fileID: 868119974}
+  m_SelectedCharacter: {fileID: 0}
+  m_SelectionManager: {fileID: 0}
+  m_BehaviourLabel: {fileID: 0}
+  statPanelTemplate: {fileID: 868119974}
 --- !u!114 &1524781528
 MonoBehaviour:
   m_ObjectHideFlags: 0

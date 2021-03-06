@@ -54,8 +54,7 @@ namespace WizardsCode.Character
                 return;
             }
 
-            ActorCue cue = cues[cueIndex];
-            cue.Prompt(actor);
+            actor.Prompt(cues[cueIndex]);
             SetupNextCue();
         }
 

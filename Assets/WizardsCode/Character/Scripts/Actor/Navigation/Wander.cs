@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using WizardsCode.Character.Stats;
+using WizardsCode.Utility;
 
 namespace WizardsCode.Character
 {
@@ -32,7 +33,7 @@ namespace WizardsCode.Character
         private float maxAngleOfRandomPathChange = 60;
         [SerializeField, Tooltip("The approximate maximum range the agent will normally wander from their start position.")]
         private float m_MaxWanderRange = 50f;
-        [HideInInspector, SerializeField, Tooltip("The area mask for allowed areas for this agent to wander within.")]
+        [SerializeField, NavMeshAreaMask, Tooltip("The area mask for allowed areas for this agent to wander within.")]
         public int navMeshAreaMask = NavMesh.AllAreas;
 
         private Vector3 m_TargetPosition;
@@ -48,7 +49,7 @@ namespace WizardsCode.Character
             NavMeshHit hit;
             if (!NavMesh.SamplePosition(transform.position, out hit, transform.lossyScale.y * 2, navMeshAreaMask))
             {
-                Debug.LogError(brain.DisplayName + " start position is not on a navmesh.");
+                Debug.LogError(Brain.DisplayName + " start position is not on a navmesh.");
             }
 
             timeToNextWanderPathChange = float.MinValue;
@@ -90,6 +91,7 @@ namespace WizardsCode.Character
         internal override void FinishBehaviour()
         {
             base.FinishBehaviour();
+            Brain.Actor.StopMoving();
             timeToNextWanderPathChange = float.MinValue;
         }
 
@@ -147,7 +149,7 @@ namespace WizardsCode.Character
                     }
 
                     NavMeshHit hit;
-                    if (!NavMesh.SamplePosition(position, out hit, transform.lossyScale.y * 2, navMeshAreaMask))
+                    if (!NavMesh.SamplePosition(position, out hit, transform.lossyScale.y * 5, navMeshAreaMask))
                     {
                         // This is not a valid NavMesh position, abort for this frame
                         continue;

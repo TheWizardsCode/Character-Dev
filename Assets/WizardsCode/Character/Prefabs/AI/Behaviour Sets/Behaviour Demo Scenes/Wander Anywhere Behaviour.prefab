@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3454999400584466695
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3454999400584466692}
+  - component: {fileID: 3454999400584466693}
+  m_Layer: 0
+  m_Name: Wander Anywhere Behaviour
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3454999400584466692
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3454999400584466695}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.003282249, z: 0.12968259}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3454999400584466693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3454999400584466695}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74c88fa94d915b74baa4e2395df4111f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Description: 
+  m_DisplayName: Wander
+  Icon: {fileID: 21300000, guid: 642d5e7e871cc2143844a2b940684bfa, type: 3}
+  m_RetryFrequency: 2
+  m_isInteruptable: 1
+  m_MaximumExecutionTime: 30
+  m_IsBlocking: 1
+  m_OnStartCue: {fileID: 0}
+  m_OnEndCue: {fileID: 0}
+  m_WeightMultiplier: 0.1
+  m_RequiredSenses: []
+  m_RequiredStats: []
+  m_CharacterInfluences: []
+  m_DesiredStateImpacts: []
+  m_RequiredWorldState: []
+  minTimeBetweenRandomPathChanges: 5
+  maxTimeBetweenRandomPathChanges: 15
+  minDistanceOfRandomPathChange: 30
+  maxDistanceOfRandomPathChange: 100
+  minAngleOfRandomPathChange: -100
+  maxAngleOfRandomPathChange: 100
+  m_MaxWanderRange: 500
+  navMeshAreaMask: -1

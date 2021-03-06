@@ -1,4 +1,4 @@
-The `241 Village Life` scene has a number of interacting characters that live together in a village. This scene demonstrates how objects in the world can have their own stats.
+The `Village Life` scene has a number of interacting characters that live together in a village. This scene demonstrates how objects in the world can have their own stats.
 
 ## Workplaces
 

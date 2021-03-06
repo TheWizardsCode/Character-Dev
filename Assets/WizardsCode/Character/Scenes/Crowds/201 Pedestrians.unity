@@ -2938,7 +2938,7 @@ Transform:
   - {fileID: 258358755}
   - {fileID: 1725377819}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &320002857
 GameObject:
@@ -5943,6 +5943,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: c02469633128b1b4e9bcff3896610ed2,
         type: 2}
+    - target: {fileID: 3628273535258001664, guid: cc0162875590e544d9503846bf7f3506,
+        type: 3}
+      propertyPath: m_SpawnDefinition
+      value: 
+      objectReference: {fileID: 11400000, guid: f3985ea8e257cbf4ead378e54f03db27,
+        type: 2}
+    - target: {fileID: 3628273535258001664, guid: cc0162875590e544d9503846bf7f3506,
+        type: 3}
+      propertyPath: m_NumberOfSpawns
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 3628273535258001665, guid: cc0162875590e544d9503846bf7f3506,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -6001,7 +6012,7 @@ PrefabInstance:
     - target: {fileID: 3628273535258001671, guid: cc0162875590e544d9503846bf7f3506,
         type: 3}
       propertyPath: m_Name
-      value: Large Crowd Blue, Red and Green Spawner
+      value: Crowd Blue, Red and Green Spawner
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cc0162875590e544d9503846bf7f3506, type: 3}
@@ -11413,7 +11424,7 @@ PrefabInstance:
     - target: {fileID: 5049930525238412879, guid: 565f3debb24a0b24bb53067f704ee61d,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5049930525238412879, guid: 565f3debb24a0b24bb53067f704ee61d,
         type: 3}
@@ -11806,6 +11817,124 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1342055913}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &1342798974
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3628273535258001664, guid: cc0162875590e544d9503846bf7f3506,
+        type: 3}
+      propertyPath: m_SpawnedPrefabs.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628273535258001664, guid: cc0162875590e544d9503846bf7f3506,
+        type: 3}
+      propertyPath: m_Number
+      value: 250
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628273535258001664, guid: cc0162875590e544d9503846bf7f3506,
+        type: 3}
+      propertyPath: m_Radius
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628273535258001664, guid: cc0162875590e544d9503846bf7f3506,
+        type: 3}
+      propertyPath: m_SpawnedPrefabs.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 71f9aff0334ad9e468deb07692f48674,
+        type: 2}
+    - target: {fileID: 3628273535258001664, guid: cc0162875590e544d9503846bf7f3506,
+        type: 3}
+      propertyPath: navMeshAreaMask
+      value: 32
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628273535258001664, guid: cc0162875590e544d9503846bf7f3506,
+        type: 3}
+      propertyPath: m_SpawnedPrefabs.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: f04fdb1f8d76d464790d1d0aee98cdb4,
+        type: 2}
+    - target: {fileID: 3628273535258001664, guid: cc0162875590e544d9503846bf7f3506,
+        type: 3}
+      propertyPath: m_SpawnedPrefabs.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: c02469633128b1b4e9bcff3896610ed2,
+        type: 2}
+    - target: {fileID: 3628273535258001664, guid: cc0162875590e544d9503846bf7f3506,
+        type: 3}
+      propertyPath: m_SpawnDefinition
+      value: 
+      objectReference: {fileID: 11400000, guid: f3985ea8e257cbf4ead378e54f03db27,
+        type: 2}
+    - target: {fileID: 3628273535258001664, guid: cc0162875590e544d9503846bf7f3506,
+        type: 3}
+      propertyPath: m_NumberOfSpawns
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628273535258001665, guid: cc0162875590e544d9503846bf7f3506,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 90.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628273535258001665, guid: cc0162875590e544d9503846bf7f3506,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.79735947
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628273535258001665, guid: cc0162875590e544d9503846bf7f3506,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -213.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628273535258001665, guid: cc0162875590e544d9503846bf7f3506,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628273535258001665, guid: cc0162875590e544d9503846bf7f3506,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628273535258001665, guid: cc0162875590e544d9503846bf7f3506,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628273535258001665, guid: cc0162875590e544d9503846bf7f3506,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628273535258001665, guid: cc0162875590e544d9503846bf7f3506,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628273535258001665, guid: cc0162875590e544d9503846bf7f3506,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628273535258001665, guid: cc0162875590e544d9503846bf7f3506,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628273535258001665, guid: cc0162875590e544d9503846bf7f3506,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628273535258001671, guid: cc0162875590e544d9503846bf7f3506,
+        type: 3}
+      propertyPath: m_Name
+      value: Crowd Blue, Red and Green Spawner (1)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cc0162875590e544d9503846bf7f3506, type: 3}
 --- !u!1 &1346716952
 GameObject:
   m_ObjectHideFlags: 0
@@ -17330,5 +17459,5 @@ Transform:
   - {fileID: 206219541}
   - {fileID: 1073458419}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

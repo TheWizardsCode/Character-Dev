@@ -68,10 +68,8 @@ namespace WizardsCode.Animation
                 AddRandomization(animator);
             }
 
-            // float t = m_timeSinceLastPoseChange / m_PoseChangeTime;
-            float t = m_PoseChangeTime * Time.deltaTime;
-            animator.SetFloat(activationParamHash, Mathf.SmoothStep(startActivation, endActivation, t ));
-            animator.SetFloat(enjoymentParamHash, Mathf.SmoothStep(startEnjoyment, endEnjoyment, t));
+            animator.SetFloat(activationParamHash, Mathf.SmoothStep(startActivation, endActivation, m_PoseChangeTime ));
+            animator.SetFloat(enjoymentParamHash, Mathf.SmoothStep(startEnjoyment, endEnjoyment, m_PoseChangeTime));
         }
 
         /// <summary>

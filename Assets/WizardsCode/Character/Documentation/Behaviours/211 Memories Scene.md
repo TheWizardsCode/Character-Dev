@@ -5,4 +5,6 @@ Thw `211 Memories Scene` provides a simple example. It is almost the same as the
 
 The initial behaviour of the character will be the same as in the 201 scene. The actor will go straight to the table and eat. They will then start wandering. Once the cooldown period is over things change. Unlike in the 201 scene when they become hungry again they will remember the location of the table and return immedietaly.
 
+Clicking on the character in the Hierarchy in the editor will allow you to inspect the actors decision making process. This will show that the character remembers the table as a place to eat, but that they won't return there for a short while - opting to wander and look for somewhere else.
+
 They will not remember places unless they had an effect on their stats. So initially the character will not remember the bed. However, once they sleep in the bed they will remember it.

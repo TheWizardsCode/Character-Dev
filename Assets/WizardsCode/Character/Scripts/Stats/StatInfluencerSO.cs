@@ -19,7 +19,7 @@ namespace WizardsCode.Stats
         StatSO m_stat;
         [SerializeField, Tooltip("The maximum amount of change this influencer will impart upon the stat. If the stat will never be taken beyond its maximum and minimum allowable values.")]
         float m_MaxChange = 10;
-        [SerializeField, Tooltip("The time, in seconds, over which the influencer will be effective. The change will occur over this time period, up to the limit of the stat or the maxChange of this influencer. If duration is 0 then the total change is applied instantly.")]
+        [SerializeField, Range(1, 1200), Tooltip("The time, in seconds, over which the influencer will be effective. The change will occur over this time period, up to the limit of the stat or the maxChange of this influencer. If duration is 0 then the total change is applied instantly.")]
         float m_Duration = 5;
         [SerializeField, Tooltip("The cooldown period before a character can be influenced by this same influencer again, in seconds.")]
         float m_CooldownDuration = 5;
@@ -44,7 +44,13 @@ namespace WizardsCode.Stats
         /// </summary>
         public string InteractionName
         {
-            get { return m_InteractionName; }
+            get { 
+                if (string.IsNullOrEmpty(m_InteractionName))
+                {
+                    m_InteractionName = name;
+                }
+                return m_InteractionName; 
+            }
             set { m_InteractionName = value; }
         }
 
@@ -166,7 +172,7 @@ namespace WizardsCode.Stats
         /// Apply a change from a stat influencer.
         /// </summary>
         /// 
-        /// <param name="statsTracker">The brain managing the stats to be changed.</param>
+        /// <param name="statsTracker">The stats tracker managing the stats to be changed.</param>
         internal void ChangeStat(StatsTracker statsTracker)
         {
             StatSO statToUpdate = statsTracker.GetOrCreateStat(stat);
@@ -198,7 +204,7 @@ namespace WizardsCode.Stats
             get { return m_Duration; }
             set { 
                 m_Duration = value;
-                if (duration > 0)
+                if (m_Duration > 0)
                 {
                     m_ChangePerSecond = m_MaxChange / m_Duration;
                 } else

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -11,7 +12,7 @@ namespace WizardsCode.Character
     {
         [Header("Movement")]
         [SerializeField, Tooltip("The name of the mark the actor should move to on this cue.")]
-        public string markName;
+        string markName;
 
         [Header("Sound")]
         [SerializeField, Tooltip("Audio files for spoken lines")]
@@ -20,6 +21,14 @@ namespace WizardsCode.Character
         [Header("Dialogue")]
         [SerializeField, Tooltip("Dialogue to speak on this cue."), TextArea(10, 20)]
         public string dialogue;
+
+        [Header("Animation Layers")]
+        [SerializeField, Tooltip("The name of the layer to control the weight of. An emptry field means the layer weight has no effect.")]
+        string m_LayerName = "";
+        [SerializeField, Tooltip("The weight of the layer")]
+        float m_LayerWeight = 1;
+        [SerializeField, Range(0.1f, 20), Tooltip("The speed at which we will change fromt he current layer weight to the new layer weight. Larger is faster.")]
+        float m_LayerChangeSpeed = 5;
 
         public enum ParameterType { Float, Int, Bool, Trigger }
         [Header("Animation Parameters")]
@@ -42,39 +51,80 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("The normalized time from which to start the animation.")]
         public float animationNormalizedTime = 0;
 
+        private ActorController m_Actor;
+        private int m_LayerIndex;
+
+        /// <summary>
+        /// Get or set the mark name, that is the name of an object in the scene the character should move to when this cue is prompted.
+        /// Note that changing the Mark during execution of this cue will
+        /// have no effect until it is prompted the next time.
+        /// </summary>
+        public string Mark
+        {
+            get { return markName; }
+            set { markName = value; }
+        }
+
         /// <summary>
         /// Prompt and actor to enact the actions identified in this cue.
         /// </summary>
-        public virtual void Prompt(ActorController actor)
+        /// <returns>An optional coroutine that shouold be started by the calling MonoBehaviour</returns>
+        public virtual IEnumerator Prompt(ActorController actor)
         {
-            ProcessMove(actor);
-            ProcessAudio(actor);
-            ProcessAnimationParameters(actor);
-            ProcessAnimationClips(actor);
+            m_Actor = actor;
+
+            ProcessMove();
+            ProcessAudio();
+            ProcessAnimationLayerWeights();
+            ProcessAnimationParameters();
+            ProcessAnimationClips();
+
+            return UpdateCoroutine();
+        }
+
+        private void ProcessAnimationLayerWeights()
+        {
+            m_LayerIndex = m_Actor.Animator.GetLayerIndex(m_LayerName);
+        }
+
+        internal IEnumerator UpdateCoroutine()
+        {
+            // Process Layers
+            if (m_LayerIndex >= 0 && m_Actor.Animator.GetLayerWeight(m_LayerIndex) != m_LayerWeight)
+            {
+                float originalWeight = m_Actor.Animator.GetLayerWeight(m_LayerIndex);
+                float currentWeight = originalWeight;
+                while (!Mathf.Approximately(currentWeight, m_LayerWeight))
+                {
+                    currentWeight = m_Actor.Animator.GetLayerWeight(m_LayerIndex);
+                    float delta = (m_LayerWeight - currentWeight) * (Time.deltaTime * m_LayerChangeSpeed);
+                    m_Actor.Animator.SetLayerWeight(m_LayerIndex, currentWeight + delta);
+                    yield return new WaitForEndOfFrame();
+                }
+            }
         }
 
         /// <summary>
         /// If this cue has any animation parameter changes then have an actor make those changes.
         /// </summary>
-        /// <param name="actor">The actor to enact the animation changes.</param>
-        private void ProcessAnimationParameters(ActorController actor)
+        /// <param name="m_Actor">The actor to enact the animation changes.</param>
+        private void ProcessAnimationParameters()
         {
             if (!string.IsNullOrWhiteSpace(paramName))
             {
-                Animator animator = actor.GetComponent<Animator>();
                 switch (paramType)
                 {
                     case ActorCue.ParameterType.Trigger:
-                        animator.SetTrigger(paramName);
+                        m_Actor.Animator.SetTrigger(paramName);
                         break;
                     case ActorCue.ParameterType.Bool:
-                        animator.SetBool(paramName, paramBoolValue);
+                        m_Actor.Animator.SetBool(paramName, paramBoolValue);
                         break;
                     case ActorCue.ParameterType.Int:
-                        animator.SetInteger(paramName, paramIntValue);
+                        m_Actor.Animator.SetInteger(paramName, paramIntValue);
                         break;
                     case ActorCue.ParameterType.Float:
-                        animator.SetBool(paramName, paramBoolValue);
+                        m_Actor.Animator.SetBool(paramName, paramBoolValue);
                         break;
                 }
             }
@@ -83,34 +133,39 @@ namespace WizardsCode.Character
         /// <summary>
         /// The name of an animation clip to play upon this cue.
         /// </summary>
-        /// <param name="actor">The actor to enact the animation changes.</param>
-        private void ProcessAnimationClips(ActorController actor)
+        /// <param name="m_Actor">The actor to enact the animation changes.</param>
+        private void ProcessAnimationClips()
         {
-            if (string.IsNullOrWhiteSpace(animationClipName))
+            if (!string.IsNullOrWhiteSpace(animationClipName))
             {
-                Animator animator = actor.GetComponent<Animator>();
-                animator.Play(animationClipName, animationLayer, animationNormalizedTime);
+                m_Actor.Animator.Play(animationClipName, animationLayer, animationNormalizedTime);
             }
         }
 
         /// <summary>
-        /// If this cue has any audio defined within it then have an actor enact play that audio.
+        /// If this cue has a mark defined move to it.
         /// </summary>
-        void ProcessMove(ActorController actor)
+        void ProcessMove()
         {
             if (!string.IsNullOrWhiteSpace(markName))
             {
-                NavMeshAgent agent = actor.GetComponent<NavMeshAgent>();
-                Transform mark = GameObject.Find(markName).transform;
-                agent.SetDestination(mark.position);
+                NavMeshAgent agent = m_Actor.GetComponent<NavMeshAgent>();
+                GameObject go = GameObject.Find(markName);
+                if (go != null)
+                {
+                    agent.SetDestination(go.transform.position);
+                } else
+                {
+                    Debug.LogWarning(m_Actor.name + "  has a mark set, but the mark doesn't exist in the scene. The name set is " + markName);
+                }
             }
         }
 
-        void ProcessAudio(ActorController actor)
+        void ProcessAudio()
         {
             if (audioClip != null)
             {
-                AudioSource source = actor.GetComponent<AudioSource>();
+                AudioSource source = m_Actor.GetComponent<AudioSource>();
                 source.clip = audioClip;
                 source.Play();
             }

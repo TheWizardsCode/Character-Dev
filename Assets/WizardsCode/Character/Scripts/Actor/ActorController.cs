@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 using WizardsCode.Stats;
@@ -8,9 +9,7 @@ namespace WizardsCode.Character
     /// A character actor performs for the camera and takes cues from a director.
     /// Converts NavMesh movement to animation controller parameters.
     /// </summary>
-    [RequireComponent(typeof(Animator))]
     [RequireComponent(typeof(NavMeshAgent))]
-    [RequireComponent(typeof(Brain))]
     public class ActorController : MonoBehaviour
     {
         [Header("Animation")]
@@ -25,6 +24,11 @@ namespace WizardsCode.Character
         private NavMeshAgent m_Agent;
         private Brain m_Brain;
 
+        internal Animator Animator
+        {
+            get { return m_Animator; }
+        }
+
         internal Vector3 TargetPosition
         {
             get { return m_Agent.destination; }
@@ -34,18 +38,41 @@ namespace WizardsCode.Character
             }
         }
 
+        /// <summary>
+        /// Stop the actor from moving. Clearing the current path if there is one.
+        /// </summary>
+        internal void StopMoving()
+        {
+            m_Agent.ResetPath();
+        }
+
+        System.Collections.IEnumerator cueCoroutine;
+        /// <summary>
+        /// Prompt the actor to enact a cue. A cue describes
+        /// a position and actions that an actor should take.
+        /// </summary>
+        /// <param name="cue">The cue to enact.</param>
+        public void Prompt(ActorCue cue)
+        {
+            cueCoroutine = cue.Prompt(this);
+            if (cueCoroutine != null)
+            {
+                StartCoroutine(cueCoroutine);
+            }
+        }
+
         protected virtual void Start()
         {
-            m_Animator = GetComponent<Animator>();
+            m_Animator = GetComponentInChildren<Animator>();
             m_Agent = GetComponent<NavMeshAgent>();
             m_Brain = GetComponent<Brain>();
             TargetPosition = transform.position;
         }
 
+        [Obsolete("Use an ActorCue that plays the chosen Emote.")] // v0.0.9
         public void PlayEmote(string name)
         {
             Animator animator = GetComponent<Animator>();
-
             animator.Play(name);
         }
 

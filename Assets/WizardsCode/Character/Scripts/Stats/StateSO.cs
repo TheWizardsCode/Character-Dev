@@ -28,11 +28,13 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("The normalized target value of this stat."), Range(0f,1f)]
         float m_NormalizeTargetValue;
 
-        [Header("Influencers")]
+        [Header("Effects")]
         [SerializeField, Tooltip("An influencer to apply whenever this state is not in the desired state. This can be used to do things like decrease health if a character is below a given energy threshold.")]
         List<StatInfluencerSO> m_NotInDesiredState = new List<StatInfluencerSO>();
         [SerializeField, Tooltip("An influencer to apply whenever this state is in the desired state. This can be used to do things like increase health if a character is above a given energy threshold.")]
         List<StatInfluencerSO> m_InDesiredState = new List<StatInfluencerSO>();
+        [SerializeField, Tooltip("Behaviours to add when this state is satisfied, and remove when unsatisfied.")]
+        List<AbstractAIBehaviour> m_SatisfiedBehaviours = new List<AbstractAIBehaviour>();
 
         [Header("Sub States")]
         [SerializeField, Tooltip("A collection of states that must also be satisfied for this state to be satisfied.")]
@@ -51,6 +53,15 @@ namespace WizardsCode.Character
             {
                 return m_InDesiredState;
             }
+        }
+
+        /// <summary>
+        /// A list of behaviours that should be added to a character when this state is 
+        /// satisfied and removed when not.
+        /// </summary>
+        public List<AbstractAIBehaviour> SatisfiedBehaviours
+        {
+            get { return m_SatisfiedBehaviours; }
         }
 
         public StatSO statTemplate

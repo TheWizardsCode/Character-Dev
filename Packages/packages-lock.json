@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.inklestudios.ink-unity-integration": {
+      "version": "1.0.2",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://package.openupm.com"
+    },
     "com.jeffcampbellmakesgames.packagetools": {
       "version": "https://github.com/jeffcampbellmakesgames/unity-package-tools.git#release/stable",
       "depth": 0,
@@ -84,12 +91,6 @@
         "com.unity.modules.ui": "1.0.0",
         "com.unity.modules.imgui": "1.0.0"
       }
-    },
-    "org.wizardscode.animation": {
-      "version": "file:D:/Unity Projects/WizardsCode/Animation-DevTest",
-      "depth": 0,
-      "source": "local",
-      "dependencies": {}
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",

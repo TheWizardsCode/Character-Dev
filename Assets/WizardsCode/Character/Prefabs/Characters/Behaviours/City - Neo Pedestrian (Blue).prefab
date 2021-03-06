@@ -1,0 +1,156 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &2182289901491367248
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 8037407031395599387}
+    m_Modifications:
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.003282249
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.12968254
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466693, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: navMeshAreaMask
+      value: 32
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466695, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4,
+        type: 3}
+      propertyPath: m_Name
+      value: Wander On Pavements Behaviour
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4, type: 3}
+--- !u!1001 &2987097994697447764
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 431715539566918088, guid: 5946825c01ac14c4b8a72b03526b1f70,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: a3222cf043fef624fb2d901c5fe11ca0, type: 2}
+    - target: {fileID: 5115762418512223567, guid: 5946825c01ac14c4b8a72b03526b1f70,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -22.978628
+      objectReference: {fileID: 0}
+    - target: {fileID: 5115762418512223567, guid: 5946825c01ac14c4b8a72b03526b1f70,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -3.0258862e-17
+      objectReference: {fileID: 0}
+    - target: {fileID: 5115762418512223567, guid: 5946825c01ac14c4b8a72b03526b1f70,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 13.627381
+      objectReference: {fileID: 0}
+    - target: {fileID: 5115762418512223567, guid: 5946825c01ac14c4b8a72b03526b1f70,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5115762418512223567, guid: 5946825c01ac14c4b8a72b03526b1f70,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5115762418512223567, guid: 5946825c01ac14c4b8a72b03526b1f70,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5115762418512223567, guid: 5946825c01ac14c4b8a72b03526b1f70,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5115762418512223567, guid: 5946825c01ac14c4b8a72b03526b1f70,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5115762418512223567, guid: 5946825c01ac14c4b8a72b03526b1f70,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5115762418512223567, guid: 5946825c01ac14c4b8a72b03526b1f70,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5115762418512223567, guid: 5946825c01ac14c4b8a72b03526b1f70,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8444945103901806786, guid: 5946825c01ac14c4b8a72b03526b1f70,
+        type: 3}
+      propertyPath: m_Name
+      value: City - Neo Pedestrian (Blue)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5946825c01ac14c4b8a72b03526b1f70, type: 3}
+--- !u!4 &8037407031395599387 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5115762418512223567, guid: 5946825c01ac14c4b8a72b03526b1f70,
+    type: 3}
+  m_PrefabInstance: {fileID: 2987097994697447764}
+  m_PrefabAsset: {fileID: 0}

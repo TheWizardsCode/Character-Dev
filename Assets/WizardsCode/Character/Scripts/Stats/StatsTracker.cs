@@ -17,8 +17,6 @@ namespace WizardsCode.Stats {
         , IDebug
 #endif
     {
-        [SerializeField, Tooltip("Name of the owner of this stats tracker. If null a name will be generated.")]
-        string m_DisplayName;
         [SerializeField, Tooltip("Desired States are the states that the actor would like to satisfy. These are, essentially, the things that drive the actor.")]
         StateSO[] m_DesiredStates = default;
 
@@ -31,7 +29,6 @@ namespace WizardsCode.Stats {
         [HideInInspector, SerializeField]
         internal List<StatInfluencerSO> m_StatsInfluencers = new List<StatInfluencerSO>();
 
-        float m_TimeOfLastUpdate = 0;
         internal float m_TimeOfNextUpdate = 0;
         private List<StateSO> m_UnsatisfiedDesiredStatesCache = new List<StateSO>();
 
@@ -44,11 +41,7 @@ namespace WizardsCode.Stats {
         {
             get
             {
-                if (string.IsNullOrEmpty(m_DisplayName))
-                {
-                    m_DisplayName = GenerateName();
-                }
-                return m_DisplayName;
+                return transform.root.gameObject.name;
             }
         }
 
@@ -63,6 +56,15 @@ namespace WizardsCode.Stats {
             get { return m_UnsatisfiedDesiredStatesCache; }
             internal set { m_UnsatisfiedDesiredStatesCache = value; }
         }
+        /// <summary>
+        /// Tests to see if this stats tracker satisfies the requirements of a state.
+        /// </summary>
+        /// <param name="stateTemplate">The state to test against.</param>
+        /// <returns>True if the requirements are satisfied, otherwise false.</returns>
+        internal bool SatisfiesState(StateSO stateTemplate)
+        {
+            return !UnsatisfiedDesiredStates.Contains(stateTemplate);
+        }
 
         internal virtual void Update()
         {
@@ -72,7 +74,6 @@ namespace WizardsCode.Stats {
             ApplyStatInfluencerEffects();
             UpdateDesiredStatesList();
 
-            m_TimeOfLastUpdate = Time.timeSinceLevelLoad;
             m_TimeOfNextUpdate = Time.timeSinceLevelLoad + m_TimeBetweenUpdates;
         }
 
@@ -116,23 +117,43 @@ namespace WizardsCode.Stats {
         private void UpdateDesiredStatesList()
         {
             List<StatInfluencerSO> influencers = new List<StatInfluencerSO>();
+            List<AbstractAIBehaviour> behaviours = new List<AbstractAIBehaviour>();
+            bool isSatisfied;
             UnsatisfiedDesiredStates.Clear();
 
             for (int i = 0; i < DesiredStates.Length; i++)
             {
+                behaviours = DesiredStates[i].SatisfiedBehaviours;
                 if (DesiredStates[i].IsSatisfiedFor(this))
                 {
                     influencers = DesiredStates[i].InfluencersToApplyWhenInDesiredState;
+                    isSatisfied = true;
                 }
                 else
                 {
                     influencers = DesiredStates[i].InfluencersToApplyWhenNotInDesiredState;
                     UnsatisfiedDesiredStates.Add(DesiredStates[i]);
+                    isSatisfied = false;
                 }
 
                 for (int idx = 0; idx < influencers.Count; idx++)
                 {
                     TryAddInfluencer(ScriptableObject.Instantiate(influencers[idx]));
+                }
+
+                Transform behaviourT;
+                string behaviourName;
+                for (int idx = 0; idx < behaviours.Count; idx++)
+                {
+                    behaviourName = behaviours[idx].DisplayName + " behaviours from desired state " + DesiredStates[i].name;
+                    behaviourT = transform.Find(behaviourName);
+                    if (isSatisfied && behaviourT == null)
+                    {   
+                        Instantiate(behaviours[idx].gameObject, transform).name = behaviourName;
+                    } else if (!isSatisfied && behaviourT != null)
+                    {
+                        Destroy(behaviourT.gameObject);
+                    }
                 }
             }
         }
@@ -193,6 +214,16 @@ namespace WizardsCode.Stats {
         }
 
         /// <summary>
+        /// Test if the stat tracker is currently tracking the stat provided in the template.
+        /// </summary>
+        /// <param name="statTemplate">The stat to test for</param>
+        /// <returns>True if the stat is currently being tracked.</returns>
+        internal bool HasStat(StatSO statTemplate)
+        {
+            return GetStat(statTemplate) != null;
+        }
+
+        /// <summary>
         /// Get the stat object representing a named stat. If it does not already
         /// exist it will be created with a base value.
         /// </summary>
@@ -225,7 +256,7 @@ namespace WizardsCode.Stats {
         {
             bool exists = false;
             // check that if an influencer already exists we are not in a cooldown period for this influencer
-            for (int i = 0; i < StatsInfluencers.Count; i++)
+            for (int i = StatsInfluencers.Count -1; i >= 0; i--)
             {
                 if (StatsInfluencers[i].InteractionName == influencer.InteractionName)
                 {
@@ -246,7 +277,6 @@ namespace WizardsCode.Stats {
             {
                 StatsInfluencers.Add(influencer);
             }
-
             return true;
         }
 
@@ -331,7 +361,7 @@ namespace WizardsCode.Stats {
         /// <returns>A name for this stats tracker object to be used in the UI.</returns>
         internal virtual string GenerateName()
         {
-            return gameObject.name;
+            return transform.root.gameObject.name;
         }
 
 #if UNITY_EDITOR

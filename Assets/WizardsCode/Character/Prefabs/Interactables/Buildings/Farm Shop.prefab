@@ -1,0 +1,242 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2623149930196861747
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2623149931511710229}
+  - component: {fileID: 2623149930196861748}
+  - component: {fileID: 2623149930196861751}
+  - component: {fileID: 2623149930196861750}
+  - component: {fileID: 2623149930196861745}
+  - component: {fileID: 2623149930196861744}
+  m_Layer: 0
+  m_Name: Farm Shop
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2623149931511710229
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2623149930196861747}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 3, y: 0, z: 1}
+  m_LocalScale: {x: 2, y: 1, z: 2}
+  m_Children:
+  - {fileID: 914341972765169804}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &2623149930196861748
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2623149930196861747}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &2623149930196861751
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2623149930196861747}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: cf850f441c5deaa49ac8720834415af1, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+--- !u!65 &2623149930196861750
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2623149930196861747}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2623149930196861745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2623149930196861747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66f048bfe15920a4e9328734b8239ff0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Description: 
+  m_Type: {fileID: 11400000, guid: f07cbb5b1ed50e1468bdbcbaf7495007, type: 2}
+  m_InteractionNameFromActorsPerspective: Work in the Farm Shop
+  m_MaxInteractors: 1
+  m_CharacterInfluences:
+  - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
+    maxChange: 20
+    applyOnCompletion: 0
+  m_IsRepeating: 0
+  m_DestroyOnUse: 0
+  m_ObjectInfluences: []
+  m_Duration: 30
+  m_Cooldown: 120
+--- !u!114 &2623149930196861744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2623149930196861747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66f048bfe15920a4e9328734b8239ff0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Description: 
+  m_Type: {fileID: 11400000, guid: 5a1a557cc882a7b488cc4c9b9212870d, type: 2}
+  m_InteractionNameFromActorsPerspective: Trade in Raw Food
+  m_MaxInteractors: 1
+  m_CharacterInfluences:
+  - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
+    maxChange: -7
+    applyOnCompletion: 0
+  - statTemplate: {fileID: 11400000, guid: cf9e8ec2f416536438ba755bec4df9d6, type: 2}
+    maxChange: 5
+    applyOnCompletion: 0
+  m_IsRepeating: 0
+  m_DestroyOnUse: 0
+  m_ObjectInfluences:
+  - statTemplate: {fileID: 11400000, guid: cf9e8ec2f416536438ba755bec4df9d6, type: 2}
+    maxChange: -5
+    applyOnCompletion: 0
+  - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
+    maxChange: 7
+    applyOnCompletion: 0
+  m_Duration: 3
+  m_Cooldown: 30
+--- !u!1001 &2372466209748935297
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 2623149931511710229}
+    m_Modifications:
+    - target: {fileID: 956285653632906558, guid: 289354ca2fadb154e95dcd3e13e8fffa,
+        type: 3}
+      propertyPath: m_Name
+      value: Building Foundation
+      objectReference: {fileID: 0}
+    - target: {fileID: 3196663329818294797, guid: 289354ca2fadb154e95dcd3e13e8fffa,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3196663329818294797, guid: 289354ca2fadb154e95dcd3e13e8fffa,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.49
+      objectReference: {fileID: 0}
+    - target: {fileID: 3196663329818294797, guid: 289354ca2fadb154e95dcd3e13e8fffa,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3196663329818294797, guid: 289354ca2fadb154e95dcd3e13e8fffa,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3196663329818294797, guid: 289354ca2fadb154e95dcd3e13e8fffa,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3196663329818294797, guid: 289354ca2fadb154e95dcd3e13e8fffa,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3196663329818294797, guid: 289354ca2fadb154e95dcd3e13e8fffa,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3196663329818294797, guid: 289354ca2fadb154e95dcd3e13e8fffa,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3196663329818294797, guid: 289354ca2fadb154e95dcd3e13e8fffa,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3196663329818294797, guid: 289354ca2fadb154e95dcd3e13e8fffa,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3196663329818294797, guid: 289354ca2fadb154e95dcd3e13e8fffa,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3196663329818294797, guid: 289354ca2fadb154e95dcd3e13e8fffa,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3196663329818294797, guid: 289354ca2fadb154e95dcd3e13e8fffa,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.15
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 289354ca2fadb154e95dcd3e13e8fffa, type: 3}
+--- !u!4 &914341972765169804 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3196663329818294797, guid: 289354ca2fadb154e95dcd3e13e8fffa,
+    type: 3}
+  m_PrefabInstance: {fileID: 2372466209748935297}
+  m_PrefabAsset: {fileID: 0}

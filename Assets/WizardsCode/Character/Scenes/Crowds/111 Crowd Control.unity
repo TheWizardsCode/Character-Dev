@@ -230,12 +230,23 @@ PrefabInstance:
     - target: {fileID: 3628273535258001664, guid: cc0162875590e544d9503846bf7f3506,
         type: 3}
       propertyPath: m_Radius
-      value: 20
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3628273535258001664, guid: cc0162875590e544d9503846bf7f3506,
+        type: 3}
+      propertyPath: m_SpawnDefinition
+      value: 
+      objectReference: {fileID: 11400000, guid: 51566e6362d47ff4097d26b0ef523c8c,
+        type: 2}
+    - target: {fileID: 3628273535258001664, guid: cc0162875590e544d9503846bf7f3506,
+        type: 3}
+      propertyPath: m_NumberOfSpawns
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 3628273535258001665, guid: cc0162875590e544d9503846bf7f3506,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.8
+      value: 9.4
       objectReference: {fileID: 0}
     - target: {fileID: 3628273535258001665, guid: cc0162875590e544d9503846bf7f3506,
         type: 3}
@@ -245,7 +256,7 @@ PrefabInstance:
     - target: {fileID: 3628273535258001665, guid: cc0162875590e544d9503846bf7f3506,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 28.8
+      value: 25.1
       objectReference: {fileID: 0}
     - target: {fileID: 3628273535258001665, guid: cc0162875590e544d9503846bf7f3506,
         type: 3}
@@ -290,7 +301,7 @@ PrefabInstance:
     - target: {fileID: 3628273535258001671, guid: cc0162875590e544d9503846bf7f3506,
         type: 3}
       propertyPath: m_Name
-      value: Large Crowd Blue and Red Spawner
+      value: Wandering Neo Spawner
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cc0162875590e544d9503846bf7f3506, type: 3}

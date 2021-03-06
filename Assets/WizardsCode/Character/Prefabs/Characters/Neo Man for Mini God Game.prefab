@@ -42,6 +42,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 442094553812782230}
+  - component: {fileID: 2521776758077593251}
   - component: {fileID: 442094553812782229}
   m_Layer: 0
   m_Name: Gathering Behaviours
@@ -64,6 +65,37 @@ Transform:
   m_Father: {fileID: 5311139743032274596}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2521776758077593251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 442094553812782231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e2d955ea028604c9552bc8d9e5cf47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Description: If the actor is hungry then gather berries from bushes to eat.
+  m_DisplayName: Gather Berries
+  m_RetryFrequency: 2
+  m_isInteruptable: 0
+  m_MaximumExecutionTime: 30
+  m_IsBlocking: 1
+  m_OnStartCue: {fileID: 0}
+  m_OnEndCue: {fileID: 0}
+  m_MinimumWeight: 0
+  m_RequiredStats:
+  - statTemplate: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
+    objective: 2
+    m_Value: 60
+  m_CharacterInfluences: []
+  m_DesiredStateImpacts:
+  - statTemplate: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
+    objective: 0
+  m_RequiredWorldState: []
+  awarenessRange: 10
 --- !u!114 &442094553812782229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -80,11 +112,13 @@ MonoBehaviour:
     one then they will chop it down. This uses a fair amount of energy but wood is
     vital to survival.
   m_DisplayName: Fell Tree
-  m_OnStartCue: {fileID: 0}
-  m_OnEndCue: {fileID: 0}
   m_RetryFrequency: 2
   m_isInteruptable: 0
-  m_AbortDuration: 30
+  m_MaximumExecutionTime: 30
+  m_IsBlocking: 1
+  m_OnStartCue: {fileID: 0}
+  m_OnEndCue: {fileID: 0}
+  m_MinimumWeight: 0
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
     objective: 2
@@ -92,9 +126,11 @@ MonoBehaviour:
   m_CharacterInfluences:
   - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
     maxChange: -15
+    applyOnCompletion: 0
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: 3a65fd83ea52d7c4db1e8cc4c0ffafa0, type: 2}
     objective: 2
+  m_RequiredWorldState: []
   awarenessRange: 10
 --- !u!1 &442094553814632930
 GameObject:
@@ -139,13 +175,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c1975602ac29e745898da24569dd426, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Description: 
+  m_Description: Build a home for oneself and other actors.
   m_DisplayName: Build a Home
-  m_OnStartCue: {fileID: 0}
-  m_OnEndCue: {fileID: 0}
   m_RetryFrequency: 2
   m_isInteruptable: 0
-  m_AbortDuration: 30
+  m_MaximumExecutionTime: 30
+  m_IsBlocking: 1
+  m_OnStartCue: {fileID: 0}
+  m_OnEndCue: {fileID: 0}
+  m_MinimumWeight: 0
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
     objective: 2
@@ -156,11 +194,14 @@ MonoBehaviour:
   m_CharacterInfluences:
   - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
     maxChange: -30
+    applyOnCompletion: 0
   - statTemplate: {fileID: 11400000, guid: 3a65fd83ea52d7c4db1e8cc4c0ffafa0, type: 2}
     maxChange: -15
+    applyOnCompletion: 0
   m_DesiredStateImpacts: []
-  m_BuiltPrefab: {fileID: 1494473663186943003, guid: 9c2231e74c892ce44847b2cd9a480f8f,
-    type: 3}
+  m_RequiredWorldState:
+  - {fileID: 11400000, guid: ef4f7c82ea0e1404a844c100e4a28c48, type: 2}
+  m_BuiltPrefab: {fileID: 11400000, guid: dd7d1b540b247bf44812512bef13f0b5, type: 2}
 --- !u!1 &1230700983341931292
 GameObject:
   m_ObjectHideFlags: 0
@@ -963,7 +1004,7 @@ GameObject:
   - component: {fileID: 7974437015794142173}
   - component: {fileID: 8824904008053220136}
   m_Layer: 0
-  m_Name: Neo Man
+  m_Name: Neo Man for Mini God Game
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1171,8 +1212,10 @@ MonoBehaviour:
   m_DisplayName: Neo man
   m_DesiredStates:
   - {fileID: 11400000, guid: 53dc65a468340dd458f231254029ab52, type: 2}
+  - {fileID: 11400000, guid: ecc69f49e6bf0de4aa6a4d2cd85c971b, type: 2}
   - {fileID: 11400000, guid: ef3549760720a984e9098abc3d3bfb11, type: 2}
   - {fileID: 11400000, guid: 948d94a14ea7edc4799acdafce3e2df1, type: 2}
+  - {fileID: 11400000, guid: dafe8a104efbb6b4c9db8348013f854c, type: 2}
   m_TimeBetweenUpdates: 0.5
   m_Stats: []
   m_StatsInfluencers: []
@@ -1300,6 +1343,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5311139743032274596}
     m_Modifications:
+    - target: {fileID: 942846213194399283, guid: c76425f2fc23a7a4490ae59aecf6d864,
+        type: 3}
+      propertyPath: awarenessRange
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 5520724305333876447, guid: c76425f2fc23a7a4490ae59aecf6d864,
+        type: 3}
+      propertyPath: m_DesiredStateImpacts.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6440944259599993319, guid: c76425f2fc23a7a4490ae59aecf6d864,
         type: 3}
       propertyPath: m_Name
