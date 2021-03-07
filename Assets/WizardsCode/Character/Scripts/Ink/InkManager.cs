@@ -20,6 +20,8 @@ namespace WizardsCode.Ink
         ActorController[] m_Actors;
         [SerializeField, Tooltip("The cues that will be used in this scene.")]
         ActorCue[] m_Cues;
+        [SerializeField, Tooltip("Should the story start as soon as the game starts. If this is set to false the story will not start until a trigger or similar is set.")]
+        bool m_PlayOnAwake = true;
 
         [Header("UI")]
         [SerializeField, Tooltip("The panel on which to display the text in the story.")]
@@ -34,7 +36,7 @@ namespace WizardsCode.Ink
         Story m_Story;
         bool m_IsUIDirty = false;
         StringBuilder m_NewStoryText = new StringBuilder();
-        enum Direction { Cue, TurnToFace }
+        enum Direction { Cue, TurnToFace, PlayerControl }
 
         private bool m_IsDisplayingUI = false;
         internal bool IsDisplayingUI
@@ -49,6 +51,7 @@ namespace WizardsCode.Ink
         private void Awake()
         {
             m_Story = new Story(m_InkJSON.text);
+            IsDisplayingUI = m_PlayOnAwake;
         }
 
         public void ChoosePath(string knotName, string stitchName)
@@ -137,11 +140,13 @@ namespace WizardsCode.Ink
                 return;
             }
 
-
             ActorController actor = FindActor(args[0].Trim());
             ActorCue cue = FindCue(args[1].Trim());
 
-            actor.Prompt(cue);
+            if (actor != null)
+            {
+                actor.Prompt(cue);
+            }
         }
 
         void TurnToFace(string[] args)
@@ -239,6 +244,9 @@ namespace WizardsCode.Ink
                         case Direction.TurnToFace:
                             TurnToFace(args);
                             break;
+                        case Direction.PlayerControl:
+                            SetPlayerControl(args);
+                            break;
                         default:
                             Debug.LogError("Unknown Direction: " + line);
                             break;
@@ -257,6 +265,19 @@ namespace WizardsCode.Ink
             }
 
             m_IsUIDirty = true;
+        }
+
+        void SetPlayerControl(string[] args)
+        {
+            ValidateArgumentCount(args, 1);
+
+            if (args[0].Trim().ToLower() == "on")
+            {
+                IsDisplayingUI = false;
+            } else
+            {
+                IsDisplayingUI = true;
+            }
         }
 
         bool ValidateArgumentCount(string[] args, int requiredCount)

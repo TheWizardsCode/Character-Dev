@@ -1,7 +1,11 @@
-You stalk to the cliff edge and place yourself behind a rock, your partners do the same. There are bandits visible in a camp below.
--> Top_Knot
+>>> Cue: Glan, Move To Rocks (Glan)
+>>> Cue: Kal, Move To Rocks (Kal)
+>>> PlayerControl: On
 
-== Top_Knot
+-> Cliff_Edge
+
+== Cliff_Edge
+You stalk to the cliff edge and place yourself behind a rock, your partners do the same. There are bandits visible in a camp below.
 
 * [Talk to Glan] -> Urge_Glan_To_Go_In
 
@@ -12,13 +16,12 @@ You stalk to the cliff edge and place yourself behind a rock, your partners do t
 
 = Urge_Glan_To_Go_In
 >>> Cue: Player, TalkToGlan
->>> TurnToFace: Player, Glan
 >>> TurnToFace: Glan, Player
  
 you: this is a waste of time. We should just go in # 
 glan: we need to  do this safely!
 you: I wish we were just going in OR you're right... but still a wuss
--> Top_Knot
+-> Cliff_Edge
 
 = Climb_Down
 Glan signals that he heard something. Over to the right. You think you see movement.

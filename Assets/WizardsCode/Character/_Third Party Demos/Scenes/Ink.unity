@@ -189,6 +189,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2992191724721829690, guid: 68b843002e8000945bd537f922d26ea3,
+        type: 3}
+      propertyPath: head
+      value: 
+      objectReference: {fileID: 1226047287}
     - target: {fileID: 6409572260986667617, guid: 68b843002e8000945bd537f922d26ea3,
         type: 3}
       propertyPath: m_Name
@@ -202,17 +207,17 @@ PrefabInstance:
     - target: {fileID: 7728122017555533804, guid: 68b843002e8000945bd537f922d26ea3,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1395.3412
+      value: 1371.8
       objectReference: {fileID: 0}
     - target: {fileID: 7728122017555533804, guid: 68b843002e8000945bd537f922d26ea3,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -457.85028
+      value: -451.67
       objectReference: {fileID: 0}
     - target: {fileID: 7728122017555533804, guid: 68b843002e8000945bd537f922d26ea3,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 467.348
+      value: 483.79
       objectReference: {fileID: 0}
     - target: {fileID: 7728122017555533804, guid: 68b843002e8000945bd537f922d26ea3,
         type: 3}
@@ -307,7 +312,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -437,6 +442,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 1f830811c94f7f2409c9b39240aedcf5, type: 2}
+    - target: {fileID: 2992191724721829690, guid: 68b843002e8000945bd537f922d26ea3,
+        type: 3}
+      propertyPath: head
+      value: 
+      objectReference: {fileID: 1814116724}
     - target: {fileID: 6409572260986667617, guid: 68b843002e8000945bd537f922d26ea3,
         type: 3}
       propertyPath: m_Name
@@ -816,6 +826,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1499190462}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &873001774 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2992191724721829690, guid: 68b843002e8000945bd537f922d26ea3,
+    type: 3}
+  m_PrefabInstance: {fileID: 265981297}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a6accd2cb69e3e4fa6abfca9de05a98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &889924835
 GameObject:
   m_ObjectHideFlags: 0
@@ -1021,6 +1043,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a6accd2cb69e3e4fa6abfca9de05a98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1096531731
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1096531732}
+  m_Layer: 0
+  m_Name: 'Mark: Behind Rocks (Kal)'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1096531732
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1096531731}
+  m_LocalRotation: {x: 0.15300852, y: -0.84455013, z: 0.32544798, w: 0.3967457}
+  m_LocalPosition: {x: 366.948, y: 95.899, z: 712.589}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1991637198}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1200875326
 GameObject:
   m_ObjectHideFlags: 0
@@ -1121,6 +1173,12 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!4 &1226047287 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6104994695434109856, guid: 68b843002e8000945bd537f922d26ea3,
+    type: 3}
+  m_PrefabInstance: {fileID: 265981297}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1232134468
 GameObject:
   m_ObjectHideFlags: 0
@@ -1244,6 +1302,36 @@ Transform:
   m_Father: {fileID: 1991637198}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 124.77, y: -30, z: 0}
+--- !u!1 &1402255112
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1402255113}
+  m_Layer: 0
+  m_Name: 'Mark: Behind Rocks (Glan)'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1402255113
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1402255112}
+  m_LocalRotation: {x: 0.15300852, y: -0.84455013, z: 0.32544798, w: 0.3967457}
+  m_LocalPosition: {x: 364.329, y: 95.846, z: 708.989}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1991637198}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1454482719
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1304,17 +1392,17 @@ PrefabInstance:
     - target: {fileID: 7728122017555533804, guid: 68b843002e8000945bd537f922d26ea3,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1392.822
+      value: 1369.2
       objectReference: {fileID: 0}
     - target: {fileID: 7728122017555533804, guid: 68b843002e8000945bd537f922d26ea3,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -457.926
+      value: -451.34
       objectReference: {fileID: 0}
     - target: {fileID: 7728122017555533804, guid: 68b843002e8000945bd537f922d26ea3,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 463.922
+      value: 481.62
       objectReference: {fileID: 0}
     - target: {fileID: 7728122017555533804, guid: 68b843002e8000945bd537f922d26ea3,
         type: 3}
@@ -1485,8 +1573,12 @@ MonoBehaviour:
   m_Actors:
   - {fileID: 1933184837}
   - {fileID: 1063402188}
+  - {fileID: 873001774}
   m_Cues:
+  - {fileID: 11400000, guid: bc4a9398ff088934ab0ecbde14f44202, type: 2}
+  - {fileID: 11400000, guid: bcc30f7bf282d7342bea8d79b8b48e22, type: 2}
   - {fileID: 11400000, guid: 658a19df977a8594bb87226503c75d71, type: 2}
+  m_PlayOnAwake: 1
   textPanel: {fileID: 407437488}
   choicesPanel: {fileID: 1830392463}
   m_StoryChunkPrefab: {fileID: 1592123676985959444, guid: a7fa71b07ba313f48afeed3a7b3aa853,
@@ -1686,6 +1778,12 @@ Transform:
   m_Father: {fileID: 1991637198}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1814116724 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6104994695434109856, guid: 68b843002e8000945bd537f922d26ea3,
+    type: 3}
+  m_PrefabInstance: {fileID: 456263202}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1830392462
 GameObject:
   m_ObjectHideFlags: 0
@@ -1737,7 +1835,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1863,6 +1961,8 @@ Transform:
   - {fileID: 899062811}
   - {fileID: 997993317}
   - {fileID: 1723003168}
+  - {fileID: 1402255113}
+  - {fileID: 1096531732}
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

@@ -40,3 +40,6 @@ Actions are handled by tags in the narrative. An action tag takes the following 
 The Ink manager has cued Joe to enter the scene and move to Mark 1 which is an invisible game object in the scene. The Actor Controller on the Joe actor model will instruct the AI to move Joe to that mark. You will see him walk onto set any moment now.
 
 -> Top_Knot
+
+TODO: Document >>> TurnToFace: ActorName, Object
+TODO: Document >>> PlayerControl: On | Off
