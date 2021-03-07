@@ -131,7 +131,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5262642}
   m_Layer: 0
-  m_Name: ========= Ink Triggers
+  m_Name: ========= Ink
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -149,6 +149,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1040467504}
+  - {fileID: 1723003168}
+  - {fileID: 1402255113}
+  - {fileID: 1096531732}
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -204,6 +207,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Head
       objectReference: {fileID: 0}
+    - target: {fileID: 7342552128770741296, guid: 68b843002e8000945bd537f922d26ea3,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 22100000, guid: ca44b23c3f238b74cbec3d3016fa55f7,
+        type: 2}
     - target: {fileID: 7728122017555533804, guid: 68b843002e8000945bd537f922d26ea3,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -457,6 +466,12 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 7342552128770741296, guid: 68b843002e8000945bd537f922d26ea3,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 22100000, guid: ca44b23c3f238b74cbec3d3016fa55f7,
+        type: 2}
     - target: {fileID: 7728122017555533804, guid: 68b843002e8000945bd537f922d26ea3,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1017,7 +1032,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 1
   m_Center: {x: -1.9425659, y: 0, z: 0}
 --- !u!114 &1040467506
 MonoBehaviour:
@@ -1067,11 +1082,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1096531731}
   m_LocalRotation: {x: 0.15300852, y: -0.84455013, z: 0.32544798, w: 0.3967457}
-  m_LocalPosition: {x: 366.948, y: 95.899, z: 712.589}
+  m_LocalPosition: {x: 24.38269, y: -7.1708984, z: -15.748657}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1991637198}
-  m_RootOrder: 9
+  m_Father: {fileID: 5262642}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1200875326
 GameObject:
@@ -1326,11 +1341,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1402255112}
   m_LocalRotation: {x: 0.15300852, y: -0.84455013, z: 0.32544798, w: 0.3967457}
-  m_LocalPosition: {x: 364.329, y: 95.846, z: 708.989}
+  m_LocalPosition: {x: 21.763672, y: -7.223877, z: -19.348633}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1991637198}
-  m_RootOrder: 8
+  m_Father: {fileID: 5262642}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1454482719
 PrefabInstance:
@@ -1389,6 +1404,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Head
       objectReference: {fileID: 0}
+    - target: {fileID: 7342552128770741296, guid: 68b843002e8000945bd537f922d26ea3,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 22100000, guid: ca44b23c3f238b74cbec3d3016fa55f7,
+        type: 2}
     - target: {fileID: 7728122017555533804, guid: 68b843002e8000945bd537f922d26ea3,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1772,11 +1793,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1723003167}
   m_LocalRotation: {x: 0.15300852, y: -0.84455013, z: 0.32544798, w: 0.3967457}
-  m_LocalPosition: {x: 364.99, y: 95.82, z: 709.69}
+  m_LocalPosition: {x: 22.344727, y: -7.1898804, z: -18.367676}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1991637198}
-  m_RootOrder: 7
+  m_Father: {fileID: 5262642}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1814116724 stripped
 Transform:
@@ -1960,9 +1981,6 @@ Transform:
   - {fileID: 654529317}
   - {fileID: 899062811}
   - {fileID: 997993317}
-  - {fileID: 1723003168}
-  - {fileID: 1402255113}
-  - {fileID: 1096531732}
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

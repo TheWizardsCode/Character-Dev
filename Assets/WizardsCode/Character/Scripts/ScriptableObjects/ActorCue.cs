@@ -82,11 +82,11 @@ namespace WizardsCode.Character
         {
             m_Actor = actor;
 
-            ProcessMove();
-            ProcessAudio();
             ProcessAnimationLayerWeights();
             ProcessAnimationParameters();
             ProcessAnimationClips();
+            ProcessMove();
+            ProcessAudio();
             ProcessInk();
 
             return UpdateCoroutine();

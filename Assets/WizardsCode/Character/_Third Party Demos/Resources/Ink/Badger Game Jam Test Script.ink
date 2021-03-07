@@ -15,7 +15,7 @@ You stalk to the cliff edge and place yourself behind a rock, your partners do t
 
 
 = Urge_Glan_To_Go_In
->>> Cue: Player, TalkToGlan
+>>> Cue: Player, Talk To Glan
 >>> TurnToFace: Glan, Player
  
 you: this is a waste of time. We should just go in # 
