@@ -5,7 +5,8 @@
 -> Cliff_Edge
 
 == Cliff_Edge
-You stalk to the cliff edge and place yourself behind a rock, your partners do the same. There are bandits visible in a camp below.
+
+{ !You stalk to the cliff edge and place yourself behind a rock, your partners do the same. There are bandits visible in a camp below. }
 
 * [Talk to Glan] -> Urge_Glan_To_Go_In
 
@@ -18,9 +19,10 @@ You stalk to the cliff edge and place yourself behind a rock, your partners do t
 >>> Cue: Player, Talk To Glan
 >>> TurnToFace: Glan, Player
  
-you: this is a waste of time. We should just go in # 
+you: this is a waste of time. We should just go in
 glan: we need to  do this safely!
 you: I wish we were just going in OR you're right... but still a wuss
+
 -> Cliff_Edge
 
 = Climb_Down
