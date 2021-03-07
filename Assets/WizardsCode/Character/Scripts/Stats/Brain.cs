@@ -79,7 +79,7 @@ namespace WizardsCode.Stats {
                     if (value.ReserveFor(this))
                     {
                         //TODO move to an interaction point not to the transform position
-                        Actor.TargetPosition = value.transform.position;
+                        Actor.MoveTargetPosition = value.transform.position;
                     }
                 }
 
@@ -193,9 +193,9 @@ namespace WizardsCode.Stats {
         {
              if (!IsReadyToUpdateBehaviour) return;
 
-            if (TargetInteractable != null && Vector3.SqrMagnitude(TargetInteractable.transform.position - Actor.TargetPosition) > 0.7f)
+            if (TargetInteractable != null && Vector3.SqrMagnitude(TargetInteractable.transform.position - Actor.MoveTargetPosition) > 0.7f)
             {
-                Actor.TargetPosition = TargetInteractable.transform.position;
+                Actor.MoveTargetPosition = TargetInteractable.transform.position;
             }
 
             base.Update();

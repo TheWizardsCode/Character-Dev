@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using WizardsCode.Ink;
 
 namespace WizardsCode.Character
 {
@@ -51,8 +52,15 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("The normalized time from which to start the animation.")]
         public float animationNormalizedTime = 0;
 
+        [Header("Ink")]
+        [SerializeField, Tooltip("The name of the knot to jump to on this cue.")]
+        string m_KnotName;
+        [SerializeField, Tooltip("The name of the stitch to jump to on this cue.")]
+        string m_StitchName;
+
         private ActorController m_Actor;
         private int m_LayerIndex;
+        private NavMeshAgent m_Agent;
 
         /// <summary>
         /// Get or set the mark name, that is the name of an object in the scene the character should move to when this cue is prompted.
@@ -78,8 +86,16 @@ namespace WizardsCode.Character
             ProcessAnimationLayerWeights();
             ProcessAnimationParameters();
             ProcessAnimationClips();
+            ProcessInk();
 
             return UpdateCoroutine();
+        }
+
+        internal void ProcessInk()
+        {
+            if (!string.IsNullOrEmpty(m_KnotName) || !string.IsNullOrEmpty(m_StitchName)) {
+                InkManager.Instance.ChoosePath(m_KnotName, m_StitchName);
+            }
         }
 
         private void ProcessAnimationLayerWeights()
@@ -100,6 +116,14 @@ namespace WizardsCode.Character
                     float delta = (m_LayerWeight - currentWeight) * (Time.deltaTime * m_LayerChangeSpeed);
                     m_Actor.Animator.SetLayerWeight(m_LayerIndex, currentWeight + delta);
                     yield return new WaitForEndOfFrame();
+                }
+            }
+
+            if (m_Agent != null)
+            {
+                while (m_Agent.hasPath && m_Agent.remainingDistance > m_Agent.stoppingDistance)
+                {
+                    yield return new WaitForSeconds(0.2f);
                 }
             }
         }
@@ -149,11 +173,14 @@ namespace WizardsCode.Character
         {
             if (!string.IsNullOrWhiteSpace(markName))
             {
-                NavMeshAgent agent = m_Actor.GetComponent<NavMeshAgent>();
+                m_Agent = m_Actor.GetComponent<NavMeshAgent>();
+
+                m_Agent.enabled = true;
+
                 GameObject go = GameObject.Find(markName);
                 if (go != null)
                 {
-                    agent.SetDestination(go.transform.position);
+                    m_Agent.SetDestination(go.transform.position);
                 } else
                 {
                     Debug.LogWarning(m_Actor.name + "  has a mark set, but the mark doesn't exist in the scene. The name set is " + markName);

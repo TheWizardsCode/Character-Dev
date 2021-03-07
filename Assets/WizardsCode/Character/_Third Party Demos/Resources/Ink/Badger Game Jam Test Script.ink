@@ -1,18 +1,20 @@
-
-You stalk to the cliff edge and placed yourself behind a rock, your partners did the same. There are bandits visible in a camp below.
+You stalk to the cliff edge and place yourself behind a rock, your partners do the same. There are bandits visible in a camp below.
 -> Top_Knot
 
 == Top_Knot
 
 * [Talk to Glan] -> Urge_Glan_To_Go_In
 
-* [Use Binoculars] -> Scouting_The_Scene
+* [Use Binoculars] -> Scouting_The_Scene # Cue Player UseBinoculars
 
 * [Climb down in the camp] -> Climb_Down
 
 
 = Urge_Glan_To_Go_In
-you: this is a waste of time. We should just go in
+>>> Cue: Player, TalkToGlan
+>>> TurnToFace: Glan, Player
+ 
+you: this is a waste of time. We should just go in # 
 glan: we need to  do this safely!
 you: I wish we were just going in OR you're right... but still a wuss
 -> Top_Knot
@@ -51,7 +53,7 @@ They look ridiculous. Their movements are clumsy, almost child like. They need t
 * [Climb Down into the camp] -> Climb_Down
 
 = Scout_The_Boat
-The boat has a flag that looks familiar, it looks they have backup coming in.
+The boat has a flag that looks familiar, it looks like they have backup coming in.
 
 * Ask Kal if he recognizes the flag
 Kal raises his binoculars to his eyes, after a few moments he says "Yep, you are right, that looks like one of theirs we should get this done quickly."
@@ -67,4 +69,4 @@ Well... the story needs to be finshed...
 
 TODO: If she climbs down but used binoculars first on the play fighting, she can wait until a knockout, then go down without being noticed (because they are all distracted)
 
-TODO: if she calls glan a wuss, modify a variable tracking their relationship friendliness... and integrate it with any other game state you need to track ^^
+TODO: if she calls glan a wuss, modify a variable tracking their relationship friendliness... and integrate it with any other game state you need to track

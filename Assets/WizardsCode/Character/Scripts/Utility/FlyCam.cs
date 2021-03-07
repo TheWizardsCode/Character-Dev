@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace WizardsCode.Character
 {
@@ -32,11 +33,15 @@ namespace WizardsCode.Character
 		private float rotationX = 0.0f;
 		private float rotationY = 0.0f;
 
+		private NavMeshAgent m_Agent;
+
 		void Start()
 		{
 			// X and Y are reversed deliberatly, it's maths, don't ask me!
 			rotationX = transform.rotation.eulerAngles.y;
 			rotationY = -transform.rotation.eulerAngles.x;
+
+			m_Agent = GetComponent<NavMeshAgent>();
 		}
 
 		void Update()

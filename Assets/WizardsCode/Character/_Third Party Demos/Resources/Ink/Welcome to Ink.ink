@@ -6,16 +6,13 @@ When interacting they will talk to the player and potentially carry out actions.
 
 What would you like to learn more about?
 
--> Home
+-> Top_Knot
 
-== Home
+== Top_Knot
 
-* [Talking with Actors]
-  -> Talking_To_Actors
-* [Telling Actors to take actions]
-  -> Actor_Actions
-* [Quit]
-    -> DONE
+* Talking with Actors -> Talking_To_Actors
+* Telling Actors to take actions -> Actor_Actions
+* Quit -> DONE
     
 == Talking_To_Actors
 
@@ -23,22 +20,23 @@ Dialog is provided to Actors via an Ink script. This is made available to the ch
 
 After each piece of dialog the player can be presented with a series of choices.
 
-  -> Home
+-> Top_Knot
 
 == Actor_Actions
 
 Actions are handled by tags in the narrative. An action tag takes the following form:
 
-\# Cue - [ActorName] - [CueName]
+`>>> Cue: [ActorName], [CueName]`
 
 `Cue` is a keyword that tells the character system that it should cue an actor
-`[ActorName]` must be replaced by the name of the actor that will recieve the Cue. The actor must be available in the current scene.
+`[ActorName]` must be replaced by the name of the actor that will recieve the Cue. The actor must be known to the `InkManager`
 `[CueName]` must be replaced by the name of the Cue that the actor should carry out. The cue must be known to the Ink manager in the current scene.
 
-* [Cue Joe]
-  -> Joes_Entrance
+* [Cue Joe] -> Joes_Entrance
+* Home -> Top_Knot
 
 == Joes_Entrance
-The Ink manager has cued Joe to enter the scene and move to Mark 1 which is an invisible game object in the scene. The Actor Controller on the Joe actor model will instruct the AI to move Joe to that mark. You will see him walk onto set any moment now. # Cue - Joe - WalkToMark1
+>>> Cue: Joe, WalkToMark1
+The Ink manager has cued Joe to enter the scene and move to Mark 1 which is an invisible game object in the scene. The Actor Controller on the Joe actor model will instruct the AI to move Joe to that mark. You will see him walk onto set any moment now.
 
-  -> Home
+-> Top_Knot

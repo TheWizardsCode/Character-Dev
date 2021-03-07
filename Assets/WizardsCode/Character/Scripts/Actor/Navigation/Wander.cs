@@ -66,7 +66,7 @@ namespace WizardsCode.Character
                 if (m_TargetPosition != value)
                 {
                     m_TargetPosition = value;
-                    controller.TargetPosition = value;
+                    controller.MoveTargetPosition = value;
                     timeToNextWanderPathChange = Random.Range(minTimeBetweenRandomPathChanges, maxTimeBetweenRandomPathChanges);
                 }
             }
