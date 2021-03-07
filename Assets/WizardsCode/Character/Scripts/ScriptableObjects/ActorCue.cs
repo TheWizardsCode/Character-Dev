@@ -61,6 +61,7 @@ namespace WizardsCode.Character
         private ActorController m_Actor;
         private int m_LayerIndex;
         private NavMeshAgent m_Agent;
+        private bool m_AgentEnabled;
 
         /// <summary>
         /// Get or set the mark name, that is the name of an object in the scene the character should move to when this cue is prompted.
@@ -100,13 +101,16 @@ namespace WizardsCode.Character
 
         private void ProcessAnimationLayerWeights()
         {
-            m_LayerIndex = m_Actor.Animator.GetLayerIndex(m_LayerName);
+            if (m_Actor.Animator != null)
+            {
+                m_LayerIndex = m_Actor.Animator.GetLayerIndex(m_LayerName);
+            }
         }
 
         internal IEnumerator UpdateCoroutine()
         {
             // Process Layers
-            if (m_LayerIndex >= 0 && m_Actor.Animator.GetLayerWeight(m_LayerIndex) != m_LayerWeight)
+            if (m_Actor.Animator != null && m_LayerIndex >= 0 && m_Actor.Animator.GetLayerWeight(m_LayerIndex) != m_LayerWeight)
             {
                 float originalWeight = m_Actor.Animator.GetLayerWeight(m_LayerIndex);
                 float currentWeight = originalWeight;
@@ -121,10 +125,11 @@ namespace WizardsCode.Character
 
             if (m_Agent != null)
             {
-                while (m_Agent.hasPath && m_Agent.remainingDistance > m_Agent.stoppingDistance)
+                while (m_Agent.pathPending || (m_Agent.hasPath && m_Agent.remainingDistance > m_Agent.stoppingDistance))
                 {
-                    yield return new WaitForSeconds(0.2f);
+                    yield return new WaitForSeconds(0.3f);
                 }
+                m_Agent.enabled = m_AgentEnabled;
             }
         }
 
@@ -174,7 +179,7 @@ namespace WizardsCode.Character
             if (!string.IsNullOrWhiteSpace(markName))
             {
                 m_Agent = m_Actor.GetComponent<NavMeshAgent>();
-
+                m_AgentEnabled = m_Agent.enabled;
                 m_Agent.enabled = true;
 
                 GameObject go = GameObject.Find(markName);
