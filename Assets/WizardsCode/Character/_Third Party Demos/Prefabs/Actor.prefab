@@ -630,7 +630,7 @@ GameObject:
   - component: {fileID: 36613955577121083}
   - component: {fileID: 2992191724721829690}
   m_Layer: 0
-  m_Name: Glan
+  m_Name: Actor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -835,6 +835,10 @@ MonoBehaviour:
   SpeedParameterName: Forward
   TurnParameterName: Turn
   m_RunningSpeed: 8
+  m_EnableIKLook: 1
+  head: {fileID: 0}
+  m_LookAtHeatTime: 0.2
+  m_LookAtCoolTime: 0.2
 --- !u!1 &6546296049352183015
 GameObject:
   m_ObjectHideFlags: 0
@@ -845,7 +849,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6104994695434109856}
   m_Layer: 0
-  m_Name: Neo_Head
+  m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
