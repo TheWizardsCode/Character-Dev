@@ -1357,17 +1357,17 @@ PrefabInstance:
     - target: {fileID: 7728122017555533804, guid: 68b843002e8000945bd537f922d26ea3,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1393.3461
+      value: 1392.822
       objectReference: {fileID: 0}
     - target: {fileID: 7728122017555533804, guid: 68b843002e8000945bd537f922d26ea3,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -457.94662
+      value: -457.926
       objectReference: {fileID: 0}
     - target: {fileID: 7728122017555533804, guid: 68b843002e8000945bd537f922d26ea3,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 464.39075
+      value: 463.922
       objectReference: {fileID: 0}
     - target: {fileID: 7728122017555533804, guid: 68b843002e8000945bd537f922d26ea3,
         type: 3}
@@ -1715,6 +1715,36 @@ Transform:
   m_Father: {fileID: 1062859946}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1723003167
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1723003168}
+  m_Layer: 0
+  m_Name: 'Mark: Talk To Glan'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1723003168
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1723003167}
+  m_LocalRotation: {x: 0.15300852, y: -0.84455013, z: 0.32544798, w: 0.3967457}
+  m_LocalPosition: {x: 364.99, y: 95.82, z: 709.69}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1991637198}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1830392462
 GameObject:
   m_ObjectHideFlags: 0
@@ -1855,6 +1885,7 @@ Transform:
   - {fileID: 654529317}
   - {fileID: 899062811}
   - {fileID: 997993317}
+  - {fileID: 1723003168}
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
