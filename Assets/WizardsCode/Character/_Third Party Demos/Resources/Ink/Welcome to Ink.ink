@@ -42,4 +42,4 @@ The Ink manager has cued Joe to enter the scene and move to Mark 1 which is an i
 -> Top_Knot
 
 TODO: Document >>> TurnToFace: ActorName, Object
-TODO: Document >>> PlayerControl: On | Off
+TODO: Document >>> PlayerControl: On | Off (Gives the player control over the main character, prevents the story proceeding until the player trips a trigger or interacts with something)

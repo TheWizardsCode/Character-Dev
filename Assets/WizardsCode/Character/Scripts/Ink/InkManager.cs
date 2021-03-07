@@ -13,6 +13,8 @@ namespace WizardsCode.Ink
 {
     public class InkManager : AbstractSingleton<InkManager>
     {
+        enum Direction { Cue, TurnToFace, PlayerControl }
+
         [Header("Script")]
         [SerializeField, Tooltip("The Ink file to work with.")]
         TextAsset m_InkJSON;
@@ -36,7 +38,6 @@ namespace WizardsCode.Ink
         Story m_Story;
         bool m_IsUIDirty = false;
         StringBuilder m_NewStoryText = new StringBuilder();
-        enum Direction { Cue, TurnToFace, PlayerControl }
 
         private bool m_IsDisplayingUI = false;
         internal bool IsDisplayingUI
@@ -182,7 +183,7 @@ namespace WizardsCode.Ink
             ActorController actor = null;
             for (int i = 0; i < m_Actors.Length; i++)
             {
-                if (m_Actors[i].name == actorName)
+                if (m_Actors[i].name == actorName.Trim())
                 {
                     actor = m_Actors[i];
                     break;
@@ -282,14 +283,14 @@ namespace WizardsCode.Ink
 
         bool ValidateArgumentCount(string[] args, int requiredCount)
         {
-            if (args.Length < 2)
+            if (args.Length < requiredCount)
             {
-                Debug.LogError("Cue direction has too few arguments. There should be (actorName, cueName). Ignoring direction.");
+                Debug.LogError("Direction has too few arguments. There should be " + requiredCount + ". Ignoring direction.");
                 return false;
             }
-            else if (args.Length > 2)
+            else if (args.Length > requiredCount)
             {
-                Debug.LogWarning("Cue direction has too many arguments. There should be (actorName, cueName). Ignoring the additional arguments.");
+                Debug.LogWarning("Direction has too few arguments. There should be " + requiredCount + ". Ignoring the additional arguments.");
                 return true;
             }
 

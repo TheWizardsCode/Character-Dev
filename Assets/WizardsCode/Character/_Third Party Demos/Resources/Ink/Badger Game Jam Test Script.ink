@@ -26,6 +26,14 @@ you: I wish we were just going in OR you're right... but still a wuss
 -> Cliff_Edge
 
 = Climb_Down
+>>> Cue: Glan, Move To Climbing Down
+>>> Cue: Kal, Move To Climbing Down
+>>> PlayerControl: On
+
+-> Heard_Something
+
+= Heard_Something
+
 Glan signals that he heard something. Over to the right. You think you see movement.
 
 * Throw a dagger
@@ -68,6 +76,10 @@ Kal raises his binoculars to his eyes, after a few moments he says "Yep, you are
 * Keep it to yourself -> Scouting_The_Scene
 
 == Enter_The_Camp
+>>> Cue: Glan, Move To Climbing Down
+>>> Cue: Kal, Move To Climbing Down
+>>> PlayerControl: On
+
 Well... the story needs to be finshed...
 
 -> DONE

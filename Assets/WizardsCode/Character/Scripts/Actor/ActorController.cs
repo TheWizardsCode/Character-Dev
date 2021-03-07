@@ -38,7 +38,6 @@ namespace WizardsCode.Character
         /// A transform at the point in space that the actor should look towards.
         /// </summary>
         internal Transform LookAtTarget;
-
         private Vector3 m_CurrentLookAtPosition;
         private float lookAtWeight = 0.0f;
 
@@ -132,7 +131,7 @@ namespace WizardsCode.Character
             }
         }
 
-        internal bool HasReachedTarget
+        internal bool IsMoving
         {
             get
             {
@@ -143,14 +142,20 @@ namespace WizardsCode.Character
                         return true;
                     }
                 }
-                
+
                 if (!m_Agent.hasPath && !m_Agent.pathPending)
                 {
                     return true;
                 }
-                
+
                 return false;
             }
+        }
+
+        [Obsolete("Use IsMoving instead")] // v0.0.11
+        internal bool HasReachedTarget
+        {
+            get { return IsMoving; }
         }
 
         void OnAnimatorIK()
