@@ -2,11 +2,12 @@
 
 == Top_Knot
 
+>>> SetEmotion: Glan, Fear, 1
 >>> Cue: Glan, Move To Rocks (Glan)
+//>>> MoveTo: Glan, Mark: Behind Rocks (Glan)
 >>> MoveTo: Kal, Mark: Behind Rocks (Kal)
 >>> PlayerControl: On
-
--> DONE
+* [Approach: Cliff] -> Cliff_Edge
 
 == Cliff_Edge
 
@@ -22,6 +23,7 @@
 = Urge_Glan_To_Go_In
 >>> Cue: Player, Talk To Glan
 >>> TurnToFace: Glan, Player
+>>> TurnToFace: Player, Glan
  
 you: this is a waste of time. We should just go in
 glan: we need to  do this safely!
@@ -33,8 +35,9 @@ you: I wish we were just going in OR you're right... but still a wuss
 >>> Cue: Glan, Move To Climbing Down
 >>> Cue: Kal, Move To Climbing Down
 >>> PlayerControl: On
+* [>>> Approach: Camp] -> Heard_Something
 
--> DONE
+-> Heard_Something
 
 = Heard_Something
 
@@ -52,7 +55,7 @@ Your party lies flat and still. After a short while you decide there is nothing 
 You tweet like a bird, worried that they may have heard you. After a while there are no more signs of movement and you continue down the hill.
 -> Heard_Something
 
-* Keep going -> Enter_The_Camp
+* Keep going -> Approach_The_Camp
 
 = Scouting_The_Scene
 A quick scan of the area reveals a few items of interest.
@@ -78,10 +81,14 @@ Kal raises his binoculars to his eyes, after a few moments he says "Yep, you are
 
 * Keep it to yourself -> Scouting_The_Scene
 
-== Enter_The_Camp
->>> Cue: Glan, Move To Near Main Tent
->>> Cue: Kal, Move To Near Main Tent
+= Approach_The_Camp
+
+>>> MoveTo: Glan, Mark: Near Main Tent
+>>> MoveTo: Kal, Mark: Near Main Tent
 >>> PlayerControl: On
+* [Approach: Enter_The_Camp] -> Enter_The_Camp
+
+== Enter_The_Camp
 
 Well... the story needs to be finshed...
 

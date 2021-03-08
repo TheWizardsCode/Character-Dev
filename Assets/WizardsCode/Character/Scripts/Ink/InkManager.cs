@@ -8,12 +8,13 @@ using WizardsCode.Character;
 using WizardsCode.Utility;
 using System.Text;
 using System;
+using static WizardsCode.Character.EmotionalState;
 
 namespace WizardsCode.Ink
 {
     public class InkManager : AbstractSingleton<InkManager>
     {
-        enum Direction { Cue, TurnToFace, PlayerControl, MoveTo }
+        enum Direction { Cue, TurnToFace, PlayerControl, MoveTo, SetEmotion }
 
         [Header("Script")]
         [SerializeField, Tooltip("The Ink file to work with.")]
@@ -72,7 +73,7 @@ namespace WizardsCode.Ink
             }
         }
 
-        public void ChoosePath(string knotName, string stitchName)
+        public void ChoosePath(string knotName, string stitchName = null)
         {
             string path = knotName;
             if (!string.IsNullOrEmpty(stitchName))
@@ -188,6 +189,35 @@ namespace WizardsCode.Ink
             }
         }
 
+        /// <summary>
+        /// The SetEmotion direction looks for a defined emotion on an character and sets it if found.
+        /// 
+        /// </summary>
+        /// <param name="args">[ActorName], [EmotionName], [Float]</param>
+        void SetEmotion(string[] args)
+        {
+            if (!ValidateArgumentCount(args, 3))
+            {
+                return;
+            }
+
+            ActorController actor = FindActor(args[0].Trim(), false);
+            if (actor)
+            {
+                EmotionalState emotions = FindEmotionalState(actor);
+                EmotionType emotion = (EmotionType)Enum.Parse(typeof(EmotionType), args[1].Trim());
+                float value = float.Parse(args[2].Trim());
+
+                if (actor != null)
+                {
+                    emotions.SetEmotionValue(emotion, value);
+                }
+            } else
+            {
+                Debug.LogError("There is a direction to set the value of the emotion " + args[1].Trim() + "  " + actor + " but there is no EmotionalState component on that actor.");
+            }
+        }
+
         void TurnToFace(string[] args)
         {
             if (!ValidateArgumentCount(args, 2))
@@ -204,9 +234,19 @@ namespace WizardsCode.Ink
             }
         }
 
+        EmotionalState FindEmotionalState(ActorController actor)
+        {
+            EmotionalState emotions = actor.GetComponent<EmotionalState>();
+            if (!emotions)
+            {
+                Debug.LogError("There is a direction to set an emotion value on " + actor + " but there is no EmotionalState component on that actor.");
+            }
+            return emotions;
+        }
+
         Transform FindTarget(string objectName)
         {
-            ActorController actor = FindActor(objectName);
+            ActorController actor = FindActor(objectName, false);
             if (actor != null)
             {
                 return actor.transform.root;
@@ -224,7 +264,13 @@ namespace WizardsCode.Ink
             }
         }
 
-        private ActorController FindActor(string actorName)
+        /// <summary>
+        /// Look through the known actors to see if we have one with the given name.
+        /// </summary>
+        /// <param name="actorName">The name of the actor we want.</param>
+        /// <param name="logError">If true (the default) an error will be logged to the console if the actor is not found.</param>
+        /// <returns>The actor with the given name or null if they cannot be found.</returns>
+        private ActorController FindActor(string actorName, bool logError = true)
         {
             ActorController actor = null;
             for (int i = 0; i < m_Actors.Length; i++)
@@ -236,7 +282,7 @@ namespace WizardsCode.Ink
                 }
             }
 
-            if (actor == null)
+            if (logError && actor == null)
             {
                 Debug.LogError("Script contains a direction for " + actorName + ". However, the actor cannot be found.");
             }
@@ -277,9 +323,10 @@ namespace WizardsCode.Ink
                 line = m_Story.Continue();
 
                 // Process Directions;
-                if (line.StartsWith(">>>"))
+                int cmdIdx = line.IndexOf(">>>");
+                if (cmdIdx >= 0)
                 {
-                    int startIdx = line.IndexOf(' ');
+                    int startIdx = line.IndexOf(' ', cmdIdx);
                     int endIdx = line.IndexOf(':') - startIdx;
                     Enum.TryParse(line.Substring(startIdx, endIdx).Trim(), out Direction cmd);
                     string[] args = line.Substring(endIdx + startIdx + 1).Split(',');
@@ -293,9 +340,13 @@ namespace WizardsCode.Ink
                             break;
                         case Direction.PlayerControl:
                             SetPlayerControl(args);
+                            string resp = m_Story.ContinueMaximally();
                             break;
                         case Direction.MoveTo:
                             MoveTo(args);
+                            break;
+                        case Direction.SetEmotion:
+                            SetEmotion(args);
                             break;
                         default:
                             Debug.LogError("Unknown Direction: " + line);
@@ -323,7 +374,10 @@ namespace WizardsCode.Ink
             if (args[0].Trim().ToLower() == "on")
             {
                 SetPlayerControl(true);
-            } else
+                //TODO At present there we need to set a DONE divert in the story which is less than ideal since it means the writers can't use the Inky test tools: asked for guidance at https://discordapp.com/channels/329929050866843648/329929390358265857/818370835177275392
+                
+            }
+            else
             {
                 SetPlayerControl(false);
             }

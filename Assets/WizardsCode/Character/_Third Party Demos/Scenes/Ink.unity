@@ -148,11 +148,9 @@ Transform:
   m_LocalPosition: {x: 1371.077, y: -450.63995, z: 483.414}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1040467504}
   - {fileID: 1723003168}
   - {fileID: 1402255113}
   - {fileID: 1096531732}
-  - {fileID: 1080978557}
   - {fileID: 1640945402}
   - {fileID: 610925497}
   m_Father: {fileID: 0}
@@ -2026,7 +2024,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 610925497}
-  m_Layer: 0
+  - component: {fileID: 610925499}
+  - component: {fileID: 610925498}
+  m_Layer: 8
   m_Name: 'Mark: Near Main Tent'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2045,8 +2045,35 @@ Transform:
   m_LocalScale: {x: 5, y: 3, z: 3}
   m_Children: []
   m_Father: {fileID: 5262642}
-  m_RootOrder: 6
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &610925498
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 610925496}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &610925499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 610925496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27a7fcd4b6db1b64b8e16bfada7ea3e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Knot: Enter_The_Camp
+  m_Stitch: 
 --- !u!1 &613891873
 GameObject:
   m_ObjectHideFlags: 0
@@ -2413,65 +2440,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c8c9c2a612045d54b8e7e33b60fa7055, type: 3}
---- !u!1 &1040467503
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1040467504}
-  - component: {fileID: 1040467505}
-  - component: {fileID: 1040467506}
-  m_Layer: 8
-  m_Name: Top Knot Trigger
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1040467504
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1040467503}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 35.066, y: -7.25, z: -17.39}
-  m_LocalScale: {x: 5.9194307, y: 5.9194307, z: 5.9194307}
-  m_Children: []
-  m_Father: {fileID: 5262642}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &1040467505
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1040467503}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 1
-  m_Center: {x: -1.9425659, y: 0, z: 0}
---- !u!114 &1040467506
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1040467503}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27a7fcd4b6db1b64b8e16bfada7ea3e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Knot: Cliff_Edge
-  m_Stitch: 
 --- !u!114 &1063402188 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2992191724721829690, guid: 68b843002e8000945bd537f922d26ea3,
@@ -2490,65 +2458,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1706914721}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1080978556
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1080978557}
-  - component: {fileID: 1080978559}
-  - component: {fileID: 1080978558}
-  m_Layer: 8
-  m_Name: Heard Something Trigger
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1080978557
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1080978556}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 25.7, y: -19.41, z: -57.44}
-  m_LocalScale: {x: 5.9194307, y: 5.9194307, z: 5.9194307}
-  m_Children: []
-  m_Father: {fileID: 5262642}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1080978558
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1080978556}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27a7fcd4b6db1b64b8e16bfada7ea3e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Knot: Cliff_Edge
-  m_Stitch: Heard_Something
---- !u!135 &1080978559
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1080978556}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: -1.9425659, y: 0, z: 0}
 --- !u!1001 &1084491292
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2653,7 +2562,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1096531732}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: 'Mark: Behind Rocks (Kal)'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2672,7 +2581,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5262642}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1161055303 stripped
 Transform:
@@ -3304,7 +3213,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1402255113}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: 'Mark: Behind Rocks (Glan)'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3323,7 +3232,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5262642}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1454482719
 PrefabInstance:
@@ -3683,7 +3592,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: bcc30f7bf282d7342bea8d79b8b48e22, type: 2}
   - {fileID: 11400000, guid: 658a19df977a8594bb87226503c75d71, type: 2}
   - {fileID: 11400000, guid: 5e46b011e9e5c8c4e9ba37bd61db9fe2, type: 2}
-  - {fileID: 11400000, guid: 6e03ef0dc1b9b3a4e86c20580f9dfd35, type: 2}
+  - {fileID: 0}
   m_PlayOnAwake: 1
   textPanel: {fileID: 407437488}
   choicesPanel: {fileID: 1830392463}
@@ -3720,7 +3629,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1640945402}
-  m_Layer: 0
+  - component: {fileID: 1640945404}
+  - component: {fileID: 1640945403}
+  m_Layer: 8
   m_Name: 'Mark: Climbing Down'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3739,8 +3650,35 @@ Transform:
   m_LocalScale: {x: 5, y: 3, z: 3}
   m_Children: []
   m_Father: {fileID: 5262642}
-  m_RootOrder: 5
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1640945403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1640945401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27a7fcd4b6db1b64b8e16bfada7ea3e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Knot: Cliff_Edge
+  m_Stitch: Heard_Something
+--- !u!135 &1640945404
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1640945401}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &1706914721
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4029,7 +3967,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1723003168}
-  m_Layer: 0
+  - component: {fileID: 1723003170}
+  - component: {fileID: 1723003169}
+  m_Layer: 8
   m_Name: 'Mark: Talk To Glan'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4048,8 +3988,35 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5262642}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1723003169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1723003167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27a7fcd4b6db1b64b8e16bfada7ea3e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Knot: Cliff_Edge
+  m_Stitch: 
+--- !u!135 &1723003170
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1723003167}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &1768999553 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 996577998875958703, guid: 3d55ff5a3ecf58a40b72f556b24217b2,
