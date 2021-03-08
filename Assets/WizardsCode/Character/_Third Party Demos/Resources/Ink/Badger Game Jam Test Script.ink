@@ -46,6 +46,9 @@ you: I wish we were just going in OR you're right... but still a wuss
 
 * Throw a dagger
 You throw a dagger in the direction of the sound. It doesn't hit anything, there was nothing there. You continue down to the camp.
+
+>>> Action: Player, Throw, SoundSourceInBushes
+
 -> Heard_Something
 
 * Lay flat and listen

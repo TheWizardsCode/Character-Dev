@@ -90,3 +90,4 @@ The SetEmotion direction takes the following form:
 
 TODO: Document >>> TurnToFace: ActorName, Object
 TODO: Document >>> PlayerControl: On | Off (Gives the player control over the main character, prevents the story proceeding until the player trips a trigger or interacts with something)
+TODO: Document >>> Action: [ActorName], [ActionName], [TargetName]
