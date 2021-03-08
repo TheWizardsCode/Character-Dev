@@ -15,7 +15,17 @@ namespace WizardsCode.Character
     public class EmotionalState : MonoBehaviour
     {
         public enum EmotionType { Anger, Interest, Fear, Sadness, Pleasure }
+
+        [Header("Animator")]
+        [SerializeField, Tooltip("Should the character crouch when fearful, interested and not angry?")]
+        internal bool m_CrouchInFear = true;
+        [SerializeField, Tooltip("The Animator boolean parameter name that will cause the character to crouch when moving/idle.")]
+        string m_CrouchParameterName = "Crouch";
+
         public List<EmotionMetric> emotions = new List<EmotionMetric>();
+
+        Animator m_Animator;
+        int m_CrouchParameterHash;
 
         public void Awake()
         {
@@ -61,6 +71,19 @@ namespace WizardsCode.Character
             emotion = new EmotionMetric(EmotionType.Interest, 0, 0.45f, 0.2f);
             emotions.Add(emotion);
 
+            m_Animator = GetComponent<Animator>();
+            m_CrouchParameterHash = Animator.StringToHash(m_CrouchParameterName);
+        }
+
+        private void Update()
+        {
+            if (m_CrouchInFear && GetEmotionValue(EmotionType.Fear) > 0.9f && GetEmotionValue(EmotionType.Anger) < 0.6 && GetEmotionValue(EmotionType.Interest) > 0.7)
+            {
+                m_Animator.SetBool(m_CrouchParameterHash, true);
+            } else
+            {
+                m_Animator.SetBool(m_CrouchParameterHash, true);
+            }
         }
 
         /// <summary>

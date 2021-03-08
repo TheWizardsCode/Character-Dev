@@ -3,8 +3,9 @@
 == Top_Knot
 
 >>> SetEmotion: Glan, Fear, 1
->>> Cue: Glan, Move To Rocks (Glan)
-//>>> MoveTo: Glan, Mark: Behind Rocks (Glan)
+>>> SetEmotion: Kal, Fear, 1
+//>>> Cue: Glan, Move To Rocks (Glan)
+>>> MoveTo: Glan, Mark: Behind Rocks (Glan)
 >>> MoveTo: Kal, Mark: Behind Rocks (Kal)
 >>> PlayerControl: On
 * [Approach: Cliff] -> Cliff_Edge

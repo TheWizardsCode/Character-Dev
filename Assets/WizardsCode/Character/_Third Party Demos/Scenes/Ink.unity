@@ -2179,6 +2179,47 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1499190462}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &837192558 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6409572260986667617, guid: 68b843002e8000945bd537f922d26ea3,
+    type: 3}
+  m_PrefabInstance: {fileID: 1454482719}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &837192564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 837192558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aaa3b670d7156c42a12af0bb27e7a35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_CrouchInFear: 1
+  m_CrouchParameterName: Crouch
+  emotions:
+  - type: 0
+    value: 0
+    activationMultiplier: 1
+    enjoymentMultiplier: -0.2
+  - type: 2
+    value: 0
+    activationMultiplier: 0.1
+    enjoymentMultiplier: -1
+  - type: 3
+    value: 0
+    activationMultiplier: -1
+    enjoymentMultiplier: -0.1
+  - type: 4
+    value: 0
+    activationMultiplier: 0.1
+    enjoymentMultiplier: 1
+  - type: 1
+    value: 0
+    activationMultiplier: 0.45
+    enjoymentMultiplier: 0.2
 --- !u!4 &837765595 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4227898523922313553, guid: a54c2f31a7256c94cbf569fe84a00f76,
@@ -2191,7 +2232,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 265981297}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1833483377}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0a6accd2cb69e3e4fa6abfca9de05a98, type: 3}
@@ -2446,7 +2487,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 1454482719}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 837192558}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0a6accd2cb69e3e4fa6abfca9de05a98, type: 3}
@@ -4129,6 +4170,47 @@ MonoBehaviour:
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+--- !u!1 &1833483377 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6409572260986667617, guid: 68b843002e8000945bd537f922d26ea3,
+    type: 3}
+  m_PrefabInstance: {fileID: 265981297}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1833483384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1833483377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aaa3b670d7156c42a12af0bb27e7a35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_CrouchInFear: 1
+  m_CrouchParameterName: Crouch
+  emotions:
+  - type: 0
+    value: 0
+    activationMultiplier: 1
+    enjoymentMultiplier: -0.2
+  - type: 2
+    value: 0
+    activationMultiplier: 0.1
+    enjoymentMultiplier: -1
+  - type: 3
+    value: 0
+    activationMultiplier: -1
+    enjoymentMultiplier: -0.1
+  - type: 4
+    value: 0
+    activationMultiplier: 0.1
+    enjoymentMultiplier: 1
+  - type: 1
+    value: 0
+    activationMultiplier: 0.45
+    enjoymentMultiplier: 0.2
 --- !u!4 &1845384812 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4227898523922313553, guid: a54c2f31a7256c94cbf569fe84a00f76,
