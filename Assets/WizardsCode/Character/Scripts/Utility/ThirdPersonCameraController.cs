@@ -15,6 +15,8 @@ namespace WizardsCode.Utility
     {
         [SerializeField, Tooltip("The ActorController converts movement into animations and actions.")]
         ActorController m_Actor;
+        [SerializeField, Tooltip("Invert the y axis so that moving the mouse up will result in the view moving up?")]
+        bool m_InvertY = false;
 
         public float rotationPower = 3f;
         public float rotationLerp = 0.5f;
@@ -47,7 +49,8 @@ namespace WizardsCode.Utility
             followTransform.transform.rotation *= Quaternion.AngleAxis(_look.x * rotationPower, Vector3.up);
 
             #region Vertical Rotation
-            followTransform.transform.rotation *= Quaternion.AngleAxis(_look.y * rotationPower, Vector3.right);
+            float rotateY = m_InvertY ? -_look.y * rotationPower : _look.y * rotationPower;
+            followTransform.transform.rotation *= Quaternion.AngleAxis(rotateY, Vector3.right);
 
             var angles = followTransform.transform.localEulerAngles;
             angles.z = 0;
