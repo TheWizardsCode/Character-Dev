@@ -76,7 +76,7 @@ Kal raises his binoculars to his eyes, after a few moments he says "Yep, you are
 * Keep it to yourself -> Scouting_The_Scene
 
 == Enter_The_Camp
->>> Cue: Glan, Move To Climbing Down
+>>> Cue: Glan, Mo ve To Climbing Down
 >>> Cue: Kal, Move To Climbing Down
 >>> PlayerControl: On
 

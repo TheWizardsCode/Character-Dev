@@ -12,6 +12,8 @@ namespace WizardsCode.Utility
     {
         [SerializeField, Tooltip("The parameter name to make the animator enter crouch mode.")]
         string m_CrouchParamName = "Crouch";
+        [SerializeField, Tooltip("The layer mask for the click to move script, only objects in this layer will be valid targets for the move.")]
+        LayerMask m_LayerMask;
 
         NavMeshAgent m_Agent;
         Animator m_Animator;
@@ -31,7 +33,7 @@ namespace WizardsCode.Utility
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit hitInfo;
-                if (Physics.Raycast(ray, out hitInfo))
+                if (Physics.Raycast(ray, out hitInfo, 100, m_LayerMask))
                 {
                     m_Agent.SetDestination(hitInfo.point);
                 }

@@ -2291,7 +2291,7 @@ GameObject:
   - component: {fileID: 1080978557}
   - component: {fileID: 1080978559}
   - component: {fileID: 1080978558}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Heard Something Trigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2306,7 +2306,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1080978556}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 26.91, y: -21.34, z: -58.21}
+  m_LocalPosition: {x: 25.7, y: -19.41, z: -57.44}
   m_LocalScale: {x: 5.9194307, y: 5.9194307, z: 5.9194307}
   m_Children: []
   m_Father: {fileID: 5262642}
@@ -3294,11 +3294,11 @@ RectTransform:
   m_Father: {fileID: 1200875332}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 794, y: 100}
-  m_Pivot: {x: 0, y: 0}
+  m_SizeDelta: {x: 200, y: 100}
+  m_Pivot: {x: 1, y: 0}
 --- !u!114 &1830392464
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3356,7 +3356,7 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_Spacing: 0
   m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 0
+  m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
@@ -3392,6 +3392,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_CrouchParamName: Crouch
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 1
 --- !u!114 &1933184837 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2992191724721829690, guid: 68b843002e8000945bd537f922d26ea3,
