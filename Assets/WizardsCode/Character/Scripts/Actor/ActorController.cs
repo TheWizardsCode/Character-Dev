@@ -55,6 +55,11 @@ namespace WizardsCode.Character
             }
         }
 
+        internal void MoveTo(Transform destination)
+        {
+            MoveTargetPosition = destination.position;
+        }
+
         /// <summary>
         /// Stop the actor from moving. Clearing the current path if there is one.
         /// </summary>

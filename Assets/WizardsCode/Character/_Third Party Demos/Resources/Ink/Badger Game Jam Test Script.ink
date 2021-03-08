@@ -3,7 +3,7 @@
 == Top_Knot
 
 >>> Cue: Glan, Move To Rocks (Glan)
->>> Cue: Kal, Move To Rocks (Kal)
+>>> MoveTo: Kal, Mark: Behind Rocks (Kal)
 >>> PlayerControl: On
 
 -> DONE

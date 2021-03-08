@@ -13,7 +13,7 @@ namespace WizardsCode.Ink
 {
     public class InkManager : AbstractSingleton<InkManager>
     {
-        enum Direction { Cue, TurnToFace, PlayerControl }
+        enum Direction { Cue, TurnToFace, PlayerControl, MoveTo }
 
         [Header("Script")]
         [SerializeField, Tooltip("The Ink file to work with.")]
@@ -167,6 +167,27 @@ namespace WizardsCode.Ink
             }
         }
 
+        /// <summary>
+        /// The MoveTo direction instructs an actor to move to a specific location. It is up to the ActorController
+        /// to decide how they should move.
+        /// </summary>
+        /// <param name="args"></param>
+        void MoveTo(string[] args)
+        {
+            if (!ValidateArgumentCount(args, 2))
+            {
+                return;
+            }
+
+            ActorController actor = FindActor(args[0].Trim());
+            Transform target = FindTarget(args[1].Trim());
+
+            if (actor != null)
+            {
+                actor.MoveTo(target);
+            }
+        }
+
         void TurnToFace(string[] args)
         {
             if (!ValidateArgumentCount(args, 2))
@@ -191,8 +212,16 @@ namespace WizardsCode.Ink
                 return actor.transform.root;
             }
 
-            Debug.LogError("There is a direction that requires an object to be found in the scene, however, only actors are supported at this time. The Manager needs to be made aware of props in the scene that will be used.");
-            return null;
+            //TODO Don't use Find at runtime. When initiating the InkManager we should pre-emptively parse all directions and cache the results - or perhaps (since the story may be larger or dynamic) we should do it in a CoRoutine just ahead of execution of the story chunk
+            GameObject go = GameObject.Find(objectName);
+            if (go)
+            {
+                return go.transform;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         private ActorController FindActor(string actorName)
@@ -264,6 +293,9 @@ namespace WizardsCode.Ink
                             break;
                         case Direction.PlayerControl:
                             SetPlayerControl(args);
+                            break;
+                        case Direction.MoveTo:
+                            MoveTo(args);
                             break;
                         default:
                             Debug.LogError("Unknown Direction: " + line);
