@@ -1,8 +1,12 @@
+-> Top_Knot
+
+== Top_Knot
+
 >>> Cue: Glan, Move To Rocks (Glan)
 >>> Cue: Kal, Move To Rocks (Kal)
 >>> PlayerControl: On
 
--> Cliff_Edge
+-> DONE
 
 == Cliff_Edge
 
@@ -10,7 +14,7 @@
 
 * [Talk to Glan] -> Urge_Glan_To_Go_In
 
-* [Use Binoculars] -> Scouting_The_Scene # Cue Player UseBinoculars
+* [Use Binoculars] -> Scouting_The_Scene
 
 * [Climb down in the camp] -> Climb_Down
 
@@ -30,26 +34,25 @@ you: I wish we were just going in OR you're right... but still a wuss
 >>> Cue: Kal, Move To Climbing Down
 >>> PlayerControl: On
 
--> Heard_Something
+-> DONE
 
 = Heard_Something
 
-Glan signals that he heard something. Over to the right. You think you see movement.
+{!Glan signals that he heard something. Over to the right. You think you see movement.}
 
 * Throw a dagger
 You throw a dagger in the direction of the sound. It doesn't hit anything, there was nothing there. You continue down to the camp.
--> Enter_The_Camp
+-> Heard_Something
 
 * Lay flat and listen
 Your party lies flat and still. After a short while you decide there is nothing there and continue down.
--> Enter_The_Camp
+-> Heard_Something
 
 * Tweet like a bird and wait
-You tweet like a bird, worried that they may have heard you. After a while there is no more signs of movement and you continue down the hill.
--> Enter_The_Camp
+You tweet like a bird, worried that they may have heard you. After a while there are no more signs of movement and you continue down the hill.
+-> Heard_Something
 
 * Keep going -> Enter_The_Camp
-
 
 = Scouting_The_Scene
 A quick scan of the area reveals a few items of interest.
@@ -76,13 +79,13 @@ Kal raises his binoculars to his eyes, after a few moments he says "Yep, you are
 * Keep it to yourself -> Scouting_The_Scene
 
 == Enter_The_Camp
->>> Cue: Glan, Mo ve To Climbing Down
->>> Cue: Kal, Move To Climbing Down
+>>> Cue: Glan, Move To Near Main Tent
+>>> Cue: Kal, Move To Near Main Tent
 >>> PlayerControl: On
 
 Well... the story needs to be finshed...
 
--> DONE
+-> END
 
 
 TODO: If she climbs down but used binoculars first on the play fighting, she can wait until a knockout, then go down without being noticed (because they are all distracted)

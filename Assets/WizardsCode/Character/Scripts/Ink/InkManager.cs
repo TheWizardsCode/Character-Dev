@@ -55,6 +55,23 @@ namespace WizardsCode.Ink
             IsDisplayingUI = m_PlayOnAwake;
         }
 
+        /// <summary>
+        /// Jump to a specific point in the story.
+        /// </summary>
+        /// <param name="knot">The name of the knot to jump to.</param>
+        /// <param name="stitch">The name of the stitch within the named not.</param>
+        internal void JumpToPath(string knot, string stitch = "")
+        {
+            if (!string.IsNullOrEmpty(stitch))
+            {
+                m_Story.ChoosePathString(knot + "." + stitch);
+            }
+            else
+            {
+                m_Story.ChoosePathString(knot);
+            }
+        }
+
         public void ChoosePath(string knotName, string stitchName)
         {
             string path = knotName;
@@ -224,10 +241,10 @@ namespace WizardsCode.Ink
         void ProcessStoryChunk()
         {
             string line;
-            m_NewStoryText.Clear();
 
             while (m_Story.canContinue)
             {
+                m_NewStoryText.Clear();
                 line = m_Story.Continue();
 
                 // Process Directions;
@@ -262,7 +279,6 @@ namespace WizardsCode.Ink
                 for (int i = 0; i < tags.Count; i++)
                 {
                 }
-
             }
 
             m_IsUIDirty = true;
@@ -274,11 +290,16 @@ namespace WizardsCode.Ink
 
             if (args[0].Trim().ToLower() == "on")
             {
-                IsDisplayingUI = false;
+                SetPlayerControl(true);
             } else
             {
-                IsDisplayingUI = true;
+                SetPlayerControl(false);
             }
+        }
+
+        internal void SetPlayerControl(bool value)
+        {
+            IsDisplayingUI = !value;
         }
 
         bool ValidateArgumentCount(string[] args, int requiredCount)
