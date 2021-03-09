@@ -7,7 +7,6 @@
 //>>> Cue: Glan, Move To Rocks (Glan)
 >>> MoveTo: Glan, Mark: Behind Rocks (Glan)
 >>> MoveTo: Kal, Mark: Behind Rocks (Kal)
->>> TurnToFace: Player, Enemy in the Bushes
 >>> PlayerControl: On
 * [Approach: Cliff] -> Cliff_Edge
 
