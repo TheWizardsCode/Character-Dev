@@ -337,7 +337,7 @@ namespace WizardsCode.Stats {
             {
                 candidateBehaviour.EndTime = 0;
                 candidateBehaviour.IsExecuting = true;
-                candidateBehaviour.StartBehaviour(ActiveBlockingBehaviour.MaximumExecutionTime);
+                candidateBehaviour.StartBehaviour(candidateBehaviour.MaximumExecutionTime);
                 ActiveNonBlockingBehaviours.Add(candidateBehaviour);
             }
 

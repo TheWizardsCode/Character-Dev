@@ -23,23 +23,31 @@ namespace WizardsCode.Character
         [Header("IK")]
         [SerializeField, Tooltip("Should the actor use IK to look at a given target.")]
         bool m_EnableIKLook = true;
+        [SerializeField, Tooltip("A transform at the point in space that the actor should look towards.")]
+        Transform m_LookAtTarget;
         [SerializeField, Tooltip("The head bone, used for Look IK. If this is blank there will be an attempt to automatically find the head upon startup.")]
         public Transform head = null;
         [SerializeField, Tooltip("The time it takes for the head to start moving when it needs to turn to look at something.")]
         float m_LookAtHeatTime = 0.2f;
         [SerializeField, Tooltip("The time it takes for the look IK rig to cool after reaching the correct look angle.")]
         float m_LookAtCoolTime = 0.2f;
-        
+
         private Animator m_Animator;
         private NavMeshAgent m_Agent;
         private Brain m_Brain;
-        
-        /// <summary>
-        /// A transform at the point in space that the actor should look towards.
-        /// </summary>
-        internal Transform LookAtTarget;
+
         private Vector3 m_CurrentLookAtPosition;
         private float lookAtWeight = 0.0f;
+
+        internal Transform LookAtTarget
+        {
+            get { return m_LookAtTarget; }
+            set
+            {
+                m_LookAtTarget.position = value.position;
+                m_LookAtTarget.rotation = value.rotation;
+            }
+        }
 
         internal Animator Animator
         {
@@ -83,7 +91,7 @@ namespace WizardsCode.Character
             }
         }
 
-        protected virtual void Start()
+        protected virtual void Awake()
         {
             m_Animator = GetComponentInChildren<Animator>();
             m_Agent = GetComponent<NavMeshAgent>();
@@ -91,18 +99,11 @@ namespace WizardsCode.Character
             MoveTargetPosition = transform.position;
 
             // Look IK Setup
-            LookAtTarget = new GameObject(gameObject.name + " Look At Target").transform;
-            LookAtTarget.SetParent(transform);
-
             if (!head)
             {
                 head = transform.Find("Head");
             }
-            if (head)
-            {
-                LookAtTarget.position = head.position + transform.forward;
-                m_CurrentLookAtPosition = LookAtTarget.position;
-            } else
+            if (!head)
             {
                 Debug.LogError("No head transform set on " + gameObject.name + " and one could not be found automatically - LookAt disabled");
                 m_EnableIKLook = false;
@@ -118,10 +119,16 @@ namespace WizardsCode.Character
 
         protected virtual void Update()
         {
+            float sqrMagToLookAtTarget = Vector3.SqrMagnitude(LookAtTarget.position - transform.position);
+            if (sqrMagToLookAtTarget > 100)
+            {
+                LookAtTarget.transform.localPosition = new Vector3(0, head.localPosition.y, 1);
+            }
+
             if (m_Animator != null && m_Agent != null)
             {
                 float speed = m_Agent.desiredVelocity.magnitude / m_RunningSpeed;
-                if (speed < 0.1 || speed > 0.1)
+                if (speed < 0.05 || speed > 0.05)
                 {
                     m_Animator.SetFloat(SpeedParameterName, speed);
                 }
@@ -172,6 +179,7 @@ namespace WizardsCode.Character
 
             Vector3 pos = LookAtTarget.position;
             pos.y = head.position.y;
+
             float lookAtTargetWeight = m_EnableIKLook ? 1.0f : 0.0f;
 
             Vector3 curDir = m_CurrentLookAtPosition - head.position;

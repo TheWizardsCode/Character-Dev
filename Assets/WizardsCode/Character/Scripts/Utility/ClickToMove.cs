@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
+using WizardsCode.Character;
 
 namespace WizardsCode.Utility
 {
@@ -16,13 +17,13 @@ namespace WizardsCode.Utility
         [SerializeField, Tooltip("The layer mask for the click to move script, only objects in this layer will be valid targets for the move.")]
         LayerMask m_LayerMask;
 
-        NavMeshAgent m_Agent;
+        ActorController m_Actor;
         Animator m_Animator;
         int m_CrouchHash;
 
         void Awake()
         {
-            m_Agent = GetComponent<NavMeshAgent>();
+            m_Actor = GetComponent<ActorController>();
             m_Animator = GetComponent<Animator>();
             m_CrouchHash = Animator.StringToHash(m_CrouchParamName);
         }
@@ -38,7 +39,7 @@ namespace WizardsCode.Utility
                     RaycastHit hitInfo;
                     if (Physics.Raycast(ray, out hitInfo, 500, m_LayerMask))
                     {
-                        m_Agent.SetDestination(hitInfo.point);
+                        m_Actor.MoveTargetPosition = hitInfo.point;
                     }
                 }
             }

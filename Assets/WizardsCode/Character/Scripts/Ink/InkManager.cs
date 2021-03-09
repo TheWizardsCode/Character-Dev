@@ -15,7 +15,7 @@ namespace WizardsCode.Ink
 {
     public class InkManager : AbstractSingleton<InkManager>
     {
-        enum Direction { Cue, TurnToFace, PlayerControl, MoveTo, SetEmotion, Action }
+        enum Direction { Cue, TurnToFace, PlayerControl, MoveTo, SetEmotion, Action, StopMoving }
 
         [Header("Script")]
         [SerializeField, Tooltip("The Ink file to work with.")]
@@ -213,6 +213,14 @@ namespace WizardsCode.Ink
             }
         }
 
+
+        /// <summary>
+        /// Tell an actor to prioritize a particular behaviour. Under normal circumstances
+        /// this behaviour will be executed as soon as possible, as long as the necessary
+        /// preconditions have been met and no higher priority item exists.
+        /// 
+        /// </summary>
+        /// <param name="args">[ActorName], [BehaviourName]</param>
         void Action(string[] args)
         {
             if (!ValidateArgumentCount(args, 2, 3))
@@ -223,6 +231,22 @@ namespace WizardsCode.Ink
             ActorController actor = FindActor(args[0].Trim());
             Brain brain = actor.GetComponentInChildren<Brain>();
             brain.PrioritizeBehaviour(args[1].Trim());
+        }
+
+        /// <summary>
+        /// Tell an actor to stop moving immediately.
+        /// 
+        /// </summary>
+        /// <param name="args">[ActorName]</param>
+        void StopMoving(string[] args)
+        {
+            if (!ValidateArgumentCount(args, 1))
+            {
+                return;
+            }
+
+            ActorController actor = FindActor(args[0].Trim());
+            actor.StopMoving();
         }
 
         void TurnToFace(string[] args)
@@ -237,7 +261,8 @@ namespace WizardsCode.Ink
 
             if (target != null)
             {
-                actor.LookAtTarget = target;
+                actor.gameObject.transform.LookAt(target.position);
+                actor.LookAtTarget = target.transform;
             }
         }
 
@@ -357,6 +382,9 @@ namespace WizardsCode.Ink
                             break;
                         case Direction.Action:
                             Action(args);
+                            break;
+                        case Direction.StopMoving:
+                            StopMoving(args);
                             break;
                         default:
                             Debug.LogError("Unknown Direction: " + line);

@@ -41,23 +41,26 @@ you: I wish we were just going in OR you're right... but still a wuss
 -> Heard_Something
 
 = Heard_Something
-
+TODO: If player comes here directly then Glan may not be here. Need Glan and Kal to come over and the following line should be either Glan or a line about the player hearing a sound
 {!Glan signals that he heard something. Over to the right. You think you see movement.}
 
+>>> StopMoving: Player
+>>> TurnToFace: Player, Enemy in the Bushes
+
 * Throw a dagger
-You throw a dagger in the direction of the sound. It doesn't hit anything, there was nothing there. You continue down to the camp.
+    You throw a dagger in the direction of the sound. It doesn't hit anything, there was nothing there. You continue down to the camp
+    
+    >>> Action: Player, Throw Knife
 
->>> Action: Player, Throw Knife, SoundSourceInBushes
-
--> Heard_Something
+    -> Heard_Something
 
 * Lay flat and listen
-Your party lies flat and still. After a short while you decide there is nothing there and continue down.
--> Heard_Something
+    Your party lies flat and still. After a short while you decide there is nothing there and continue down.
+    -> Heard_Something
 
 * Tweet like a bird and wait
-You tweet like a bird, worried that they may have heard you. After a while there are no more signs of movement and you continue down the hill.
--> Heard_Something
+    You tweet like a bird, worried that they may have heard you. After a while there are no more signs of movement and you continue down the hill.
+    -> Heard_Something
 
 * Keep going -> Approach_The_Camp
 
