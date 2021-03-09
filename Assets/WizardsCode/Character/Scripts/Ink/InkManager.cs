@@ -15,7 +15,16 @@ namespace WizardsCode.Ink
 {
     public class InkManager : AbstractSingleton<InkManager>
     {
-        enum Direction { Cue, TurnToFace, PlayerControl, MoveTo, SetEmotion, Action, StopMoving }
+        enum Direction { 
+            Cue, 
+            TurnToFace, 
+            PlayerControl, 
+            MoveTo, 
+            SetEmotion, 
+            Action, 
+            StopMoving, 
+            AnimationParam
+        }
 
         [Header("Script")]
         [SerializeField, Tooltip("The Ink file to work with.")]
@@ -155,7 +164,7 @@ namespace WizardsCode.Ink
 
         void PromptCue(string[]args)
         {
-            if (!ValidateArgumentCount(args, 2))
+            if (!ValidateArgumentCount(Direction.Cue, args, 2))
             {
                 return;
             }
@@ -176,7 +185,7 @@ namespace WizardsCode.Ink
         /// <param name="args"></param>
         void MoveTo(string[] args)
         {
-            if (!ValidateArgumentCount(args, 2))
+            if (!ValidateArgumentCount(Direction.MoveTo, args, 2))
             {
                 return;
             }
@@ -197,7 +206,7 @@ namespace WizardsCode.Ink
         /// <param name="args">[ActorName], [EmotionName], [Float]</param>
         void SetEmotion(string[] args)
         {
-            if (!ValidateArgumentCount(args, 3))
+            if (!ValidateArgumentCount(Direction.SetEmotion, args, 3))
             {
                 return;
             }
@@ -223,7 +232,7 @@ namespace WizardsCode.Ink
         /// <param name="args">[ActorName], [BehaviourName]</param>
         void Action(string[] args)
         {
-            if (!ValidateArgumentCount(args, 2, 3))
+            if (!ValidateArgumentCount(Direction.Action, args, 2, 3))
             {
                 return;
             }
@@ -240,7 +249,7 @@ namespace WizardsCode.Ink
         /// <param name="args">[ActorName]</param>
         void StopMoving(string[] args)
         {
-            if (!ValidateArgumentCount(args, 1))
+            if (!ValidateArgumentCount(Direction.StopMoving, args, 1))
             {
                 return;
             }
@@ -249,9 +258,45 @@ namespace WizardsCode.Ink
             actor.StopMoving();
         }
 
+        /// <summary>
+        /// Set an animation parameter on an actor.
+        /// 
+        /// </summary>
+        /// <param name="args">[ActorName] [ParameterName] [Value] - if Value is missing it is assumed that the parameter is a trigger</param>
+        void AnimationParam(string[] args)
+        {
+            if (!ValidateArgumentCount(Direction.AnimationParam, args, 2, 3))
+            {
+                return;
+            }
+
+            ActorController actor = FindActor(args[0].Trim());
+            string paramName = args[1].Trim();
+
+            if (args.Length == 2)
+            {
+                actor.Animator.SetTrigger(name);
+                return;
+            }
+
+            string value = args[2].Trim();
+
+            if (value == "False")
+            {
+                actor.Animator.SetBool(paramName, false);
+                return;
+            } else if (value == "True")
+            {
+                actor.Animator.SetBool(paramName, true);
+                return;
+            }
+
+            Debug.LogError("Direction to set an animator value that is a string, float or int. These are not supported right now.");
+        }
+
         void TurnToFace(string[] args)
         {
-            if (!ValidateArgumentCount(args, 2))
+            if (!ValidateArgumentCount(Direction.TurnToFace, args, 2))
             {
                 return;
             }
@@ -386,6 +431,9 @@ namespace WizardsCode.Ink
                         case Direction.StopMoving:
                             StopMoving(args);
                             break;
+                        case Direction.AnimationParam:
+                            AnimationParam(args);
+                            break;
                         default:
                             Debug.LogError("Unknown Direction: " + line);
                             break;
@@ -407,7 +455,7 @@ namespace WizardsCode.Ink
 
         void SetPlayerControl(string[] args)
         {
-            ValidateArgumentCount(args, 1);
+            ValidateArgumentCount(Direction.PlayerControl, args, 1);
 
             if (args[0].Trim().ToLower() == "on")
             {
@@ -426,28 +474,50 @@ namespace WizardsCode.Ink
             IsDisplayingUI = !value;
         }
 
-        bool ValidateArgumentCount(string[] args, int minRequiredCount, int maxRequiredCount = 0)
+        bool ValidateArgumentCount(Direction direction, string[] args, int minRequiredCount, int maxRequiredCount = 0)
         {
+            string error = "";
+            string warning = "";
+
             if (args.Length < minRequiredCount)
             {
-                Debug.LogError("Direction has too few arguments. There should be " + minRequiredCount + ". Ignoring direction.");
-                return false;
+                error = "Too few arguments in Direction. There should be " + minRequiredCount + ". Ignoring direction: ";
             }
-            else if (args.Length > minRequiredCount)
+            else if (maxRequiredCount > 0)
             {
-                if (maxRequiredCount > 0)
+                if (args.Length > maxRequiredCount)
                 {
-                    if (args.Length > maxRequiredCount)
-                    {
-                        Debug.LogWarning("Direction has too many arguments. There should be between " + minRequiredCount + " and " + maxRequiredCount + ". Ignoring the additional arguments.");
-                        return true;
-                    }
+                    warning = "Incorrect number of arguments in Direction. There should be between " + minRequiredCount + " and " + maxRequiredCount + " Ignoring the additional arguments: ";
                 }
-                else
+            } else
+            {
+                if (args.Length > minRequiredCount)
                 {
-                    Debug.LogWarning("Direction has too Many arguments. There should be " + minRequiredCount + ". Ignoring the additional arguments.");
-                    return true;
+                    warning = "Incorrect number of arguments in Direction. There should " + minRequiredCount + ". Ignoring the additional arguments: ";
                 }
+            }
+
+            string msg = "";
+            msg += "`>>> " + direction + ": ";
+            for (int i = 0; i < args.Length; i++)
+            {
+                msg += args[i].ToString();
+                if (i < args.Length - 1)
+                {
+                    msg += ", ";
+                }
+            }
+            msg += "`";
+
+            if (!string.IsNullOrEmpty(error))
+            {
+                msg = error + msg;
+                Debug.LogError(msg);
+                return false;
+            } else if (!string.IsNullOrEmpty(warning))
+            {
+                msg = warning + msg;
+                Debug.LogWarning(msg);
             }
 
             return true;

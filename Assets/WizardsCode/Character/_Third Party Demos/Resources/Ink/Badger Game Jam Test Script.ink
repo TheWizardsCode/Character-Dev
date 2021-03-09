@@ -7,6 +7,7 @@
 //>>> Cue: Glan, Move To Rocks (Glan)
 >>> MoveTo: Glan, Mark: Behind Rocks (Glan)
 >>> MoveTo: Kal, Mark: Behind Rocks (Kal)
+>>> TurnToFace: Player, Enemy in the Bushes
 >>> PlayerControl: On
 * [Approach: Cliff] -> Cliff_Edge
 
@@ -45,24 +46,37 @@ TODO: If player comes here directly then Glan may not be here. Need Glan and Kal
 {!Glan signals that he heard something. Over to the right. You think you see movement.}
 
 >>> StopMoving: Player
->>> TurnToFace: Player, Enemy in the Bushes
+>>> TurnToFace: Enemy in the Bushes
 
 * Throw a dagger
-    You throw a dagger in the direction of the sound. It doesn't hit anything, there was nothing there. You continue down to the camp
+    You throw a dagger in the direction of the sound. It doesn't hit anything, there was nothing there.
     
     >>> Action: Player, Throw Knife
 
     -> Heard_Something
 
-* Lay flat and listen
-    Your party lies flat and still. After a short while you decide there is nothing there and continue down.
-    -> Heard_Something
+* Lay flat and listen -> Lay_Still
 
 * Tweet like a bird and wait
-    You tweet like a bird, worried that they may have heard you. After a while there are no more signs of movement and you continue down the hill.
+    You tweet like a bird, worried that they may have heard you. After a while there are no more signs of movement.
     -> Heard_Something
 
 * Keep going -> Approach_The_Camp
+
+= Lay_Still
+
+Your party lies flat and still. After a short while you decide there is nothing there and continue down.
+    
+>>> AnimationParam: Player, Sleeping, True
+>>> AnimationParam: Glan, Sleeping, True
+>>> AnimationParam: Kal, Sleeping, True
+    
+* Get Back Up
+    >>> AnimationParam: Player, Sleeping, False
+    >>> AnimationParam: Glan, Sleeping, False
+    >>> AnimationParam: Kal, Sleeping, False
+    
+    -> Heard_Something
 
 = Scouting_The_Scene
 A quick scan of the area reveals a few items of interest.
