@@ -18,6 +18,8 @@ namespace WizardsCode.Character.AI
         string description;
         [SerializeField, Tooltip("The range over which this sense will work under normal circumstances.")]
         float range = 100f;
+        [SerializeField, Tooltip("The layermask to use when detecting colliders. Use this to ensure only the right kind of objects are detected.")]
+        LayerMask m_LayerMask;
         [SerializeField, Tooltip("The maximum number of sensed objects.")]
         int maxSensedColliders = 50;
 
@@ -47,7 +49,7 @@ namespace WizardsCode.Character.AI
             //TODO move the overall sense code into the ActorController where it can cache the sensed object list. Implementations of this class can then filter for items they care about.
             Collider[] hitColliders = new Collider[maxSensedColliders];
             //TODO provide a layermask for the senses
-            int numColliders = Physics.OverlapSphereNonAlloc(transform.position, range, hitColliders);
+            int numColliders = Physics.OverlapSphereNonAlloc(transform.position, range, hitColliders, m_LayerMask);
             m_SensedObjects = new List<Transform>();
             for (int i = numColliders - 1; i >= 0; i--)
             {

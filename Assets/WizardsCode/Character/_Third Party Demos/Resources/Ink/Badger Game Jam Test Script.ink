@@ -18,7 +18,7 @@
 
 * [Use Binoculars] -> Scouting_The_Scene
 
-* [Climb down in the camp] -> Climb_Down
+* [Climb down to the camp] -> Climb_Down
 
 
 = Urge_Glan_To_Go_In
@@ -47,7 +47,7 @@ you: I wish we were just going in OR you're right... but still a wuss
 * Throw a dagger
 You throw a dagger in the direction of the sound. It doesn't hit anything, there was nothing there. You continue down to the camp.
 
->>> Action: Player, Throw, SoundSourceInBushes
+>>> Action: Player, Throw Knife, SoundSourceInBushes
 
 -> Heard_Something
 

@@ -37,6 +37,8 @@ namespace WizardsCode.Stats {
         Camera m_Camera;
 
         private AbstractAIBehaviour m_ActiveBlockingBehaviour;
+        private string m_RequestedBehaviour;
+
         public AbstractAIBehaviour ActiveBlockingBehaviour {
             get { return m_ActiveBlockingBehaviour; }
             set {
@@ -191,7 +193,7 @@ namespace WizardsCode.Stats {
 
         internal override void Update()
         {
-             if (!IsReadyToUpdateBehaviour) return;
+            if (!IsReadyToUpdateBehaviour) return;
 
             if (TargetInteractable != null && Vector3.SqrMagnitude(TargetInteractable.transform.position - Actor.MoveTargetPosition) > 0.7f)
             {
@@ -238,7 +240,7 @@ namespace WizardsCode.Stats {
 
             for (int i = 0; i < m_AvailableBehaviours.Count; i++)
             {
-                log.Append("Considering: ");
+                log.Append("# Evaluating ");
                 log.AppendLine(m_AvailableBehaviours[i].DisplayName);
 
                 if (m_AvailableBehaviours[i].IsExecuting)
@@ -246,6 +248,7 @@ namespace WizardsCode.Stats {
                     if (m_AvailableBehaviours[i].IsInteruptable)
                     {
                         log.AppendLine("Already executing but can interupt - checking requirements are still valid.");
+                        highestWeight = m_AvailableBehaviours[i].Weight(this);
                     }
                     else
                     {
@@ -264,9 +267,16 @@ namespace WizardsCode.Stats {
                 
                 if (m_AvailableBehaviours[i].IsAvailable)
                 {
-                    log.AppendLine(m_AvailableBehaviours[i].reasoning.ToString());
-
-                    currentWeight = m_AvailableBehaviours[i].Weight(this); log.Append(m_AvailableBehaviours[i].DisplayName);
+                    log.AppendLine("## Weight");
+                    currentWeight = m_AvailableBehaviours[i].Weight(this); 
+                    if (m_AvailableBehaviours[i].DisplayName == m_RequestedBehaviour)
+                    {
+                        log.Append(m_RequestedBehaviour);
+                        log.AppendLine(" requested by the game engine, giving it a higher weight.");
+                        currentWeight *= 10;
+                    }
+                    
+                    log.Append(m_AvailableBehaviours[i].DisplayName);
                     log.Append(" has a weight of ");
                     log.AppendLine(currentWeight.ToString());
                     if (currentWeight > highestWeight)
@@ -274,8 +284,21 @@ namespace WizardsCode.Stats {
                         candidateBehaviour = m_AvailableBehaviours[i];
                         highestWeight = currentWeight;
                     }
+                } else
+                {
+                    log.AppendLine("Behaviour is not available");
                 }
-                log.AppendLine(m_AvailableBehaviours[i].reasoning.ToString());
+
+                log.AppendLine("## Reasoning");
+                string reasoning = m_AvailableBehaviours[i].reasoning.ToString();
+                if (string.IsNullOrEmpty(reasoning))
+                {
+                    log.AppendLine("There are no significant criteria limiting the enactment of this behaviour.\n");
+                }
+                else
+                {
+                    log.AppendLine(reasoning);
+                }
             }
 
             if (candidateBehaviour == null) return; 
@@ -318,6 +341,12 @@ namespace WizardsCode.Stats {
                 ActiveNonBlockingBehaviours.Add(candidateBehaviour);
             }
 
+            if (candidateBehaviour.DisplayName == m_RequestedBehaviour)
+            {
+                //TODO we should probably time out the requested behaviour. That is if it has not been carried out within x seconds foprget it
+                m_RequestedBehaviour = "";
+            }
+
 
             log.Insert(0, "\n");
             // Note this section is inserted in reverse as we want it at the start of the string.
@@ -341,6 +370,17 @@ namespace WizardsCode.Stats {
             log.Insert(0, DisplayName);
 
             Log(log.ToString());
+        }
+
+        /// <summary>
+        /// This actor will prioritize the named behaviour over all others. Under normal
+        /// circumstances this means the behaviour will be actioned as soon as possible.
+        /// </summary>
+        /// <param name="behaviourName">The name of the behaviour to proritize.</param>
+        public void PrioritizeBehaviour(string behaviourName)
+        {
+            m_RequestedBehaviour = behaviourName;
+            m_TimeOfNextUpdate = Time.timeSinceLevelLoad;
         }
 
         /// <summary>

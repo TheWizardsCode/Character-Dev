@@ -9,12 +9,13 @@ using WizardsCode.Utility;
 using System.Text;
 using System;
 using static WizardsCode.Character.EmotionalState;
+using WizardsCode.Stats;
 
 namespace WizardsCode.Ink
 {
     public class InkManager : AbstractSingleton<InkManager>
     {
-        enum Direction { Cue, TurnToFace, PlayerControl, MoveTo, SetEmotion }
+        enum Direction { Cue, TurnToFace, PlayerControl, MoveTo, SetEmotion, Action }
 
         [Header("Script")]
         [SerializeField, Tooltip("The Ink file to work with.")]
@@ -201,21 +202,27 @@ namespace WizardsCode.Ink
                 return;
             }
 
-            ActorController actor = FindActor(args[0].Trim(), false);
+            ActorController actor = FindActor(args[0].Trim());
             if (actor)
             {
                 EmotionalState emotions = FindEmotionalState(actor);
                 EmotionType emotion = (EmotionType)Enum.Parse(typeof(EmotionType), args[1].Trim());
                 float value = float.Parse(args[2].Trim());
 
-                if (actor != null)
-                {
-                    emotions.SetEmotionValue(emotion, value);
-                }
-            } else
-            {
-                Debug.LogError("There is a direction to set the value of the emotion " + args[1].Trim() + "  " + actor + " but there is no EmotionalState component on that actor.");
+                emotions.SetEmotionValue(emotion, value);
             }
+        }
+
+        void Action(string[] args)
+        {
+            if (!ValidateArgumentCount(args, 2, 3))
+            {
+                return;
+            }
+
+            ActorController actor = FindActor(args[0].Trim());
+            Brain brain = actor.GetComponentInChildren<Brain>();
+            brain.PrioritizeBehaviour(args[1].Trim());
         }
 
         void TurnToFace(string[] args)
@@ -348,6 +355,9 @@ namespace WizardsCode.Ink
                         case Direction.SetEmotion:
                             SetEmotion(args);
                             break;
+                        case Direction.Action:
+                            Action(args);
+                            break;
                         default:
                             Debug.LogError("Unknown Direction: " + line);
                             break;
@@ -388,17 +398,28 @@ namespace WizardsCode.Ink
             IsDisplayingUI = !value;
         }
 
-        bool ValidateArgumentCount(string[] args, int requiredCount)
+        bool ValidateArgumentCount(string[] args, int minRequiredCount, int maxRequiredCount = 0)
         {
-            if (args.Length < requiredCount)
+            if (args.Length < minRequiredCount)
             {
-                Debug.LogError("Direction has too few arguments. There should be " + requiredCount + ". Ignoring direction.");
+                Debug.LogError("Direction has too few arguments. There should be " + minRequiredCount + ". Ignoring direction.");
                 return false;
             }
-            else if (args.Length > requiredCount)
+            else if (args.Length > minRequiredCount)
             {
-                Debug.LogWarning("Direction has too few arguments. There should be " + requiredCount + ". Ignoring the additional arguments.");
-                return true;
+                if (maxRequiredCount > 0)
+                {
+                    if (args.Length > maxRequiredCount)
+                    {
+                        Debug.LogWarning("Direction has too many arguments. There should be between " + minRequiredCount + " and " + maxRequiredCount + ". Ignoring the additional arguments.");
+                        return true;
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("Direction has too Many arguments. There should be " + minRequiredCount + ". Ignoring the additional arguments.");
+                    return true;
+                }
             }
 
             return true;

@@ -209,10 +209,6 @@ namespace WizardsCode.Character
         {
             if (m_RequiredStats.Length == 0)
             {
-                reasoning.Append(Brain.DisplayName);
-                reasoning.Append(" has no required stats for ");
-                reasoning.Append(DisplayName);
-                reasoning.AppendLine(".");
                 return true;
             }
 
@@ -348,10 +344,6 @@ namespace WizardsCode.Character
         internal virtual float Weight(Brain brain)
         {
             float weight = BaseWeight(brain) * m_WeightMultiplier;
-
-            reasoning.Append(DisplayName);
-            reasoning.Append(" total weight is ");
-            reasoning.AppendLine(weight.ToString("0.0"));
 
             return weight;
         }
