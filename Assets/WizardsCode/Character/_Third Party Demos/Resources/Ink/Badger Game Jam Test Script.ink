@@ -78,7 +78,7 @@ Your party lies flat and still. After a short while you decide there is nothing 
 >>> AnimationParam: Glan, Sleeping, True
 >>> AnimationParam: Kal, Sleeping, True
     
-* Get Back Up
+* [Get Back Up]
     >>> AnimationParam: Player, Sleeping, False
     >>> AnimationParam: Glan, Sleeping, False
     >>> AnimationParam: Kal, Sleeping, False
