@@ -4,7 +4,6 @@
 
 >>> SetEmotion: Glan, Fear, 1
 >>> SetEmotion: Kal, Fear, 1
-//>>> Cue: Glan, Move To Rocks (Glan)
 >>> MoveTo: Glan, Mark: Behind Rocks (Glan)
 >>> MoveTo: Kal, Mark: Behind Rocks (Kal)
 >>> PlayerControl: On
@@ -22,9 +21,10 @@
 
 
 = Urge_Glan_To_Go_In
->>> Cue: Player, Talk To Glan
 >>> TurnToFace: Glan, Player
 >>> TurnToFace: Player, Glan
+>>> SetEmotion: Glan, Fear, 0
+>>> SetEmotion: Glan, Anger, 0.5
  
 you: this is a waste of time. We should just go in
 glan: we need to  do this safely!
@@ -84,6 +84,8 @@ Your party lies flat and still. After a short while you decide there is nothing 
     >>> AnimationParam: Kal, Sleeping, False
     
     -> Heard_Something
+
+I'd say there is about 10 hours in total in this. But I think I have the full framework down now. It's using some lazy hacks (`GameObject.Find(...)` for example) but that's OK for this stage of development.
 
 == Scouting_The_Scene
 

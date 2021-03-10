@@ -77,12 +77,13 @@ namespace WizardsCode.Character
 
         private void Update()
         {
-            if (m_CrouchInFear && GetEmotionValue(EmotionType.Fear) > 0.9f && GetEmotionValue(EmotionType.Anger) < 0.6 && GetEmotionValue(EmotionType.Interest) > 0.7)
+            if (m_CrouchInFear && GetEmotionValue(EmotionType.Fear) > 0.9f 
+                && GetEmotionValue(EmotionType.Anger) < 0.6 )
             {
                 m_Animator.SetBool(m_CrouchParameterHash, true);
             } else
             {
-                m_Animator.SetBool(m_CrouchParameterHash, true);
+                m_Animator.SetBool(m_CrouchParameterHash, false);
             }
         }
 
