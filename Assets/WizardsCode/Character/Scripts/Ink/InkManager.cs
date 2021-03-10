@@ -10,6 +10,7 @@ using System.Text;
 using System;
 using static WizardsCode.Character.EmotionalState;
 using WizardsCode.Stats;
+using Cinemachine;
 
 namespace WizardsCode.Ink
 {
@@ -23,7 +24,8 @@ namespace WizardsCode.Ink
             SetEmotion, 
             Action, 
             StopMoving, 
-            AnimationParam
+            AnimationParam,
+            Camera
         }
 
         [Header("Script")]
@@ -35,6 +37,10 @@ namespace WizardsCode.Ink
         ActorCue[] m_Cues;
         [SerializeField, Tooltip("Should the story start as soon as the game starts. If this is set to false the story will not start until a trigger or similar is set.")]
         bool m_PlayOnAwake = true;
+
+        [Header("Camera")]
+        [SerializeField, Tooltip("The Cinemachine Brain used to control the virtual cameras.")]
+        CinemachineBrain cinemachine;
 
         [Header("UI")]
         [SerializeField, Tooltip("The panel on which to display the text in the story.")]
@@ -159,6 +165,7 @@ namespace WizardsCode.Ink
         void ChooseStoryChoice(Choice choice)
         {
             m_Story.ChooseChoiceIndex(choice.index);
+            m_NewStoryText.Clear();
             m_IsUIDirty = true;
         }
 
@@ -294,6 +301,37 @@ namespace WizardsCode.Ink
             Debug.LogError("Direction to set an animator value that is a string, float or int. These are not supported right now.");
         }
 
+        /// <summary>
+        /// Switch to a specific camera and optionally look at a named object.
+        /// 
+        /// </summary>
+        /// <param name="args">[CameraName] [TargetName] - if TargetName is missing it is assumed that the camera is already setup correctly</param>
+        void Camera(string[] args)
+        {
+            if (!ValidateArgumentCount(Direction.Camera, args, 1, 2))
+            {
+                return;
+            }
+
+            CinemachineVirtualCamera newCamera;
+            Transform t = FindTarget(args[0].Trim());
+            if (t)
+            {
+                newCamera = t.gameObject.GetComponent<CinemachineVirtualCamera>();
+                cinemachine.ActiveVirtualCamera.Priority = 1;
+                newCamera.Priority = 99;
+
+                if (args.Length == 2)
+                {
+                    t = FindTarget(args[1].Trim());
+                    if (t)
+                    {
+                        newCamera.LookAt = t;
+                    }
+                }
+            }
+        }
+
         void TurnToFace(string[] args)
         {
             if (!ValidateArgumentCount(Direction.TurnToFace, args, 2))
@@ -396,7 +434,6 @@ namespace WizardsCode.Ink
 
             while (m_Story.canContinue)
             {
-                m_NewStoryText.Clear();
                 line = m_Story.Continue();
 
                 // Process Directions;
@@ -433,6 +470,9 @@ namespace WizardsCode.Ink
                             break;
                         case Direction.AnimationParam:
                             AnimationParam(args);
+                            break;
+                        case Direction.Camera:
+                            Camera(args);
                             break;
                         default:
                             Debug.LogError("Unknown Direction: " + line);
@@ -481,7 +521,7 @@ namespace WizardsCode.Ink
 
             if (args.Length < minRequiredCount)
             {
-                error = "Too few arguments in Direction. There should be " + minRequiredCount + ". Ignoring direction: ";
+                error = "Too few arguments in Direction. There should be at least " + minRequiredCount + ". Ignoring direction: ";
             }
             else if (maxRequiredCount > 0)
             {

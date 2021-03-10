@@ -33,6 +33,7 @@ you: I wish we were just going in OR you're right... but still a wuss
 -> Cliff_Edge
 
 = Climb_Down
+>>> Camera: Main Virtual Camera
 >>> Cue: Glan, Move To Climbing Down
 >>> Cue: Kal, Move To Climbing Down
 >>> PlayerControl: On
@@ -62,6 +63,13 @@ TODO: If player comes here directly then Glan may not be here. Need Glan and Kal
 
 * Keep going -> Approach_The_Camp
 
+= Approach_The_Camp
+
+>>> MoveTo: Glan, Mark: Near Main Tent
+>>> MoveTo: Kal, Mark: Near Main Tent
+>>> PlayerControl: On
+* [Approach: Enter_The_Camp] -> Enter_The_Camp
+
 = Lay_Still
 
 Your party lies flat and still. After a short while you decide there is nothing there and continue down.
@@ -77,36 +85,44 @@ Your party lies flat and still. After a short while you decide there is nothing 
     
     -> Heard_Something
 
-= Scouting_The_Scene
-A quick scan of the area reveals a few items of interest.
+== Scouting_The_Scene
 
-* [Look at the main tent]
+{! A quick scan of the area reveals a few items of interest. }
+
+    * [Look at the main tent] -> Scout_Main_Tent
+
+    * [Look at the boat in the distance] -> Scout_The_Boat
+
+    * [Look at the fellows play fighting by the bonfire]
+
+        They look ridiculous. Their movements are clumsy, almost child like. They need to play fight more.
+    
+        >>> Camera: Binoculars, Bonfire
+    
+        ->Scouting_The_Scene
+
+    * [Climb Down into the camp] -> Cliff_Edge.Climb_Down
+
+= Scout_Main_Tent  
+
 You can see three people milling about inside the tent, there is at least one more you cannot see judging by their actions.
+
+>>> Camera: Binoculars, Main Tent
+
 -> Scouting_The_Scene
 
-* [Look at the boat in the distance] -> Scout_The_Boat
-
-* [Look at the fellows play fighting by the bonfire]
-They look ridiculous. Their movements are clumsy, almost child like. They need to play fight more.
-->Scouting_The_Scene
-
-* [Climb Down into the camp] -> Climb_Down
 
 = Scout_The_Boat
+
 The boat has a flag that looks familiar, it looks like they have backup coming in.
 
-* Ask Kal if he recognizes the flag
+>>> Camera: Binoculars, Boat
+
+* [Ask Kal if he recognizes the flag]
 Kal raises his binoculars to his eyes, after a few moments he says "Yep, you are right, that looks like one of theirs we should get this done quickly."
 -> Scouting_The_Scene
 
-* Keep it to yourself -> Scouting_The_Scene
-
-= Approach_The_Camp
-
->>> MoveTo: Glan, Mark: Near Main Tent
->>> MoveTo: Kal, Mark: Near Main Tent
->>> PlayerControl: On
-* [Approach: Enter_The_Camp] -> Enter_The_Camp
+* [Keep it to yourself] -> Scouting_The_Scene
 
 == Enter_The_Camp
 

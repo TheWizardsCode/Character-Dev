@@ -93,3 +93,4 @@ TODO: Document >>> PlayerControl: On | Off (Gives the player control over the ma
 TODO: Document >>> Behaviour: [ActorName], [ActionName] (Fire a behaviour on the actor with the name and an optional target (not all actions require a target)
 TODO: Document `>>> StopMoving: ActorName` Stop all movement.
 TODO: Document `>>> AnimationParam: [ActorName] [ParameterName] [Value]` Set animator parameter to value
+TODO: Document `>>> Camera: Binoculars, Main Tent` switch to the named camera and look at the names object
