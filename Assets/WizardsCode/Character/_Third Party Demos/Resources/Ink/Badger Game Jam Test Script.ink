@@ -1,3 +1,6 @@
+VAR awareness_of_party = 0
+EXTERNAL GetPartyNoticability()
+
 -> Top_Knot
 
 == Top_Knot
@@ -43,10 +46,22 @@ you: I wish we were just going in OR you're right... but still a wuss
 
 = Heard_Something
 TODO: If player comes here directly then Glan may not be here. Need Glan and Kal to come over and the following line should be either Glan or a line about the player hearing a sound
+>>> StopMoving: Player
+>>> TurnToFace: Player, Enemy in the Bushes
+
 {!Glan signals that he heard something. Over to the right. You think you see movement.}
 
->>> StopMoving: Player
->>> TurnToFace: Enemy in the Bushes
+Awareness level { GetPartyNoticability() }
+
+{ GetPartyNoticability() <= RANDOM(0,100) / 100 :
+You are discovered. All the bandits are rushing you - RUN FOR IT!!!
+
+>>> MoveTo: Glan, Game Over Mark
+>>> MoveTo: Kal, Game Over Mark
+->END
+}
+
+
 
 * Throw a dagger
     You throw a dagger in the direction of the sound. It doesn't hit anything, there was nothing there.
@@ -55,10 +70,13 @@ TODO: If player comes here directly then Glan may not be here. Need Glan and Kal
 
     -> Heard_Something
 
-* Lay flat and listen -> Lay_Still
+* Lay flat and listen 
+  ~ awareness_of_party--
+  -> Lay_Still
 
 * Tweet like a bird and wait
     You tweet like a bird, worried that they may have heard you. After a while there are no more signs of movement.
+    ~ awareness_of_party++
     -> Heard_Something
 
 * Keep going -> Approach_The_Camp
@@ -132,7 +150,5 @@ Well... the story needs to be finshed...
 
 -> END
 
-
-TODO: If she climbs down but used binoculars first on the play fighting, she can wait until a knockout, then go down without being noticed (because they are all distracted)
 
 TODO: if she calls glan a wuss, modify a variable tracking their relationship friendliness... and integrate it with any other game state you need to track

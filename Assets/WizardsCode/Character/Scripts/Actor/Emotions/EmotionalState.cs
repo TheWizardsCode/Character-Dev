@@ -216,6 +216,30 @@ namespace WizardsCode.Character
                 }
             }
         }
+
+        /// <summary>
+        /// A measure of how noticable this character is from 0 to 1. 
+        /// 0 is as good as invisible, 1 is can't miss them.
+        /// How noticable an actor is depends on their emational state.
+        /// For example, a fearful character who is resting is less noticeable
+        /// than an interested character. Anger will increase noticability,
+        /// but sadness will reduce it.
+        /// </summary>
+        public float Noticability
+        {
+            get
+            {
+                //TODO this algorithm for noticability should not be hard coded. Add a noticability factor to individual emotion types.
+                float result = GetEmotionValue(EmotionType.Anger);
+                result -= GetEmotionValue(EmotionType.Fear);
+                result += GetEmotionValue(EmotionType.Interest) / 2;
+                result -= GetEmotionValue(EmotionType.Sadness) / 2;
+                result /= 4;
+
+                // we now have a result between -1 and 1, so normalize it
+                return (result + 1) / 2;
+            }
+        }
     }
 
     /// <summary>

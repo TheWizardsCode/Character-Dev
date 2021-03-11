@@ -170,6 +170,32 @@ namespace WizardsCode.Character
             get { return IsMoving; }
         }
 
+        /// <summary>
+        /// A measure of how noticable this character is from 0 to 1. 
+        /// 0 is as good as invisible, 1 is can't miss them.
+        /// How noticable an actor is depends on what they are doing
+        /// at any given time as well as their emations. For example, 
+        /// a fearful character who is resting is less noticeable
+        /// than an interested character. Anger will increase noticability,
+        /// but sadness will reduce it. Similarly a character who is attacking
+        /// is more noticable than one who is idle.
+        /// </summary>
+        public float Noticability { 
+            get
+            {
+                float result = 0;
+
+                EmotionalState emotion = GetComponent<EmotionalState>();
+                if (emotion)
+                {
+                    result = emotion.Noticability;
+                }
+
+                //TODO currently active behaviour should impact noticability. Add a noticability factor to behaviours.
+                return Mathf.Clamp01(result);
+            }
+        }
+
         void OnAnimatorIK()
         {
             if (!m_EnableIKLook)

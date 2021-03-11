@@ -42,6 +42,12 @@ namespace WizardsCode.Ink
         [SerializeField, Tooltip("The Cinemachine Brain used to control the virtual cameras.")]
         CinemachineBrain cinemachine;
 
+        [Header("Actor Setup")]
+        [SerializeField, Tooltip("The name of the player object.")]
+        string m_PlayerName = "Player";
+        [SerializeField, Tooltip("The layer on which all party members will be found.")]
+        LayerMask m_PartyLayerMask;
+
         [Header("UI")]
         [SerializeField, Tooltip("The panel on which to display the text in the story.")]
         RectTransform textPanel;
@@ -70,6 +76,51 @@ namespace WizardsCode.Ink
         {
             m_Story = new Story(m_InkJSON.text);
             IsDisplayingUI = m_PlayOnAwake;
+
+            m_Story.BindExternalFunction("GetPartyNoticability", () =>
+            {
+                return GetPartyNoticability();
+            });
+        }
+
+        /// <summary>
+        /// Return a float value between 0 and 1 indicating how likely the party is to be noticed.
+        /// 0 means will not be noticed, 1 means will be noticed. 
+        /// </summary>
+        /// <returns>a % chance of being noticed</returns>
+        float GetPartyNoticability()
+        {
+            List<ActorController> members = GetNearbyPartyMembers();
+            float noticability = 0.5f;
+            for (int i = 0; i < members.Count; i++)
+            {
+                noticability += members[i].Noticability;
+            }
+
+            return Mathf.Clamp01(noticability / members.Count);
+        }
+
+        /// <summary>
+        /// Check for party members nearby and return a list of all such actors.
+        /// </summary>
+        /// <returns>All actors allied to the player that are nearby.</returns>
+        List<ActorController> GetNearbyPartyMembers()
+        {
+            List<ActorController> result = new List<ActorController>();
+
+            ActorController player = FindActor(m_PlayerName);
+            Collider[] all = Physics.OverlapSphere(player.transform.position, 10, m_PartyLayerMask);
+            ActorController current;
+            for (int i = 0; i < all.Length; i++)
+            {
+                current = all[i].GetComponentInParent<ActorController>();
+                if (current)
+                {
+                    result.Add(current);
+                }
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -435,7 +486,7 @@ namespace WizardsCode.Ink
             while (m_Story.canContinue)
             {
                 line = m_Story.Continue();
-
+                
                 // Process Directions;
                 int cmdIdx = line.IndexOf(">>>");
                 if (cmdIdx >= 0)
