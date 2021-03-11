@@ -51,8 +51,6 @@ TODO: If player comes here directly then Glan may not be here. Need Glan and Kal
 
 {!Glan signals that he heard something. Over to the right. You think you see movement.}
 
-Awareness level { GetPartyNoticability() }
-
 { GetPartyNoticability() <= RANDOM(0,100) / 100 :
 You are discovered. All the bandits are rushing you - RUN FOR IT!!!
 
@@ -60,8 +58,6 @@ You are discovered. All the bandits are rushing you - RUN FOR IT!!!
 >>> MoveTo: Kal, Game Over Mark
 ->END
 }
-
-
 
 * Throw a dagger
     You throw a dagger in the direction of the sound. It doesn't hit anything, there was nothing there.
@@ -71,12 +67,10 @@ You are discovered. All the bandits are rushing you - RUN FOR IT!!!
     -> Heard_Something
 
 * Lay flat and listen 
-  ~ awareness_of_party--
   -> Lay_Still
 
 * Tweet like a bird and wait
     You tweet like a bird, worried that they may have heard you. After a while there are no more signs of movement.
-    ~ awareness_of_party++
     -> Heard_Something
 
 * Keep going -> Approach_The_Camp
