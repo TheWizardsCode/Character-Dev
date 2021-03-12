@@ -25,7 +25,8 @@ namespace WizardsCode.Ink
             Action, 
             StopMoving, 
             AnimationParam,
-            Camera
+            Camera,
+            Music
         }
 
         [Header("Script")]
@@ -38,9 +39,11 @@ namespace WizardsCode.Ink
         [SerializeField, Tooltip("Should the story start as soon as the game starts. If this is set to false the story will not start until a trigger or similar is set.")]
         bool m_PlayOnAwake = true;
 
-        [Header("Camera")]
+        [Header("Camera, Lights and Sound")]
         [SerializeField, Tooltip("The Cinemachine Brain used to control the virtual cameras.")]
         CinemachineBrain cinemachine;
+        [SerializeField, Tooltip("The audio source for music playback.")]
+        AudioSource m_MusicAudioSource;
 
         [Header("Actor Setup")]
         [SerializeField, Tooltip("The name of the player object.")]
@@ -383,6 +386,33 @@ namespace WizardsCode.Ink
             }
         }
 
+        /// <summary>
+        /// Play a specified music track. The tracks requested should be saved in
+        /// `/Resources/Music/TEMP.STYLE.mp3`
+        /// 
+        /// </summary>
+        /// <param name="args">[Tempo] [Style]</param>
+        void Music(string[] args)
+        {
+            if (!ValidateArgumentCount(Direction.Camera, args, 2))
+            {
+                return;
+            }
+
+            String path = "Music/";
+            String track = args[0].Trim() + "_" + args[1].Trim();
+            AudioClip audio = Resources.Load<AudioClip>(path + track);
+            if (audio)
+            {
+                m_MusicAudioSource.clip = audio;
+                m_MusicAudioSource.Play();
+            }
+            else
+            {
+                Debug.LogError("Direction to play music track cannot be satisfied: " + track);
+            }
+        }
+
         void TurnToFace(string[] args)
         {
             if (!ValidateArgumentCount(Direction.TurnToFace, args, 2))
@@ -524,6 +554,9 @@ namespace WizardsCode.Ink
                             break;
                         case Direction.Camera:
                             Camera(args);
+                            break;
+                        case Direction.Music:
+                            Music(args);
                             break;
                         default:
                             Debug.LogError("Unknown Direction: " + line);

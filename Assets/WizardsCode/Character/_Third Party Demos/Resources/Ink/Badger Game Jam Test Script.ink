@@ -4,6 +4,7 @@ EXTERNAL GetPartyNoticability()
 -> Top_Knot
 
 == Top_Knot
+>>> Music: Upbeat, Strings
 
 >>> SetEmotion: Glan, Fear, 1
 >>> SetEmotion: Kal, Fear, 1
@@ -96,8 +97,6 @@ Your party lies flat and still. After a short while you decide there is nothing 
     >>> AnimationParam: Kal, Sleeping, False
     
     -> Heard_Something
-
-I'd say there is about 10 hours in total in this. But I think I have the full framework down now. It's using some lazy hacks (`GameObject.Find(...)` for example) but that's OK for this stage of development.
 
 == Scouting_The_Scene
 

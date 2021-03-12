@@ -94,3 +94,5 @@ TODO: Document >>> Behaviour: [ActorName], [ActionName] (Fire a behaviour on the
 TODO: Document `>>> StopMoving: ActorName` Stop all movement.
 TODO: Document `>>> AnimationParam: [ActorName] [ParameterName] [Value]` Set animator parameter to value
 TODO: Document `>>> Camera: Binoculars, Main Tent` switch to the named camera and look at the names object
+TODO: Document EXTERNAL GetPartyNoticability()
+TODO: Document `>>> Music: [Tempo], [Style]` - play a music track. The track should be stored in `Resources/Music/Tempo_Style.mp3` (or other accepted Unity audio format)
