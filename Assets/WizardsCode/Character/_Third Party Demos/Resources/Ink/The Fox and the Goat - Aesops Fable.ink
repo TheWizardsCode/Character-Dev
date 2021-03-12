@@ -18,7 +18,7 @@
 
     The Fox and the Goat
 
-    >>> MoveTo: Fox, Well Edge Mark
+    >>> MoveTo: Fox, Well_Edge_Mark
 
     * [Continue] -> Fox_Fell_In_Well
 
@@ -26,13 +26,13 @@
 
     A Fox one day fell into a deep well and could find no means of escape. 
 
-    >>> MoveTo: Fox, In Well Mark
+    >>> MoveTo: Fox, Fox_In_Well_Mark
     
     * [Continue] -> A_Thirsty_Goat
 
 = A_Thirsty_Goat
 
-    >>> MoveTo: Goat, Well Edge Mark
+    >>> MoveTo: Goat, Well_Edge_Mark
     
     A Goat, overcome with thirst, came to the same well, 
     
@@ -53,18 +53,21 @@
 
 = The_Foolish_Goat
 
+    >>> MoveTo: Goat, Goat_In_Well_Mark
+
     The Goat, mindful only of his thirst, thoughtlessly jumped down, but just as he drank, the Fox informed him of the difficulty they were both in and suggested a scheme for their common escape. 
     
     * [Continue] -> The_Plan
     
 = The_Plan
-    
+
     “If,” said he, “you will place your forefeet upon the wall and bend your head, I will run up your back and escape, and will help you out afterwards.” 
 
     * [Continue] -> The_Fox_Escape
 
 = The_Fox_Escape
 
+    >>> MoveTo: Fox, Well_Edge_Mark
 
     The Goat readily assented and the Fox leaped upon his back. Steadying himself with the Goat’s horns, he safely reached the mouth of the well and made off as fast as he could. 
     
