@@ -44,8 +44,9 @@ namespace WizardsCode.Character
             get { return m_LookAtTarget; }
             set
             {
-                m_LookAtTarget.position = value.position;
-                m_LookAtTarget.rotation = value.rotation;
+                m_LookAtTarget.position = Vector3.zero;
+                m_LookAtTarget.rotation = Quaternion.identity;
+                m_LookAtTarget.transform.SetParent(value);
             }
         }
 
@@ -122,7 +123,7 @@ namespace WizardsCode.Character
             float sqrMagToLookAtTarget = Vector3.SqrMagnitude(LookAtTarget.position - transform.position);
             if (sqrMagToLookAtTarget > 100)
             {
-                LookAtTarget.transform.localPosition = new Vector3(0, head.localPosition.y, 1);
+                LookAtTarget.transform.localPosition = new Vector3(0, head.position.y, 1);
             }
 
             if (m_Animator != null && m_Agent != null)
@@ -151,10 +152,18 @@ namespace WizardsCode.Character
                 {
                     if (m_Agent.remainingDistance <= m_Agent.stoppingDistance)
                     {
+                        return false;
+                    } else
+                    {
                         return true;
                     }
+                } 
+                
+                if (m_Agent.hasPath && m_Agent.pathPending)
+                {
+                    return true;
                 }
-
+                
                 if (!m_Agent.hasPath && !m_Agent.pathPending)
                 {
                     return true;
@@ -204,7 +213,7 @@ namespace WizardsCode.Character
             }
 
             Vector3 pos = LookAtTarget.position;
-            pos.y = head.position.y;
+            //pos.y = head.position.y;
 
             float lookAtTargetWeight = m_EnableIKLook ? 1.0f : 0.0f;
 

@@ -17,6 +17,7 @@ namespace WizardsCode.Ink
     public class InkManager : AbstractSingleton<InkManager>
     {
         enum Direction { 
+            Unkown,
             Cue, 
             TurnToFace, 
             PlayerControl, 
@@ -26,7 +27,8 @@ namespace WizardsCode.Ink
             StopMoving, 
             AnimationParam,
             Camera,
-            Music
+            Music,
+            WaitFor
         }
 
         [Header("Script")]
@@ -64,6 +66,7 @@ namespace WizardsCode.Ink
         Story m_Story;
         bool m_IsUIDirty = false;
         StringBuilder m_NewStoryText = new StringBuilder();
+        bool wasWaiting = false;
 
         private bool m_IsDisplayingUI = false;
         internal bool IsDisplayingUI
@@ -157,14 +160,51 @@ namespace WizardsCode.Ink
             }
         }
 
+        private bool IsWaitingFor
+        {
+            get
+            {
+                if (m_WaitingForActor == null)
+                {
+                    return false;
+                }
+
+                switch (m_WaitingForState)
+                {
+                    case "ReachedTarget":
+                        if (m_WaitingForActor.IsMoving)
+                        {
+                            wasWaiting = false;
+                            return true;
+                        }
+                        else
+                        {
+                            m_WaitingForActor = null;
+                            m_WaitingForState = "";
+                            wasWaiting = true;
+                            return false;
+                        }
+                    default:
+                        Debug.LogError("Direction to wait gives a unrecognized state to wait for: " + m_WaitingForState);
+                        return false;
+                }
+            }
+        }
+
         public void Update()
         {
+            if (IsWaitingFor)
+            {
+                return;
+            }
+
             if (IsDisplayingUI)
             {
-                if (m_IsUIDirty)
+                if (m_IsUIDirty || wasWaiting)
                 {
                     ProcessStoryChunk();
                     UpdateGUI();
+                    wasWaiting = false;
                 }
             } else
             {
@@ -394,7 +434,7 @@ namespace WizardsCode.Ink
         /// <param name="args">[Tempo] [Style]</param>
         void Music(string[] args)
         {
-            if (!ValidateArgumentCount(Direction.Camera, args, 2))
+            if (!ValidateArgumentCount(Direction.Music, args, 2))
             {
                 return;
             }
@@ -411,6 +451,27 @@ namespace WizardsCode.Ink
             {
                 Debug.LogError("Direction to play music track cannot be satisfied: " + track);
             }
+        }
+
+        private ActorController m_WaitingForActor;
+        private string m_WaitingForState;
+        /// <summary>
+        /// Wait for a particular game state. Supported states are:
+        /// 
+        /// ReachedTarget - waits for the actor to have reached their move target
+        /// 
+        /// </summary>
+        /// <param name="args">[Actor] [State]</param>
+        void WaitFor(string[] args)
+        {
+            if (!ValidateArgumentCount(Direction.WaitFor, args, 2))
+            {
+                return;
+            }
+
+
+            m_WaitingForActor = FindActor(args[0].Trim());
+            m_WaitingForState = args[1].Trim();
         }
 
         void TurnToFace(string[] args)
@@ -513,7 +574,7 @@ namespace WizardsCode.Ink
         {
             string line;
 
-            while (m_Story.canContinue)
+            while (m_Story.canContinue && !IsWaitingFor)
             {
                 line = m_Story.Continue();
                 
@@ -526,7 +587,11 @@ namespace WizardsCode.Ink
                     Enum.TryParse(line.Substring(startIdx, endIdx).Trim(), out Direction cmd);
                     string[] args = line.Substring(endIdx + startIdx + 1).Split(',');
 
-                    switch (cmd) {
+                    switch (cmd)
+                    {
+                        case Direction.Unkown:
+                            Debug.LogError("Unknown Direction: " + line);
+                            break;
                         case Direction.Cue:
                             PromptCue(args);
                             break;
@@ -557,6 +622,9 @@ namespace WizardsCode.Ink
                             break;
                         case Direction.Music:
                             Music(args);
+                            break;
+                        case Direction.WaitFor:
+                            WaitFor(args);
                             break;
                         default:
                             Debug.LogError("Unknown Direction: " + line);
