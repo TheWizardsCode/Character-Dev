@@ -47,6 +47,7 @@ you: I wish we were just going in OR you're right... but still a wuss
 
 = Heard_Something
 TODO: If player comes here directly then Glan may not be here. Need Glan and Kal to come over and the following line should be either Glan or a line about the player hearing a sound
+{!>>> Music: Tense, Percussion}
 >>> StopMoving: Player
 >>> TurnToFace: Player, Enemy in the Bushes
 
