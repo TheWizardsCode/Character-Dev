@@ -97,6 +97,14 @@ Switch to the named camera and set the camera look at parameter to the the named
 
 -> Top_Knot
 
+= AnimationParam
+
+Set animator parameter on a given actor to a given value. If the parameter is a trigger then there will be no value.
+
+`>>> AnimationParam: [ActorName] [ParameterName] [Value]` 
+
+-> Top_Knot
+
 TODO: Document >>> TurnToFace: ActorName, Object - Turn the actor to face the target and place the LookAt transform on the objeect. If Object is set to "Nothing" then the actor will look directly ahead of themselves.
 
 TODO: Document >>> `WaitFor: Goat, ReachedTarget` Wait for the actor to reach its current destingation before proceeding
@@ -106,8 +114,6 @@ TODO: Document >>> PlayerControl: On | Off (Gives the player control over the ma
 TODO: Document >>> Behaviour: [ActorName], [ActionName] (Fire a behaviour on the actor with the name and an optional target (not all actions require a target)
 
 TODO: Document `>>> StopMoving: ActorName` Stop all movement.
-
-TODO: Document `>>> AnimationParam: [ActorName] [ParameterName] [Value]` Set animator parameter to value
 
 TODO: Document EXTERNAL GetPartyNoticability()
 

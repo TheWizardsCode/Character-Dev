@@ -376,7 +376,7 @@ namespace WizardsCode.Ink
 
             if (args.Length == 2)
             {
-                actor.Animator.SetTrigger(name);
+                actor.Animator.SetTrigger(paramName);
                 return;
             }
 
