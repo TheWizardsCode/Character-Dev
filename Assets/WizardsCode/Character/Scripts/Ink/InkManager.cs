@@ -11,6 +11,7 @@ using System;
 using static WizardsCode.Character.EmotionalState;
 using WizardsCode.Stats;
 using Cinemachine;
+using System.Globalization;
 
 namespace WizardsCode.Ink
 {
@@ -67,6 +68,9 @@ namespace WizardsCode.Ink
         bool m_IsUIDirty = false;
         StringBuilder m_NewStoryText = new StringBuilder();
         bool wasWaiting = false;
+        private ActorController m_WaitingForActor;
+        private string m_WaitingForState;
+        private float m_WaitUntilTime = float.NegativeInfinity;
 
         private bool m_IsDisplayingUI = false;
         internal bool IsDisplayingUI
@@ -164,7 +168,7 @@ namespace WizardsCode.Ink
         {
             get
             {
-                if (m_WaitingForActor == null)
+                if (m_WaitingForActor == null && m_WaitUntilTime < 0)
                 {
                     return false;
                 }
@@ -179,16 +183,31 @@ namespace WizardsCode.Ink
                         }
                         else
                         {
-                            m_WaitingForActor = null;
-                            m_WaitingForState = "";
-                            wasWaiting = true;
+                            ExitWaitingState();
                             return false;
+                        }
+                    case "Time":
+                        if (Time.timeSinceLevelLoad >= m_WaitUntilTime)
+                        {
+                            ExitWaitingState();
+                            return false;
+                        } else
+                        {
+                            return true;
                         }
                     default:
                         Debug.LogError("Direction to wait gives a unrecognized state to wait for: " + m_WaitingForState);
                         return false;
                 }
             }
+        }
+
+        private void ExitWaitingState()
+        {
+            m_WaitingForActor = null;
+            m_WaitingForState = "";
+            m_WaitUntilTime = float.NegativeInfinity;
+            wasWaiting = true;
         }
 
         public void Update()
@@ -453,8 +472,6 @@ namespace WizardsCode.Ink
             }
         }
 
-        private ActorController m_WaitingForActor;
-        private string m_WaitingForState;
         /// <summary>
         /// Wait for a particular game state. Supported states are:
         /// 
@@ -464,14 +481,24 @@ namespace WizardsCode.Ink
         /// <param name="args">[Actor] [State]</param>
         void WaitFor(string[] args)
         {
-            if (!ValidateArgumentCount(Direction.WaitFor, args, 2))
+            if (!ValidateArgumentCount(Direction.WaitFor, args, 1, 2))
             {
                 return;
             }
 
+            string param1 = args[0].Trim();
+            bool isFloat = float.TryParse(param1, out float time);
+            if (isFloat)
+            {
+                m_WaitingForState = "Time";
+                m_WaitUntilTime = Time.timeSinceLevelLoad + time;
+            }
+            else
+            {
+                m_WaitingForActor = FindActor(param1);
+                m_WaitingForState = args[1].Trim();
+            }
 
-            m_WaitingForActor = FindActor(args[0].Trim());
-            m_WaitingForState = args[1].Trim();
         }
 
         void TurnToFace(string[] args)

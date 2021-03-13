@@ -105,9 +105,18 @@ Set animator parameter on a given actor to a given value. If the parameter is a 
 
 -> Top_Knot
 
+= WaitFor
+
+    Wait for a given state to occur.
+    
+    `>>> WaitFor: [Actor], ReachedTarget` Wait for the actor to reach its current destingation before proceeding.
+
+    `>>> WaitFor: [Seconds]` Wait for the indicated number of seconds (expressed as a float) to pass.
+
+-> Top_Knot
+
 TODO: Document >>> TurnToFace: ActorName, Object - Turn the actor to face the target and place the LookAt transform on the objeect. If Object is set to "Nothing" then the actor will look directly ahead of themselves.
 
-TODO: Document >>> `WaitFor: Goat, ReachedTarget` Wait for the actor to reach its current destingation before proceeding
 
 TODO: Document >>> PlayerControl: On | Off (Gives the player control over the main character, prevents the story proceeding until the player trips a trigger or interacts with something)
 

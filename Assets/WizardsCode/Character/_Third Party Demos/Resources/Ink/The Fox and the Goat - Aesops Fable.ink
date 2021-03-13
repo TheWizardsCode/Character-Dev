@@ -86,7 +86,8 @@
     >>> TurnToFace: Goat, Nothing
     >>> TurnToFace: Fox, Nothing
     >>> SetEmotion: Fox, Pleasure, 1
-    >>> MoveTo: Fox, Well_Edge_Mark
+    >>> MoveTo: Fox, Fox_Out_Of_Well_Mark
+    >>> WaitFor: Fox, ReachedTarget
     
     The Goat readily assented and the Fox leaped upon his back. Steadying himself with the Goat’s horns, he safely reached the mouth of the well and made off as fast as he could. 
     
@@ -96,16 +97,19 @@
     
 = The_Mean_Fox
 
+    >>> Camera: MainVirtualCamera
     >>> MoveTo: Fox, Fox_Gloat_Mark
     >>> WaitFor: Fox, ReachedTarget
     >>> TurnToFace: Fox, Goat
 
     When the Goat upbraided him for breaking his promise, he turned around and cried out, “You foolish old fellow! If you had as many brains in your head as you have hairs in your beard, you would never have gone down before you had inspected the way up, nor have exposed yourself to dangers from which you had no means of escape.”
     
-    >>> MoveTo: Fox, Fox_Gloat_Mark
-    >>> WaitFor: Fox, ReachedTarget
+    >>> WaitFor: 3
+    >>> MoveTo: Fox, Fox_Exit_Mark
+    >>> WaitFor: 2
     
     >>> Camera: LookInTheWellVirtualCamera
+    >>> TurnToFace: Goat, LookInTheWellVirtualCamera
     >>> SetEmotion: Goat, Pleasure, 0
     >>> SetEmotion: Goat, Sadness, 1
     >>> SetEmotion: Goat, Interest, 0
