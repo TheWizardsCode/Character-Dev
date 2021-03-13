@@ -38,7 +38,10 @@
     
     A Goat, overcome with thirst, came to the same well, 
     
+    >>> Camera: MainVirtualCamera
     >>> WaitFor: Goat, ReachedTarget
+    
+    >>> Camera: LookInTheWellVirtualCamera
     >>> TurnToFace: Goat, Fox
     >>> TurnToFace: Fox, Goat
     
@@ -69,25 +72,28 @@
 
 = The_Fox_Escape
 
+    >>> Camera: MainVirtualCamera
     >>> TurnToFace: Goat, Nothing
     >>> TurnToFace: Fox, Nothing
     >>> MoveTo: Fox, Well_Edge_Mark
 
     The Goat readily assented and the Fox leaped upon his back. Steadying himself with the Goat’s horns, he safely reached the mouth of the well and made off as fast as he could. 
     
-    >>> WaitFor: Fox, ReachedTarget
-    
     * [Continue] -> The_Mean_Fox
     
 = The_Mean_Fox
 
-    >>> MoveTo: Fox, Fox_Exit_Mark
+    >>> MoveTo: Fox, Fox_Gloat_Mark
+    >>> WaitFor: Fox, ReachedTarget
+    >>> TurnToFace: Fox, Goat
 
     When the Goat upbraided him for breaking his promise, he turned around and cried out, “You foolish old fellow! If you had as many brains in your head as you have hairs in your beard, you would never have gone down before you had inspected the way up, nor have exposed yourself to dangers from which you had no means of escape.”
 
     * [Continue] -> The_Moral
     
 = The_Moral
+
+    >>> MoveTo: Fox, Fox_Exit_Mark
 
     Look before you leap.
 
