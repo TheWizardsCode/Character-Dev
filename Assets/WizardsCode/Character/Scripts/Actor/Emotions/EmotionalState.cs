@@ -11,7 +11,6 @@ namespace WizardsCode.Character
     /// 
     /// See https://en.wikipedia.org/wiki/Emotion#/media/File:Geneva_Emotion_Wheel_-_English.png
     /// </summary>
-    [ExecuteAlways]
     public class EmotionalState : MonoBehaviour
     {
         public enum EmotionType { Anger, Interest, Fear, Sadness, Pleasure }

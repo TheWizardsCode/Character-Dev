@@ -72,7 +72,7 @@
 
 = The_Fox_Escape
 
-    >>> Camera: MainVirtualCamera
+    >>> Camera: FoxExitCamera
     >>> TurnToFace: Goat, Nothing
     >>> TurnToFace: Fox, Nothing
     >>> SetEmotion: Fox, Pleasure, 1
@@ -92,8 +92,13 @@
 
     When the Goat upbraided him for breaking his promise, he turned around and cried out, “You foolish old fellow! If you had as many brains in your head as you have hairs in your beard, you would never have gone down before you had inspected the way up, nor have exposed yourself to dangers from which you had no means of escape.”
     
+    >>> MoveTo: Fox, Fox_Gloat_Mark
+    >>> WaitFor: Fox, ReachedTarget
+    
+    >>> Camera: LookInTheWellVirtualCamera
     >>> SetEmotion: Goat, Pleasure, 0
     >>> SetEmotion: Goat, Sadness, 1
+    >>> AnimationParam: Goat, Emote
 
     * [Continue] -> The_Moral
     
