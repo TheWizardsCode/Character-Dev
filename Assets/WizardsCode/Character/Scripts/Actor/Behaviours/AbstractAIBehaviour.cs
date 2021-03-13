@@ -1,15 +1,14 @@
 using UnityEngine;
 
-using System.Collections;
 using System.Collections.Generic;
 using WizardsCode.Stats;
 using System;
 using Random = UnityEngine.Random;
 using static WizardsCode.Character.StateSO;
 using System.Text;
-using UnityEngine.Serialization;
 using WizardsCode.Character.WorldState;
 using WizardsCode.Character.AI;
+using UnityEngine.Events;
 
 namespace WizardsCode.Character
 {
@@ -38,6 +37,10 @@ namespace WizardsCode.Character
         bool m_IsBlocking = true;
 
         [Header("Actions")]
+        [SerializeField, Tooltip("Events to fire when this behaviour is started.")]
+        UnityEvent m_OnStartEvent;
+        [SerializeField, Tooltip("Events to fire when this behaviour is finished.")]
+        UnityEvent m_OnEndEvent;
         [SerializeField, Tooltip("An actor cue to send to the actor upon the start of this interaction.")]
         protected ActorCue m_OnStartCue;
         [SerializeField, Tooltip("An actor cue to send to the actor upon the ending of this interaction. This should set the character back to their default state.")]
@@ -302,6 +305,11 @@ namespace WizardsCode.Character
             EndTime = Time.timeSinceLevelLoad + duration;
             AddCharacterInfluencers(duration);
 
+            if (m_OnStartEvent != null)
+            {
+                m_OnStartEvent.Invoke();
+            }
+
             if (m_OnStartCue != null)
             {
                 Brain.Actor.Prompt(m_OnStartCue);
@@ -433,6 +441,11 @@ namespace WizardsCode.Character
                     StatSO stat = Brain.GetOrCreateStat(m_CharacterInfluences[i].statTemplate);
                     stat.Value += m_CharacterInfluences[i].maxChange;
                 }
+            }
+
+            if (m_OnEndEvent != null)
+            {
+                m_OnEndEvent.Invoke();
             }
 
             if (m_OnEndCue != null)

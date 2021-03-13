@@ -33,9 +33,9 @@ namespace WizardsCode.Character
 
         [Header("IK")]
         [Tooltip("If true then this script will control IK configuration of the character.")]
-        public bool isIKActive = false;
+        public bool isFootIKActive = false;
         [SerializeField, Tooltip("Should the actor use IK to look at a given target.")]
-        bool m_EnableIKLook = true;
+        bool m_IsLookAtIKActive = true;
         [SerializeField, Tooltip("A transform at the point in space that the actor should look towards.")]
         Transform m_LookAtTarget;
         [SerializeField, Tooltip("The head bone, used for Look IK. If this is blank there will be an attempt to automatically find the head upon startup.")]
@@ -96,18 +96,24 @@ namespace WizardsCode.Character
             get { return m_Animator; }
         }
 
-        internal Vector3 MoveTargetPosition
+        #region Actions
+        public void Sit(Transform sitPosition)
         {
-            get { return m_Agent.destination; }
-            set
+            MoveTo(sitPosition.position, () =>
             {
-                m_Agent.SetDestination(value);
-            }
-        }
-
-        internal void MoveTo(Transform destination)
-        {
-            MoveTargetPosition = destination.position;
+                TurnTo(sitPosition.rotation);
+            },
+            () =>
+            {
+                Vector3 pos = sitPosition.position;
+                pos.z -= sittingOffset; // slide back in the chair a little
+                MoveTo(pos, null, null, () =>
+                {
+                    isFootIKActive = true;
+                    m_Animator.SetBool("Sitting", true);
+                });
+            },
+            null);
         }
 
         /// <summary>
@@ -124,6 +130,27 @@ namespace WizardsCode.Character
             onArrived = arrivedCallback;
             onStationary = stationaryCallback;
             MoveTargetPosition = position;
+        }
+        #endregion
+
+        private void TurnTo(Quaternion rotation)
+        {
+            desiredRotation = rotation;
+            isRotating = true;
+        }
+
+        internal Vector3 MoveTargetPosition
+        {
+            get { return m_Agent.destination; }
+            set
+            {
+                m_Agent.SetDestination(value);
+            }
+        }
+
+        internal void MoveTo(Transform destination)
+        {
+            MoveTargetPosition = destination.position;
         }
 
         /// <summary>
@@ -164,7 +191,7 @@ namespace WizardsCode.Character
             if (!head)
             {
                 Debug.LogError("No head transform set on " + gameObject.name + " and one could not be found automatically - LookAt disabled");
-                m_EnableIKLook = false;
+                m_IsLookAtIKActive = false;
             }
         }
 
@@ -177,15 +204,19 @@ namespace WizardsCode.Character
 
         protected virtual void Update()
         {
+            SetForwardAndTurnParameters();
+            ManageState();
+
             float sqrMagToLookAtTarget = Vector3.SqrMagnitude(LookAtTarget.position - transform.position);
             if (sqrMagToLookAtTarget > 100)
             {
                 ResetLookAt();
             }
 
-            SetForwardAndTurnParameters();
-            ManageState();
-            // lookAt.LookAtPosition(m_Agent.destination);
+            if (isRotating && transform.rotation != desiredRotation)
+            {
+                transform.rotation = Quaternion.Lerp(transform.rotation, desiredRotation, 0.05f);
+            }
         }
 
         /// <summary>
@@ -205,7 +236,7 @@ namespace WizardsCode.Character
                     }
                     break;
                 case States.Moving:
-                    if (m_Agent.remainingDistance > m_Agent.stoppingDistance && m_Agent.remainingDistance <= m_ArrivingDistance)
+                    if (m_Agent.remainingDistance <= m_ArrivingDistance)
                     {
                         m_State = States.Arriving;
                     }
@@ -271,6 +302,7 @@ namespace WizardsCode.Character
         {
             get
             {
+                //TODO Can we simplify this and look at the m_State value, e.g. m_State == States.Moving
                 if (m_Agent.hasPath && !m_Agent.pathPending)
                 {
                     if (m_Agent.remainingDistance <= m_Agent.stoppingDistance)
@@ -280,13 +312,13 @@ namespace WizardsCode.Character
                     {
                         return true;
                     }
-                } 
-                
+                }
+
                 if (m_Agent.hasPath && m_Agent.pathPending)
                 {
                     return true;
                 }
-                
+
                 if (!m_Agent.hasPath && !m_Agent.pathPending)
                 {
                     return true;
@@ -312,7 +344,7 @@ namespace WizardsCode.Character
         /// but sadness will reduce it. Similarly a character who is attacking
         /// is more noticable than one who is idle.
         /// </summary>
-        public float Noticability { 
+        public float Noticability {
             get
             {
                 float result = 0;
@@ -330,7 +362,33 @@ namespace WizardsCode.Character
 
         void OnAnimatorIK()
         {
-            if (!m_EnableIKLook)
+            LookAtIK();
+            FeetIK();
+        }
+
+        private void FeetIK()
+        {
+            if (!isFootIKActive) return;
+
+            if (m_RightFootPosition != null)
+            {
+                m_Animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 1);
+                m_Animator.SetIKRotationWeight(AvatarIKGoal.RightFoot, 1);
+                m_Animator.SetIKPosition(AvatarIKGoal.RightFoot, m_RightFootPosition.position);
+                m_Animator.SetIKRotation(AvatarIKGoal.RightFoot, m_RightFootPosition.rotation);
+            }
+            if (m_LeftFootPosition != null)
+            {
+                m_Animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1);
+                m_Animator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, 1);
+                m_Animator.SetIKPosition(AvatarIKGoal.LeftFoot, m_LeftFootPosition.position);
+                m_Animator.SetIKRotation(AvatarIKGoal.LeftFoot, m_LeftFootPosition.rotation);
+            }
+        }
+
+        private void LookAtIK()
+        {
+            if (!m_IsLookAtIKActive)
             {
                 return;
             }
@@ -338,7 +396,7 @@ namespace WizardsCode.Character
             Vector3 pos = LookAtTarget.position;
             //pos.y = head.position.y;
 
-            float lookAtTargetWeight = m_EnableIKLook ? 1.0f : 0.0f;
+            float lookAtTargetWeight = m_IsLookAtIKActive ? 1.0f : 0.0f;
 
             Vector3 curDir = m_CurrentLookAtPosition - head.position;
             Vector3 futDir = pos - head.position;
