@@ -34,6 +34,7 @@ Actions are handled by direction in the narrative. An direction takes the follow
 * SetEmotion -> SetEmotion
 * Cue -> Cue
 * MoveTo -> MoveTo
+* Camera -> Camera
 * Home -> Top_Knot
 
 = Cue
@@ -88,9 +89,17 @@ The SetEmotion direction takes the following form:
 
 -> Top_Knot
 
+= Camera
+
+Switch to the named camera and set the camera look at parameter to the the named object. If the `LookAtObject` is not present then no chage to the LookAt parameter of the camera will be made.
+
+`>>> Camera: [CameraName], [LookAtObject]`
+
+-> Top_Knot
+
 TODO: Document >>> TurnToFace: ActorName, Object - Turn the actor to face the target and place the LookAt transform on the objeect. If Object is set to "Nothing" then the actor will look directly ahead of themselves.
 
-TODO: >>> `WaitFor: Goat, ReachedTarget` Wait for the actor to reach its current destingation before proceeding
+TODO: Document >>> `WaitFor: Goat, ReachedTarget` Wait for the actor to reach its current destingation before proceeding
 
 TODO: Document >>> PlayerControl: On | Off (Gives the player control over the main character, prevents the story proceeding until the player trips a trigger or interacts with something)
 
@@ -99,8 +108,6 @@ TODO: Document >>> Behaviour: [ActorName], [ActionName] (Fire a behaviour on the
 TODO: Document `>>> StopMoving: ActorName` Stop all movement.
 
 TODO: Document `>>> AnimationParam: [ActorName] [ParameterName] [Value]` Set animator parameter to value
-
-TODO: Document `>>> Camera: Binoculars, Main Tent` switch to the named camera and look at the names object
 
 TODO: Document EXTERNAL GetPartyNoticability()
 

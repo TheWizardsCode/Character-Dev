@@ -28,6 +28,8 @@
 
     >>> MoveTo: Fox, Fox_In_Well_Mark
     
+    >>> Camera: LookInTheWellVirtualCamera
+    
     * [Continue] -> A_Thirsty_Goat
 
 = A_Thirsty_Goat
