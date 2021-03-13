@@ -27,8 +27,10 @@
     A Fox one day fell into a deep well and could find no means of escape. 
 
     >>> MoveTo: Fox, Fox_In_Well_Mark
-    
+    >>> SetEmotion: Fox, Pleasure, 0
+    >>> SetEmotion: Fox, Sadness, 1
     >>> Camera: LookInTheWellVirtualCamera
+    >>> AnimationParam: Fox, Emote
     
     * [Continue] -> A_Thirsty_Goat
 
@@ -52,6 +54,11 @@
 
 = The_Sly_Fox
 
+    >>> SetEmotion: Fox, Pleasure, 1
+    >>> SetEmotion: Fox, Sadness, 0
+    >>> SetEmotion: Fox, Interest, 1
+    >>> AnimationParam: Fox, Emote
+    
     Concealing his sad plight under a merry guise, the Fox indulged in a lavish praise of the water, saying it was excellent beyond measure, and encouraging him to descend.
     
     * [Continue] -> The_Foolish_Goat
@@ -65,6 +72,9 @@
     * [Continue] -> The_Plan
     
 = The_Plan
+
+    >>> SetEmotion: Goat, Pleasure, 0
+    >>> SetEmotion: Goat, Sadness, 0.8
 
     “If,” said he, “you will place your forefeet upon the wall and bend your head, I will run up your back and escape, and will help you out afterwards.” 
 
@@ -98,6 +108,7 @@
     >>> Camera: LookInTheWellVirtualCamera
     >>> SetEmotion: Goat, Pleasure, 0
     >>> SetEmotion: Goat, Sadness, 1
+    >>> SetEmotion: Goat, Interest, 0
     >>> AnimationParam: Goat, Emote
 
     * [Continue] -> The_Moral
