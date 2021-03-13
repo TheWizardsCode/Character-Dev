@@ -88,11 +88,20 @@ The SetEmotion direction takes the following form:
 
 -> Top_Knot
 
-TODO: Document >>> TurnToFace: ActorName, Object
+TODO: Document >>> TurnToFace: ActorName, Object - Turn the actor to face the target and place the LookAt transform on the objeect. If Object is set to "Nothing" then the actor will look directly ahead of themselves.
+
+TODO: >>> `WaitFor: Goat, ReachedTarget` Wait for the actor to reach its current destingation before proceeding
+
 TODO: Document >>> PlayerControl: On | Off (Gives the player control over the main character, prevents the story proceeding until the player trips a trigger or interacts with something)
+
 TODO: Document >>> Behaviour: [ActorName], [ActionName] (Fire a behaviour on the actor with the name and an optional target (not all actions require a target)
+
 TODO: Document `>>> StopMoving: ActorName` Stop all movement.
+
 TODO: Document `>>> AnimationParam: [ActorName] [ParameterName] [Value]` Set animator parameter to value
+
 TODO: Document `>>> Camera: Binoculars, Main Tent` switch to the named camera and look at the names object
+
 TODO: Document EXTERNAL GetPartyNoticability()
+
 TODO: Document `>>> Music: [Tempo], [Style]` - play a music track. The track should be stored in `Resources/Music/Tempo_Style.mp3` (or other accepted Unity audio format)

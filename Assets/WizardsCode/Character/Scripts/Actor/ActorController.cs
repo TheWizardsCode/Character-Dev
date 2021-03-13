@@ -44,9 +44,9 @@ namespace WizardsCode.Character
             get { return m_LookAtTarget; }
             set
             {
-                m_LookAtTarget.position = Vector3.zero;
-                m_LookAtTarget.rotation = Quaternion.identity;
                 m_LookAtTarget.transform.SetParent(value);
+                m_LookAtTarget.localPosition = Vector3.zero;
+                m_LookAtTarget.localRotation = Quaternion.identity;
             }
         }
 
@@ -123,7 +123,7 @@ namespace WizardsCode.Character
             float sqrMagToLookAtTarget = Vector3.SqrMagnitude(LookAtTarget.position - transform.position);
             if (sqrMagToLookAtTarget > 100)
             {
-                LookAtTarget.transform.localPosition = new Vector3(0, head.position.y, 1);
+                ResetLookAt();
             }
 
             if (m_Animator != null && m_Agent != null)
@@ -227,6 +227,15 @@ namespace WizardsCode.Character
             lookAtWeight = Mathf.MoveTowards(lookAtWeight, lookAtTargetWeight, Time.deltaTime / blendTime);
             m_Animator.SetLookAtWeight(lookAtWeight, 0.2f, 0.5f, 0.7f, 0.5f);
             m_Animator.SetLookAtPosition(m_CurrentLookAtPosition);
+        }
+
+        /// <summary>
+        /// Move the look at target to its default position and parent it to the actor.
+        /// </summary>
+        internal void ResetLookAt()
+        {
+            LookAtTarget.transform.SetParent(transform);
+            LookAtTarget.transform.localPosition = head.position + new Vector3(0, 0, 1);
         }
     }
 }

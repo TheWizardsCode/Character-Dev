@@ -482,12 +482,18 @@ namespace WizardsCode.Ink
             }
 
             ActorController actor = FindActor(args[0].Trim());
-            Transform target = FindTarget(args[1].Trim());
+            string targetName = args[1].Trim();
+            Transform target = null;
+            if (targetName != "Nothing") {
+                target = FindTarget(targetName);
+            }
 
             if (target != null)
             {
                 actor.gameObject.transform.LookAt(target.position);
                 actor.LookAtTarget = target.transform;
+            } else {
+                actor.ResetLookAt();
             }
         }
 
