@@ -11,12 +11,14 @@ using System;
 using static WizardsCode.Character.EmotionalState;
 using WizardsCode.Stats;
 using Cinemachine;
+using System.Globalization;
 
 namespace WizardsCode.Ink
 {
     public class InkManager : AbstractSingleton<InkManager>
     {
         enum Direction { 
+            Unkown,
             Cue, 
             TurnToFace, 
             PlayerControl, 
@@ -26,7 +28,8 @@ namespace WizardsCode.Ink
             StopMoving, 
             AnimationParam,
             Camera,
-            Music
+            Music,
+            WaitFor
         }
 
         [Header("Script")]
@@ -64,6 +67,10 @@ namespace WizardsCode.Ink
         Story m_Story;
         bool m_IsUIDirty = false;
         StringBuilder m_NewStoryText = new StringBuilder();
+        bool wasWaiting = false;
+        private ActorController m_WaitingForActor;
+        private string m_WaitingForState;
+        private float m_WaitUntilTime = float.NegativeInfinity;
 
         private bool m_IsDisplayingUI = false;
         internal bool IsDisplayingUI
@@ -157,14 +164,66 @@ namespace WizardsCode.Ink
             }
         }
 
+        private bool IsWaitingFor
+        {
+            get
+            {
+                if (m_WaitingForActor == null && m_WaitUntilTime < 0)
+                {
+                    return false;
+                }
+
+                switch (m_WaitingForState)
+                {
+                    case "ReachedTarget":
+                        if (m_WaitingForActor.IsMoving)
+                        {
+                            wasWaiting = false;
+                            return true;
+                        }
+                        else
+                        {
+                            ExitWaitingState();
+                            return false;
+                        }
+                    case "Time":
+                        if (Time.timeSinceLevelLoad >= m_WaitUntilTime)
+                        {
+                            ExitWaitingState();
+                            return false;
+                        } else
+                        {
+                            return true;
+                        }
+                    default:
+                        Debug.LogError("Direction to wait gives a unrecognized state to wait for: " + m_WaitingForState);
+                        return false;
+                }
+            }
+        }
+
+        private void ExitWaitingState()
+        {
+            m_WaitingForActor = null;
+            m_WaitingForState = "";
+            m_WaitUntilTime = float.NegativeInfinity;
+            wasWaiting = true;
+        }
+
         public void Update()
         {
+            if (IsWaitingFor)
+            {
+                return;
+            }
+
             if (IsDisplayingUI)
             {
-                if (m_IsUIDirty)
+                if (m_IsUIDirty || wasWaiting)
                 {
                     ProcessStoryChunk();
                     UpdateGUI();
+                    wasWaiting = false;
                 }
             } else
             {
@@ -336,7 +395,7 @@ namespace WizardsCode.Ink
 
             if (args.Length == 2)
             {
-                actor.Animator.SetTrigger(name);
+                actor.Animator.SetTrigger(paramName);
                 return;
             }
 
@@ -394,7 +453,7 @@ namespace WizardsCode.Ink
         /// <param name="args">[Tempo] [Style]</param>
         void Music(string[] args)
         {
-            if (!ValidateArgumentCount(Direction.Camera, args, 2))
+            if (!ValidateArgumentCount(Direction.Music, args, 2))
             {
                 return;
             }
@@ -413,6 +472,35 @@ namespace WizardsCode.Ink
             }
         }
 
+        /// <summary>
+        /// Wait for a particular game state. Supported states are:
+        /// 
+        /// ReachedTarget - waits for the actor to have reached their move target
+        /// 
+        /// </summary>
+        /// <param name="args">[Actor] [State]</param>
+        void WaitFor(string[] args)
+        {
+            if (!ValidateArgumentCount(Direction.WaitFor, args, 1, 2))
+            {
+                return;
+            }
+
+            string param1 = args[0].Trim();
+            bool isFloat = float.TryParse(param1, out float time);
+            if (isFloat)
+            {
+                m_WaitingForState = "Time";
+                m_WaitUntilTime = Time.timeSinceLevelLoad + time;
+            }
+            else
+            {
+                m_WaitingForActor = FindActor(param1);
+                m_WaitingForState = args[1].Trim();
+            }
+
+        }
+
         void TurnToFace(string[] args)
         {
             if (!ValidateArgumentCount(Direction.TurnToFace, args, 2))
@@ -421,12 +509,18 @@ namespace WizardsCode.Ink
             }
 
             ActorController actor = FindActor(args[0].Trim());
-            Transform target = FindTarget(args[1].Trim());
+            string targetName = args[1].Trim();
+            Transform target = null;
+            if (targetName != "Nothing") {
+                target = FindTarget(targetName);
+            }
 
             if (target != null)
             {
                 actor.gameObject.transform.LookAt(target.position);
                 actor.LookAtTarget = target.transform;
+            } else {
+                actor.ResetLookAt();
             }
         }
 
@@ -513,7 +607,7 @@ namespace WizardsCode.Ink
         {
             string line;
 
-            while (m_Story.canContinue)
+            while (m_Story.canContinue && !IsWaitingFor)
             {
                 line = m_Story.Continue();
                 
@@ -526,7 +620,11 @@ namespace WizardsCode.Ink
                     Enum.TryParse(line.Substring(startIdx, endIdx).Trim(), out Direction cmd);
                     string[] args = line.Substring(endIdx + startIdx + 1).Split(',');
 
-                    switch (cmd) {
+                    switch (cmd)
+                    {
+                        case Direction.Unkown:
+                            Debug.LogError("Unknown Direction: " + line);
+                            break;
                         case Direction.Cue:
                             PromptCue(args);
                             break;
@@ -557,6 +655,9 @@ namespace WizardsCode.Ink
                             break;
                         case Direction.Music:
                             Music(args);
+                            break;
+                        case Direction.WaitFor:
+                            WaitFor(args);
                             break;
                         default:
                             Debug.LogError("Unknown Direction: " + line);

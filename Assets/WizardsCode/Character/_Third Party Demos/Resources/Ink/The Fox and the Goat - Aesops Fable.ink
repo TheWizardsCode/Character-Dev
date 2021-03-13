@@ -17,46 +17,109 @@
 == Top_Knot
 
     The Fox and the Goat
-    
-    -> Fox_Fell_In_Well
+
+    >>> MoveTo: Fox, Well_Edge_Mark
+
+    * [Continue] -> Fox_Fell_In_Well
 
 = Fox_Fell_In_Well
 
-    A FOX one day fell into a deep well and could find no means of escape. 
+    A Fox one day fell into a deep well and could find no means of escape. 
+
+    >>> MoveTo: Fox, Fox_In_Well_Mark
+    >>> SetEmotion: Fox, Pleasure, 0
+    >>> SetEmotion: Fox, Sadness, 1
+    >>> Camera: LookInTheWellVirtualCamera
+    >>> AnimationParam: Fox, Emote
     
-    -> A_Thirsty_Goat
+    * [Continue] -> A_Thirsty_Goat
 
 = A_Thirsty_Goat
 
-    A Goat, overcome with thirst, came to the same well, and seeing the Fox, inquired if the water was good. 
+    >>> MoveTo: Goat, Well_Edge_Mark
     
-    -> The_Sly_Fox
+    A Goat, overcome with thirst, came to the same well, 
+    
+    >>> Camera: MainVirtualCamera
+    >>> WaitFor: Goat, ReachedTarget
+    
+    >>> Camera: LookInTheWellVirtualCamera
+    >>> TurnToFace: Goat, Fox
+    >>> TurnToFace: Fox, Goat
+    
+    and seeing the Fox, inquired if the water was good. 
+    
+    
+    * [Continue] -> The_Sly_Fox
 
 = The_Sly_Fox
 
+    >>> SetEmotion: Fox, Pleasure, 1
+    >>> SetEmotion: Fox, Sadness, 0
+    >>> SetEmotion: Fox, Interest, 1
+    >>> AnimationParam: Fox, Emote
+    
     Concealing his sad plight under a merry guise, the Fox indulged in a lavish praise of the water, saying it was excellent beyond measure, and encouraging him to descend.
     
-    -> The_Foolish_Goat
+    * [Continue] -> The_Foolish_Goat
 
 = The_Foolish_Goat
 
-    The Goat, mindful only of his thirst, thoughtlessly jumped down, but just as he drank, the Fox informed him of the difficulty they were both in and suggested a scheme for their common escape. “If,” said he, “you will place your forefeet upon the wall and bend your head, I will run up your back and escape, and will help you out afterwards.” 
+    >>> MoveTo: Goat, Goat_In_Well_Mark
 
-    -> The_Fox_Escape
+    The Goat, mindful only of his thirst, thoughtlessly jumped down, but just as he drank, the Fox informed him of the difficulty they were both in and suggested a scheme for their common escape. 
+    
+    * [Continue] -> The_Plan
+    
+= The_Plan
+
+    >>> SetEmotion: Goat, Pleasure, 0
+    >>> SetEmotion: Goat, Sadness, 0.8
+
+    “If,” said he, “you will place your forefeet upon the wall and bend your head, I will run up your back and escape, and will help you out afterwards.” 
+
+    * [Continue] -> The_Fox_Escape
 
 = The_Fox_Escape
 
+    >>> Camera: FoxExitCamera
+    >>> TurnToFace: Goat, Nothing
+    >>> TurnToFace: Fox, Nothing
+    >>> SetEmotion: Fox, Pleasure, 1
+    >>> MoveTo: Fox, Fox_Out_Of_Well_Mark
+    >>> WaitFor: Fox, ReachedTarget
+    
     The Goat readily assented and the Fox leaped upon his back. Steadying himself with the Goat’s horns, he safely reached the mouth of the well and made off as fast as he could. 
     
-    -> The_Mean_Fox
+    >>> AnimationParam: Fox, Emote
+    
+    * [Continue] -> The_Mean_Fox
     
 = The_Mean_Fox
 
-    When the Goat upbraided him for breaking his promise, he turned around and cried out, “You foolish old fellow! If you had as many brains in your head as you have hairs in your beard, you would never have gone down before you had inspected the way up, nor have exposed yourself to dangers from which you had no means of escape.”
+    >>> Camera: MainVirtualCamera
+    >>> MoveTo: Fox, Fox_Gloat_Mark
+    >>> WaitFor: Fox, ReachedTarget
+    >>> TurnToFace: Fox, Goat
 
-    -> The_Moral
+    When the Goat upbraided him for breaking his promise, he turned around and cried out, “You foolish old fellow! If you had as many brains in your head as you have hairs in your beard, you would never have gone down before you had inspected the way up, nor have exposed yourself to dangers from which you had no means of escape.”
+    
+    >>> WaitFor: 3
+    >>> MoveTo: Fox, Fox_Exit_Mark
+    >>> WaitFor: 2
+    
+    >>> Camera: LookInTheWellVirtualCamera
+    >>> TurnToFace: Goat, LookInTheWellVirtualCamera
+    >>> SetEmotion: Goat, Pleasure, 0
+    >>> SetEmotion: Goat, Sadness, 1
+    >>> SetEmotion: Goat, Interest, 0
+    >>> AnimationParam: Goat, Emote
+
+    * [Continue] -> The_Moral
     
 = The_Moral
+
+    >>> MoveTo: Fox, Fox_Exit_Mark
 
     Look before you leap.
 
