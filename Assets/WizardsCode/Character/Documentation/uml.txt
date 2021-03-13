@@ -1,0 +1,87 @@
+@startuml
+
+participant Player
+participant InkTrigger
+
+box "InkManager"
+participant InkManager
+participant InkManager_ProcessStoryChunk
+end box
+
+' comment syntax reminder
+
+Player -> InkTrigger : OnTriggerExit()
+	note right
+		basically uses IsDisplayingUI to decide whether ProcessStoryChunk should run
+	end note
+	InkTrigger -> InkManager : SetPlayerControl(true)
+		InkManager -> InkManager : set set IsDisplayingUI to false
+	InkManager --> InkTrigger
+InkTrigger --> Player
+
+Player -> InkTrigger : OnTriggerEnter()
+
+	InkTrigger -> InkManager : JumpToPath()
+	InkManager --> InkTrigger
+	InkTrigger -> InkManager : SetPlayerControl(false)
+		InkManager -> InkManager : set set IsDisplayingUI to true
+	InkManager --> InkTrigger
+InkTrigger --> Player
+
+loop InkManager : Update()
+	alt IsDisplayingUI
+		InkManager -> InkManager_ProcessStoryChunk
+		note right
+			ProcessStoryChunk is a large method, separated out for convenience
+			Only runs if ui is active
+		end note
+
+		loop story.CanContinue
+			InkManager_ProcessStoryChunk -> Story : Continue()
+			Story --> InkManager_ProcessStoryChunk
+
+			group found directive: MoveTo
+				InkManager_ProcessStoryChunk -> InkManager: MoveTo(string[])
+					InkManager -> InkManager: FindActor(string)
+						note right
+							candidates are from m_actors, a list passed in via editor
+						end note
+
+						InkManager -> ActorController : MoveTo(Transform)
+
+							ActorController -> NavAgent : SetDestination(...)
+							NavAgent --> ActorController
+
+						ActorController --> InkManager
+				InkManager --> InkManager_ProcessStoryChunk
+			end
+
+			group found directive: SetPlayerControl
+				InkManager_ProcessStoryChunk -> Story : ContinueMaximally()
+					note right
+						stash result in unused variable 'resp'
+					end note
+				Story --> InkManager_ProcessStoryChunk
+
+
+				InkManager_ProcessStoryChunk -> InkManager: SetPlayerControl(string[])
+				InkManager -> InkManager: SetPlayerControl(bool)
+				note right
+					sets IsDisplayingUI. Does NOT prevent movement,
+					there is a bug with binoculars related to this
+				end note
+
+				InkManager --> InkManager_ProcessStoryChunk
+			end
+
+		end
+
+		InkManager_ProcessStoryChunk --> InkManager
+		note right
+			first sets m_IsUIDirty set to true
+		end note
+
+		InkManager -> InkManager : UpdateGUI()
+	end
+end
+@enduml
