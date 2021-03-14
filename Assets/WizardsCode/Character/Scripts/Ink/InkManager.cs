@@ -12,23 +12,29 @@ using static WizardsCode.Character.EmotionalState;
 using WizardsCode.Stats;
 using Cinemachine;
 using System.Globalization;
+using UnityEngine.Serialization;
+
+using System.Text.RegularExpressions;
+using WizardsCode.Character.Scripts.UX;
+
 
 namespace WizardsCode.Ink
 {
     public class InkManager : AbstractSingleton<InkManager>
     {
-        enum Direction { 
+        enum Direction {
             Unkown,
-            Cue, 
-            TurnToFace, 
-            PlayerControl, 
-            MoveTo, 
-            SetEmotion, 
-            Action, 
-            StopMoving, 
+            Cue,
+            TurnToFace,
+            PlayerControl,
+            MoveTo,
+            SetEmotion,
+            Action,
+            StopMoving,
             AnimationParam,
             Camera,
             Music,
+            SetPrimaryBlendedMusicTrack,
             WaitFor
         }
 
@@ -48,6 +54,9 @@ namespace WizardsCode.Ink
         [SerializeField, Tooltip("The audio source for music playback.")]
         AudioSource m_MusicAudioSource;
 
+        [SerializeField, Tooltip("The audio source for music playback.")]
+        GlobalMusicComp m_GlobalMusicComp;
+
         [Header("Actor Setup")]
         [SerializeField, Tooltip("The name of the player object.")]
         string m_PlayerName = "Player";
@@ -55,28 +64,28 @@ namespace WizardsCode.Ink
         LayerMask m_PartyLayerMask;
 
         [Header("UI")]
-        [SerializeField, Tooltip("The panel on which to display the text in the story.")]
-        RectTransform textPanel;
         [SerializeField, Tooltip("The panel on which to display the choice buttons in the story.")]
         RectTransform choicesPanel;
-        [SerializeField, Tooltip("Story chunk prefab for creation when we want to display a story chunk.")]
-        TextMeshProUGUI m_StoryChunkPrefab;
         [SerializeField, Tooltip("Story choice button")]
         Button m_ChoiceButtonPrefab;
+
+        [SerializeField, Tooltip("dialogue bubble comp reference.")]
+        TextBubbleComp m_TextBubbleComp;
 
         Story m_Story;
         bool m_IsUIDirty = false;
         StringBuilder m_NewStoryText = new StringBuilder();
+        string m_CurrentSpeakerName = "";
         bool wasWaiting = false;
         private ActorController m_WaitingForActor;
-        private string m_WaitingForState;
+        private string m_WaitingForState = "";
         private float m_WaitUntilTime = float.NegativeInfinity;
 
         private bool m_IsDisplayingUI = false;
         internal bool IsDisplayingUI
         {
-            get { return m_IsDisplayingUI; } 
-            set { 
+            get { return m_IsDisplayingUI; }
+            set {
                 m_IsDisplayingUI = value;
                 m_IsUIDirty = value;
             }
@@ -91,11 +100,17 @@ namespace WizardsCode.Ink
             {
                 return GetPartyNoticability();
             });
+
+            if (m_GlobalMusicComp == null)
+            {
+                Debug.LogError("m_GlobalMusicComp is null");
+                return;
+            }
         }
 
         /// <summary>
         /// Return a float value between 0 and 1 indicating how likely the party is to be noticed.
-        /// 0 means will not be noticed, 1 means will be noticed. 
+        /// 0 means will not be noticed, 1 means will be noticed.
         /// </summary>
         /// <returns>a % chance of being noticed</returns>
         float GetPartyNoticability()
@@ -168,11 +183,12 @@ namespace WizardsCode.Ink
         {
             get
             {
-                if (m_WaitingForActor == null && m_WaitUntilTime < 0)
+                if (m_WaitingForActor == null && m_WaitUntilTime < 0 && m_WaitingForState == "")
                 {
                     return false;
                 }
 
+                // todo - handle the case where several waiting states are active simultaneously
                 switch (m_WaitingForState)
                 {
                     case "ReachedTarget":
@@ -195,6 +211,10 @@ namespace WizardsCode.Ink
                         {
                             return true;
                         }
+                    case "PlayerInput":
+                        return true; // as of writing, pressing space will automatically exit the waiting state
+                    case "":
+                        return false; // should never get here
                     default:
                         Debug.LogError("Direction to wait gives a unrecognized state to wait for: " + m_WaitingForState);
                         return false;
@@ -214,6 +234,11 @@ namespace WizardsCode.Ink
         {
             if (IsWaitingFor)
             {
+                if (m_WaitingForState == "PlayerInput" &&
+                        (Input.GetKeyUp(KeyCode.Space) || Input.GetMouseButtonUp(0)))
+                {
+                    ExitWaitingState();
+                }
                 return;
             }
 
@@ -227,34 +252,30 @@ namespace WizardsCode.Ink
                 }
             } else
             {
-                textPanel.gameObject.SetActive(false);
+                m_TextBubbleComp.ShowWidget(false);
                 choicesPanel.gameObject.SetActive(false);
             }
         }
 
         private void EraseUI()
         {
-            for (int i = 0; i < textPanel.transform.childCount; i++)
-            {
-                Destroy(textPanel.transform.GetChild(i).gameObject);
-            }
-
             for (int i = 0; i < choicesPanel.transform.childCount; i++) {
                 Destroy(choicesPanel.transform.GetChild(i).gameObject);
             }
+
+            m_TextBubbleComp.ClearText();
         }
 
         private void UpdateGUI()
         {
             EraseUI();
 
-            textPanel.gameObject.SetActive(true);
-            TextMeshProUGUI chunkText = Instantiate(m_StoryChunkPrefab) as TextMeshProUGUI;
-            chunkText.text = m_NewStoryText.ToString();
-            chunkText.transform.SetParent(textPanel.transform, false);
+            m_TextBubbleComp.SetText(m_CurrentSpeakerName, m_NewStoryText.ToString(), true);
 
             for (int i = 0; i < m_Story.currentChoices.Count; i++)
             {
+                if (m_WaitingForState == "PlayerInput") m_WaitingForState = "";
+
                 choicesPanel.gameObject.SetActive(true);
                 Choice choice = m_Story.currentChoices[i];
                 Button choiceButton = Instantiate(m_ChoiceButtonPrefab) as Button;
@@ -321,7 +342,7 @@ namespace WizardsCode.Ink
 
         /// <summary>
         /// The SetEmotion direction looks for a defined emotion on an character and sets it if found.
-        /// 
+        ///
         /// </summary>
         /// <param name="args">[ActorName], [EmotionName], [Float]</param>
         void SetEmotion(string[] args)
@@ -347,7 +368,7 @@ namespace WizardsCode.Ink
         /// Tell an actor to prioritize a particular behaviour. Under normal circumstances
         /// this behaviour will be executed as soon as possible, as long as the necessary
         /// preconditions have been met and no higher priority item exists.
-        /// 
+        ///
         /// </summary>
         /// <param name="args">[ActorName], [BehaviourName]</param>
         void Action(string[] args)
@@ -364,7 +385,7 @@ namespace WizardsCode.Ink
 
         /// <summary>
         /// Tell an actor to stop moving immediately.
-        /// 
+        ///
         /// </summary>
         /// <param name="args">[ActorName]</param>
         void StopMoving(string[] args)
@@ -380,7 +401,7 @@ namespace WizardsCode.Ink
 
         /// <summary>
         /// Set an animation parameter on an actor.
-        /// 
+        ///
         /// </summary>
         /// <param name="args">[ActorName] [ParameterName] [Value] - if Value is missing it is assumed that the parameter is a trigger</param>
         void AnimationParam(string[] args)
@@ -416,7 +437,7 @@ namespace WizardsCode.Ink
 
         /// <summary>
         /// Switch to a specific camera and optionally look at a named object.
-        /// 
+        ///
         /// </summary>
         /// <param name="args">[CameraName] [TargetName] - if TargetName is missing it is assumed that the camera is already setup correctly</param>
         void Camera(string[] args)
@@ -446,8 +467,8 @@ namespace WizardsCode.Ink
                         {
                             newCamera.Follow = objectName;
                             newCamera.LookAt = objectName;
-                        } 
-                        else 
+                        }
+                        else
                         {
                             Transform childObject = FindChild(objectName, args[2].Trim());
                             if (childObject)
@@ -471,7 +492,7 @@ namespace WizardsCode.Ink
         /// <summary>
         /// Play a specified music track. The tracks requested should be saved in
         /// `/Resources/Music/TEMP.STYLE.mp3`
-        /// 
+        ///
         /// </summary>
         /// <param name="args">[Tempo] [Style]</param>
         void Music(string[] args)
@@ -496,10 +517,51 @@ namespace WizardsCode.Ink
         }
 
         /// <summary>
+        /// Play a specified music track, identified by name. The tracks
+        /// are blended reactively
+        ///
+        /// </summary>
+        /// <param name="args">[Tempo] [Style]</param>
+        void SetPrimaryBlendedMusicTrack(string[] args)
+        {
+            if (!ValidateArgumentCount(Direction.Music, args, 1))
+            {
+                return;
+            }
+
+            if (m_GlobalMusicComp == null) return;
+
+            string trackAsString = args[0].Trim();
+            EMusicTrackName trackNameAsEnum;
+            // convert string to enum
+            switch (trackAsString)
+            {
+            case "Main":
+                trackNameAsEnum = EMusicTrackName.MTN_Main;
+                Debug.LogWarning("main track is always playing. Perhaps you meant another track?");
+                break;
+            case "Fun":
+                trackNameAsEnum = EMusicTrackName.MTN_Fun;
+                break;
+            case "Investigation":
+                trackNameAsEnum = EMusicTrackName.MTN_Investigation;
+                break;
+            case "Suspense":
+                trackNameAsEnum = EMusicTrackName.MTN_Suspense;
+                break;
+            default:
+                Debug.LogError("Direction to play music track cannot be satisfied: " + trackAsString);
+                return;
+            }
+
+            m_GlobalMusicComp.SetPrimaryTrack(trackNameAsEnum);
+        }
+
+        /// <summary>
         /// Wait for a particular game state. Supported states are:
-        /// 
+        ///
         /// ReachedTarget - waits for the actor to have reached their move target
-        /// 
+        ///
         /// </summary>
         /// <param name="args">[Actor] [State]</param>
         void WaitFor(string[] args)
@@ -633,7 +695,7 @@ namespace WizardsCode.Ink
             while (m_Story.canContinue && !IsWaitingFor)
             {
                 line = m_Story.Continue();
-                
+
                 // Process Directions;
                 int cmdIdx = line.IndexOf(">>>");
                 if (cmdIdx >= 0)
@@ -679,6 +741,9 @@ namespace WizardsCode.Ink
                         case Direction.Music:
                             Music(args);
                             break;
+                        case Direction.SetPrimaryBlendedMusicTrack:
+                            SetPrimaryBlendedMusicTrack(args);
+                            break;
                         case Direction.WaitFor:
                             WaitFor(args);
                             break;
@@ -686,16 +751,33 @@ namespace WizardsCode.Ink
                             Debug.LogError("Unknown Direction: " + line);
                             break;
                     }
-                } else
+                }
+                // is it dialogue?
+                else if (Regex.IsMatch(line, "^(\\w*:)|^(\\w*\\s\\w*:)", RegexOptions.IgnoreCase))
                 {
+                    // regex above will match "Bestie: hi" or "Bus Driver: sit down!", and "techie:nice camera". warning: only allows a single space!
+                    int indexOfColon = line.IndexOf(":");
+                    m_CurrentSpeakerName = line.Substring(0, indexOfColon).Trim();
+                    m_NewStoryText.Clear();
+                    m_NewStoryText.Append(line.Substring(indexOfColon + 1).Trim());
+
+                    // require player input to continue, unless a choice pops up
+                    m_WaitingForState = "PlayerInput";
+                }
+                // interpret it as narration or descriptive text
+                else
+                {
+                    m_NewStoryText.Clear();
+                    m_CurrentSpeakerName = "";
                     m_NewStoryText.AppendLine(line);
                 }
 
                 // Process Tags
-                List<string> tags = m_Story.currentTags;
-                for (int i = 0; i < tags.Count; i++)
-                {
-                }
+                // currently unused
+                // List<string> tags = m_Story.currentTags;
+                // for (int i = 0; i < tags.Count; i++)
+                // {
+                // }
             }
 
             m_IsUIDirty = true;
@@ -709,7 +791,7 @@ namespace WizardsCode.Ink
             {
                 SetPlayerControl(true);
                 //TODO At present there we need to set a DONE divert in the story which is less than ideal since it means the writers can't use the Inky test tools: asked for guidance at https://discordapp.com/channels/329929050866843648/329929390358265857/818370835177275392
-                
+
             }
             else
             {

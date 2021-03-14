@@ -1,4 +1,4 @@
-INCLUDE Prologue
+INCLUDE Prologue.ink
 
 
 //likability
