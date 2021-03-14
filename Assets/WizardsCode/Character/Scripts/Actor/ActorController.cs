@@ -122,6 +122,7 @@ namespace WizardsCode.Character
             set
             {
                 m_Agent.SetDestination(value);
+                m_State = States.Moving;
             }
         }
 
@@ -197,7 +198,7 @@ namespace WizardsCode.Character
         }
 
         /// <summary>
-        /// Set the current state of the actor and make any animation callbacks
+        /// if appropriate update the current state of the actor and make any animation callbacks
         /// necessary.
         /// </summary>
         private void ManageState()

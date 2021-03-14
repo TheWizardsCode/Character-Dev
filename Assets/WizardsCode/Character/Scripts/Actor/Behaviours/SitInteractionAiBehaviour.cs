@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using WizardsCode.Character;
+using UnityEditor;
 
 namespace WizardsCode.Character
 {
