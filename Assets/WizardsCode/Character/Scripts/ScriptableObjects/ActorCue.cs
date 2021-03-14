@@ -26,7 +26,7 @@ namespace WizardsCode.Character
         [Header("Animation Layers")]
         [SerializeField, Tooltip("The name of the layer to control the weight of. An emptry field means the layer weight has no effect.")]
         string m_LayerName = "";
-        [SerializeField, Tooltip("The weight of the layer")]
+        [SerializeField, Range(0f, 1), Tooltip("The weight of the layer")]
         float m_LayerWeight = 1;
         [SerializeField, Range(0.1f, 20), Tooltip("The speed at which we will change fromt he current layer weight to the new layer weight. Larger is faster.")]
         float m_LayerChangeSpeed = 5;
@@ -48,7 +48,9 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("Tha name of the animation clip to play.")]
         public string animationClipName;
         [SerializeField, Tooltip("The layer on which the animation clip resides.")]
-        public int animationLayer;
+        public string animationClipLayer;
+        [SerializeField, Range(0f, 1), Tooltip("The weight of the layer")]
+        float animationClipLayerWeight = 1;
         [SerializeField, Tooltip("The normalized time from which to start the animation.")]
         public float animationNormalizedTime = 0;
 
@@ -167,7 +169,13 @@ namespace WizardsCode.Character
         {
             if (!string.IsNullOrWhiteSpace(animationClipName))
             {
-                m_Actor.Animator.Play(animationClipName, animationLayer, animationNormalizedTime);
+                int animationLayerIdx = -1;
+                if (!string.IsNullOrWhiteSpace(animationClipLayer))
+                {
+                    animationLayerIdx = m_Actor.Animator.GetLayerIndex(animationClipLayer);
+                }
+                m_Actor.Animator.SetLayerWeight(animationLayerIdx, animationClipLayerWeight);
+                m_Actor.Animator.Play(animationClipName, animationLayerIdx, animationNormalizedTime);
             }
         }
 

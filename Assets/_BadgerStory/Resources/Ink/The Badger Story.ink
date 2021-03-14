@@ -35,9 +35,10 @@
     >>> WaitFor: 4
     
     >>> Camera: CloseupCam, Player, Neo_Head
-    >>> WaitFor: 4
-    
-    >>> Action: Player, TakePhoto
+    >>> WaitFor: 2
+    >>> Cue: Player, TakePhoto - Start
+    >>> WaitFor: 3.5
+    >>> Cue: Player, ExaminePhoto - Start
     >>> SetEmotion: Player, Pleasure, 0.8
     >>> AnimationParam: Player, Emote
 
