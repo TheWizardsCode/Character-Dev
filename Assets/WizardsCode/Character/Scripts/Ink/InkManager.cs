@@ -12,20 +12,22 @@ using static WizardsCode.Character.EmotionalState;
 using WizardsCode.Stats;
 using Cinemachine;
 using System.Globalization;
+using UnityEngine.Serialization;
+using WizardsCode.Character.Scripts.Ink;
 
 namespace WizardsCode.Ink
 {
     public class InkManager : AbstractSingleton<InkManager>
     {
-        enum Direction { 
+        enum Direction {
             Unkown,
-            Cue, 
-            TurnToFace, 
-            PlayerControl, 
-            MoveTo, 
-            SetEmotion, 
-            Action, 
-            StopMoving, 
+            Cue,
+            TurnToFace,
+            PlayerControl,
+            MoveTo,
+            SetEmotion,
+            Action,
+            StopMoving,
             AnimationParam,
             Camera,
             Music,
@@ -64,6 +66,9 @@ namespace WizardsCode.Ink
         [SerializeField, Tooltip("Story choice button")]
         Button m_ChoiceButtonPrefab;
 
+        [SerializeField, Tooltip("dialogue bubble comp reference.")]
+        TextBubbleComp m_TextBubbleComp;
+
         Story m_Story;
         bool m_IsUIDirty = false;
         StringBuilder m_NewStoryText = new StringBuilder();
@@ -75,8 +80,8 @@ namespace WizardsCode.Ink
         private bool m_IsDisplayingUI = false;
         internal bool IsDisplayingUI
         {
-            get { return m_IsDisplayingUI; } 
-            set { 
+            get { return m_IsDisplayingUI; }
+            set {
                 m_IsDisplayingUI = value;
                 m_IsUIDirty = value;
             }
@@ -91,11 +96,16 @@ namespace WizardsCode.Ink
             {
                 return GetPartyNoticability();
             });
+
+            if (m_TextBubbleComp == null)
+            {
+                Debug.LogError("m_TextBubbleComp reference is null. Make sure to add the prefab and drag the reference in within the editor!");
+            }
         }
 
         /// <summary>
         /// Return a float value between 0 and 1 indicating how likely the party is to be noticed.
-        /// 0 means will not be noticed, 1 means will be noticed. 
+        /// 0 means will not be noticed, 1 means will be noticed.
         /// </summary>
         /// <returns>a % chance of being noticed</returns>
         float GetPartyNoticability()
@@ -227,6 +237,7 @@ namespace WizardsCode.Ink
                 }
             } else
             {
+                m_TextBubbleComp.ShowWidget(false);
                 textPanel.gameObject.SetActive(false);
                 choicesPanel.gameObject.SetActive(false);
             }
@@ -242,6 +253,8 @@ namespace WizardsCode.Ink
             for (int i = 0; i < choicesPanel.transform.childCount; i++) {
                 Destroy(choicesPanel.transform.GetChild(i).gameObject);
             }
+
+            m_TextBubbleComp.ClearText();
         }
 
         private void UpdateGUI()
@@ -249,9 +262,10 @@ namespace WizardsCode.Ink
             EraseUI();
 
             textPanel.gameObject.SetActive(true);
-            TextMeshProUGUI chunkText = Instantiate(m_StoryChunkPrefab) as TextMeshProUGUI;
-            chunkText.text = m_NewStoryText.ToString();
-            chunkText.transform.SetParent(textPanel.transform, false);
+
+            // todo - format the ink files to make the speaker name obvious
+            // todo - format the ink to make it obvious whether its dialogue
+            m_TextBubbleComp.SetText("name", m_NewStoryText.ToString(), true);
 
             for (int i = 0; i < m_Story.currentChoices.Count; i++)
             {
@@ -321,7 +335,7 @@ namespace WizardsCode.Ink
 
         /// <summary>
         /// The SetEmotion direction looks for a defined emotion on an character and sets it if found.
-        /// 
+        ///
         /// </summary>
         /// <param name="args">[ActorName], [EmotionName], [Float]</param>
         void SetEmotion(string[] args)
@@ -347,7 +361,7 @@ namespace WizardsCode.Ink
         /// Tell an actor to prioritize a particular behaviour. Under normal circumstances
         /// this behaviour will be executed as soon as possible, as long as the necessary
         /// preconditions have been met and no higher priority item exists.
-        /// 
+        ///
         /// </summary>
         /// <param name="args">[ActorName], [BehaviourName]</param>
         void Action(string[] args)
@@ -364,7 +378,7 @@ namespace WizardsCode.Ink
 
         /// <summary>
         /// Tell an actor to stop moving immediately.
-        /// 
+        ///
         /// </summary>
         /// <param name="args">[ActorName]</param>
         void StopMoving(string[] args)
@@ -380,7 +394,7 @@ namespace WizardsCode.Ink
 
         /// <summary>
         /// Set an animation parameter on an actor.
-        /// 
+        ///
         /// </summary>
         /// <param name="args">[ActorName] [ParameterName] [Value] - if Value is missing it is assumed that the parameter is a trigger</param>
         void AnimationParam(string[] args)
@@ -416,7 +430,7 @@ namespace WizardsCode.Ink
 
         /// <summary>
         /// Switch to a specific camera and optionally look at a named object.
-        /// 
+        ///
         /// </summary>
         /// <param name="args">[CameraName] [TargetName] - if TargetName is missing it is assumed that the camera is already setup correctly</param>
         void Camera(string[] args)
@@ -446,8 +460,8 @@ namespace WizardsCode.Ink
                         {
                             newCamera.Follow = objectName;
                             newCamera.LookAt = objectName;
-                        } 
-                        else 
+                        }
+                        else
                         {
                             Transform childObject = FindChild(objectName, args[2].Trim());
                             if (childObject)
@@ -471,7 +485,7 @@ namespace WizardsCode.Ink
         /// <summary>
         /// Play a specified music track. The tracks requested should be saved in
         /// `/Resources/Music/TEMP.STYLE.mp3`
-        /// 
+        ///
         /// </summary>
         /// <param name="args">[Tempo] [Style]</param>
         void Music(string[] args)
@@ -497,9 +511,9 @@ namespace WizardsCode.Ink
 
         /// <summary>
         /// Wait for a particular game state. Supported states are:
-        /// 
+        ///
         /// ReachedTarget - waits for the actor to have reached their move target
-        /// 
+        ///
         /// </summary>
         /// <param name="args">[Actor] [State]</param>
         void WaitFor(string[] args)
@@ -633,7 +647,7 @@ namespace WizardsCode.Ink
             while (m_Story.canContinue && !IsWaitingFor)
             {
                 line = m_Story.Continue();
-                
+
                 // Process Directions;
                 int cmdIdx = line.IndexOf(">>>");
                 if (cmdIdx >= 0)
@@ -709,7 +723,7 @@ namespace WizardsCode.Ink
             {
                 SetPlayerControl(true);
                 //TODO At present there we need to set a DONE divert in the story which is less than ideal since it means the writers can't use the Inky test tools: asked for guidance at https://discordapp.com/channels/329929050866843648/329929390358265857/818370835177275392
-                
+
             }
             else
             {
