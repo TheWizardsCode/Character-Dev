@@ -33,6 +33,8 @@ namespace WizardsCode.Character
         int m_MaxInteractors = 1;
         [SerializeField, Tooltip("The set of character stats and the influence to apply to them when a character interacts with the object.")]
         internal StatInfluence[] m_CharacterInfluences;
+        [SerializeField, Tooltip("The position an actor should be in to interact with this interactable. Both the rotation and the position will be respected.")]
+        Transform m_InteractionPoint;
 
         [SerializeField, Tooltip("If the actor stays within the trigger area can they get a new influencer after the duration + cooldown has expired?")]
         bool m_IsRepeating = false;
@@ -52,6 +54,24 @@ namespace WizardsCode.Character
         StatsTracker m_StatsTracker;
         private Dictionary<Brain, float> m_TimeOfLastInfluence = new Dictionary<Brain, float>();
         private List<StatsTracker> m_ActiveInteractors = new List<StatsTracker>();
+
+        /// <summary>
+        /// Get the position and rotation that an Actor should take in order to
+        /// interact with this interactable;
+        /// </summary>
+        public Transform interactionPoint
+        {
+            get
+            {
+                if (m_InteractionPoint != null)
+                {
+                    return m_InteractionPoint;
+                } else
+                {
+                    return transform;
+                }
+            }
+        }
 
         /// <summary>
         /// Get the StatInfluences that act upon a character interacting with this item.
@@ -180,13 +200,20 @@ namespace WizardsCode.Character
 
         /// <summary>
         /// Tests to see if the interactable has space in the reservation queue 
-        /// for this actor.
+        /// for this actor, or has an existing reservation for it.
         /// </summary>
         /// <param name="brain"></param>
         /// <returns></returns>
         public bool HasSpaceFor(Brain brain)
         {
-            return m_MaxInteractors > m_ActiveInteractors.Count + m_Reservations.Count; 
+            bool hasSpace = m_MaxInteractors > m_ActiveInteractors.Count + m_Reservations.Count; 
+            if (hasSpace)
+            {
+                return true;
+            } else
+            {
+                return m_Reservations.Contains(brain);
+            }
         }
 
         internal bool HasRequiredObjectStats()

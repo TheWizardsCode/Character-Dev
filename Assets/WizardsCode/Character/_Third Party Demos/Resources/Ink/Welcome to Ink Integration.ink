@@ -35,6 +35,8 @@ Actions are handled by direction in the narrative. An direction takes the follow
 * Cue -> Cue
 * MoveTo -> MoveTo
 * Camera -> Camera
+* Behaviour -> Behaviour
+* WaitFor -> WaitFor
 * Home -> Top_Knot
 
 = Cue
@@ -115,12 +117,18 @@ Set animator parameter on a given actor to a given value. If the parameter is a 
 
 -> Top_Knot
 
+= Behaviour
+
+Fire a behaviour on the actor with the name and an optional interactable the behaviour will be carried out with.
+
+`>>> Behaviour: [ActorName], [BehaviourName], [InteractableName]
+
+-> Top_Knot
+
 TODO: Document >>> TurnToFace: ActorName, Object - Turn the actor to face the target and place the LookAt transform on the objeect. If Object is set to "Nothing" then the actor will look directly ahead of themselves.
 
 
 TODO: Document >>> PlayerControl: On | Off (Gives the player control over the main character, prevents the story proceeding until the player trips a trigger or interacts with something)
-
-TODO: Document >>> Behaviour: [ActorName], [ActionName] (Fire a behaviour on the actor with the name and an optional target (not all actions require a target)
 
 TODO: Document `>>> StopMoving: ActorName` Stop all movement.
 

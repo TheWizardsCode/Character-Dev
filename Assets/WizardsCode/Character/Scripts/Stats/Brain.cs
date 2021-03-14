@@ -324,7 +324,7 @@ namespace WizardsCode.Stats {
                     } else
                     {
                         ActiveBlockingBehaviour.IsExecuting = true;
-                        // Don't start the behaviour since we need the interactable to trigger the start.
+                        // Don't start the behaviour since we need the interactable to trigger the start upon arrival.
                     }
                 }
                 else

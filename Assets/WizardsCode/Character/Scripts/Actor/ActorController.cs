@@ -44,10 +44,6 @@ namespace WizardsCode.Character
         float m_LookAtHeatTime = 0.2f;
         [SerializeField, Tooltip("The time it takes for the look IK rig to cool after reaching the correct look angle.")]
         float m_LookAtCoolTime = 0.2f;
-
-        [Header("Interaction Offsets")]
-        [SerializeField, Tooltip("An offset applied to the position of the character when they sit.")]
-        float sittingOffset = 0.25f;
         #endregion
 
         #region Public
@@ -97,25 +93,6 @@ namespace WizardsCode.Character
         }
 
         #region Actions
-        public void Sit(Transform sitPosition)
-        {
-            MoveTo(sitPosition.position, () =>
-            {
-                TurnTo(sitPosition.rotation);
-            },
-            () =>
-            {
-                Vector3 pos = sitPosition.position;
-                pos.z -= sittingOffset; // slide back in the chair a little
-                MoveTo(pos, null, null, () =>
-                {
-                    isFootIKActive = true;
-                    m_Animator.SetBool("Sitting", true);
-                });
-            },
-            null);
-        }
-
         /// <summary>
         /// Instruct the character to move to a defined positiion and, optionally, 
         /// make callbacks at various points in the process.
@@ -131,13 +108,13 @@ namespace WizardsCode.Character
             onStationary = stationaryCallback;
             MoveTargetPosition = position;
         }
-        #endregion
-
-        private void TurnTo(Quaternion rotation)
+        
+        internal void TurnTo(Quaternion rotation)
         {
             desiredRotation = rotation;
             isRotating = true;
         }
+        #endregion
 
         internal Vector3 MoveTargetPosition
         {
