@@ -264,12 +264,17 @@ namespace WizardsCode.Stats {
                         continue;
                     }
                 }
-                
-                if (m_AvailableBehaviours[i].IsAvailable)
+
+                if (m_AvailableBehaviours[i].DisplayName == m_RequestedBehaviour)
+                { 
+                    m_AvailableBehaviours[i].isPrioritized = true;
+                }
+
+                if (m_AvailableBehaviours[i].isPrioritized |  m_AvailableBehaviours[i].IsAvailable)
                 {
                     log.AppendLine("## Weight");
                     currentWeight = m_AvailableBehaviours[i].Weight(this); 
-                    if (m_AvailableBehaviours[i].DisplayName == m_RequestedBehaviour)
+                    if (m_AvailableBehaviours[i].isPrioritized)
                     {
                         log.Append(m_RequestedBehaviour);
                         log.AppendLine(" requested by the game engine, giving it a higher weight.");
@@ -343,10 +348,8 @@ namespace WizardsCode.Stats {
 
             if (candidateBehaviour.DisplayName == m_RequestedBehaviour)
             {
-                //TODO we should probably time out the requested behaviour. That is if it has not been carried out within x seconds foprget it
                 m_RequestedBehaviour = "";
             }
-
 
             log.Insert(0, "\n");
             // Note this section is inserted in reverse as we want it at the start of the string.

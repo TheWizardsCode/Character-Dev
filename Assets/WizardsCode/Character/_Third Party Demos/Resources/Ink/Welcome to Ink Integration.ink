@@ -35,7 +35,7 @@ Actions are handled by direction in the narrative. An direction takes the follow
 * Cue -> Cue
 * MoveTo -> MoveTo
 * Camera -> Camera
-* Behaviour -> Behaviour
+* Action -> Action
 * WaitFor -> WaitFor
 * Home -> Top_Knot
 
@@ -117,11 +117,11 @@ Set animator parameter on a given actor to a given value. If the parameter is a 
 
 -> Top_Knot
 
-= Behaviour
+= Action
 
 Fire a behaviour on the actor with the name and an optional interactable the behaviour will be carried out with.
 
-`>>> Behaviour: [ActorName], [BehaviourName], [InteractableName]
+`>>> Action: [ActorName], [BehaviourName], [InteractableName]
 
 -> Top_Knot
 

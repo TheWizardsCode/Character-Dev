@@ -144,6 +144,11 @@ namespace WizardsCode.Character
         }
 
         /// <summary>
+        /// If true then this behaviour will be prioritized until such a time as it is executed.
+        /// </summary>
+        internal bool isPrioritized { get; set; }
+
+        /// <summary>
         /// Tests to see if this behaviour is availble to be executed. That is are the necessary preconditions
         /// met.
         /// </summary>
@@ -151,12 +156,14 @@ namespace WizardsCode.Character
         {
             get
             {
-                if (Time.timeSinceLevelLoad < m_NextRetryTime) return false;
+                if (!isPrioritized && Time.timeSinceLevelLoad < m_NextRetryTime) return false;
                 m_NextRetryTime = Time.timeSinceLevelLoad + m_RetryFrequency;
 
                 reasoning.Clear();
 
-                if (CheckWorldState() && CheckCharacteHasRequiredStats() && CheckSenses())
+                if (isPrioritized || (CheckWorldState() 
+                    && CheckCharacteHasRequiredStats() 
+                    && CheckSenses()))
                 {
                     return true;
                 } else
@@ -301,6 +308,7 @@ namespace WizardsCode.Character
         /// </summary>
         internal virtual void StartBehaviour(float duration)
         {
+            isPrioritized = false;
             IsExecuting = true;
             EndTime = Time.timeSinceLevelLoad + duration;
             AddCharacterInfluencers(duration);
