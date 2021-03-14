@@ -93,9 +93,9 @@ The SetEmotion direction takes the following form:
 
 = Camera
 
-Switch to the named camera and set the camera look at parameter to the the named object. If the `LookAtObject` is not present then no chage to the LookAt parameter of the camera will be made.
+`>>> Camera: [CameraName], [ObjectParent], [ChildObjectName optional]`
 
-`>>> Camera: [CameraName], [LookAtObject]`
+Switch to the named camera and set the camera Follow and LookAt parameters to the  ChildObjectName found under the ObjectParent. If ChildObjectName is not present then the Object Parent is used. If the `ObjectParent` is not present then no change to the Target parameter of the camera will be made. 
 
 -> Top_Knot
 

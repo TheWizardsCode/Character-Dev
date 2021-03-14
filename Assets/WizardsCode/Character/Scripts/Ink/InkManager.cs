@@ -421,27 +421,50 @@ namespace WizardsCode.Ink
         /// <param name="args">[CameraName] [TargetName] - if TargetName is missing it is assumed that the camera is already setup correctly</param>
         void Camera(string[] args)
         {
-            if (!ValidateArgumentCount(Direction.Camera, args, 1, 2))
+            if (!ValidateArgumentCount(Direction.Camera, args, 1, 3))
             {
                 return;
             }
 
             CinemachineVirtualCamera newCamera;
-            Transform t = FindTarget(args[0].Trim());
-            if (t)
+            Transform camera = FindTarget(args[0].Trim());
+            if (camera)
             {
-                newCamera = t.gameObject.GetComponent<CinemachineVirtualCamera>();
-                cinemachine.ActiveVirtualCamera.Priority = 1;
-                newCamera.Priority = 99;
+                newCamera = camera.gameObject.GetComponent<CinemachineVirtualCamera>();
+                if (cinemachine.ActiveVirtualCamera != (ICinemachineCamera)newCamera) {
+                    cinemachine.ActiveVirtualCamera.Priority = 1;
+                    newCamera.Priority = 99;
+                }
 
-                if (args.Length == 2)
+                Transform objectName;
+                if (args.Length >= 2)
                 {
-                    t = FindTarget(args[1].Trim());
-                    if (t)
+                    objectName = FindTarget(args[1].Trim());
+                    if (objectName)
                     {
-                        newCamera.LookAt = t;
+                        if (args.Length == 2)
+                        {
+                            newCamera.Follow = objectName;
+                            newCamera.LookAt = objectName;
+                        } 
+                        else 
+                        {
+                            Transform childObject = FindChild(objectName, args[2].Trim());
+                            if (childObject)
+                            {
+                                newCamera.Follow = childObject;
+                                newCamera.LookAt = childObject;
+                            } else
+                            {
+                                newCamera.Follow = objectName;
+                                newCamera.LookAt = objectName;
+                            }
+                        }
                     }
                 }
+            } else
+            {
+                Debug.LogError("Direction to switch to camera that could not be found: " + args[1].Trim());
             }
         }
 
@@ -697,6 +720,26 @@ namespace WizardsCode.Ink
         internal void SetPlayerControl(bool value)
         {
             IsDisplayingUI = !value;
+        }
+
+        /// <summary>
+        /// Searches recursively for a child.
+        /// </summary>
+        /// <param name="name">The name of the child to search for.</param>
+        /// <returns>The transform of the child object with the given name, if it exists, otherwise null.</returns>
+        public Transform FindChild(Transform parent, string name)
+        {
+            Transform[] transforms = parent.gameObject.GetComponentsInChildren<Transform>();
+
+            for (int i = 0; i < transforms.Length; i++)
+            {
+                if (transforms[i].gameObject.name == name)
+                {
+                    return transforms[i];
+                }
+            }
+
+            return null;
         }
 
         bool ValidateArgumentCount(Direction direction, string[] args, int minRequiredCount, int maxRequiredCount = 0)
