@@ -57,12 +57,8 @@ namespace WizardsCode.Ink
         LayerMask m_PartyLayerMask;
 
         [Header("UI")]
-        [SerializeField, Tooltip("The panel on which to display the text in the story.")]
-        RectTransform textPanel;
         [SerializeField, Tooltip("The panel on which to display the choice buttons in the story.")]
         RectTransform choicesPanel;
-        [SerializeField, Tooltip("Story chunk prefab for creation when we want to display a story chunk.")]
-        TextMeshProUGUI m_StoryChunkPrefab;
         [SerializeField, Tooltip("Story choice button")]
         Button m_ChoiceButtonPrefab;
 
@@ -238,18 +234,12 @@ namespace WizardsCode.Ink
             } else
             {
                 m_TextBubbleComp.ShowWidget(false);
-                textPanel.gameObject.SetActive(false);
                 choicesPanel.gameObject.SetActive(false);
             }
         }
 
         private void EraseUI()
         {
-            for (int i = 0; i < textPanel.transform.childCount; i++)
-            {
-                Destroy(textPanel.transform.GetChild(i).gameObject);
-            }
-
             for (int i = 0; i < choicesPanel.transform.childCount; i++) {
                 Destroy(choicesPanel.transform.GetChild(i).gameObject);
             }
@@ -260,8 +250,6 @@ namespace WizardsCode.Ink
         private void UpdateGUI()
         {
             EraseUI();
-
-            textPanel.gameObject.SetActive(true);
 
             // todo - format the ink files to make the speaker name obvious
             // todo - format the ink to make it obvious whether its dialogue
