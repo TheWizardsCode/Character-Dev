@@ -12,23 +12,25 @@ using static WizardsCode.Character.EmotionalState;
 using WizardsCode.Stats;
 using Cinemachine;
 using System.Globalization;
+using UnityEngine.Serialization;
 
 namespace WizardsCode.Ink
 {
     public class InkManager : AbstractSingleton<InkManager>
     {
-        enum Direction { 
+        enum Direction {
             Unkown,
-            Cue, 
-            TurnToFace, 
-            PlayerControl, 
-            MoveTo, 
-            SetEmotion, 
-            Action, 
-            StopMoving, 
+            Cue,
+            TurnToFace,
+            PlayerControl,
+            MoveTo,
+            SetEmotion,
+            Action,
+            StopMoving,
             AnimationParam,
             Camera,
             Music,
+            SetPrimaryBlendedMusicTrack,
             WaitFor
         }
 
@@ -47,6 +49,9 @@ namespace WizardsCode.Ink
         CinemachineBrain cinemachine;
         [SerializeField, Tooltip("The audio source for music playback.")]
         AudioSource m_MusicAudioSource;
+
+        [SerializeField, Tooltip("The audio source for music playback.")]
+        GlobalMusicComp m_GlobalMusicComp;
 
         [Header("Actor Setup")]
         [SerializeField, Tooltip("The name of the player object.")]
@@ -75,8 +80,8 @@ namespace WizardsCode.Ink
         private bool m_IsDisplayingUI = false;
         internal bool IsDisplayingUI
         {
-            get { return m_IsDisplayingUI; } 
-            set { 
+            get { return m_IsDisplayingUI; }
+            set {
                 m_IsDisplayingUI = value;
                 m_IsUIDirty = value;
             }
@@ -91,11 +96,17 @@ namespace WizardsCode.Ink
             {
                 return GetPartyNoticability();
             });
+
+            if (m_GlobalMusicComp == null)
+            {
+                Debug.LogError("m_GlobalMusicComp is null");
+                return;
+            }
         }
 
         /// <summary>
         /// Return a float value between 0 and 1 indicating how likely the party is to be noticed.
-        /// 0 means will not be noticed, 1 means will be noticed. 
+        /// 0 means will not be noticed, 1 means will be noticed.
         /// </summary>
         /// <returns>a % chance of being noticed</returns>
         float GetPartyNoticability()
@@ -321,7 +332,7 @@ namespace WizardsCode.Ink
 
         /// <summary>
         /// The SetEmotion direction looks for a defined emotion on an character and sets it if found.
-        /// 
+        ///
         /// </summary>
         /// <param name="args">[ActorName], [EmotionName], [Float]</param>
         void SetEmotion(string[] args)
@@ -347,7 +358,7 @@ namespace WizardsCode.Ink
         /// Tell an actor to prioritize a particular behaviour. Under normal circumstances
         /// this behaviour will be executed as soon as possible, as long as the necessary
         /// preconditions have been met and no higher priority item exists.
-        /// 
+        ///
         /// </summary>
         /// <param name="args">[ActorName], [BehaviourName]</param>
         void Action(string[] args)
@@ -364,7 +375,7 @@ namespace WizardsCode.Ink
 
         /// <summary>
         /// Tell an actor to stop moving immediately.
-        /// 
+        ///
         /// </summary>
         /// <param name="args">[ActorName]</param>
         void StopMoving(string[] args)
@@ -380,7 +391,7 @@ namespace WizardsCode.Ink
 
         /// <summary>
         /// Set an animation parameter on an actor.
-        /// 
+        ///
         /// </summary>
         /// <param name="args">[ActorName] [ParameterName] [Value] - if Value is missing it is assumed that the parameter is a trigger</param>
         void AnimationParam(string[] args)
@@ -416,7 +427,7 @@ namespace WizardsCode.Ink
 
         /// <summary>
         /// Switch to a specific camera and optionally look at a named object.
-        /// 
+        ///
         /// </summary>
         /// <param name="args">[CameraName] [TargetName] - if TargetName is missing it is assumed that the camera is already setup correctly</param>
         void Camera(string[] args)
@@ -446,8 +457,8 @@ namespace WizardsCode.Ink
                         {
                             newCamera.Follow = objectName;
                             newCamera.LookAt = objectName;
-                        } 
-                        else 
+                        }
+                        else
                         {
                             Transform childObject = FindChild(objectName, args[2].Trim());
                             if (childObject)
@@ -471,7 +482,7 @@ namespace WizardsCode.Ink
         /// <summary>
         /// Play a specified music track. The tracks requested should be saved in
         /// `/Resources/Music/TEMP.STYLE.mp3`
-        /// 
+        ///
         /// </summary>
         /// <param name="args">[Tempo] [Style]</param>
         void Music(string[] args)
@@ -496,10 +507,51 @@ namespace WizardsCode.Ink
         }
 
         /// <summary>
+        /// Play a specified music track, identified by name. The tracks
+        /// are blended reactively
+        ///
+        /// </summary>
+        /// <param name="args">[Tempo] [Style]</param>
+        void SetPrimaryBlendedMusicTrack(string[] args)
+        {
+            if (!ValidateArgumentCount(Direction.Music, args, 1))
+            {
+                return;
+            }
+
+            if (m_GlobalMusicComp == null) return;
+
+            string trackAsString = args[0].Trim();
+            EMusicTrackName trackNameAsEnum;
+            // convert string to enum
+            switch (trackAsString)
+            {
+            case "Main":
+                trackNameAsEnum = EMusicTrackName.MTN_Main;
+                Debug.LogWarning("main track is always playing. Perhaps you meant another track?");
+                break;
+            case "Fun":
+                trackNameAsEnum = EMusicTrackName.MTN_Fun;
+                break;
+            case "Investigation":
+                trackNameAsEnum = EMusicTrackName.MTN_Investigation;
+                break;
+            case "Suspense":
+                trackNameAsEnum = EMusicTrackName.MTN_Suspense;
+                break;
+            default:
+                Debug.LogError("Direction to play music track cannot be satisfied: " + trackAsString);
+                return;
+            }
+
+            m_GlobalMusicComp.SetPrimaryTrack(trackNameAsEnum);
+        }
+
+        /// <summary>
         /// Wait for a particular game state. Supported states are:
-        /// 
+        ///
         /// ReachedTarget - waits for the actor to have reached their move target
-        /// 
+        ///
         /// </summary>
         /// <param name="args">[Actor] [State]</param>
         void WaitFor(string[] args)
@@ -633,7 +685,7 @@ namespace WizardsCode.Ink
             while (m_Story.canContinue && !IsWaitingFor)
             {
                 line = m_Story.Continue();
-                
+
                 // Process Directions;
                 int cmdIdx = line.IndexOf(">>>");
                 if (cmdIdx >= 0)
@@ -679,6 +731,9 @@ namespace WizardsCode.Ink
                         case Direction.Music:
                             Music(args);
                             break;
+                        case Direction.SetPrimaryBlendedMusicTrack:
+                            SetPrimaryBlendedMusicTrack(args);
+                            break;
                         case Direction.WaitFor:
                             WaitFor(args);
                             break;
@@ -709,7 +764,7 @@ namespace WizardsCode.Ink
             {
                 SetPlayerControl(true);
                 //TODO At present there we need to set a DONE divert in the story which is less than ideal since it means the writers can't use the Inky test tools: asked for guidance at https://discordapp.com/channels/329929050866843648/329929390358265857/818370835177275392
-                
+
             }
             else
             {
