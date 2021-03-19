@@ -22,22 +22,27 @@
     >>> Camera: CloseupCam, Stan, Neo_Head
     >>> WaitFor: 4
     
-    >>> Camera: CloseupCam, Techie, Neo_Head
-    >>> WaitFor: 4
-    
-    >>> Camera: CloseupCam, HallMonitor, Neo_Head
-    >>> WaitFor: 4
-    
     >>> Camera: CloseupCam, Rival, Neo_Head
     >>> WaitFor: 4
     
     >>> Camera: CloseupCam, Enemy, Neo_Head
     >>> WaitFor: 4
     
-    >>> Camera: CloseupCam, Player, Neo_Head
+    >>> Camera: CloseupCam, Techie, Neo_Head
+    >>> WaitFor: 4
+    
+    >>> Camera: CloseupCam, HallMonitor, Neo_Head
+    >>> WaitFor: 4
+    
+    >>> Camera: PlayerCam
     >>> WaitFor: 2
+    >>> MoveTo: Player, Take Photo Mark
+    >>> TurnToFace: Player, Rival
+    >>> WaitFor: Player, ReachedTarget
+    
     >>> Cue: Player, TakePhoto - Start
     >>> WaitFor: 3.5
+    >>> TurnToFace: Player, Nothing
     >>> Cue: Player, ExaminePhoto - Start
     >>> SetEmotion: Player, Pleasure, 0.8
     >>> AnimationParam: Player, Emote
