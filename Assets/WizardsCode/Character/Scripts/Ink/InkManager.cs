@@ -13,6 +13,7 @@ using WizardsCode.Stats;
 using Cinemachine;
 using System.Globalization;
 using UnityEngine.Serialization;
+
 using WizardsCode.Character.Scripts.Ink;
 
 namespace WizardsCode.Ink
@@ -31,6 +32,7 @@ namespace WizardsCode.Ink
             AnimationParam,
             Camera,
             Music,
+            SetPrimaryBlendedMusicTrack,
             WaitFor
         }
 
@@ -49,6 +51,9 @@ namespace WizardsCode.Ink
         CinemachineBrain cinemachine;
         [SerializeField, Tooltip("The audio source for music playback.")]
         AudioSource m_MusicAudioSource;
+
+        [SerializeField, Tooltip("The audio source for music playback.")]
+        GlobalMusicComp m_GlobalMusicComp;
 
         [Header("Actor Setup")]
         [SerializeField, Tooltip("The name of the player object.")]
@@ -96,6 +101,12 @@ namespace WizardsCode.Ink
             if (m_TextBubbleComp == null)
             {
                 Debug.LogError("m_TextBubbleComp reference is null. Make sure to add the prefab and drag the reference in within the editor!");
+            }
+
+            if (m_GlobalMusicComp == null)
+            {
+                Debug.LogError("m_GlobalMusicComp is null");
+                return;
             }
         }
 
@@ -498,6 +509,47 @@ namespace WizardsCode.Ink
         }
 
         /// <summary>
+        /// Play a specified music track, identified by name. The tracks
+        /// are blended reactively
+        ///
+        /// </summary>
+        /// <param name="args">[Tempo] [Style]</param>
+        void SetPrimaryBlendedMusicTrack(string[] args)
+        {
+            if (!ValidateArgumentCount(Direction.Music, args, 1))
+            {
+                return;
+            }
+
+            if (m_GlobalMusicComp == null) return;
+
+            string trackAsString = args[0].Trim();
+            EMusicTrackName trackNameAsEnum;
+            // convert string to enum
+            switch (trackAsString)
+            {
+            case "Main":
+                trackNameAsEnum = EMusicTrackName.MTN_Main;
+                Debug.LogWarning("main track is always playing. Perhaps you meant another track?");
+                break;
+            case "Fun":
+                trackNameAsEnum = EMusicTrackName.MTN_Fun;
+                break;
+            case "Investigation":
+                trackNameAsEnum = EMusicTrackName.MTN_Investigation;
+                break;
+            case "Suspense":
+                trackNameAsEnum = EMusicTrackName.MTN_Suspense;
+                break;
+            default:
+                Debug.LogError("Direction to play music track cannot be satisfied: " + trackAsString);
+                return;
+            }
+
+            m_GlobalMusicComp.SetPrimaryTrack(trackNameAsEnum);
+        }
+
+        /// <summary>
         /// Wait for a particular game state. Supported states are:
         ///
         /// ReachedTarget - waits for the actor to have reached their move target
@@ -680,6 +732,9 @@ namespace WizardsCode.Ink
                             break;
                         case Direction.Music:
                             Music(args);
+                            break;
+                        case Direction.SetPrimaryBlendedMusicTrack:
+                            SetPrimaryBlendedMusicTrack(args);
                             break;
                         case Direction.WaitFor:
                             WaitFor(args);
