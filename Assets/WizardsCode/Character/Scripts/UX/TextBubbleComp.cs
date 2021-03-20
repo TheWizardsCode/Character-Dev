@@ -4,7 +4,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 // todo -find a permanent home for this, it wouldn't let it be in my own directory
-namespace WizardsCode.Character.Scripts.Ink
+namespace WizardsCode.Character.Scripts.UX
 {
 
 

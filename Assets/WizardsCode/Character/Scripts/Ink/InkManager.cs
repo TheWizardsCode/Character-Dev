@@ -13,8 +13,8 @@ using WizardsCode.Stats;
 using Cinemachine;
 using System.Globalization;
 using UnityEngine.Serialization;
-
-using WizardsCode.Character.Scripts.Ink;
+using System.Text.RegularExpressions;
+using WizardsCode.Character.Scripts.UX;
 
 namespace WizardsCode.Ink
 {
@@ -73,9 +73,10 @@ namespace WizardsCode.Ink
         Story m_Story;
         bool m_IsUIDirty = false;
         StringBuilder m_NewStoryText = new StringBuilder();
+        string m_CurrentSpeakerName = "";
         bool wasWaiting = false;
         private ActorController m_WaitingForActor;
-        private string m_WaitingForState;
+        private string m_WaitingForState = "";
         private float m_WaitUntilTime = float.NegativeInfinity;
 
         private bool m_IsDisplayingUI = false;
@@ -185,11 +186,12 @@ namespace WizardsCode.Ink
         {
             get
             {
-                if (m_WaitingForActor == null && m_WaitUntilTime < 0)
+                if (m_WaitingForActor == null && m_WaitUntilTime < 0 && m_WaitingForState == "")
                 {
                     return false;
                 }
 
+                // todo - handle the case where several waiting states are active simultaneously
                 switch (m_WaitingForState)
                 {
                     case "ReachedTarget":
@@ -212,6 +214,10 @@ namespace WizardsCode.Ink
                         {
                             return true;
                         }
+                    case "PlayerInput":
+                        return true; // as of writing, pressing space will automatically exit the waiting state
+                    case "":
+                        return false; // should never get here
                     default:
                         Debug.LogError("Direction to wait gives a unrecognized state to wait for: " + m_WaitingForState);
                         return false;
@@ -231,6 +237,11 @@ namespace WizardsCode.Ink
         {
             if (IsWaitingFor)
             {
+                if (m_WaitingForState == "PlayerInput" &&
+                        (Input.GetKeyUp(KeyCode.Space) || Input.GetMouseButtonUp(0)))
+                {
+                    ExitWaitingState();
+                }
                 return;
             }
 
@@ -262,12 +273,12 @@ namespace WizardsCode.Ink
         {
             EraseUI();
 
-            // todo - format the ink files to make the speaker name obvious
-            // todo - format the ink to make it obvious whether its dialogue
-            m_TextBubbleComp.SetText("name", m_NewStoryText.ToString(), true);
+            m_TextBubbleComp.SetText(m_CurrentSpeakerName, m_NewStoryText.ToString(), true);
 
             for (int i = 0; i < m_Story.currentChoices.Count; i++)
             {
+                if (m_WaitingForState == "PlayerInput") m_WaitingForState = "";
+
                 choicesPanel.gameObject.SetActive(true);
                 Choice choice = m_Story.currentChoices[i];
                 Button choiceButton = Instantiate(m_ChoiceButtonPrefab) as Button;
@@ -743,16 +754,33 @@ namespace WizardsCode.Ink
                             Debug.LogError("Unknown Direction: " + line);
                             break;
                     }
-                } else
+                }
+                // is it dialogue?
+                else if (Regex.IsMatch(line, "^(\\w*:)|^(\\w*\\s\\w*:)", RegexOptions.IgnoreCase))
                 {
+                    // regex above will match "Bestie: hi" or "Bus Driver: sit down!", and "techie:nice camera". warning: only allows a single space!
+                    int indexOfColon = line.IndexOf(":");
+                    m_CurrentSpeakerName = line.Substring(0, indexOfColon).Trim();
+                    m_NewStoryText.Clear();
+                    m_NewStoryText.Append(line.Substring(indexOfColon + 1).Trim());
+
+                    // require player input to continue, unless a choice pops up
+                    m_WaitingForState = "PlayerInput";
+                }
+                // interpret it as narration or descriptive text
+                else
+                {
+                    m_NewStoryText.Clear();
+                    m_CurrentSpeakerName = "";
                     m_NewStoryText.AppendLine(line);
                 }
 
                 // Process Tags
-                List<string> tags = m_Story.currentTags;
-                for (int i = 0; i < tags.Count; i++)
-                {
-                }
+                // currently unused
+                // List<string> tags = m_Story.currentTags;
+                // for (int i = 0; i < tags.Count; i++)
+                // {
+                // }
             }
 
             m_IsUIDirty = true;
