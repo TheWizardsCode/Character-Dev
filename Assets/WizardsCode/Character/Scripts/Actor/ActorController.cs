@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 using WizardsCode.Stats;
 
 namespace WizardsCode.Character
@@ -19,6 +20,12 @@ namespace WizardsCode.Character
         private string TurnParameterName = "Turn";
         [SerializeField, Tooltip("The speed of this character when at a run. It will usually be going slower than this, and for short periods, can go faster (at a spring).")]
         private float m_RunningSpeed = 8;
+        [SerializeField, Tooltip("Set to true to use a ragdoll for death animation.")]
+        bool useRagdoll = false;
+
+        [Header("Events")]
+        [SerializeField, Tooltip("An event to be fired whenever the actor dies.")]
+        UnityEvent OnDeath;
 
         private Animator m_Animator;
         private NavMeshAgent m_Agent;
@@ -26,7 +33,15 @@ namespace WizardsCode.Character
 
         internal Animator Animator
         {
-            get { return m_Animator; }
+            get
+            {
+                if (m_Animator == null)
+                {
+                    Debug.LogWarning("No animator set during start. If this error repeats then it means the character has no animator and the ActorController will not be able to do its job. If it does not repeat it is likely because the animator is being programatically configured on the character and this happens after the ActorController.Start() method is called.");
+                    m_Animator = GetComponentInChildren<Animator>();
+                }
+                return m_Animator;
+            }
         }
 
         internal Vector3 TargetPosition
@@ -44,6 +59,37 @@ namespace WizardsCode.Character
         internal void StopMoving()
         {
             m_Agent.ResetPath();
+        }
+
+        /// <summary>
+        /// Set the actor to be dead. This will stop all motion and brain activity etc.
+        /// It will also either enable the ragdoll or play a death animation.
+        /// </summary>
+        protected virtual void Die()
+        {
+            m_Agent.isStopped = true;
+            if (useRagdoll)
+            {
+                EnableRagdoll();
+            }
+            else
+            {
+                //TODO make the die parameter configurable in the UI.
+                m_Animator.SetTrigger("Die");
+            }
+            if (m_Brain != null)
+            {
+                m_Brain.enabled = false;
+            }
+            if (OnDeath != null)
+            {
+                OnDeath.Invoke();
+            }
+        }
+
+        public virtual void EnableRagdoll()
+        {
+            Debug.LogError("ActorController is set to Use Ragdoll, but it is not aware of any ragdoll to use. You should extend the ActorController to provide this functionality in EnableRagdoll.");
         }
 
         System.Collections.IEnumerator cueCoroutine;
@@ -65,7 +111,7 @@ namespace WizardsCode.Character
         {
             m_Animator = GetComponentInChildren<Animator>();
             m_Agent = GetComponent<NavMeshAgent>();
-            m_Brain = GetComponent<Brain>();
+            m_Brain = GetComponentInChildren<Brain>();
             TargetPosition = transform.position;
         }
 
@@ -78,21 +124,21 @@ namespace WizardsCode.Character
 
         protected virtual void Update()
         {
-            if (m_Animator != null && m_Agent != null)
+            if (Animator != null && m_Agent != null)
             {
                 float speed = m_Agent.desiredVelocity.magnitude / m_RunningSpeed;
                 if (speed < 0.1 || speed > 0.1)
                 {
-                    m_Animator.SetFloat(SpeedParameterName, speed);
+                    Animator.SetFloat(SpeedParameterName, speed);
                 }
                 else
                 {
-                    m_Animator.SetFloat(SpeedParameterName, 0);
+                    Animator.SetFloat(SpeedParameterName, 0);
                 }
 
                 Vector3 s = m_Agent.transform.InverseTransformDirection(m_Agent.velocity).normalized;
                 float turn = s.x;
-                m_Animator.SetFloat(TurnParameterName, turn);
+                Animator.SetFloat(TurnParameterName, turn);
             }
         }
         internal bool HasReachedTarget
@@ -106,12 +152,12 @@ namespace WizardsCode.Character
                         return true;
                     }
                 }
-                
+
                 if (!m_Agent.hasPath && !m_Agent.pathPending)
                 {
                     return true;
                 }
-                
+
                 return false;
             }
         }

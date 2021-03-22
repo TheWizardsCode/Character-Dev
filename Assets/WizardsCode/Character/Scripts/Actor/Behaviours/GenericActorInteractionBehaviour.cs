@@ -49,16 +49,16 @@ namespace WizardsCode.Character.AI
             {
                 if (Time.timeSinceLevelLoad < m_CooldownEndTime)
                 {
-                    reasoning.Clear();
-                    reasoning.AppendLine("Still on cooldown for " + this.DisplayName);
+                    //reasoning.Clear();
+                    //reasoning.AppendLine("Still on cooldown for " + this.DisplayName);
                     return false;
                 }
 
                 if (!base.IsAvailable) return false;
 
-                reasoning.Append("Maybe ");
-                reasoning.Append(DisplayName);
-                reasoning.AppendLine(" (see required senses)");
+                //reasoning.Append("Maybe ");
+                //reasoning.Append(DisplayName);
+                //reasoning.AppendLine(" (see required senses)");
                 return true;
             }
         }

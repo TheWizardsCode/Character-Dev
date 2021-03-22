@@ -87,7 +87,7 @@ namespace WizardsCode.Character
         private bool m_IsExecuting = false;
         private float m_NextRetryTime;
 
-        internal StringBuilder reasoning = new StringBuilder();
+        // internal StringBuilder //reasoning = new StringBuilder();
 
         /// <summary>
         /// Get an array of all the things that have been recently sensed
@@ -151,7 +151,7 @@ namespace WizardsCode.Character
                 if (Time.timeSinceLevelLoad < m_NextRetryTime) return false;
                 m_NextRetryTime = Time.timeSinceLevelLoad + m_RetryFrequency;
 
-                reasoning.Clear();
+                //reasoning.Clear();
 
                 if (CheckWorldState() && CheckCharacteHasRequiredStats() && CheckSenses())
                 {
@@ -173,8 +173,8 @@ namespace WizardsCode.Character
             {
                 if (!m_RequiredSenses[i].HasSensed)
                 {
-                    reasoning.Append(m_RequiredSenses[i].logName);
-                    reasoning.AppendLine(" has not sensed what it needs recently.");
+                    //reasoning.Append(m_RequiredSenses[i].logName);
+                    //reasoning.AppendLine(" has not sensed what it needs recently.");
                     return false;
                 }
             }
@@ -192,8 +192,8 @@ namespace WizardsCode.Character
             {
                 if (!m_RequiredWorldState[i].IsValid)
                 {
-                    reasoning.Append(m_RequiredWorldState[i].DisplayName);
-                    reasoning.AppendLine(" is not a valid world state.");
+                    //reasoning.Append(m_RequiredWorldState[i].DisplayName);
+                    //reasoning.AppendLine(" is not a valid world state.");
                     return false;
                 }
             }
@@ -209,10 +209,10 @@ namespace WizardsCode.Character
         {
             if (m_RequiredStats.Length == 0)
             {
-                reasoning.Append(Brain.DisplayName);
-                reasoning.Append(" has no required stats for ");
-                reasoning.Append(DisplayName);
-                reasoning.AppendLine(".");
+                //reasoning.Append(Brain.DisplayName);
+                //reasoning.Append(" has no required stats for ");
+                //reasoning.Append(DisplayName);
+                //reasoning.AppendLine(".");
                 return true;
             }
 
@@ -220,38 +220,38 @@ namespace WizardsCode.Character
             bool thisRequirementMet = false;
             for (int i = 0; i < m_RequiredStats.Length; i++)
             {
-                reasoning.Append(m_RequiredStats[i].statTemplate.DisplayName);
-                reasoning.Append(" is ");
+                //reasoning.Append(m_RequiredStats[i].statTemplate.DisplayName);
+                //reasoning.Append(" is ");
 
                 switch (m_RequiredStats[i].objective)
                 {
                     case Objective.LessThan:
                         thisRequirementMet = Brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).Value < m_RequiredStats[i].Value;
                         if (!thisRequirementMet) {
-                            reasoning.Append("in the wrong range since it is not less than ");
+                            //reasoning.Append("in the wrong range since it is not less than ");
                         }
                         break;
                     case Objective.Approximately:
                         thisRequirementMet = Mathf.Approximately(Brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).Value, m_RequiredStats[i].Value);
                         if (!thisRequirementMet)
                         {
-                            reasoning.Append("in the wrong range since it is not approximately equal to ");
+                            //reasoning.Append("in the wrong range since it is not approximately equal to ");
                         }
                         break;
                     case Objective.GreaterThan:
                         thisRequirementMet = Brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).Value > m_RequiredStats[i].Value;
                         if (!thisRequirementMet)
                         {
-                            reasoning.Append("is in the wrong range since it is not greater than ");
+                            //reasoning.Append("is in the wrong range since it is not greater than ");
                         }
                         break;
                     default:
                         Debug.LogError("Don't know how to handle an Objective of " + m_RequiredStats[i].objective);
                         thisRequirementMet = false;
-                        reasoning.Append("Error in processing " + m_RequiredStats[i] + " unrecognized objective: " + m_RequiredStats[i].objective);
+                        //reasoning.Append("Error in processing " + m_RequiredStats[i] + " unrecognized objective: " + m_RequiredStats[i].objective);
                         break;
                 }
-                reasoning.AppendLine(m_RequiredStats[i].Value.ToString());
+                //reasoning.AppendLine(m_RequiredStats[i].Value.ToString());
                 allRequirementsMet &= thisRequirementMet;
             }
 
@@ -349,9 +349,9 @@ namespace WizardsCode.Character
         {
             float weight = BaseWeight(brain) * m_WeightMultiplier;
 
-            reasoning.Append(DisplayName);
-            reasoning.Append(" total weight is ");
-            reasoning.AppendLine(weight.ToString("0.0"));
+            //reasoning.Append(DisplayName);
+            //reasoning.Append(" total weight is ");
+            //reasoning.AppendLine(weight.ToString("0.0"));
 
             return weight;
         }
@@ -371,9 +371,9 @@ namespace WizardsCode.Character
                     if (brain.UnsatisfiedDesiredStates[i].statTemplate == DesiredStateImpacts[idx].statTemplate)
                     {
                         float impact = Math.Abs(brain.UnsatisfiedDesiredStates[i].normalizedTargetValue - brain.GetStat(brain.UnsatisfiedDesiredStates[i].statTemplate).NormalizedValue);
-                        reasoning.Append("They are not ");
-                        reasoning.Append(brain.UnsatisfiedDesiredStates[i].name);
-                        reasoning.AppendLine(" and this behaviour will help.");
+                        //reasoning.Append("They are not ");
+                        //reasoning.Append(brain.UnsatisfiedDesiredStates[i].name);
+                        //reasoning.AppendLine(" and this behaviour will help.");
                         //TODO higher weight should be given to behaviours that will bring the stat into the desired state
                         weight += impact;
                     }

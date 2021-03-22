@@ -64,15 +64,15 @@ namespace WizardsCode.Character
 
                 if (CurrentInteractableTarget == null)
                 {
-                    reasoning.AppendLine("Couldn't see or recall a suitable interactable nearby, will have to find one first.");
+                    //reasoning.AppendLine("Couldn't see or recall a suitable interactable nearby, will have to find one first.");
                     return true;
                 }
                 else
                 {
-                    reasoning.Append("Maybe go to ");
-                    reasoning.Append(CurrentInteractableTarget.DisplayName);
-                    reasoning.Append(" to ");
-                    reasoning.AppendLine(DisplayName);
+                    //reasoning.Append("Maybe go to ");
+                    //reasoning.Append(CurrentInteractableTarget.DisplayName);
+                    //reasoning.Append(" to ");
+                    //reasoning.AppendLine(DisplayName);
                     return true;
                 }
             }
@@ -117,18 +117,18 @@ namespace WizardsCode.Character
                 for (int i = 0; i < memories.Length; i++)
                 {
                     interactable = memories[i].about.GetComponentInChildren<Interactable>();
-                    reasoning.Append("I remember ");
-                    reasoning.Append(interactable.DisplayName);
+                    //reasoning.Append("I remember ");
+                    //reasoning.Append(interactable.DisplayName);
 
                     //TODO if memory is of an already cached interactable we can skip
 
                     if (IsValidInteractable(interactable))
                     {
                         cachedAvailableInteractables.Add(interactable);
-                        reasoning.AppendLine(" is near here, that's a good place.");
+                        //reasoning.AppendLine(" is near here, that's a good place.");
                     } else
                     {
-                        reasoning.AppendLine(" is near here, but it's not a suitable place.");
+                        //reasoning.AppendLine(" is near here, but it's not a suitable place.");
                     }
                 }
             }
@@ -149,29 +149,29 @@ namespace WizardsCode.Character
                 return false;
             }
 
-            reasoning.Append(interactable.name);
-            reasoning.Append(" might be a good place to ");
-            reasoning.AppendLine(interactable.InteractionName);
+            //reasoning.Append(interactable.name);
+            //reasoning.Append(" might be a good place to ");
+            //reasoning.AppendLine(interactable.InteractionName);
 
             if (!interactable.HasSpaceFor(Brain))
             {
-                reasoning.AppendLine("Looks like it is full.");
+                //reasoning.AppendLine("Looks like it is full.");
                 return false;
             }
 
             if (interactable.IsOnCooldownFor(Brain))
             {
-                reasoning.AppendLine("I Went there recently, let's try somewhere different.");
+                //reasoning.AppendLine("I Went there recently, let's try somewhere different.");
                 return false;
             }
 
             if (!interactable.HasRequiredObjectStats())
             {
-                reasoning.AppendLine("Looks like they don't have what I need.");
+                //reasoning.AppendLine("Looks like they don't have what I need.");
                 return false;
             }
 
-            reasoning.AppendLine("Looks like they have space as well as what I need.");
+            //reasoning.AppendLine("Looks like they have space as well as what I need.");
             return true;
         }
 

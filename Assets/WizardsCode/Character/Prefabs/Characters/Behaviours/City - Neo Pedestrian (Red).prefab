@@ -15,7 +15,12 @@ PrefabInstance:
     - target: {fileID: 6649060280989174166, guid: 5358fb8d43c59144e81d8292f7200d30,
         type: 3}
       propertyPath: m_Name
-      value: Neo Pedestrian (Red)
+      value: City - Neo Pedestrian (Red)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8037407031395599387, guid: 5358fb8d43c59144e81d8292f7200d30,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8037407031395599387, guid: 5358fb8d43c59144e81d8292f7200d30,
         type: 3}
@@ -34,6 +39,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8037407031395599387, guid: 5358fb8d43c59144e81d8292f7200d30,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8037407031395599387, guid: 5358fb8d43c59144e81d8292f7200d30,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
@@ -45,16 +55,6 @@ PrefabInstance:
     - target: {fileID: 8037407031395599387, guid: 5358fb8d43c59144e81d8292f7200d30,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8037407031395599387, guid: 5358fb8d43c59144e81d8292f7200d30,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8037407031395599387, guid: 5358fb8d43c59144e81d8292f7200d30,
-        type: 3}
-      propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8037407031395599387, guid: 5358fb8d43c59144e81d8292f7200d30,

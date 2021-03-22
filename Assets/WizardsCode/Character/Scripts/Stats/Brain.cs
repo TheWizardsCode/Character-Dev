@@ -30,6 +30,10 @@ namespace WizardsCode.Stats {
         [SerializeField, Tooltip("The icon to use when there is an active blocking behaviour, but that behaviour does not have an icon.")]
         Sprite m_MissingIcon;
 
+        [Header("Debug")]
+        [SerializeField, Tooltip("Set to true to have the brain //log decision making information to the console.")]
+        bool isDebug = false;
+
         ActorController m_Controller;
         List<AbstractAIBehaviour> m_AvailableBehaviours = new List<AbstractAIBehaviour>();
         List<AbstractAIBehaviour> m_ActiveNonBlockingBehaviours = new List<AbstractAIBehaviour>();
@@ -231,32 +235,32 @@ namespace WizardsCode.Stats {
                 isInterupting = true;
             }
              
-            StringBuilder log = new StringBuilder();
+            //StringBuilder //log = new StringBuilder();
             AbstractAIBehaviour candidateBehaviour = null;
             float highestWeight = float.MinValue;
             float currentWeight = 0;
 
             for (int i = 0; i < m_AvailableBehaviours.Count; i++)
             {
-                log.Append("Considering: ");
-                log.AppendLine(m_AvailableBehaviours[i].DisplayName);
+                //log.Append("Considering: ");
+                //log.AppendLine(m_AvailableBehaviours[i].DisplayName);
 
                 if (m_AvailableBehaviours[i].IsExecuting)
                 {
                     if (m_AvailableBehaviours[i].IsInteruptable)
                     {
-                        log.AppendLine("Already executing but can interupt - checking requirements are still valid.");
+                        //log.AppendLine("Already executing but can interupt - checking requirements are still valid.");
                     }
                     else
                     {
-                        log.AppendLine("Already executing and cannot interupt - no need to start it again though.");
+                        //log.AppendLine("Already executing and cannot interupt - no need to start it again though.");
                         if (m_AvailableBehaviours[i].Weight(this) > highestWeight)
                         {
                             candidateBehaviour = m_AvailableBehaviours[i];
                             highestWeight = m_AvailableBehaviours[i].Weight(this);
-                            log.Append(m_AvailableBehaviours[i].DisplayName);
-                            log.Append(" has a weight of ");
-                            log.AppendLine(currentWeight.ToString());
+                            //log.Append(m_AvailableBehaviours[i].DisplayName);
+                            //log.Append(" has a weight of ");
+                            //log.AppendLine(currentWeight.ToString());
                         }
                         continue;
                     }
@@ -264,18 +268,18 @@ namespace WizardsCode.Stats {
                 
                 if (m_AvailableBehaviours[i].IsAvailable)
                 {
-                    log.AppendLine(m_AvailableBehaviours[i].reasoning.ToString());
+                    //log.AppendLine(m_AvailableBehaviours[i].reasoning.ToString());
 
-                    currentWeight = m_AvailableBehaviours[i].Weight(this); log.Append(m_AvailableBehaviours[i].DisplayName);
-                    log.Append(" has a weight of ");
-                    log.AppendLine(currentWeight.ToString());
+                    currentWeight = m_AvailableBehaviours[i].Weight(this); //log.Append(m_AvailableBehaviours[i].DisplayName);
+                    //log.Append(" has a weight of ");
+                    //log.AppendLine(currentWeight.ToString());
                     if (currentWeight > highestWeight)
                     {
                         candidateBehaviour = m_AvailableBehaviours[i];
                         highestWeight = currentWeight;
                     }
                 }
-                log.AppendLine(m_AvailableBehaviours[i].reasoning.ToString());
+                //log.AppendLine(m_AvailableBehaviours[i].reasoning.ToString());
             }
 
             if (candidateBehaviour == null) return; 
@@ -319,28 +323,28 @@ namespace WizardsCode.Stats {
             }
 
 
-            log.Insert(0, "\n");
+            //log.Insert(0, "\n");
             // Note this section is inserted in reverse as we want it at the start of the string.
             if (TargetInteractable != null)
             {
-                log.Insert(0, TargetInteractable.name);
-                log.Insert(0, " at ");
-                log.Insert(0, TargetInteractable.InteractionName);
+                //log.Insert(0, TargetInteractable.name);
+                //log.Insert(0, " at ");
+                //log.Insert(0, TargetInteractable.InteractionName);
             }
             else
             {
                 if (ActiveBlockingBehaviour == candidateBehaviour) {
-                    log.Insert(0, candidateBehaviour.DisplayName);
+                    //log.Insert(0, candidateBehaviour.DisplayName);
                 } else
                 {
-                    log.Insert(0, candidateBehaviour.DisplayName);
-                    log.Insert(0, " look for a place to ");
+                    //log.Insert(0, candidateBehaviour.DisplayName);
+                    //log.Insert(0, " look for a place to ");
                 }
             }
-            log.Insert(0, " decided to ");
-            log.Insert(0, DisplayName);
+            //log.Insert(0, " decided to ");
+            //log.Insert(0, DisplayName);
 
-            Log(log.ToString());
+            //Log(log.ToString());
         }
 
         /// <summary>
@@ -405,15 +409,18 @@ namespace WizardsCode.Stats {
         }
 
         /// <summary>
-        /// Record a decision or action in the log.
+        /// Record a decision or action in the //log.
         /// </summary>
-        /// <param name="log"></param>
+        /// <param name="//log"></param>
         private void Log(string log)
         {
             if (string.IsNullOrEmpty(log)) return;
 
-            //TODO don't log to console, log to a characters history
-            Debug.Log(log);
+            //TODO don't log to console, //log to a characters history
+            if (isDebug)
+            {
+                Debug.Log(log);
+            }
         }
 
 #if UNITY_EDITOR

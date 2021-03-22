@@ -3,11 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
-#if UNITY_EDITOR
-using WizardsCode;
 using WizardsCode.Stats;
-#endif
 
 namespace WizardsCode.Character
 {
