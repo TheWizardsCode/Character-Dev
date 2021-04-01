@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 // todo -find a permanent home for this, it wouldn't let it be in my own directory
@@ -12,30 +13,39 @@ public class TextBubbleController : MonoBehaviour
 {
     // ****************************************************************************** private fields
     [SerializeField]
+    [FormerlySerializedAs("_TMP_SpeakersName")]
     TextMeshProUGUI m_SpeakersName;
 
     [SerializeField]
+    [FormerlySerializedAs("_TMP_Text")]
     TextMeshProUGUI m_StoryText;
 
     [SerializeField]
+    [FormerlySerializedAs("_SpeechSounds")]
     AudioClip[] m_SpeechSounds;
 
     [SerializeField]
+    [FormerlySerializedAs("_PunctuationSounds")]
     AudioClip[] m_PunctuationSounds;
 
     [SerializeField]
+    [FormerlySerializedAs("_audiosource_Speech")]
     AudioSource m_AudioSource_Speech;
 
     [SerializeField]
+    [FormerlySerializedAs("_audiosource_Punctuation")]
     AudioSource m_AudioSourcePunctuation;
 
     [SerializeField]
+    [FormerlySerializedAs("_secondsBetweenPrintingCharacters")]
     float m_SecondsBetweenPrintingChars = 0.01f;
 
     [SerializeField]
+    [FormerlySerializedAs("_GrowShrinkSpeed")]
     float m_GrowOrShrinkSpeed = 4.0f;
 
     [SerializeField]
+    [FormerlySerializedAs("_bPlaySpeakingSounds")]
     bool m_PlaySpeakingSounds = true;
 
     float _targetScale = 1.0f;
