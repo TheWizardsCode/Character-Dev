@@ -85,7 +85,7 @@ namespace WizardsCode.Utility
                     return finalPos;
                 } else
                 {
-                    return GetPosition(attemptNumber);
+                    return GetPosition(attemptNumber, maxtries);
                 }
             } else
             {
