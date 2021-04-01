@@ -20,8 +20,7 @@ public class MusicTrackData {
      public float targetWeightForMixing; // changes at runtime often
 }
 
-[RequireComponent(typeof(AudioSource))]
-public class GlobalMusicComp : MonoBehaviour
+public class GlobalMusicController : MonoBehaviour
 {
     // ******************************************************************************** local fields
     [SerializeField] EMusicTrackName _startingTrackName = EMusicTrackName.MTN_Fun;

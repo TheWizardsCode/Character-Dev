@@ -15,8 +15,6 @@ using System.Globalization;
 using UnityEngine.Serialization;
 
 using System.Text.RegularExpressions;
-using WizardsCode.Character.Scripts.UX;
-
 
 namespace WizardsCode.Ink
 {
@@ -55,7 +53,7 @@ namespace WizardsCode.Ink
         AudioSource m_MusicAudioSource;
 
         [SerializeField, Tooltip("The audio source for music playback.")]
-        GlobalMusicComp m_GlobalMusicComp;
+        GlobalMusicController m_GlobalMusicComp;
 
         [Header("Actor Setup")]
         [SerializeField, Tooltip("The name of the player object.")]
@@ -70,7 +68,7 @@ namespace WizardsCode.Ink
         Button m_ChoiceButtonPrefab;
 
         [SerializeField, Tooltip("dialogue bubble comp reference.")]
-        TextBubbleComp m_TextBubbleComp;
+        TextBubbleController m_TextBubbleComp;
 
         Story m_Story;
         bool m_IsUIDirty = false;
@@ -100,12 +98,6 @@ namespace WizardsCode.Ink
             {
                 return GetPartyNoticability();
             });
-
-            if (m_GlobalMusicComp == null)
-            {
-                Debug.LogError("m_GlobalMusicComp is null");
-                return;
-            }
         }
 
         /// <summary>
