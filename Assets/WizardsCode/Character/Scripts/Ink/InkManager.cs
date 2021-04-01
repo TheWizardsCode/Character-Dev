@@ -66,14 +66,19 @@ namespace WizardsCode.Ink
         RectTransform choicesPanel;
         [SerializeField, Tooltip("Story choice button")]
         Button m_ChoiceButtonPrefab;
+        [SerializeField, Tooltip("Dialogue and narration bubble controller that will display the text for the player.")]
+        [FormerlySerializedAs("m_TextBubbleComp")]
+        TextBubbleController m_TextBubble;
+        [SerializeField, Tooltip("Should the UI always pause for player input, even when there are no choices to be made?")]
+        bool m_AlwaysWaitForPlayer = true;
 
-        [SerializeField, Tooltip("dialogue bubble comp reference.")]
-        TextBubbleController m_TextBubbleComp;
 
         Story m_Story;
         bool m_IsUIDirty = false;
         StringBuilder m_NewStoryText = new StringBuilder();
         string m_CurrentSpeakerName = "";
+
+        //TODO REFACTOR managing the waiting for directions has become unwieldly. There are too many combinations of variables with unclear names
         bool wasWaiting = false;
         private ActorController m_WaitingForActor;
         private string m_WaitingForState = "";
@@ -205,10 +210,8 @@ namespace WizardsCode.Ink
                         }
                     case "PlayerInput":
                         return true; // as of writing, pressing space will automatically exit the waiting state
-                    case "":
-                        return false; // should never get here
                     default:
-                        Debug.LogError("Direction to wait gives a unrecognized state to wait for: " + m_WaitingForState);
+                        Debug.LogError("Direction to wait gives a unrecognized state to wait for: '" + m_WaitingForState + "'");
                         return false;
                 }
             }
@@ -236,7 +239,7 @@ namespace WizardsCode.Ink
 
             if (IsDisplayingUI)
             {
-                if (m_IsUIDirty || wasWaiting)
+                if (m_IsUIDirty || wasWaiting || !m_AlwaysWaitForPlayer)
                 {
                     ProcessStoryChunk();
                     UpdateGUI();
@@ -244,7 +247,7 @@ namespace WizardsCode.Ink
                 }
             } else
             {
-                m_TextBubbleComp.ShowWidget(false);
+                m_TextBubble.ShowWidget(false);
                 choicesPanel.gameObject.SetActive(false);
             }
         }
@@ -255,30 +258,33 @@ namespace WizardsCode.Ink
                 Destroy(choicesPanel.transform.GetChild(i).gameObject);
             }
 
-            m_TextBubbleComp.ClearText();
+            m_TextBubble.ClearText();
         }
 
         private void UpdateGUI()
         {
             EraseUI();
 
-            m_TextBubbleComp.SetText(m_CurrentSpeakerName, m_NewStoryText.ToString(), true);
+            m_TextBubble.SetText(m_CurrentSpeakerName, m_NewStoryText.ToString(), true);
 
-            for (int i = 0; i < m_Story.currentChoices.Count; i++)
+            if (m_AlwaysWaitForPlayer || m_Story.currentChoices.Count > 1)
             {
-                if (m_WaitingForState == "PlayerInput") m_WaitingForState = "";
-
-                choicesPanel.gameObject.SetActive(true);
-                Choice choice = m_Story.currentChoices[i];
-                Button choiceButton = Instantiate(m_ChoiceButtonPrefab) as Button;
-                TextMeshProUGUI choiceText = choiceButton.GetComponentInChildren<TextMeshProUGUI>();
-                choiceText.text = m_Story.currentChoices[i].text;
-                choiceButton.transform.SetParent(choicesPanel.transform, false);
-
-                choiceButton.onClick.AddListener(delegate
+                for (int i = 0; i < m_Story.currentChoices.Count; i++)
                 {
-                    ChooseStoryChoice(choice);
-                });
+                    if (m_WaitingForState == "PlayerInput") m_WaitingForState = "";
+
+                    choicesPanel.gameObject.SetActive(true);
+                    Choice choice = m_Story.currentChoices[i];
+                    Button choiceButton = Instantiate(m_ChoiceButtonPrefab) as Button;
+                    TextMeshProUGUI choiceText = choiceButton.GetComponentInChildren<TextMeshProUGUI>();
+                    choiceText.text = m_Story.currentChoices[i].text;
+                    choiceButton.transform.SetParent(choicesPanel.transform, false);
+
+                    choiceButton.onClick.AddListener(delegate
+                    {
+                        ChooseStoryChoice(choice);
+                    });
+                }
             }
 
             m_IsUIDirty = false;
@@ -683,6 +689,11 @@ namespace WizardsCode.Ink
         void ProcessStoryChunk()
         {
             string line;
+            
+            if (!m_Story.canContinue && !IsWaitingFor && !m_AlwaysWaitForPlayer && m_Story.currentChoices.Count > 0)
+            {
+                m_Story.ChooseChoiceIndex(0);
+            }
 
             while (m_Story.canContinue && !IsWaitingFor)
             {
@@ -754,7 +765,10 @@ namespace WizardsCode.Ink
                     m_NewStoryText.Append(line.Substring(indexOfColon + 1).Trim());
 
                     // require player input to continue, unless a choice pops up
-                    m_WaitingForState = "PlayerInput";
+                    if (m_AlwaysWaitForPlayer)
+                    {
+                        m_WaitingForState = "PlayerInput";
+                    }
                 }
                 // interpret it as narration or descriptive text
                 else

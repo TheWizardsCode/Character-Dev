@@ -290,14 +290,7 @@ namespace WizardsCode.Character
                     {
                         return true;
                     }
-                }
-
-                if (m_Agent.hasPath && m_Agent.pathPending)
-                {
-                    return true;
-                }
-
-                if (!m_Agent.hasPath && !m_Agent.pathPending)
+                } else if (!m_Agent.hasPath && m_Agent.pathPending)
                 {
                     return true;
                 }
