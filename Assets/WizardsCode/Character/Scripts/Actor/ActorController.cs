@@ -36,10 +36,12 @@ namespace WizardsCode.Character
         public bool isFootIKActive = false;
         [SerializeField, Tooltip("Should the actor use IK to look at a given target.")]
         bool m_IsLookAtIKActive = true;
-        [SerializeField, Tooltip("A transform at the point in space that the actor should look towards.")]
-        Transform m_LookAtTarget;
         [SerializeField, Tooltip("The head bone, used for Look IK. If this is blank there will be an attempt to automatically find the head upon startup.")]
         public Transform head = null;
+        [SerializeField, Tooltip("A transform at the point in space that the actor should look towards.")]
+        Transform m_LookAtTarget;
+        [SerializeField, Tooltip("The speed at which a character will turn their head to look at a target.")]
+        float m_LookAtSpeed = 6f;
         [SerializeField, Tooltip("The time it takes for the head to start moving when it needs to turn to look at something.")]
         float m_LookAtHeatTime = 0.2f;
         [SerializeField, Tooltip("The time it takes for the look IK rig to cool after reaching the correct look angle.")]
@@ -191,9 +193,37 @@ namespace WizardsCode.Character
                 ResetLookAt();
             }
 
-            if (isRotating && transform.rotation != desiredRotation)
+            RotateIfNeeded();
+        }
+
+        /// <summary>
+        /// If the actor is already rotating continue that rotation. If the character is trying
+        /// to look at something that is outside of the angle their head should turn then 
+        /// start rotating the character.
+        /// </summary>
+        private void RotateIfNeeded()
+        {
+            if (!isRotating)
             {
-                transform.rotation = Quaternion.Lerp(transform.rotation, desiredRotation, 0.05f);
+                Vector3 lookAtHeading = LookAtTarget.position - transform.position;
+                float dot = Vector3.Dot(lookAtHeading, transform.forward);
+                if (dot <= 0.1f) // LookAtTarget is to the side or behind
+                {
+                    isRotating = true;
+                    desiredRotation = Quaternion.LookRotation(lookAtHeading, Vector3.up);
+                }
+            }
+
+            if (isRotating)
+            {
+                if (transform.rotation != desiredRotation)
+                {
+                    transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, 0.05f);
+                }
+                else
+                {
+                    isRotating = false;
+                }
             }
         }
 
@@ -372,7 +402,7 @@ namespace WizardsCode.Character
             Vector3 curDir = m_CurrentLookAtPosition - head.position;
             Vector3 futDir = pos - head.position;
 
-            curDir = Vector3.RotateTowards(curDir, futDir, 6.28f * Time.deltaTime, float.PositiveInfinity);
+            curDir = Vector3.RotateTowards(curDir, futDir, m_LookAtSpeed * Time.deltaTime, float.PositiveInfinity);
             m_CurrentLookAtPosition = head.position + curDir;
 
             float blendTime = lookAtTargetWeight > lookAtWeight ? m_LookAtHeatTime : m_LookAtCoolTime;
@@ -388,6 +418,7 @@ namespace WizardsCode.Character
         {
             LookAtTarget.transform.SetParent(transform);
             LookAtTarget.transform.localPosition = head.position + new Vector3(0, 0, 1);
+            isRotating = false;
         }
     }
 }
