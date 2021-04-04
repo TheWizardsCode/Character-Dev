@@ -10,6 +10,7 @@ namespace WizardsCode.Animation
     /// 
     /// It can randomly vary the enjoyment and activation values of a character which is useful in prototyping. However, in production it would normally
     /// be paired with a EmotionalState MonoBehaviour on the character which will provide these values.
+    /// 
     /// </summary>
     public class EmotionalStateMachineBehavior : StateMachineBehaviour
     {

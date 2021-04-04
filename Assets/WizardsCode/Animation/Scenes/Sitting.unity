@@ -38,12 +38,12 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 12
+  serializedVersion: 11
   m_GIWorkflowMode: 1
   m_GISettings:
     serializedVersion: 2
@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_LightingSettings: {fileID: 0}
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -118,8 +118,6 @@ NavMeshSettings:
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
-    maxJobWorkers: 0
-    preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 23800000, guid: b850c41897bdebe44a4554c953511452, type: 2}
@@ -211,7 +209,6 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -309,8 +306,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 22100000, guid: a306745a8b724b4449533c9a1bbe3382,
-        type: 2}
+      objectReference: {fileID: 9100000, guid: 2fd4b20b21313844b895729f606de0aa, type: 2}
     - target: {fileID: 5866666021909216657, guid: 38acb02fb7ebe2144be55d8bda3632d5,
         type: 3}
       propertyPath: m_ApplyRootMotion
@@ -372,7 +368,6 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -439,7 +434,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1653386584}
-        m_TargetAssemblyTypeName: WizardsCode.Animation.DevTest.Sitting, WizardsCodeAnimation
         m_MethodName: OnSit
         m_Mode: 1
         m_Arguments:
@@ -515,7 +509,6 @@ MonoBehaviour:
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
-  m_ReverseArrangement: 0
 --- !u!114 &725589524
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -531,7 +524,6 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0.392}
   m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -631,7 +623,6 @@ GameObject:
   - component: {fileID: 917959501}
   - component: {fileID: 917959500}
   - component: {fileID: 917959499}
-  - component: {fileID: 917959502}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -704,26 +695,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &917959502
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 917959498}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd5378998db5ba9488d08a4e3b80821a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Width: 320
-  m_Height: 236
-  m_AutoAspect: 1
-  m_FramePerSecond: 15
-  m_Repeat: 0
-  m_Quality: 15
-  m_BufferSize: 3
-  WorkerPriority: 1
 --- !u!1 &1022203976
 GameObject:
   m_ObjectHideFlags: 0
@@ -776,7 +747,6 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -853,7 +823,6 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -878,7 +847,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!33 &1076360729
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -921,7 +889,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 9f86924875f09964da664c08cd04f0e2,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.9
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9f86924875f09964da664c08cd04f0e2,
         type: 3}
@@ -1127,7 +1095,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1653386584}
-        m_TargetAssemblyTypeName: WizardsCode.Animation.DevTest.Sitting, WizardsCodeAnimation
         m_MethodName: OnStand
         m_Mode: 1
         m_Arguments:
@@ -1153,7 +1120,6 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:

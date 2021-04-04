@@ -15,7 +15,7 @@
       "hash": "32a2d178b56f4dcddf5d053e29f2ba584eafdbcf"
     },
     "com.unity.cinemachine": {
-      "version": "2.5.0",
+      "version": "2.6.3",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -29,7 +29,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ext.nunit": {
-      "version": "1.0.0",
+      "version": "1.0.6",
       "depth": 1,
       "source": "registry",
       "dependencies": {},
@@ -51,12 +51,60 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
-    "com.unity.test-framework": {
-      "version": "1.1.18",
+    "com.unity.inputsystem": {
+      "version": "1.0.2",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.postprocessing": {
+      "version": "3.0.3",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.ext.nunit": "1.0.0",
+        "com.unity.modules.physics": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.probuilder": {
+      "version": "4.4.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.settings-manager": "1.0.3"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.settings-manager": {
+      "version": "1.0.3",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.sysroot": {
+      "version": "0.1.19-preview",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.sysroot.linux-x86_64": {
+      "version": "0.1.14-preview",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.sysroot": "0.1.18-preview"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.test-framework": {
+      "version": "1.1.22",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.ext.nunit": "1.0.6",
         "com.unity.modules.imgui": "1.0.0",
         "com.unity.modules.jsonserialize": "1.0.0"
       },
@@ -80,6 +128,16 @@
         "com.unity.modules.animation": "1.0.0",
         "com.unity.modules.audio": "1.0.0",
         "com.unity.modules.particlesystem": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.toolchain.win-x86_64-linux-x86_64": {
+      "version": "0.1.19-preview",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.sysroot": "0.1.19-preview",
+        "com.unity.sysroot.linux-x86_64": "0.1.14-preview"
       },
       "url": "https://packages.unity.com"
     },

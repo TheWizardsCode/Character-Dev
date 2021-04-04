@@ -11,11 +11,20 @@ namespace WizardsCode.Character
     /// 
     /// See https://en.wikipedia.org/wiki/Emotion#/media/File:Geneva_Emotion_Wheel_-_English.png
     /// </summary>
-    [ExecuteAlways]
     public class EmotionalState : MonoBehaviour
     {
         public enum EmotionType { Anger, Interest, Fear, Sadness, Pleasure }
+
+        [Header("Animator")]
+        [SerializeField, Tooltip("Should the character crouch when fearful, interested and not angry?")]
+        internal bool m_CrouchInFear = true;
+        [SerializeField, Tooltip("The Animator boolean parameter name that will cause the character to crouch when moving/idle.")]
+        string m_CrouchParameterName = "Crouch";
+
         public List<EmotionMetric> emotions = new List<EmotionMetric>();
+
+        Animator m_Animator;
+        int m_CrouchParameterHash;
 
         public void Awake()
         {
@@ -61,6 +70,20 @@ namespace WizardsCode.Character
             emotion = new EmotionMetric(EmotionType.Interest, 0, 0.45f, 0.2f);
             emotions.Add(emotion);
 
+            m_Animator = GetComponent<Animator>();
+            m_CrouchParameterHash = Animator.StringToHash(m_CrouchParameterName);
+        }
+
+        private void Update()
+        {
+            if (m_CrouchInFear && GetEmotionValue(EmotionType.Fear) > 0.9f 
+                && GetEmotionValue(EmotionType.Anger) < 0.6 )
+            {
+                m_Animator.SetBool(m_CrouchParameterHash, true);
+            } else
+            {
+                m_Animator.SetBool(m_CrouchParameterHash, false);
+            }
         }
 
         /// <summary>
@@ -190,6 +213,30 @@ namespace WizardsCode.Character
                 {
                     return "Sad";
                 }
+            }
+        }
+
+        /// <summary>
+        /// A measure of how noticable this character is from 0 to 1. 
+        /// 0 is as good as invisible, 1 is can't miss them.
+        /// How noticable an actor is depends on their emational state.
+        /// For example, a fearful character who is resting is less noticeable
+        /// than an interested character. Anger will increase noticability,
+        /// but sadness will reduce it.
+        /// </summary>
+        public float Noticability
+        {
+            get
+            {
+                //TODO this algorithm for noticability should not be hard coded. Add a noticability factor to individual emotion types.
+                float result = GetEmotionValue(EmotionType.Anger);
+                result -= GetEmotionValue(EmotionType.Fear);
+                result += GetEmotionValue(EmotionType.Interest) / 2;
+                result -= GetEmotionValue(EmotionType.Sadness) / 2;
+                result /= 4;
+
+                // we now have a result between -1 and 1, so normalize it
+                return (result + 1) / 2;
             }
         }
     }

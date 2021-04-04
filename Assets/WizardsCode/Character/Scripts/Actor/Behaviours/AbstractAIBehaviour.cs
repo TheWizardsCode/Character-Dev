@@ -1,15 +1,14 @@
 using UnityEngine;
 
-using System.Collections;
 using System.Collections.Generic;
 using WizardsCode.Stats;
 using System;
 using Random = UnityEngine.Random;
 using static WizardsCode.Character.StateSO;
 using System.Text;
-using UnityEngine.Serialization;
 using WizardsCode.Character.WorldState;
 using WizardsCode.Character.AI;
+using UnityEngine.Events;
 
 namespace WizardsCode.Character
 {
@@ -38,6 +37,10 @@ namespace WizardsCode.Character
         bool m_IsBlocking = true;
 
         [Header("Actions")]
+        [SerializeField, Tooltip("Events to fire when this behaviour is started.")]
+        UnityEvent m_OnStartEvent;
+        [SerializeField, Tooltip("Events to fire when this behaviour is finished.")]
+        UnityEvent m_OnEndEvent;
         [SerializeField, Tooltip("An actor cue to send to the actor upon the start of this interaction.")]
         protected ActorCue m_OnStartCue;
         [SerializeField, Tooltip("An actor cue to send to the actor upon the ending of this interaction. This should set the character back to their default state.")]
@@ -141,6 +144,11 @@ namespace WizardsCode.Character
         }
 
         /// <summary>
+        /// If true then this behaviour will be prioritized until such a time as it is executed.
+        /// </summary>
+        internal bool isPrioritized { get; set; }
+
+        /// <summary>
         /// Tests to see if this behaviour is availble to be executed. That is are the necessary preconditions
         /// met.
         /// </summary>
@@ -148,12 +156,14 @@ namespace WizardsCode.Character
         {
             get
             {
-                if (Time.timeSinceLevelLoad < m_NextRetryTime) return false;
+                if (!isPrioritized && Time.timeSinceLevelLoad < m_NextRetryTime) return false;
                 m_NextRetryTime = Time.timeSinceLevelLoad + m_RetryFrequency;
 
                 reasoning.Clear();
 
-                if (CheckWorldState() && CheckCharacteHasRequiredStats() && CheckSenses())
+                if (isPrioritized || (CheckWorldState() 
+                    && CheckCharacteHasRequiredStats() 
+                    && CheckSenses()))
                 {
                     return true;
                 } else
@@ -209,10 +219,6 @@ namespace WizardsCode.Character
         {
             if (m_RequiredStats.Length == 0)
             {
-                reasoning.Append(Brain.DisplayName);
-                reasoning.Append(" has no required stats for ");
-                reasoning.Append(DisplayName);
-                reasoning.AppendLine(".");
                 return true;
             }
 
@@ -302,9 +308,15 @@ namespace WizardsCode.Character
         /// </summary>
         internal virtual void StartBehaviour(float duration)
         {
+            isPrioritized = false;
             IsExecuting = true;
             EndTime = Time.timeSinceLevelLoad + duration;
             AddCharacterInfluencers(duration);
+
+            if (m_OnStartEvent != null)
+            {
+                m_OnStartEvent.Invoke();
+            }
 
             if (m_OnStartCue != null)
             {
@@ -348,10 +360,6 @@ namespace WizardsCode.Character
         internal virtual float Weight(Brain brain)
         {
             float weight = BaseWeight(brain) * m_WeightMultiplier;
-
-            reasoning.Append(DisplayName);
-            reasoning.Append(" total weight is ");
-            reasoning.AppendLine(weight.ToString("0.0"));
 
             return weight;
         }
@@ -441,6 +449,11 @@ namespace WizardsCode.Character
                     StatSO stat = Brain.GetOrCreateStat(m_CharacterInfluences[i].statTemplate);
                     stat.Value += m_CharacterInfluences[i].maxChange;
                 }
+            }
+
+            if (m_OnEndEvent != null)
+            {
+                m_OnEndEvent.Invoke();
             }
 
             if (m_OnEndCue != null)

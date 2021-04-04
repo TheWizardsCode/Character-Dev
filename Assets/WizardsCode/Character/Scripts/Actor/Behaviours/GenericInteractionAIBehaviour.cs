@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using WizardsCode.Character;
 using WizardsCode.Stats;
+using UnityEditor;
 
 namespace WizardsCode.Character
 {
@@ -49,14 +50,14 @@ namespace WizardsCode.Character
                 }
                 else
                 {
-                    float sqrMagnitude = float.MaxValue;
+                    float nearestMag = float.MaxValue;
                     //TODO select the optimal interactible based on distance and amount of influence
                     for (int interactablesIndex = 0; interactablesIndex < cachedAvailableInteractables.Count; interactablesIndex++)
                     {
                         float mag = Vector3.SqrMagnitude(transform.position - cachedAvailableInteractables[interactablesIndex].transform.position);
-                        if (mag < sqrMagnitude)
+                        if (mag < nearestMag)
                         {
-                            sqrMagnitude = mag;
+                            nearestMag = mag;
                             CurrentInteractableTarget = cachedAvailableInteractables[interactablesIndex];
                         }
                     }

@@ -145,6 +145,8 @@ namespace WizardsCode.Character.AI
                     }
                 }
             }
+
+            base.StartBehaviour(duration);
         }
 
         /// <summary>
