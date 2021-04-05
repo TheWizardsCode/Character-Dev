@@ -15,11 +15,15 @@ using System.Globalization;
 using UnityEngine.Serialization;
 
 using System.Text.RegularExpressions;
-using WizardsCode.Character.Scripts.UX;
-
 
 namespace WizardsCode.Ink
 {
+    /// <summary>
+    /// The InkManager parses the Ink file and instructs the actors, camera, sound etc. what to do.
+    /// 
+    ///TODO this is getting unwiedly at this point. Separate out the implementations of directions into their own
+    ///class.
+    /// </summary>
     public class InkManager : AbstractSingleton<InkManager>
     {
         enum Direction {
@@ -33,9 +37,12 @@ namespace WizardsCode.Ink
             StopMoving,
             AnimationParam,
             Camera,
+            //TODO, document this direction
             Music,
+            //TODO remove this as a preferred command, way too long, merge with "Music"?
             SetPrimaryBlendedMusicTrack,
-            WaitFor
+            WaitFor,
+            Audio
         }
 
         [Header("Script")]
@@ -55,7 +62,7 @@ namespace WizardsCode.Ink
         AudioSource m_MusicAudioSource;
 
         [SerializeField, Tooltip("The audio source for music playback.")]
-        GlobalMusicComp m_GlobalMusicComp;
+        GlobalMusicController m_GlobalMusicComp;
 
         [Header("Actor Setup")]
         [SerializeField, Tooltip("The name of the player object.")]
@@ -68,14 +75,19 @@ namespace WizardsCode.Ink
         RectTransform choicesPanel;
         [SerializeField, Tooltip("Story choice button")]
         Button m_ChoiceButtonPrefab;
+        [SerializeField, Tooltip("Dialogue and narration bubble controller that will display the text for the player.")]
+        [FormerlySerializedAs("m_TextBubbleComp")]
+        TextBubbleController m_TextBubble;
+        [SerializeField, Tooltip("Should the UI always pause for player input, even when there are no choices to be made?")]
+        bool m_AlwaysWaitForPlayer = true;
 
-        [SerializeField, Tooltip("dialogue bubble comp reference.")]
-        TextBubbleComp m_TextBubbleComp;
 
         Story m_Story;
         bool m_IsUIDirty = false;
         StringBuilder m_NewStoryText = new StringBuilder();
         string m_CurrentSpeakerName = "";
+
+        //TODO REFACTOR managing the waiting for directions has become unwieldly. There are too many combinations of variables with unclear names
         bool wasWaiting = false;
         private ActorController m_WaitingForActor;
         private string m_WaitingForState = "";
@@ -100,12 +112,6 @@ namespace WizardsCode.Ink
             {
                 return GetPartyNoticability();
             });
-
-            if (m_GlobalMusicComp == null)
-            {
-                Debug.LogError("m_GlobalMusicComp is null");
-                return;
-            }
         }
 
         /// <summary>
@@ -213,10 +219,8 @@ namespace WizardsCode.Ink
                         }
                     case "PlayerInput":
                         return true; // as of writing, pressing space will automatically exit the waiting state
-                    case "":
-                        return false; // should never get here
                     default:
-                        Debug.LogError("Direction to wait gives a unrecognized state to wait for: " + m_WaitingForState);
+                        Debug.LogError("Direction to wait gives a unrecognized state to wait for: '" + m_WaitingForState + "'");
                         return false;
                 }
             }
@@ -244,7 +248,7 @@ namespace WizardsCode.Ink
 
             if (IsDisplayingUI)
             {
-                if (m_IsUIDirty || wasWaiting)
+                if (m_IsUIDirty || wasWaiting || !m_AlwaysWaitForPlayer)
                 {
                     ProcessStoryChunk();
                     UpdateGUI();
@@ -252,7 +256,7 @@ namespace WizardsCode.Ink
                 }
             } else
             {
-                m_TextBubbleComp.ShowWidget(false);
+                m_TextBubble.ShowWidget(false);
                 choicesPanel.gameObject.SetActive(false);
             }
         }
@@ -263,30 +267,33 @@ namespace WizardsCode.Ink
                 Destroy(choicesPanel.transform.GetChild(i).gameObject);
             }
 
-            m_TextBubbleComp.ClearText();
+            m_TextBubble.ClearText();
         }
 
         private void UpdateGUI()
         {
             EraseUI();
 
-            m_TextBubbleComp.SetText(m_CurrentSpeakerName, m_NewStoryText.ToString(), true);
+            m_TextBubble.SetText(m_CurrentSpeakerName, m_NewStoryText.ToString(), true);
 
-            for (int i = 0; i < m_Story.currentChoices.Count; i++)
+            if (m_AlwaysWaitForPlayer || m_Story.currentChoices.Count > 1)
             {
-                if (m_WaitingForState == "PlayerInput") m_WaitingForState = "";
-
-                choicesPanel.gameObject.SetActive(true);
-                Choice choice = m_Story.currentChoices[i];
-                Button choiceButton = Instantiate(m_ChoiceButtonPrefab) as Button;
-                TextMeshProUGUI choiceText = choiceButton.GetComponentInChildren<TextMeshProUGUI>();
-                choiceText.text = m_Story.currentChoices[i].text;
-                choiceButton.transform.SetParent(choicesPanel.transform, false);
-
-                choiceButton.onClick.AddListener(delegate
+                for (int i = 0; i < m_Story.currentChoices.Count; i++)
                 {
-                    ChooseStoryChoice(choice);
-                });
+                    if (m_WaitingForState == "PlayerInput") m_WaitingForState = "";
+
+                    choicesPanel.gameObject.SetActive(true);
+                    Choice choice = m_Story.currentChoices[i];
+                    Button choiceButton = Instantiate(m_ChoiceButtonPrefab) as Button;
+                    TextMeshProUGUI choiceText = choiceButton.GetComponentInChildren<TextMeshProUGUI>();
+                    choiceText.text = m_Story.currentChoices[i].text;
+                    choiceButton.transform.SetParent(choicesPanel.transform, false);
+
+                    choiceButton.onClick.AddListener(delegate
+                    {
+                        ChooseStoryChoice(choice);
+                    });
+                }
             }
 
             m_IsUIDirty = false;
@@ -491,8 +498,8 @@ namespace WizardsCode.Ink
 
         /// <summary>
         /// Play a specified music track. The tracks requested should be saved in
-        /// `/Resources/Music/TEMP.STYLE.mp3`
-        ///
+        /// `/Resources/Music/TEMPO_STYLE.mp3`
+        /// 
         /// </summary>
         /// <param name="args">[Tempo] [Style]</param>
         void Music(string[] args)
@@ -512,8 +519,75 @@ namespace WizardsCode.Ink
             }
             else
             {
-                Debug.LogError("Direction to play music track cannot be satisfied: " + track);
+                Debug.LogError("There is a direction to play the music track " + track + " but no file of that name is found in `Resources/Audio`");
             }
+        }
+
+        /// <summary>
+        /// Play an audio file from an identified AudioSource.
+        /// Files should be stored in `Resources/Audio/...`.
+        /// The audio will be played from an actor if specified, if none specified it will be assumed there is an audio source on the camera
+        /// 
+        /// </summary>
+        /// <param name="args">
+        /// An array of arguments as follows:
+        /// 0: The filename, inclusing extenstion, of the audio file
+        /// 1: [Optional] The name of the actor or object that contains the AudioSource from which to play this audio
+        /// </param>
+        void Audio(string[] args)
+        {
+            if (!ValidateArgumentCount(Direction.Music, args, 1, 2))
+            {
+                return;
+            }
+
+            String path = "Audio/";
+            String filename = args[0].Trim();
+            AudioClip audio = Resources.Load<AudioClip>(path + filename);
+
+            if (!audio)
+            {
+                Debug.LogError("There is a direction to play an audio file " + filename + " but there is no audio file of that name in `Resources/Audio/`.");
+                return;
+            }
+
+            AudioSource source = null;
+            if (args.Length == 1)
+            {
+                //TODO don't use Camera.main cache the result for performance. See Camera(...)
+                source = UnityEngine.Camera.main.GetComponentInChildren<AudioSource>();
+                if (source == null)
+                {
+                    Debug.LogError("There is a direction to play an audio file from the default audio source but there is no audio source on the main camera.");
+                    return;
+                }
+            }
+            else if (!string.IsNullOrEmpty(args[1]))
+            {
+                ActorController actor = FindActor(args[1].Trim());
+                if (actor != null)
+                {
+                    source = actor.GetComponentInChildren<AudioSource>();
+                    if (source == null)
+                    {
+                        Debug.LogError("There is a direction to play an audio file from an actor " + actor.name + " but there is no AudioSource attached to it or its children.");
+                        return;
+                    }
+                }
+                else
+                {
+                    Debug.LogError("There is a direction to play an audio file from an actor " + actor.name + " but there is no such actor.");
+                    return;
+                }
+            }
+
+            if (source == null)
+            {
+                Debug.LogError("There is a direction to play an audio file called " + filename + " but no audio source was specified or found.");
+                return;
+            }
+            source.clip = audio;
+            source.Play();
         }
 
         /// <summary>
@@ -691,6 +765,11 @@ namespace WizardsCode.Ink
         void ProcessStoryChunk()
         {
             string line;
+            
+            if (!m_Story.canContinue && !IsWaitingFor && !m_AlwaysWaitForPlayer && m_Story.currentChoices.Count > 0)
+            {
+                m_Story.ChooseChoiceIndex(0);
+            }
 
             while (m_Story.canContinue && !IsWaitingFor)
             {
@@ -747,6 +826,9 @@ namespace WizardsCode.Ink
                         case Direction.WaitFor:
                             WaitFor(args);
                             break;
+                        case Direction.Audio:
+                            Audio(args);
+                            break;
                         default:
                             Debug.LogError("Unknown Direction: " + line);
                             break;
@@ -762,7 +844,10 @@ namespace WizardsCode.Ink
                     m_NewStoryText.Append(line.Substring(indexOfColon + 1).Trim());
 
                     // require player input to continue, unless a choice pops up
-                    m_WaitingForState = "PlayerInput";
+                    if (m_AlwaysWaitForPlayer)
+                    {
+                        m_WaitingForState = "PlayerInput";
+                    }
                 }
                 // interpret it as narration or descriptive text
                 else
