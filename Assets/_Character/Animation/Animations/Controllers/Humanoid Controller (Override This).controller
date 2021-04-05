@@ -277,7 +277,7 @@ BlendTree:
   m_Name: Large Gestures
   m_Childs:
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: c8547e7f851aa1849bf67e272eadbf8b, type: 2}
+    m_Motion: {fileID: 7400000, guid: adaa336babca5f04899ae87318cbc5b1, type: 2}
     m_Threshold: 0
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
@@ -285,7 +285,7 @@ BlendTree:
     m_DirectBlendParameter: Speed
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: dfee9284ea9c1614aa2d3c767d2042d3, type: 2}
+    m_Motion: {fileID: 7400000, guid: beac6059ce24f14459cc6c5cb5f11484, type: 2}
     m_Threshold: 0.25
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
@@ -293,7 +293,7 @@ BlendTree:
     m_DirectBlendParameter: Speed
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 7c69bd4b319a868478ed439bfdb8eb1f, type: 2}
+    m_Motion: {fileID: 7400000, guid: c166d0baf4c086242af4e04237b1019d, type: 2}
     m_Threshold: 0.5
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
@@ -314,7 +314,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Lying Down Relaxing - Pose
+  m_Name: Lying Down
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -1131,7 +1131,7 @@ BlendTree:
   m_Name: Small Gestures
   m_Childs:
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 8d23cd7ab3c1f8a42aa16d8e93e0ef84, type: 2}
+    m_Motion: {fileID: 7400000, guid: 9a76f28b03096e44f9270bd7ba58729e, type: 2}
     m_Threshold: 0
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
@@ -1139,7 +1139,7 @@ BlendTree:
     m_DirectBlendParameter: Speed
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 60f2a288a917666408a9fa64a4fa8f92, type: 2}
+    m_Motion: {fileID: 7400000, guid: 5eeb8c27f4742d14f8e8d7a03664eef3, type: 2}
     m_Threshold: 0.33333334
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
@@ -1147,7 +1147,7 @@ BlendTree:
     m_DirectBlendParameter: Speed
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 5abb37f41ee49e34facce7a2d0a336f0, type: 2}
+    m_Motion: {fileID: 7400000, guid: 5499ddaf74cebf743a637b8e0970263b, type: 2}
     m_Threshold: 0.6666667
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
@@ -1155,7 +1155,7 @@ BlendTree:
     m_DirectBlendParameter: Speed
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 711256bbece863b4ba9f3f5ce361565c, type: 2}
+    m_Motion: {fileID: 7400000, guid: 5beec3cfe9c37954d89d0f07e0bc1996, type: 2}
     m_Threshold: 1
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
@@ -1233,7 +1233,7 @@ BlendTree:
   m_Name: Fearful / Dissapointed
   m_Childs:
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 18c79107256437c4e863fe7602e1dcb4, type: 2}
+    m_Motion: {fileID: 7400000, guid: 6e453b82cc0afce4ea1d1a713046fe28, type: 2}
     m_Threshold: -0.22886759
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
@@ -1241,7 +1241,7 @@ BlendTree:
     m_DirectBlendParameter: Speed
     m_Mirror: 1
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 0c91d7a0f81236d4187c8ad281d08a77, type: 2}
+    m_Motion: {fileID: 7400000, guid: 22791a0d866d90547ab8866a5bd2567d, type: 2}
     m_Threshold: 0.18075493
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
@@ -2285,14 +2285,14 @@ AnimatorStateMachine:
     m_Position: {x: 590, y: 220, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -6281992312937460546}
-    m_Position: {x: 430, y: -20, z: 0}
+    m_Position: {x: 440, y: 10, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -311430798826865699}
     m_Position: {x: 180, y: 10, z: 0}
   m_ChildStateMachines:
   - serializedVersion: 1
     m_StateMachine: {fileID: -4883993811568143253}
-    m_Position: {x: -80, y: 390, z: 0}
+    m_Position: {x: -70, y: 380, z: 0}
   - serializedVersion: 1
     m_StateMachine: {fileID: -7018894060131515440}
     m_Position: {x: 230, y: 390, z: 0}

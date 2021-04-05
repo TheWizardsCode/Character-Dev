@@ -30,6 +30,8 @@ namespace WizardsCode.Character
         private string m_TurnParameterName = "Turn";
         [SerializeField, Tooltip("The speed of this character when at a run. It will usually be going slower than this, and for short periods, can go faster (at a spring).")]
         private float m_RunningSpeed = 8;
+        [SerializeField, Tooltip("A transform at the point in space that the actor should look towards.")]
+        Transform m_LookAtTarget;
 
         [Header("IK")]
         [Tooltip("If true then this script will control IK configuration of the character.")]
@@ -38,8 +40,6 @@ namespace WizardsCode.Character
         bool m_IsLookAtIKActive = true;
         [SerializeField, Tooltip("The head bone, used for Look IK. If this is blank there will be an attempt to automatically find the head upon startup.")]
         public Transform head = null;
-        [SerializeField, Tooltip("A transform at the point in space that the actor should look towards.")]
-        Transform m_LookAtTarget;
         [SerializeField, Tooltip("The speed at which a character will turn their head to look at a target.")]
         float m_LookAtSpeed = 6f;
         [SerializeField, Tooltip("The time it takes for the head to start moving when it needs to turn to look at something.")]
