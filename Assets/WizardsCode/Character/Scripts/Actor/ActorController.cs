@@ -163,6 +163,8 @@ namespace WizardsCode.Character
             m_Brain = GetComponent<Brain>();
             MoveTargetPosition = transform.position;
 
+            m_NormalSpeed = m_MaxSpeed * m_NormalSpeedFactor;
+
             // Look IK Setup
             if (!head)
             {
