@@ -10,7 +10,12 @@ PrefabInstance:
     - target: {fileID: 2093432225946796988, guid: 2b88bfbec379c82449dc3e21f40cedf2,
         type: 3}
       propertyPath: m_Name
-      value: Wander Anywhere Neo (Blue)
+      value: Wander Anywhere Neo (Blue) Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 3369241727798939185, guid: 2b88bfbec379c82449dc3e21f40cedf2,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3369241727798939185, guid: 2b88bfbec379c82449dc3e21f40cedf2,
         type: 3}
@@ -29,6 +34,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3369241727798939185, guid: 2b88bfbec379c82449dc3e21f40cedf2,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3369241727798939185, guid: 2b88bfbec379c82449dc3e21f40cedf2,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
@@ -40,16 +50,6 @@ PrefabInstance:
     - target: {fileID: 3369241727798939185, guid: 2b88bfbec379c82449dc3e21f40cedf2,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3369241727798939185, guid: 2b88bfbec379c82449dc3e21f40cedf2,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3369241727798939185, guid: 2b88bfbec379c82449dc3e21f40cedf2,
-        type: 3}
-      propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3369241727798939185, guid: 2b88bfbec379c82449dc3e21f40cedf2,
