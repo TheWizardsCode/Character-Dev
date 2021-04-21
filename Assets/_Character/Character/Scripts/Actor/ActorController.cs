@@ -243,7 +243,6 @@ namespace WizardsCode.Character
         /// </summary>
         private void ManageState()
         {
-            Debug.Log("State is " + m_State);
             switch (m_State)
             {
                 case States.Stationary:

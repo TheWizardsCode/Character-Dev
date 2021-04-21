@@ -306,6 +306,7 @@ namespace WizardsCode.Character
         /// an interactable and somehow this method gets called it will return with no
         /// actions (after logging a warning).
         /// </summary>
+        /// <param name="duration">The maximum duration that this behaviuour can take</param>
         internal virtual void StartBehaviour(float duration)
         {
             isPrioritized = false;

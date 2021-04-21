@@ -19,6 +19,8 @@ namespace WizardsCode.Character.AI
     public class GenericActorInteractionBehaviour : AbstractAIBehaviour
     {
         [Header("Actor Interaction Config")]
+        [SerializeField, Tooltip("If consent is required then the interaction will only start when enough actors have consented to participate. So, for example, a conversation will require consent but an attack will not.")]
+        bool m_RequireConsent = true;
         [SerializeField, Tooltip("What is the minimum number of actors need in the group carrying out this behaviour, including this actor. Before starting this behaviour at least this many actors need to have agreed to participate in the shared behaviour. The group members are identified in the Senses definitions.")]
         int m_MinGroupSize = 2;
         [SerializeField, Tooltip("What is the maximum number of actors need in the group carrying out this behaviour, including this actor. Before starting this behaviour at most this many actors need to have agreed to participate in the shared behaviour. The group members are identified in the Senses definitions.")]
@@ -86,7 +88,7 @@ namespace WizardsCode.Character.AI
                     AddCharacterInfluencers(m_Duration);
                     if (m_OnStartCue != null)
                     {
-                        StartCoroutine(m_OnStartCue.Prompt(Brain.Actor));
+                        Brain.Actor.Prompt(m_OnStartCue);
                     }
                 }
                 else if (Time.timeSinceLevelLoad > m_HandshakeEndTime)
@@ -124,7 +126,7 @@ namespace WizardsCode.Character.AI
             m_Duration = duration;
             m_CooldownEndTime = m_CooldownDuration + Time.timeSinceLevelLoad;
             m_HandshakeEndTime = Time.timeSinceLevelLoad + m_HandshakeTimeout;
-            m_IsHandshaking = true;
+            m_IsHandshaking = m_RequireConsent;
 
             GenericActorInteractionBehaviour[] behaviours;
             for (int i = 0; i < SensedThings.Count; i++)
@@ -156,7 +158,7 @@ namespace WizardsCode.Character.AI
         internal void InviteToGroup(Brain brain)
         {
             //TODO actors should be more likley to engage with other actors they like or who have valuable information.             
-            m_IsHandshaking = true;
+            m_IsHandshaking = m_RequireConsent;
         }
 
         protected override float BaseWeight(Brain brain)
@@ -178,12 +180,16 @@ namespace WizardsCode.Character.AI
             float totalY = 0;
             for (int i = 0; i < participants.Count; i++)
             {
-                totalX += participants[i].transform.position.x;
-                totalY += participants[i].transform.position.z;
+                if (participants[i] != Brain)
+                {
+                    totalX += participants[i].GetInteractionPosition().x;
+                    totalY += participants[i].GetInteractionPosition().z;
+                }
             }
 
-            float centerX = totalX / participants.Count;
-            float centerZ = totalY / participants.Count;
+            float count = participants.Count - 1;
+            float centerX = totalX / count;
+            float centerZ = totalY / count;
             groupCenter = new Vector3(centerX, 0, centerZ);
             Vector3 interactionPoint = groupCenter + (-m_GroupDistance * Brain.Actor.transform.forward);
 
@@ -229,19 +235,29 @@ namespace WizardsCode.Character.AI
             GenericActorInteractionBehaviour[] behaviours;
             for (int i = 0; i < SensedThings.Count; i++)
             {
-                //TODO would be more efficient to pull the behaviours from the target brain
-                //TODO this is duplicated in StartBehaviour
-                behaviours = SensedThings[i].GetComponentsInChildren<GenericActorInteractionBehaviour>();
-                if (behaviours.Length == 0)
+                if (m_RequireConsent)
                 {
-                    continue;
-                }
+                    //TODO would be more efficient to pull the behaviours from the target brain
+                    //TODO this is duplicated in StartBehaviour
+                    behaviours = SensedThings[i].GetComponentsInChildren<GenericActorInteractionBehaviour>();
+                    if (behaviours.Length == 0)
+                    {
+                        continue;
+                    }
 
-                //TODO Don't test if the currently active behaviour is the same. Instead have a "handshake" protocol in which both actors agree to participate in the same behaviour on the next frame.
-                AbstractAIBehaviour behaviour = behaviours[0].Brain.ActiveBlockingBehaviour;
-                if (behaviour != null && behaviour.DisplayName == this.DisplayName)
+                    //TODO Don't test if the currently active behaviour is the same. Instead have a "handshake" protocol in which both actors agree to participate in the same behaviour on the next frame.
+                    AbstractAIBehaviour behaviour = behaviours[0].Brain.ActiveBlockingBehaviour;
+                    if (behaviour != null && behaviour.DisplayName == this.DisplayName)
+                    {
+                        participants.Add(behaviours[0].Brain);
+                    }
+                }
+                else
                 {
-                    participants.Add(behaviours[0].Brain);
+                    Brain brain = SensedThings[i].GetComponentInChildren<Brain>();
+                    if (brain) { 
+                        participants.Add(brain);
+                    }
                 }
             }
          }

@@ -45,5 +45,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   description: Can I see another character nearby?
   range: 10
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
   maxSensedColliders: 10
   m_ComponentTypeNameToSense: WizardsCode.Character.ActorController
