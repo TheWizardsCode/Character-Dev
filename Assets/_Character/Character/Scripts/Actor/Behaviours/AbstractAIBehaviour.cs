@@ -43,6 +43,10 @@ namespace WizardsCode.Character
         UnityEvent m_OnEndEvent;
         [SerializeField, Tooltip("An actor cue to send to the actor upon the start of this interaction.")]
         protected ActorCue m_OnStartCue;
+        [SerializeField, Tooltip("An actor cue to send to the actor if they start moving in order to commence this interaction.")]
+        protected ActorCue m_OnArrivingCue;
+        [SerializeField, Tooltip("An actor cue to send to the actor as they arrive at the location to carry out this interaction.")]
+        protected ActorCue m_OnArrivedCue;
         [SerializeField, Tooltip("An actor cue to send to the actor upon the ending of this interaction. This should set the character back to their default state.")]
         protected ActorCue m_OnEndCue;
 
@@ -86,7 +90,7 @@ namespace WizardsCode.Character
         }
 
         Brain m_Brain;
-        internal ActorController controller;
+        internal ActorController m_ActorController;
         private bool m_IsExecuting = false;
         private float m_NextRetryTime;
 
@@ -118,6 +122,17 @@ namespace WizardsCode.Character
             get
             {
                 return m_Brain;
+            }
+        }
+
+        /// <summary>
+        /// Get the ActorController this behaviour movements are managed by.
+        /// </summary>
+        internal ActorController ActorController
+        {
+            get
+            {
+                return m_ActorController;
             }
         }
 
@@ -286,7 +301,6 @@ namespace WizardsCode.Character
         /// </summary>
         protected virtual void Init()
         {
-
             if (m_Brain == null)
             {
                 m_Brain = transform.root.GetComponentInChildren<Brain>();
@@ -298,7 +312,19 @@ namespace WizardsCode.Character
                     Debug.LogWarning("Brain was not configured in " + DisplayName + ". Set the brain in the inspector.");
                 }
             }
-            controller = GetComponentInParent<ActorController>();
+
+            if (m_ActorController == null)
+            {
+                m_ActorController = transform.root.GetComponentInChildren<ActorController>();
+                if (m_ActorController != null)
+                {
+                    Debug.LogWarning("ActorController was not configured in " + DisplayName + ". " + m_ActorController.name + " was automatically discovered. It is safer to set the ActorController in the inspector.");
+                }
+                else
+                {
+                    Debug.LogWarning("ActorController was not configured in " + DisplayName + ". Set the ActorController in the inspector.");
+                }
+            }
         }
 
         /// <summary>

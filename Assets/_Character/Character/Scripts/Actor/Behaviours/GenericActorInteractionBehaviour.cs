@@ -26,7 +26,7 @@ namespace WizardsCode.Character.AI
         [SerializeField, Tooltip("What is the maximum number of actors need in the group carrying out this behaviour, including this actor. Before starting this behaviour at most this many actors need to have agreed to participate in the shared behaviour. The group members are identified in the Senses definitions.")]
         int m_MaxGroupSize = 5;
         [SerializeField, Tooltip("The distance from the centre of the interacting group that this actor should stand.")]
-        float m_GroupDistance;
+        float m_GroupDistance = 1;
         [SerializeField, Tooltip("How long will the actor wait for handshaking to complete. If this time has passed and the minimum group size has not been met then the behaviour will be aborted.")]
         float m_HandshakeTimeout = 4;
         [SerializeField, Tooltip("How long before this actor can fire this same behaviour?")]
@@ -40,7 +40,6 @@ namespace WizardsCode.Character.AI
         private bool m_IsHandshaking = false;
         List<Brain> participants = new List<Brain>();
         private NavMeshAgent m_Agent;
-        private Vector3 groupCenter;
         private Transform interactionPointT;
 
         private string InteractionPointName { get; set; }
@@ -75,8 +74,10 @@ namespace WizardsCode.Character.AI
 
         protected override void OnUpdate()
         {
+            //TODO OPTIMIZATION probably don't need to update participants and position every tick
+            int count = participants.Count;
             UpdateParticipantsList();
-            UpdateGroupPositions(true);
+            UpdateInteractionPosition(true);
 
             if (m_IsHandshaking)
             {
@@ -99,7 +100,7 @@ namespace WizardsCode.Character.AI
                 return;
             }
 
-            Vector3 lookTarget = groupCenter;
+            Vector3 lookTarget = m_InteractionPoint;
             lookTarget.y = Brain.Actor.transform.position.y;
             Brain.Actor.transform.LookAt(lookTarget);
 
@@ -118,6 +119,17 @@ namespace WizardsCode.Character.AI
             }
 
             base.OnUpdate();
+        }
+
+        /// <summary>
+        /// Test to see if the actor is at the interaction point for this action.
+        /// </summary>
+        protected virtual bool IsAtInteractionPoint
+        {
+            get
+            {
+                return Vector3.SqrMagnitude(Brain.Actor.MoveTargetPosition - m_InteractionPoint) < 0.25f;
+            }
         }
 
         internal override void StartBehaviour(float duration)
@@ -173,7 +185,8 @@ namespace WizardsCode.Character.AI
             }
         }
 
-        private void UpdateGroupPositions(bool setOnNavMesh)
+        Vector3 m_InteractionPoint;
+        private void UpdateInteractionPosition(bool setOnNavMesh)
         {
             // Find a point where we will meet the actors to interact
             float totalX = 0;
@@ -187,16 +200,32 @@ namespace WizardsCode.Character.AI
                 }
             }
 
-            float count = participants.Count - 1;
-            float centerX = totalX / count;
-            float centerZ = totalY / count;
-            groupCenter = new Vector3(centerX, 0, centerZ);
-            Vector3 interactionPoint = groupCenter + (-m_GroupDistance * Brain.Actor.transform.forward);
+            float centerX;
+            float centerZ;
+            float count = m_RequireConsent ? participants.Count : participants.Count - 1;
+            if (m_RequireConsent)
+            {
+                // If it requires consent, assume participants will move towards one another
+                totalX += Brain.GetInteractionPosition().x;
+                totalY += Brain.GetInteractionPosition().z;
+                centerX = totalX / count;
+                centerZ = totalY / count;
+            } else 
+            {
+                centerX = totalX / count;
+                centerZ = totalY / count;
+            }
+
+            Vector3 groupCenter = new Vector3(centerX, 0, centerZ);
+            Vector3 heading = groupCenter - Brain.Actor.transform.position;
+            heading.y = 0;
+            heading.Normalize();
+            m_InteractionPoint = groupCenter + (-m_GroupDistance * heading);
 
             NavMeshHit hit;
-            if (NavMesh.SamplePosition(interactionPoint, out hit, 5, m_NavMeshMask))
+            if (NavMesh.SamplePosition(m_InteractionPoint, out hit, 5, m_NavMeshMask))
             {
-                interactionPoint = hit.position;
+                m_InteractionPoint = hit.position;
             }
             else
             {
@@ -208,25 +237,29 @@ namespace WizardsCode.Character.AI
             {
                 interactionPointT = new GameObject(InteractionPointName).transform;
             }
-            interactionPointT.position = interactionPoint;
+            interactionPointT.position = m_InteractionPoint;
 
-            if (m_OnStartCue != null)
+            if (Vector3.SqrMagnitude(Brain.Actor.MoveTargetPosition - m_InteractionPoint) > 0.25f)
             {
-                m_OnStartCue.Mark = InteractionPointName;
-            } 
-            
-            if (setOnNavMesh)
-            {
-                if (m_Agent != null)
-                {
-                    m_Agent.SetDestination(interactionPoint);
-                } else
-                {
-                    Debug.LogError(Brain.DisplayName + " is attempting to set an interaction point on the navmesh but does not have a NavMeshAgent component.");
-                }
+                Brain.Actor.MoveTo(m_InteractionPoint,
+                    () =>
+                    {
+                        Brain.Actor.Prompt(m_OnArrivingCue);
+                    },
+                    () =>
+                    {
+                        Brain.Actor.Prompt(m_OnArrivedCue);
+                        Brain.Actor.TurnToFace(m_InteractionPoint);
+                        if (m_OnArrivedCue)
+                        {
+                            EndTime = Time.timeSinceLevelLoad + m_OnArrivedCue.Duration;
+                        }
+                    },
+                    null
+                );
             }
         }
-
+        
         private void UpdateParticipantsList()
         {
             participants.Clear();

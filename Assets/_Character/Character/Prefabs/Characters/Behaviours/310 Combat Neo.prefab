@@ -56,7 +56,10 @@ MonoBehaviour:
   m_OnEndEvent:
     m_PersistentCalls:
       m_Calls: []
-  m_OnStartCue: {fileID: 11400000, guid: b47f8a2f43b52954497731340962f96b, type: 2}
+  m_OnStartCue: {fileID: 0}
+  m_OnStartMovingCue: {fileID: 0}
+  m_OnArrivingCue: {fileID: 0}
+  m_OnArrivedCue: {fileID: 11400000, guid: dc5834a45bace2d4f86aab4f95bc0411, type: 2}
   m_OnEndCue: {fileID: 0}
   m_WeightMultiplier: 1
   m_RequiredSenses:
@@ -232,7 +235,7 @@ PrefabInstance:
     - target: {fileID: 8444945103901806786, guid: 5946825c01ac14c4b8a72b03526b1f70,
         type: 3}
       propertyPath: m_Name
-      value: Combat Neo 1
+      value: 310 Combat Neo
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 2851913596218926374, guid: 5946825c01ac14c4b8a72b03526b1f70, type: 3}

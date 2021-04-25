@@ -66,7 +66,7 @@ namespace WizardsCode.Character
                 if (m_TargetPosition != value)
                 {
                     m_TargetPosition = value;
-                    controller.MoveTargetPosition = value;
+                    ActorController.MoveTargetPosition = value;
                     timeToNextWanderPathChange = Random.Range(minTimeBetweenRandomPathChanges, maxTimeBetweenRandomPathChanges);
                 }
             }
@@ -76,7 +76,7 @@ namespace WizardsCode.Character
         {
             timeToNextWanderPathChange -= Time.deltaTime;
 
-            if (timeToNextWanderPathChange > 0 && controller.HasReachedTarget)
+            if (timeToNextWanderPathChange > 0 && ActorController.IsMoving)
             {
                 OnReachedTarget();
                 FinishBehaviour();

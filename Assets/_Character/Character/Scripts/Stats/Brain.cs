@@ -39,13 +39,14 @@ namespace WizardsCode.Stats {
         private AbstractAIBehaviour m_ActiveBlockingBehaviour;
         private string m_RequestedBehaviour;
 
+        protected float interactionOffset = 1;
         /// <summary>
         /// Return an available interaction position for this brain.
         /// </summary>
         /// <returns></returns>
         public Vector3 GetInteractionPosition()
         {
-            return transform.position + transform.forward;
+            return transform.position + (transform.forward * interactionOffset);
         }
 
         public AbstractAIBehaviour ActiveBlockingBehaviour {

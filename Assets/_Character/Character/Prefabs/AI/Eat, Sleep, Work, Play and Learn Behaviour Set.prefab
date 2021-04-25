@@ -50,10 +50,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Description: 
   m_DisplayName: Eat
-  m_OnStartCue: {fileID: 0}
-  m_OnEndCue: {fileID: 0}
+  Icon: {fileID: 0}
   m_RetryFrequency: 2
-  m_AbortDuration: 30
+  m_isInteruptable: 0
+  m_MaximumExecutionTime: 30
+  m_IsBlocking: 1
+  m_OnStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStartCue: {fileID: 0}
+  m_OnStartMovingCue: {fileID: 0}
+  m_OnArrivingCue: {fileID: 0}
+  m_OnArrivedCue: {fileID: 0}
+  m_OnEndCue: {fileID: 0}
+  m_WeightMultiplier: 1
+  m_RequiredSenses: []
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
     objective: 2
@@ -62,6 +76,7 @@ MonoBehaviour:
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
     objective: 0
+  m_RequiredWorldState: []
   awarenessRange: 10
 --- !u!114 &7604596892291220884
 MonoBehaviour:
@@ -77,10 +92,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Description: 
   m_DisplayName: Sleep
-  m_OnStartCue: {fileID: 11400000, guid: 34b713355e2d4da44a2b698ca034bdc9, type: 2}
-  m_OnEndCue: {fileID: 11400000, guid: 2cbd918a3c0f4cf4aac8a8085c31f539, type: 2}
+  Icon: {fileID: 0}
   m_RetryFrequency: 2
-  m_AbortDuration: 30
+  m_isInteruptable: 0
+  m_MaximumExecutionTime: 30
+  m_IsBlocking: 1
+  m_OnStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStartCue: {fileID: 11400000, guid: 29999be4377abbf46ac02f3954c9bac1, type: 2}
+  m_OnStartMovingCue: {fileID: 0}
+  m_OnArrivingCue: {fileID: 0}
+  m_OnArrivedCue: {fileID: 0}
+  m_OnEndCue: {fileID: 11400000, guid: 145ac9ac6dbc36e448236a34004ffe76, type: 2}
+  m_WeightMultiplier: 1
+  m_RequiredSenses: []
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
     objective: 0
@@ -89,6 +118,7 @@ MonoBehaviour:
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
     objective: 2
+  m_RequiredWorldState: []
   awarenessRange: 100
 --- !u!114 &2242483778498595817
 MonoBehaviour:
@@ -104,10 +134,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Description: 
   m_DisplayName: Work
-  m_OnStartCue: {fileID: 0}
-  m_OnEndCue: {fileID: 0}
+  Icon: {fileID: 0}
   m_RetryFrequency: 2
-  m_AbortDuration: 30
+  m_isInteruptable: 0
+  m_MaximumExecutionTime: 30
+  m_IsBlocking: 1
+  m_OnStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStartCue: {fileID: 0}
+  m_OnStartMovingCue: {fileID: 0}
+  m_OnArrivingCue: {fileID: 0}
+  m_OnArrivedCue: {fileID: 0}
+  m_OnEndCue: {fileID: 0}
+  m_WeightMultiplier: 1
+  m_RequiredSenses: []
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
     objective: 0
@@ -116,6 +160,7 @@ MonoBehaviour:
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
     objective: 2
+  m_RequiredWorldState: []
   awarenessRange: 25
 --- !u!114 &1031709833432347895
 MonoBehaviour:
@@ -131,10 +176,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Description: 
   m_DisplayName: Learn
-  m_OnStartCue: {fileID: 0}
-  m_OnEndCue: {fileID: 0}
+  Icon: {fileID: 0}
   m_RetryFrequency: 2
-  m_AbortDuration: 30
+  m_isInteruptable: 0
+  m_MaximumExecutionTime: 30
+  m_IsBlocking: 1
+  m_OnStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStartCue: {fileID: 0}
+  m_OnStartMovingCue: {fileID: 0}
+  m_OnArrivingCue: {fileID: 0}
+  m_OnArrivedCue: {fileID: 0}
+  m_OnEndCue: {fileID: 0}
+  m_WeightMultiplier: 1
+  m_RequiredSenses: []
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: 3091b91fc8dcd26428dac24f52b6116e, type: 2}
     objective: 0
@@ -143,6 +202,7 @@ MonoBehaviour:
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: 3091b91fc8dcd26428dac24f52b6116e, type: 2}
     objective: 2
+  m_RequiredWorldState: []
   awarenessRange: 10
 --- !u!114 &3634621180718998709
 MonoBehaviour:
@@ -158,10 +218,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Description: 
   m_DisplayName: Socialize
-  m_OnStartCue: {fileID: 0}
-  m_OnEndCue: {fileID: 0}
+  Icon: {fileID: 0}
   m_RetryFrequency: 2
-  m_AbortDuration: 30
+  m_isInteruptable: 0
+  m_MaximumExecutionTime: 30
+  m_IsBlocking: 1
+  m_OnStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStartCue: {fileID: 0}
+  m_OnStartMovingCue: {fileID: 0}
+  m_OnArrivingCue: {fileID: 0}
+  m_OnArrivedCue: {fileID: 0}
+  m_OnEndCue: {fileID: 0}
+  m_WeightMultiplier: 1
+  m_RequiredSenses: []
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
     objective: 2
@@ -170,6 +244,7 @@ MonoBehaviour:
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: e7d5ac7f90040d04b892ec7dda97749d, type: 2}
     objective: 2
+  m_RequiredWorldState: []
   awarenessRange: 10
 --- !u!114 &1031709833432347893
 MonoBehaviour:
@@ -185,13 +260,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Description: 
   m_DisplayName: Wander
-  m_OnStartCue: {fileID: 0}
-  m_OnEndCue: {fileID: 0}
+  Icon: {fileID: 0}
   m_RetryFrequency: 2
-  m_AbortDuration: 30
+  m_isInteruptable: 0
+  m_MaximumExecutionTime: 30
+  m_IsBlocking: 1
+  m_OnStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStartCue: {fileID: 0}
+  m_OnStartMovingCue: {fileID: 0}
+  m_OnArrivingCue: {fileID: 0}
+  m_OnArrivedCue: {fileID: 0}
+  m_OnEndCue: {fileID: 0}
+  m_WeightMultiplier: 1
+  m_RequiredSenses: []
   m_RequiredStats: []
   m_CharacterInfluences: []
   m_DesiredStateImpacts: []
+  m_RequiredWorldState: []
   minTimeBetweenRandomPathChanges: 5
   maxTimeBetweenRandomPathChanges: 15
   minDistanceOfRandomPathChange: 10

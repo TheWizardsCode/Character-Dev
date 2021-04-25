@@ -119,6 +119,12 @@ namespace WizardsCode.Character
             desiredRotation = rotation;
             isRotating = true;
         }
+
+        internal void TurnToFace(Vector3 position)
+        {
+            desiredRotation = Quaternion.LookRotation(position - transform.position, Vector3.up);
+            isRotating = true;
+        }
         #endregion
 
         internal Vector3 MoveTargetPosition
@@ -152,6 +158,8 @@ namespace WizardsCode.Character
         /// <param name="cue">The cue to enact.</param>
         public void Prompt(ActorCue cue)
         {
+            if (cue == null) return;
+
             cueCoroutine = cue.Prompt(this);
             if (cueCoroutine != null)
             {
@@ -254,10 +262,16 @@ namespace WizardsCode.Character
                     }
                     break;
                 case States.Moving:
+                    if ((!m_Agent.hasPath && !m_Agent.pathPending))
+                    {
+                        m_State = States.Stationary;
+                    }
+
                     if ((m_Agent.hasPath && !m_Agent.pathPending) && m_Agent.remainingDistance <= m_ArrivingDistance)
                     {
                         m_State = States.Arriving;
                     }
+
                     hasMoved = true;
                     break;
                 case States.Arriving:

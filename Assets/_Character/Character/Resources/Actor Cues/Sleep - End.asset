@@ -9,12 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95162dea08fa43a42b2ebe0dbe2ab9a2, type: 3}
+  m_Script: {fileID: 11500000, guid: 335506291277d6e4093c10c51e9a20df, type: 3}
   m_Name: Sleep - End
   m_EditorClassIdentifier: 
   markName: 
   audioClip: {fileID: 0}
-  dialogue: 
+  m_KnotName: 
+  m_StitchName: 
   m_LayerName: 
   m_LayerWeight: 1
   m_LayerChangeSpeed: 5
@@ -24,5 +25,6 @@ MonoBehaviour:
   paramIntValue: 0
   paramBoolValue: 0
   animationClipName: 
-  animationLayer: 0
+  animationClipLayer: 
+  animationClipLayerWeight: 1
   animationNormalizedTime: 0

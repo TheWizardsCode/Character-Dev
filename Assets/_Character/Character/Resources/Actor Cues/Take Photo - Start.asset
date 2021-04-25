@@ -9,17 +9,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95162dea08fa43a42b2ebe0dbe2ab9a2, type: 3}
-  m_Name: Go To Sleep
+  m_Script: {fileID: 11500000, guid: 335506291277d6e4093c10c51e9a20df, type: 3}
+  m_Name: Take Photo - Start
   m_EditorClassIdentifier: 
   markName: 
   audioClip: {fileID: 0}
-  dialogue: 
-  paramName: Sleeping
-  paramType: 2
+  m_KnotName: 
+  m_StitchName: 
+  m_LayerName: 
+  m_LayerWeight: 1
+  m_LayerChangeSpeed: 5
+  paramName: 
+  paramType: 0
   paramFloatValue: 0
   paramIntValue: 0
-  paramBoolValue: 1
-  animationClipName: 
-  animationLayer: 0
+  paramBoolValue: 0
+  animationClipName: Take Photo
+  animationClipLayer: Action
+  animationClipLayerWeight: 1
   animationNormalizedTime: 0
