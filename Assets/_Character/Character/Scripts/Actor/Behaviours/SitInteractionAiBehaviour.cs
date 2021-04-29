@@ -21,14 +21,16 @@ namespace WizardsCode.Character
             Sit(CurrentInteractableTarget.interactionPoint);
         }
 
-        internal override void FinishBehaviour()
+        internal override float FinishBehaviour()
         {
-            base.FinishBehaviour();
+            float endTime = base.FinishBehaviour();
 
             Brain.Actor.Animator.SetBool("Sitting", false);
             Vector3 pos = transform.position;
             pos.z += sittingOffset;
             Brain.Actor.MoveTargetPosition = pos;
+
+            return endTime;
         }
 
         public void Sit(Transform sitPosition)

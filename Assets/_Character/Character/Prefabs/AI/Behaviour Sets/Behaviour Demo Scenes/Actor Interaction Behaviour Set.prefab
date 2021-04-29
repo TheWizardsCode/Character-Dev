@@ -50,8 +50,17 @@ MonoBehaviour:
   m_isInteruptable: 0
   m_MaximumExecutionTime: 30
   m_IsBlocking: 1
-  m_OnStartCue: {fileID: 11400000, guid: 716b34414e14a5b4e92780860e1caf54, type: 2}
-  m_OnEndCue: {fileID: 11400000, guid: c220bd84de21d764baaf6455d6a576a8, type: 2}
+  m_OnStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStartCue: {fileID: 11400000, guid: 64adc2cf94e21b64c91d06b5f0018f04, type: 2}
+  m_OnStartMovingCue: {fileID: 0}
+  m_OnArrivingCue: {fileID: 0}
+  m_OnArrivedCue: {fileID: 0}
+  m_OnEndCue: {fileID: 11400000, guid: 84021eebbf895b8439a97a8d49ebd50d, type: 2}
   m_WeightMultiplier: 1
   m_RequiredSenses:
   - {fileID: 0}
@@ -62,6 +71,7 @@ MonoBehaviour:
     applyOnCompletion: 0
   m_DesiredStateImpacts: []
   m_RequiredWorldState: []
+  m_RequireConsent: 1
   m_MinGroupSize: 1
   m_MaxGroupSize: 3
   m_GroupDistance: 0

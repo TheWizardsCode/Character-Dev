@@ -28,6 +28,7 @@ namespace WizardsCode.Animation
         private bool m_IsTalking;
 #endif
 
+        // TODO Should look up the index of the talking layer
         private const int TALKING_LAYER_INDEX = 1;
 
         private void Awake()
@@ -41,22 +42,13 @@ namespace WizardsCode.Animation
 
         void Update()
         {
-            if (m_animator.GetLayerWeight(TALKING_LAYER_INDEX) != m_GoalWeight)
+            float currentWeight = m_animator.GetLayerWeight(TALKING_LAYER_INDEX);
+            if (!Mathf.Approximately(currentWeight, m_GoalWeight))
             {
-                m_ChangeProgress += Time.deltaTime;
+                m_animator.SetLayerWeight(TALKING_LAYER_INDEX, Mathf.Lerp(currentWeight, m_GoalWeight, m_ChangeDuration));
             } else
             {
                 m_ChangeProgress = 0;
-            }
-
-            if (isTalking)
-            {
-                m_GoalWeight = m_TalkingLayerWieght;
-                m_animator.SetLayerWeight(TALKING_LAYER_INDEX, Mathf.Lerp(m_animator.GetLayerWeight(TALKING_LAYER_INDEX), m_GoalWeight, m_ChangeProgress / m_ChangeDuration));
-            } else
-            {
-                m_GoalWeight = 0;
-                m_animator.SetLayerWeight(TALKING_LAYER_INDEX, Mathf.Lerp(m_animator.GetLayerWeight(TALKING_LAYER_INDEX), m_GoalWeight, m_ChangeProgress / m_ChangeDuration));
             }
         }
 
@@ -84,6 +76,13 @@ namespace WizardsCode.Animation
             set
             {
                 m_IsTalking = value;
+                if (m_IsTalking)
+                {
+                    m_GoalWeight = m_TalkingLayerWieght;
+                } else
+                {
+                    m_GoalWeight = 0;
+                }
             }
         }
 #endif

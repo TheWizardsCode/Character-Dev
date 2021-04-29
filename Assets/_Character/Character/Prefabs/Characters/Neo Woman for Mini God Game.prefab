@@ -80,13 +80,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Description: If the actor is hungry then gather berries from bushes to eat.
   m_DisplayName: Gather Berries
+  Icon: {fileID: 0}
   m_RetryFrequency: 2
   m_isInteruptable: 0
   m_MaximumExecutionTime: 30
   m_IsBlocking: 1
+  m_OnStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnStartCue: {fileID: 0}
   m_OnEndCue: {fileID: 0}
-  m_MinimumWeight: 0
+  m_WeightMultiplier: 1
   m_RequiredSenses: []
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
@@ -114,13 +121,20 @@ MonoBehaviour:
     one then they will chop it down. This uses a fair amount of energy but wood is
     vital to survival.
   m_DisplayName: Fell Tree
+  Icon: {fileID: 0}
   m_RetryFrequency: 2
   m_isInteruptable: 0
   m_MaximumExecutionTime: 30
   m_IsBlocking: 1
+  m_OnStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnStartCue: {fileID: 0}
   m_OnEndCue: {fileID: 0}
-  m_MinimumWeight: 0
+  m_WeightMultiplier: 1
   m_RequiredSenses: []
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
@@ -149,13 +163,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Description: When two actors love one another they may try to make babies.
   m_DisplayName: Make Babies
+  Icon: {fileID: 0}
   m_RetryFrequency: 2
   m_isInteruptable: 0
   m_MaximumExecutionTime: 30
   m_IsBlocking: 1
+  m_OnStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnStartCue: {fileID: 0}
   m_OnEndCue: {fileID: 0}
-  m_MinimumWeight: 0
+  m_WeightMultiplier: 1
   m_RequiredSenses:
   - {fileID: 2255677859078224893}
   m_RequiredStats:
@@ -216,13 +237,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Description: Build a home for oneself and other actors.
   m_DisplayName: Build a Home
+  Icon: {fileID: 0}
   m_RetryFrequency: 2
   m_isInteruptable: 0
   m_MaximumExecutionTime: 30
   m_IsBlocking: 1
+  m_OnStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnStartCue: {fileID: 0}
   m_OnEndCue: {fileID: 0}
-  m_MinimumWeight: 0
+  m_WeightMultiplier: 1
   m_RequiredSenses: []
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
@@ -1250,7 +1278,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c16293aed1528d24aad933246e10feee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_DisplayName: Neo woman
   m_DesiredStates:
   - {fileID: 11400000, guid: 53dc65a468340dd458f231254029ab52, type: 2}
   - {fileID: 11400000, guid: ecc69f49e6bf0de4aa6a4d2cd85c971b, type: 2}
@@ -1261,6 +1288,11 @@ MonoBehaviour:
   m_TimeBetweenUpdates: 0.5
   m_Stats: []
   m_StatsInfluencers: []
+  m_FallbackBehaviour: {fileID: 0}
+  m_ShowBehaviourIcon: 1
+  m_IconUI: {fileID: 0}
+  m_DefaultIcon: {fileID: 0}
+  m_MissingIcon: {fileID: 0}
 --- !u!114 &796396021353043570
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1273,9 +1305,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a6accd2cb69e3e4fa6abfca9de05a98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SpeedParameterName: Forward
-  TurnParameterName: Turn
+  m_MaxSpeed: 8
+  m_NormalSpeedFactor: 0.4375
+  m_ArrivingDistance: 1
+  m_SpeedParameterName: Forward
+  m_TurnParameterName: Turn
   m_RunningSpeed: 8
+  m_LookAtTarget: {fileID: 0}
+  isFootIKActive: 0
+  m_IsLookAtIKActive: 1
+  head: {fileID: 0}
+  m_LookAtSpeed: 6
+  m_LookAtHeatTime: 0.2
+  m_LookAtCoolTime: 0.2
 --- !u!114 &7974437015794142173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1317,6 +1359,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7588304403786239542, guid: f08bda8b5926d0c43b6e8c1eb6837497,
         type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7588304403786239542, guid: f08bda8b5926d0c43b6e8c1eb6837497,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -1332,6 +1379,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7588304403786239542, guid: f08bda8b5926d0c43b6e8c1eb6837497,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7588304403786239542, guid: f08bda8b5926d0c43b6e8c1eb6837497,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
@@ -1344,16 +1396,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7588304403786239542, guid: f08bda8b5926d0c43b6e8c1eb6837497,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7588304403786239542, guid: f08bda8b5926d0c43b6e8c1eb6837497,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7588304403786239542, guid: f08bda8b5926d0c43b6e8c1eb6837497,
         type: 3}
@@ -1402,6 +1444,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7096533203176342199, guid: c76425f2fc23a7a4490ae59aecf6d864,
         type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7096533203176342199, guid: c76425f2fc23a7a4490ae59aecf6d864,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -1417,6 +1464,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7096533203176342199, guid: c76425f2fc23a7a4490ae59aecf6d864,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7096533203176342199, guid: c76425f2fc23a7a4490ae59aecf6d864,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
@@ -1429,16 +1481,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7096533203176342199, guid: c76425f2fc23a7a4490ae59aecf6d864,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7096533203176342199, guid: c76425f2fc23a7a4490ae59aecf6d864,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7096533203176342199, guid: c76425f2fc23a7a4490ae59aecf6d864,
         type: 3}
@@ -1477,16 +1519,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7654075429267959082, guid: 43f26c8e51ef1964db1e13e401cd718c,
         type: 3}
+      propertyPath: range
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7654075429267959082, guid: 43f26c8e51ef1964db1e13e401cd718c,
+        type: 3}
       propertyPath: description
       value: 'Find the nearest actor to this actors current position.
 
         Note:
         this is intended to test for line of site, but this is not implemented yet.'
       objectReference: {fileID: 0}
-    - target: {fileID: 7654075429267959082, guid: 43f26c8e51ef1964db1e13e401cd718c,
+    - target: {fileID: 8491700251121003140, guid: 43f26c8e51ef1964db1e13e401cd718c,
         type: 3}
-      propertyPath: range
-      value: 2
+      propertyPath: m_RootOrder
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8491700251121003140, guid: 43f26c8e51ef1964db1e13e401cd718c,
         type: 3}
@@ -1505,6 +1552,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8491700251121003140, guid: 43f26c8e51ef1964db1e13e401cd718c,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8491700251121003140, guid: 43f26c8e51ef1964db1e13e401cd718c,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
@@ -1517,16 +1569,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8491700251121003140, guid: 43f26c8e51ef1964db1e13e401cd718c,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8491700251121003140, guid: 43f26c8e51ef1964db1e13e401cd718c,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8491700251121003140, guid: 43f26c8e51ef1964db1e13e401cd718c,
         type: 3}

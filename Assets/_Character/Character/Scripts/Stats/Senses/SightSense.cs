@@ -55,6 +55,7 @@ namespace WizardsCode.Character.AI
                 }
             }
         }
+
         private void OnValidate()
         {
             Type componentType = Type.GetType(m_ComponentTypeNameToSense);

@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.AI;
+using WizardsCode.Animation;
 using WizardsCode.Stats;
 
 namespace WizardsCode.Character
@@ -32,7 +33,7 @@ namespace WizardsCode.Character
         private float m_RunningSpeed = 8;
         [SerializeField, Tooltip("A transform at the point in space that the actor should look towards.")]
         Transform m_LookAtTarget;
-
+        
         [Header("IK")]
         [Tooltip("If true then this script will control IK configuration of the character.")]
         public bool isFootIKActive = false;
@@ -75,10 +76,12 @@ namespace WizardsCode.Character
 
         Quaternion desiredRotation = default;
         bool isRotating = false;
-        #endregion
+
+        AnimationLayerController m_AnimationLayers;
+    #endregion
 
 
-        internal Transform LookAtTarget
+    internal Transform LookAtTarget
         {
             get { return m_LookAtTarget; }
             set
@@ -110,10 +113,21 @@ namespace WizardsCode.Character
             onStationary = stationaryCallback;
             MoveTargetPosition = position;
         }
-        
+
+        internal void MoveTo(Transform destination)
+        {
+            MoveTo(destination.position, null, null, null);
+        }
+
         internal void TurnTo(Quaternion rotation)
         {
             desiredRotation = rotation;
+            isRotating = true;
+        }
+
+        internal void TurnToFace(Vector3 position)
+        {
+            desiredRotation = Quaternion.LookRotation(position - transform.position, Vector3.up);
             isRotating = true;
         }
         #endregion
@@ -123,14 +137,11 @@ namespace WizardsCode.Character
             get { return m_Agent.destination; }
             set
             {
-                m_Agent.SetDestination(value);
-                m_State = States.Moving;
+                if (Vector3.Distance(m_Agent.destination, value) > m_Agent.stoppingDistance)
+                {
+                    m_Agent.SetDestination(value);
+                }
             }
-        }
-
-        internal void MoveTo(Transform destination)
-        {
-            MoveTargetPosition = destination.position;
         }
 
         /// <summary>
@@ -149,6 +160,8 @@ namespace WizardsCode.Character
         /// <param name="cue">The cue to enact.</param>
         public void Prompt(ActorCue cue)
         {
+            if (cue == null) return;
+
             cueCoroutine = cue.Prompt(this);
             if (cueCoroutine != null)
             {
@@ -159,6 +172,8 @@ namespace WizardsCode.Character
         protected virtual void Awake()
         {
             m_Animator = GetComponentInChildren<Animator>();
+            m_AnimationLayers = GetComponentInChildren<AnimationLayerController>();
+
             m_Agent = GetComponent<NavMeshAgent>();
             m_Brain = GetComponent<Brain>();
             MoveTargetPosition = transform.position;
@@ -172,7 +187,7 @@ namespace WizardsCode.Character
             }
             if (!head)
             {
-                Debug.LogError("No head transform set on " + gameObject.name + " and one could not be found automatically - LookAt disabled");
+                Debug.LogWarning("No head transform set on " + gameObject.name + " and one could not be found automatically - LookAt disabled");
                 m_IsLookAtIKActive = false;
             }
         }
@@ -189,10 +204,13 @@ namespace WizardsCode.Character
             SetForwardAndTurnParameters();
             ManageState();
 
-            float sqrMagToLookAtTarget = Vector3.SqrMagnitude(LookAtTarget.position - transform.position);
-            if (sqrMagToLookAtTarget > 100)
+            if (LookAtTarget != null)
             {
-                ResetLookAt();
+                float sqrMagToLookAtTarget = Vector3.SqrMagnitude(LookAtTarget.position - transform.position);
+                if (sqrMagToLookAtTarget > 100)
+                {
+                    ResetLookAt();
+                }
             }
 
             RotateIfNeeded();
@@ -205,7 +223,7 @@ namespace WizardsCode.Character
         /// </summary>
         private void RotateIfNeeded()
         {
-            if (!isRotating)
+            if (!isRotating && m_LookAtTarget != null)
             {
                 Vector3 lookAtHeading = LookAtTarget.position - transform.position;
                 float dot = Vector3.Dot(lookAtHeading, transform.forward);
@@ -235,7 +253,7 @@ namespace WizardsCode.Character
         /// </summary>
         private void ManageState()
         {
-            switch (m_State)
+             switch (m_State)
             {
                 case States.Stationary:
                     if (hasMoved && onStationary != null)
@@ -250,6 +268,7 @@ namespace WizardsCode.Character
                     {
                         m_State = States.Arriving;
                     }
+
                     hasMoved = true;
                     break;
                 case States.Arriving:
@@ -279,19 +298,16 @@ namespace WizardsCode.Character
         private void SetForwardAndTurnParameters()
         {
             float magVelocity = m_Agent.velocity.magnitude;
-            float animSpeed = 1;
             float speedParam = 0;
             if (!Mathf.Approximately(magVelocity, 0))
             {
                 if (magVelocity <= m_NormalSpeed)
                 {
                     speedParam = magVelocity / (m_NormalSpeed + m_MaxSpeed);
-                    animSpeed = magVelocity / m_NormalSpeed;
                 }
                 else
                 {
                     speedParam = magVelocity / m_MaxSpeed;
-                    animSpeed = speedParam;
                 }
             }
 
@@ -299,7 +315,6 @@ namespace WizardsCode.Character
             float turn = s.x;
 
             m_Animator.SetFloat(m_SpeedParameterName, speedParam);
-            m_Animator.speed = Math.Abs(animSpeed);
             m_Animator.SetFloat(m_TurnParameterName, turn);
 
             if (speedParam > 0.01 || turn > 0.01)
@@ -421,6 +436,21 @@ namespace WizardsCode.Character
             LookAtTarget.transform.SetParent(transform);
             LookAtTarget.transform.localPosition = head.position + new Vector3(0, 0, 1);
             isRotating = false;
+        }
+        public void StartTalking()
+        {
+            if (m_AnimationLayers != null)
+            {
+                m_AnimationLayers.isTalking = true;
+            }
+        }
+
+        public void StopTalking()
+        {
+            if (m_AnimationLayers != null)
+            {
+                m_AnimationLayers.isTalking = false;
+            }
         }
     }
 }

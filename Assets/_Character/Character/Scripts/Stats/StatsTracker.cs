@@ -121,6 +121,8 @@ namespace WizardsCode.Stats {
             bool isSatisfied;
             UnsatisfiedDesiredStates.Clear();
 
+            if (DesiredStates == null) return;
+
             for (int i = 0; i < DesiredStates.Length; i++)
             {
                 behaviours = DesiredStates[i].SatisfiedBehaviours;

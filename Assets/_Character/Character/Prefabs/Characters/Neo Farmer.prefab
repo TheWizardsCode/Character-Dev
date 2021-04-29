@@ -392,11 +392,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Description: 
   m_DisplayName: Eat
-  m_OnStartCue: {fileID: 0}
-  m_OnEndCue: {fileID: 0}
+  Icon: {fileID: 0}
   m_RetryFrequency: 2
   m_isInteruptable: 0
-  m_AbortDuration: 30
+  m_MaximumExecutionTime: 30
+  m_IsBlocking: 1
+  m_OnStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStartCue: {fileID: 0}
+  m_OnStartMovingCue: {fileID: 0}
+  m_OnArrivingCue: {fileID: 0}
+  m_OnArrivedCue: {fileID: 0}
+  m_OnEndCue: {fileID: 0}
+  m_WeightMultiplier: 1
+  m_RequiredSenses: []
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
     objective: 2
@@ -405,6 +418,7 @@ MonoBehaviour:
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
     objective: 0
+  m_RequiredWorldState: []
   awarenessRange: 100
 --- !u!114 &6764351879361743090
 MonoBehaviour:
@@ -420,11 +434,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Description: 
   m_DisplayName: Sleep
-  m_OnStartCue: {fileID: 11400000, guid: 34b713355e2d4da44a2b698ca034bdc9, type: 2}
-  m_OnEndCue: {fileID: 11400000, guid: 2cbd918a3c0f4cf4aac8a8085c31f539, type: 2}
+  Icon: {fileID: 0}
   m_RetryFrequency: 2
   m_isInteruptable: 0
-  m_AbortDuration: 30
+  m_MaximumExecutionTime: 30
+  m_IsBlocking: 1
+  m_OnStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStartCue: {fileID: 11400000, guid: 29999be4377abbf46ac02f3954c9bac1, type: 2}
+  m_OnStartMovingCue: {fileID: 0}
+  m_OnArrivingCue: {fileID: 0}
+  m_OnArrivedCue: {fileID: 0}
+  m_OnEndCue: {fileID: 0}
+  m_WeightMultiplier: 1
+  m_RequiredSenses: []
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
     objective: 0
@@ -433,6 +460,7 @@ MonoBehaviour:
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
     objective: 2
+  m_RequiredWorldState: []
   awarenessRange: 50
 --- !u!114 &3119268005044323983
 MonoBehaviour:
@@ -448,11 +476,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Description: 
   m_DisplayName: Work
-  m_OnStartCue: {fileID: 0}
-  m_OnEndCue: {fileID: 0}
+  Icon: {fileID: 0}
   m_RetryFrequency: 2
   m_isInteruptable: 0
-  m_AbortDuration: 30
+  m_MaximumExecutionTime: 30
+  m_IsBlocking: 1
+  m_OnStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStartCue: {fileID: 0}
+  m_OnStartMovingCue: {fileID: 0}
+  m_OnArrivingCue: {fileID: 0}
+  m_OnArrivedCue: {fileID: 0}
+  m_OnEndCue: {fileID: 0}
+  m_WeightMultiplier: 1
+  m_RequiredSenses: []
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
     objective: 0
@@ -461,6 +502,7 @@ MonoBehaviour:
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
     objective: 2
+  m_RequiredWorldState: []
   awarenessRange: 40
 --- !u!114 &4181139273561913745
 MonoBehaviour:
@@ -476,11 +518,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Description: 
   m_DisplayName: Learn
-  m_OnStartCue: {fileID: 0}
-  m_OnEndCue: {fileID: 0}
+  Icon: {fileID: 0}
   m_RetryFrequency: 2
   m_isInteruptable: 0
-  m_AbortDuration: 30
+  m_MaximumExecutionTime: 30
+  m_IsBlocking: 1
+  m_OnStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStartCue: {fileID: 0}
+  m_OnStartMovingCue: {fileID: 0}
+  m_OnArrivingCue: {fileID: 0}
+  m_OnArrivedCue: {fileID: 0}
+  m_OnEndCue: {fileID: 0}
+  m_WeightMultiplier: 1
+  m_RequiredSenses: []
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: 3091b91fc8dcd26428dac24f52b6116e, type: 2}
     objective: 0
@@ -489,6 +544,7 @@ MonoBehaviour:
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: 3091b91fc8dcd26428dac24f52b6116e, type: 2}
     objective: 2
+  m_RequiredWorldState: []
   awarenessRange: 20
 --- !u!114 &443602433559062995
 MonoBehaviour:
@@ -504,11 +560,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Description: 
   m_DisplayName: Socialize
-  m_OnStartCue: {fileID: 0}
-  m_OnEndCue: {fileID: 0}
+  Icon: {fileID: 0}
   m_RetryFrequency: 2
   m_isInteruptable: 0
-  m_AbortDuration: 30
+  m_MaximumExecutionTime: 30
+  m_IsBlocking: 1
+  m_OnStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStartCue: {fileID: 0}
+  m_OnStartMovingCue: {fileID: 0}
+  m_OnArrivingCue: {fileID: 0}
+  m_OnArrivedCue: {fileID: 0}
+  m_OnEndCue: {fileID: 0}
+  m_WeightMultiplier: 1
+  m_RequiredSenses: []
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
     objective: 2
@@ -517,6 +586,7 @@ MonoBehaviour:
   m_DesiredStateImpacts:
   - statTemplate: {fileID: 11400000, guid: e7d5ac7f90040d04b892ec7dda97749d, type: 2}
     objective: 2
+  m_RequiredWorldState: []
   awarenessRange: 30
 --- !u!114 &4181139273561913747
 MonoBehaviour:
@@ -532,14 +602,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Description: 
   m_DisplayName: Wander
-  m_OnStartCue: {fileID: 0}
-  m_OnEndCue: {fileID: 0}
+  Icon: {fileID: 0}
   m_RetryFrequency: 2
   m_isInteruptable: 1
-  m_AbortDuration: 30
+  m_MaximumExecutionTime: 30
+  m_IsBlocking: 1
+  m_OnStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStartCue: {fileID: 0}
+  m_OnStartMovingCue: {fileID: 0}
+  m_OnArrivingCue: {fileID: 0}
+  m_OnArrivedCue: {fileID: 0}
+  m_OnEndCue: {fileID: 0}
+  m_WeightMultiplier: 1
+  m_RequiredSenses: []
   m_RequiredStats: []
   m_CharacterInfluences: []
   m_DesiredStateImpacts: []
+  m_RequiredWorldState: []
   minTimeBetweenRandomPathChanges: 7
   maxTimeBetweenRandomPathChanges: 20
   minDistanceOfRandomPathChange: 50
@@ -564,7 +648,6 @@ GameObject:
   - component: {fileID: 1807129005313422818}
   - component: {fileID: 2794566155180218067}
   - component: {fileID: 3463343939435989987}
-  - component: {fileID: 6176683830762477132}
   m_Layer: 0
   m_Name: Neo Farmer
   m_TagString: Untagged
@@ -769,7 +852,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c16293aed1528d24aad933246e10feee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_DisplayName: 
   m_DesiredStates:
   - {fileID: 11400000, guid: 53dc65a468340dd458f231254029ab52, type: 2}
   - {fileID: 11400000, guid: c0811d82e3a1aeb40b0f48bab0f522af, type: 2}
@@ -780,6 +862,11 @@ MonoBehaviour:
   m_TimeBetweenUpdates: 0.5
   m_Stats: []
   m_StatsInfluencers: []
+  m_FallbackBehaviour: {fileID: 0}
+  m_ShowBehaviourIcon: 1
+  m_IconUI: {fileID: 0}
+  m_DefaultIcon: {fileID: 0}
+  m_MissingIcon: {fileID: 0}
 --- !u!114 &3463343939435989987
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -792,21 +879,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a6accd2cb69e3e4fa6abfca9de05a98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SpeedParameterName: Forward
-  TurnParameterName: Turn
+  m_MaxSpeed: 8
+  m_NormalSpeedFactor: 0.4375
+  m_ArrivingDistance: 1
+  m_SpeedParameterName: Forward
+  m_TurnParameterName: Turn
   m_RunningSpeed: 8
---- !u!114 &6176683830762477132
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4712245637082726072}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d83f3ce966261b4888d7b2737f98b11, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_LookAtTarget: {fileID: 0}
+  isFootIKActive: 0
+  m_IsLookAtIKActive: 1
+  head: {fileID: 0}
+  m_LookAtSpeed: 6
+  m_LookAtHeatTime: 0.2
+  m_LookAtCoolTime: 0.2
 --- !u!1 &4808930278999760696
 GameObject:
   m_ObjectHideFlags: 0
@@ -1295,6 +1380,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7588304403786239542, guid: f08bda8b5926d0c43b6e8c1eb6837497,
         type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7588304403786239542, guid: f08bda8b5926d0c43b6e8c1eb6837497,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -1310,6 +1400,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7588304403786239542, guid: f08bda8b5926d0c43b6e8c1eb6837497,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7588304403786239542, guid: f08bda8b5926d0c43b6e8c1eb6837497,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
@@ -1322,16 +1417,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7588304403786239542, guid: f08bda8b5926d0c43b6e8c1eb6837497,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7588304403786239542, guid: f08bda8b5926d0c43b6e8c1eb6837497,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7588304403786239542, guid: f08bda8b5926d0c43b6e8c1eb6837497,
         type: 3}

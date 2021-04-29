@@ -19,12 +19,14 @@ namespace WizardsCode.Character.AI
     public class GenericActorInteractionBehaviour : AbstractAIBehaviour
     {
         [Header("Actor Interaction Config")]
+        [SerializeField, Tooltip("If consent is required then the interaction will only start when enough actors have consented to participate. So, for example, a conversation will require consent but an attack will not.")]
+        bool m_RequireConsent = true;
         [SerializeField, Tooltip("What is the minimum number of actors need in the group carrying out this behaviour, including this actor. Before starting this behaviour at least this many actors need to have agreed to participate in the shared behaviour. The group members are identified in the Senses definitions.")]
         int m_MinGroupSize = 2;
         [SerializeField, Tooltip("What is the maximum number of actors need in the group carrying out this behaviour, including this actor. Before starting this behaviour at most this many actors need to have agreed to participate in the shared behaviour. The group members are identified in the Senses definitions.")]
         int m_MaxGroupSize = 5;
         [SerializeField, Tooltip("The distance from the centre of the interacting group that this actor should stand.")]
-        float m_GroupDistance;
+        float m_GroupDistance = 1;
         [SerializeField, Tooltip("How long will the actor wait for handshaking to complete. If this time has passed and the minimum group size has not been met then the behaviour will be aborted.")]
         float m_HandshakeTimeout = 4;
         [SerializeField, Tooltip("How long before this actor can fire this same behaviour?")]
@@ -38,7 +40,6 @@ namespace WizardsCode.Character.AI
         private bool m_IsHandshaking = false;
         List<Brain> participants = new List<Brain>();
         private NavMeshAgent m_Agent;
-        private Vector3 groupCenter;
         private Transform interactionPointT;
 
         private string InteractionPointName { get; set; }
@@ -73,8 +74,10 @@ namespace WizardsCode.Character.AI
 
         protected override void OnUpdate()
         {
+            //TODO OPTIMIZATION probably don't need to update participants and position every tick
+            int count = participants.Count;
             UpdateParticipantsList();
-            UpdateGroupPositions(true);
+            UpdateInteractionPosition(true);
 
             if (m_IsHandshaking)
             {
@@ -84,20 +87,20 @@ namespace WizardsCode.Character.AI
 
                     EndTime = Time.timeSinceLevelLoad + m_Duration;
                     AddCharacterInfluencers(m_Duration);
-                    if (m_OnStartCue != null)
+                    if (m_OnStart != null)
                     {
-                        StartCoroutine(m_OnStartCue.Prompt(Brain.Actor));
+                        Brain.Actor.Prompt(m_OnStart);
                     }
                 }
                 else if (Time.timeSinceLevelLoad > m_HandshakeEndTime)
                 {
                     m_IsHandshaking = false;
-                    FinishBehaviour();
+                    EndTime = FinishBehaviour();
                 }
                 return;
             }
 
-            Vector3 lookTarget = groupCenter;
+            Vector3 lookTarget = m_InteractionPoint;
             lookTarget.y = Brain.Actor.transform.position.y;
             Brain.Actor.transform.LookAt(lookTarget);
 
@@ -111,11 +114,22 @@ namespace WizardsCode.Character.AI
             if (participants.Count < m_MinGroupSize)
             {
                 Debug.Log(Brain.DisplayName + " is stopping " + DisplayName + " because the group size is too small");
-                FinishBehaviour();
+                EndTime = FinishBehaviour();
                 return;
             }
 
             base.OnUpdate();
+        }
+
+        /// <summary>
+        /// Test to see if the actor is at the interaction point for this action.
+        /// </summary>
+        protected virtual bool IsAtInteractionPoint
+        {
+            get
+            {
+                return Vector3.SqrMagnitude(Brain.Actor.MoveTargetPosition - m_InteractionPoint) < 0.25f;
+            }
         }
 
         internal override void StartBehaviour(float duration)
@@ -124,7 +138,7 @@ namespace WizardsCode.Character.AI
             m_Duration = duration;
             m_CooldownEndTime = m_CooldownDuration + Time.timeSinceLevelLoad;
             m_HandshakeEndTime = Time.timeSinceLevelLoad + m_HandshakeTimeout;
-            m_IsHandshaking = true;
+            m_IsHandshaking = m_RequireConsent;
 
             GenericActorInteractionBehaviour[] behaviours;
             for (int i = 0; i < SensedThings.Count; i++)
@@ -147,6 +161,14 @@ namespace WizardsCode.Character.AI
             }
 
             base.StartBehaviour(duration);
+
+            UpdateParticipantsList();
+            UpdateInteractionPosition(true);
+
+            if (Vector3.SqrMagnitude(Brain.Actor.transform.position - m_InteractionPoint) <= 0.25f)
+            {
+                PerformInteraction();
+            }
         }
 
         /// <summary>
@@ -156,7 +178,7 @@ namespace WizardsCode.Character.AI
         internal void InviteToGroup(Brain brain)
         {
             //TODO actors should be more likley to engage with other actors they like or who have valuable information.             
-            m_IsHandshaking = true;
+            m_IsHandshaking = m_RequireConsent;
         }
 
         protected override float BaseWeight(Brain brain)
@@ -171,30 +193,53 @@ namespace WizardsCode.Character.AI
             }
         }
 
-        private void UpdateGroupPositions(bool setOnNavMesh)
+        Vector3 m_InteractionPoint;
+        private Vector3 m_InteractionGroupCenter;
+
+        private void UpdateInteractionPosition(bool setOnNavMesh)
         {
             // Find a point where we will meet the actors to interact
             float totalX = 0;
             float totalY = 0;
             for (int i = 0; i < participants.Count; i++)
             {
-                totalX += participants[i].transform.position.x;
-                totalY += participants[i].transform.position.z;
+                if (participants[i] != Brain)
+                {
+                    totalX += participants[i].GetInteractionPosition().x;
+                    totalY += participants[i].GetInteractionPosition().z;
+                }
             }
 
-            float centerX = totalX / participants.Count;
-            float centerZ = totalY / participants.Count;
-            groupCenter = new Vector3(centerX, 0, centerZ);
-            Vector3 interactionPoint = groupCenter + (-m_GroupDistance * Brain.Actor.transform.forward);
+            float centerX;
+            float centerZ;
+            float count = m_RequireConsent ? participants.Count : participants.Count - 1;
+            if (m_RequireConsent)
+            {
+                // If it requires consent, assume participants will move towards one another
+                totalX += Brain.GetInteractionPosition().x;
+                totalY += Brain.GetInteractionPosition().z;
+                centerX = totalX / count;
+                centerZ = totalY / count;
+            } else 
+            {
+                centerX = totalX / count;
+                centerZ = totalY / count;
+            }
+
+            m_InteractionGroupCenter = new Vector3(centerX, 0, centerZ);
+            Vector3 heading = m_InteractionGroupCenter - Brain.Actor.transform.position;
+            heading.y = 0;
+            heading.Normalize();
+            m_InteractionPoint = m_InteractionGroupCenter + (-m_GroupDistance * heading);
 
             NavMeshHit hit;
-            if (NavMesh.SamplePosition(interactionPoint, out hit, 5, m_NavMeshMask))
+            if (NavMesh.SamplePosition(m_InteractionPoint, out hit, 5, m_NavMeshMask))
             {
-                interactionPoint = hit.position;
+                m_InteractionPoint = hit.position;
             }
             else
             {
-                FinishBehaviour();
+                EndTime = FinishBehaviour();
                 return;
             }
 
@@ -202,22 +247,31 @@ namespace WizardsCode.Character.AI
             {
                 interactionPointT = new GameObject(InteractionPointName).transform;
             }
-            interactionPointT.position = interactionPoint;
+            interactionPointT.position = m_InteractionPoint;
 
-            if (m_OnStartCue != null)
+            if (Vector3.SqrMagnitude(Brain.Actor.MoveTargetPosition - m_InteractionPoint) > 0.25f)
             {
-                m_OnStartCue.Mark = InteractionPointName;
-            } 
-            
-            if (setOnNavMesh)
+                Brain.Actor.MoveTo(m_InteractionPoint,
+                    () =>
+                    {
+                        Brain.Actor.Prompt(m_OnPrepare);
+                    },
+                    () =>
+                    {
+                        PerformInteraction();
+                    },
+                    null
+                );
+            }
+        }
+
+        private void PerformInteraction()
+        {
+            Brain.Actor.Prompt(m_OnPerformInteraction);
+            Brain.Actor.TurnToFace(m_InteractionGroupCenter);
+            if (m_OnPerformInteraction)
             {
-                if (m_Agent != null)
-                {
-                    m_Agent.SetDestination(interactionPoint);
-                } else
-                {
-                    Debug.LogError(Brain.DisplayName + " is attempting to set an interaction point on the navmesh but does not have a NavMeshAgent component.");
-                }
+                EndTime = Time.timeSinceLevelLoad + m_OnPerformInteraction.Duration;
             }
         }
 
@@ -229,31 +283,45 @@ namespace WizardsCode.Character.AI
             GenericActorInteractionBehaviour[] behaviours;
             for (int i = 0; i < SensedThings.Count; i++)
             {
-                //TODO would be more efficient to pull the behaviours from the target brain
-                //TODO this is duplicated in StartBehaviour
-                behaviours = SensedThings[i].GetComponentsInChildren<GenericActorInteractionBehaviour>();
-                if (behaviours.Length == 0)
+                if (m_RequireConsent)
                 {
-                    continue;
-                }
+                    //TODO would be more efficient to pull the behaviours from the target brain
+                    //TODO this is duplicated in StartBehaviour
+                    behaviours = SensedThings[i].GetComponentsInChildren<GenericActorInteractionBehaviour>();
+                    if (behaviours.Length == 0)
+                    {
+                        continue;
+                    }
 
-                //TODO Don't test if the currently active behaviour is the same. Instead have a "handshake" protocol in which both actors agree to participate in the same behaviour on the next frame.
-                AbstractAIBehaviour behaviour = behaviours[0].Brain.ActiveBlockingBehaviour;
-                if (behaviour != null && behaviour.DisplayName == this.DisplayName)
+                    //TODO Don't test if the currently active behaviour is the same. Instead have a "handshake" protocol in which both actors agree to participate in the same behaviour on the next frame.
+                    AbstractAIBehaviour behaviour = behaviours[0].Brain.ActiveBlockingBehaviour;
+                    if (behaviour != null && behaviour.DisplayName == this.DisplayName)
+                    {
+                        participants.Add(behaviours[0].Brain);
+                    }
+                }
+                else
                 {
-                    participants.Add(behaviours[0].Brain);
+                    Brain brain = SensedThings[i].GetComponentInChildren<Brain>();
+                    if (brain) { 
+                        participants.Add(brain);
+                    }
                 }
             }
          }
 
-        internal override void FinishBehaviour()
+        /// <summary>
+        /// Finish the behaviour, prompting any cue needed.
+        /// </summary>
+        /// <returns>The time at which this behaviour should end, if zero then it ends immediately.</returns>
+        internal override float FinishBehaviour()
         {
             for (int i = 0; i < participants.Count; i++)
             {
                 ((GenericActorInteractionBehaviour)participants[i].ActiveBlockingBehaviour).RemoveParticipant(Brain);
             }
 
-            base.FinishBehaviour();
+            return base.FinishBehaviour();
         }
 
         internal void RemoveParticipant(Brain brain)

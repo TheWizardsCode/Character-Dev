@@ -9,6 +9,7 @@ using System.Text;
 using WizardsCode.Character.WorldState;
 using WizardsCode.Character.AI;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace WizardsCode.Character
 {
@@ -41,10 +42,18 @@ namespace WizardsCode.Character
         UnityEvent m_OnStartEvent;
         [SerializeField, Tooltip("Events to fire when this behaviour is finished.")]
         UnityEvent m_OnEndEvent;
-        [SerializeField, Tooltip("An actor cue to send to the actor upon the start of this interaction.")]
-        protected ActorCue m_OnStartCue;
-        [SerializeField, Tooltip("An actor cue to send to the actor upon the ending of this interaction. This should set the character back to their default state.")]
-        protected ActorCue m_OnEndCue;
+        [SerializeField, Tooltip("An actor cue to send to the actor upon the start of this interaction. It should be used to configure the actor ready for the interaction.")]
+        [FormerlySerializedAs("m_OnStartCue")] // v0.11
+        protected ActorCue m_OnStart;
+        [SerializeField, Tooltip("An actor cue to send to the actor as they start the prepare phase of this interaction. This is where you will typically play wind up animations and the like.")]
+        [FormerlySerializedAs("m_OnArrivingCue")] // v0.11
+        protected ActorCue m_OnPrepare;
+        [SerializeField, Tooltip("An actor cue to sent to the actor when they are ready to perform this interaction. This is where you will usually play animations and sounds reflecting the interaction itself.")]
+        [FormerlySerializedAs("m_OnArrivedCue")] // v0.11
+        protected ActorCue m_OnPerformInteraction;
+        [SerializeField, Tooltip("An actor cue sent when ending this interaction. This should set the character back to their default state.")]
+        [FormerlySerializedAs("m_OnEndCue")] // v0.11
+        protected ActorCue m_OnEnd;
 
         [Header("Conditions")]
         [SerializeField, Range(0.1f, 5), Tooltip("The Weight Multiplier is used to lower or higher the priority of this behaviour relative to others the actor has. The higher this multiplier is the more likely it is the behaviour will be fired. The lower, the less likely.")]
@@ -86,7 +95,7 @@ namespace WizardsCode.Character
         }
 
         Brain m_Brain;
-        internal ActorController controller;
+        internal ActorController m_ActorController;
         private bool m_IsExecuting = false;
         private float m_NextRetryTime;
 
@@ -118,6 +127,17 @@ namespace WizardsCode.Character
             get
             {
                 return m_Brain;
+            }
+        }
+
+        /// <summary>
+        /// Get the ActorController this behaviour movements are managed by.
+        /// </summary>
+        internal ActorController ActorController
+        {
+            get
+            {
+                return m_ActorController;
             }
         }
 
@@ -286,7 +306,6 @@ namespace WizardsCode.Character
         /// </summary>
         protected virtual void Init()
         {
-
             if (m_Brain == null)
             {
                 m_Brain = transform.root.GetComponentInChildren<Brain>();
@@ -298,7 +317,19 @@ namespace WizardsCode.Character
                     Debug.LogWarning("Brain was not configured in " + DisplayName + ". Set the brain in the inspector.");
                 }
             }
-            controller = GetComponentInParent<ActorController>();
+
+            if (m_ActorController == null)
+            {
+                m_ActorController = transform.root.GetComponentInChildren<ActorController>();
+                if (m_ActorController != null)
+                {
+                    Debug.LogWarning("ActorController was not configured in " + DisplayName + ". " + m_ActorController.name + " was automatically discovered. It is safer to set the ActorController in the inspector.");
+                }
+                else
+                {
+                    Debug.LogWarning("ActorController was not configured in " + DisplayName + ". Set the ActorController in the inspector.");
+                }
+            }
         }
 
         /// <summary>
@@ -306,6 +337,7 @@ namespace WizardsCode.Character
         /// an interactable and somehow this method gets called it will return with no
         /// actions (after logging a warning).
         /// </summary>
+        /// <param name="duration">The maximum duration that this behaviuour can take</param>
         internal virtual void StartBehaviour(float duration)
         {
             isPrioritized = false;
@@ -318,9 +350,9 @@ namespace WizardsCode.Character
                 m_OnStartEvent.Invoke();
             }
 
-            if (m_OnStartCue != null)
+            if (m_OnStart != null)
             {
-                Brain.Actor.Prompt(m_OnStartCue);
+                Brain.Actor.Prompt(m_OnStart);
             }
         }
 
@@ -405,7 +437,7 @@ namespace WizardsCode.Character
         {
             if (EndTime < Time.timeSinceLevelLoad)
             {
-                FinishBehaviour();
+                EndTime = FinishBehaviour();
             }
         }
 
@@ -437,7 +469,12 @@ namespace WizardsCode.Character
             return true;
         }
 
-        internal virtual void FinishBehaviour()
+
+        /// <summary>
+        /// Finish the behaviour, prompting any cue needed.
+        /// </summary>
+        /// <returns>The time, since level load, at which this behaviour should end, if zero then it ends immediately.</returns>
+        internal virtual float FinishBehaviour()
         {
             IsExecuting = false;
             EndTime = 0;
@@ -456,10 +493,12 @@ namespace WizardsCode.Character
                 m_OnEndEvent.Invoke();
             }
 
-            if (m_OnEndCue != null)
+            if (m_OnEnd != null)
             {
-                 Brain.Actor.Prompt(m_OnEndCue);
+                Brain.Actor.Prompt(m_OnEnd);
+                return Time.timeSinceLevelLoad + m_OnEnd.Duration;
             }
+            return Time.timeSinceLevelLoad;
         }
 
         public override string ToString()

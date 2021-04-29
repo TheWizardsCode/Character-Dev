@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3415330115500651120}
   - component: {fileID: 3415330115500651121}
   m_Layer: 0
-  m_Name: Dance Behaviour Set
+  m_Name: Basic Dance Behaviour Set
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -50,8 +50,17 @@ MonoBehaviour:
   m_isInteruptable: 1
   m_MaximumExecutionTime: 10
   m_IsBlocking: 1
-  m_OnStartCue: {fileID: 11400000, guid: 3a958d7f8d5dec24889f67bcfb37c35a, type: 2}
-  m_OnEndCue: {fileID: 11400000, guid: 8492eac0d71410843bbc940fab4a57af, type: 2}
+  m_OnStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStartCue: {fileID: 11400000, guid: 5d4ce6f26d3dcc84f9bdeea089f253f3, type: 2}
+  m_OnStartMovingCue: {fileID: 0}
+  m_OnArrivingCue: {fileID: 0}
+  m_OnArrivedCue: {fileID: 0}
+  m_OnEndCue: {fileID: 11400000, guid: b9fb3eee934d3c54ebced47fcab62eec, type: 2}
   m_WeightMultiplier: 0.15
   m_RequiredSenses: []
   m_RequiredStats:
@@ -61,3 +70,4 @@ MonoBehaviour:
   m_CharacterInfluences: []
   m_DesiredStateImpacts: []
   m_RequiredWorldState: []
+  m_CooldownDuration: 60
