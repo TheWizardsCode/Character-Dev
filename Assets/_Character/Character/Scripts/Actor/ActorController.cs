@@ -113,7 +113,12 @@ namespace WizardsCode.Character
             onStationary = stationaryCallback;
             MoveTargetPosition = position;
         }
-        
+
+        internal void MoveTo(Transform destination)
+        {
+            MoveTo(destination.position, null, null, null);
+        }
+
         internal void TurnTo(Quaternion rotation)
         {
             desiredRotation = rotation;
@@ -132,14 +137,11 @@ namespace WizardsCode.Character
             get { return m_Agent.destination; }
             set
             {
-                m_Agent.SetDestination(value);
-                m_State = States.Moving;
+                if (Vector3.Distance(m_Agent.destination, value) > m_Agent.stoppingDistance)
+                {
+                    m_Agent.SetDestination(value);
+                }
             }
-        }
-
-        internal void MoveTo(Transform destination)
-        {
-            MoveTargetPosition = destination.position;
         }
 
         /// <summary>
@@ -251,7 +253,7 @@ namespace WizardsCode.Character
         /// </summary>
         private void ManageState()
         {
-            switch (m_State)
+             switch (m_State)
             {
                 case States.Stationary:
                     if (hasMoved && onStationary != null)
@@ -262,12 +264,7 @@ namespace WizardsCode.Character
                     }
                     break;
                 case States.Moving:
-                    if ((!m_Agent.hasPath && !m_Agent.pathPending))
-                    {
-                        m_State = States.Stationary;
-                    }
-
-                    if ((m_Agent.hasPath && !m_Agent.pathPending) && m_Agent.remainingDistance <= m_ArrivingDistance)
+                    if (m_Agent.remainingDistance <= m_ArrivingDistance)
                     {
                         m_State = States.Arriving;
                     }

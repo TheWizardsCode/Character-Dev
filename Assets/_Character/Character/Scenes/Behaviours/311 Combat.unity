@@ -279,6 +279,7 @@ GameObject:
   - component: {fileID: 827708980}
   - component: {fileID: 827708979}
   - component: {fileID: 827708982}
+  - component: {fileID: 827708983}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -368,6 +369,27 @@ MonoBehaviour:
   normalMoveSpeed: 10
   slowMoveFactor: 0.25
   fastMoveFactor: 3
+--- !u!114 &827708983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 827708978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd5378998db5ba9488d08a4e3b80821a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Width: 320
+  m_Height: 123
+  m_AutoAspect: 1
+  m_FramePerSecond: 15
+  m_Repeat: 0
+  m_Quality: 15
+  m_BufferSize: 3
+  m_FramesPerColorSample: 6
+  WorkerPriority: 1
 --- !u!1 &900182239
 GameObject:
   m_ObjectHideFlags: 0
@@ -1299,7 +1321,7 @@ PrefabInstance:
     - target: {fileID: 698722043034690714, guid: 7c9efcd9243930542b48a2cae15410c9,
         type: 3}
       propertyPath: maxAngleOfRandomPathChange
-      value: 30
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5357314432053508745, guid: 7c9efcd9243930542b48a2cae15410c9,
         type: 3}
@@ -1510,11 +1532,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 698722043034690712, guid: 7c9efcd9243930542b48a2cae15410c9,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 698722043034690714, guid: 7c9efcd9243930542b48a2cae15410c9,
         type: 3}
       propertyPath: m_MaxWanderRange
       value: 75
       objectReference: {fileID: 0}
+    - target: {fileID: 2240898775930687631, guid: 7c9efcd9243930542b48a2cae15410c9,
+        type: 3}
+      propertyPath: m_OnEnd
+      value: 
+      objectReference: {fileID: 11400000, guid: 90fe31304202f63478beccae32a8ccc5,
+        type: 2}
     - target: {fileID: 2240898775930687631, guid: 7c9efcd9243930542b48a2cae15410c9,
         type: 3}
       propertyPath: m_OnEndCue
@@ -1552,6 +1585,12 @@ PrefabInstance:
       propertyPath: m_OnStartMovingCue
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 2240898775930687631, guid: 7c9efcd9243930542b48a2cae15410c9,
+        type: 3}
+      propertyPath: m_OnPerformInteraction
+      value: 
+      objectReference: {fileID: 11400000, guid: cd61d23578984444bb2ca0ef73fa8237,
+        type: 2}
     - target: {fileID: 5357314432053508745, guid: 7c9efcd9243930542b48a2cae15410c9,
         type: 3}
       propertyPath: m_Name

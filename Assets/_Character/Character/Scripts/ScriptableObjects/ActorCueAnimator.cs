@@ -16,7 +16,7 @@ namespace WizardsCode.Character
         string m_LayerName = "";
         [SerializeField, Range(0f, 1), Tooltip("The weight of the layer")]
         float m_LayerWeight = 1;
-        [SerializeField, Range(0.1f, 20), Tooltip("The speed at which we will change fromt he current layer weight to the new layer weight. Larger is faster.")]
+        [SerializeField, Range(0f, 20), Tooltip("The speed at which we will change fromt he current layer weight to the new layer weight. 0 is instant, otherwise larger is faster.")]
         float m_LayerChangeSpeed = 5;
 
         public enum ParameterType { Float, Int, Bool, Trigger }
@@ -35,10 +35,6 @@ namespace WizardsCode.Character
         [Header("Animation Clips")]
         [SerializeField, Tooltip("Tha name of the animation clip to play.")]
         public string animationClipName;
-        [SerializeField, Tooltip("The layer on which the animation clip resides.")]
-        public string animationClipLayer;
-        [SerializeField, Range(0f, 1), Tooltip("The weight of the layer")]
-        float animationClipLayerWeight = 1;
         [SerializeField, Tooltip("The normalized time from which to start the animation.")]
         public float animationNormalizedTime = 0;
 
@@ -58,7 +54,6 @@ namespace WizardsCode.Character
 
             ProcessAnimationLayerWeights();
             ProcessAnimationParameters();
-            ProcessAnimationClips();
 
             return base.Prompt(actor);
         }
@@ -73,10 +68,21 @@ namespace WizardsCode.Character
                 while (!Mathf.Approximately(currentWeight, m_LayerWeight))
                 {
                     currentWeight = m_Actor.Animator.GetLayerWeight(m_LayerIndex);
-                    float delta = (m_LayerWeight - currentWeight) * (Time.deltaTime * m_LayerChangeSpeed);
+                    float delta;
+                    if (m_LayerChangeSpeed > 0) {
+                        delta = (m_LayerWeight - currentWeight) * (Time.deltaTime * m_LayerChangeSpeed);
+                    } else
+                    {
+                        delta = (m_LayerWeight - currentWeight);
+                    }
                     m_Actor.Animator.SetLayerWeight(m_LayerIndex, currentWeight + delta);
                     yield return new WaitForEndOfFrame();
                 }
+            }
+
+            if (!string.IsNullOrWhiteSpace(animationClipName))
+            {
+                m_Actor.Animator.Play(animationClipName, m_LayerIndex, animationNormalizedTime);
             }
 
             yield return base.UpdateCoroutine();
@@ -104,24 +110,6 @@ namespace WizardsCode.Character
                         m_Actor.Animator.SetBool(paramName, paramBoolValue);
                         break;
                 }
-            }
-        }
-
-        /// <summary>
-        /// The name of an animation clip to play upon this cue.
-        /// </summary>
-        /// <param name="m_Actor">The actor to enact the animation changes.</param>
-        private void ProcessAnimationClips()
-        {
-            if (!string.IsNullOrWhiteSpace(animationClipName))
-            {
-                int animationLayerIdx = -1;
-                if (!string.IsNullOrWhiteSpace(animationClipLayer))
-                {
-                    animationLayerIdx = m_Actor.Animator.GetLayerIndex(animationClipLayer);
-                }
-                m_Actor.Animator.SetLayerWeight(animationLayerIdx, animationClipLayerWeight);
-                m_Actor.Animator.Play(animationClipName, animationLayerIdx, animationNormalizedTime);
             }
         }
     }

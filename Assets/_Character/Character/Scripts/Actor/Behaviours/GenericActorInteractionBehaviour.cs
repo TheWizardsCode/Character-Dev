@@ -87,15 +87,15 @@ namespace WizardsCode.Character.AI
 
                     EndTime = Time.timeSinceLevelLoad + m_Duration;
                     AddCharacterInfluencers(m_Duration);
-                    if (m_OnStartCue != null)
+                    if (m_OnStart != null)
                     {
-                        Brain.Actor.Prompt(m_OnStartCue);
+                        Brain.Actor.Prompt(m_OnStart);
                     }
                 }
                 else if (Time.timeSinceLevelLoad > m_HandshakeEndTime)
                 {
                     m_IsHandshaking = false;
-                    FinishBehaviour();
+                    EndTime = FinishBehaviour();
                 }
                 return;
             }
@@ -114,7 +114,7 @@ namespace WizardsCode.Character.AI
             if (participants.Count < m_MinGroupSize)
             {
                 Debug.Log(Brain.DisplayName + " is stopping " + DisplayName + " because the group size is too small");
-                FinishBehaviour();
+                EndTime = FinishBehaviour();
                 return;
             }
 
@@ -161,6 +161,14 @@ namespace WizardsCode.Character.AI
             }
 
             base.StartBehaviour(duration);
+
+            UpdateParticipantsList();
+            UpdateInteractionPosition(true);
+
+            if (Vector3.SqrMagnitude(Brain.Actor.transform.position - m_InteractionPoint) <= 0.25f)
+            {
+                PerformInteraction();
+            }
         }
 
         /// <summary>
@@ -186,6 +194,8 @@ namespace WizardsCode.Character.AI
         }
 
         Vector3 m_InteractionPoint;
+        private Vector3 m_InteractionGroupCenter;
+
         private void UpdateInteractionPosition(bool setOnNavMesh)
         {
             // Find a point where we will meet the actors to interact
@@ -216,11 +226,11 @@ namespace WizardsCode.Character.AI
                 centerZ = totalY / count;
             }
 
-            Vector3 groupCenter = new Vector3(centerX, 0, centerZ);
-            Vector3 heading = groupCenter - Brain.Actor.transform.position;
+            m_InteractionGroupCenter = new Vector3(centerX, 0, centerZ);
+            Vector3 heading = m_InteractionGroupCenter - Brain.Actor.transform.position;
             heading.y = 0;
             heading.Normalize();
-            m_InteractionPoint = groupCenter + (-m_GroupDistance * heading);
+            m_InteractionPoint = m_InteractionGroupCenter + (-m_GroupDistance * heading);
 
             NavMeshHit hit;
             if (NavMesh.SamplePosition(m_InteractionPoint, out hit, 5, m_NavMeshMask))
@@ -229,7 +239,7 @@ namespace WizardsCode.Character.AI
             }
             else
             {
-                FinishBehaviour();
+                EndTime = FinishBehaviour();
                 return;
             }
 
@@ -244,22 +254,27 @@ namespace WizardsCode.Character.AI
                 Brain.Actor.MoveTo(m_InteractionPoint,
                     () =>
                     {
-                        Brain.Actor.Prompt(m_OnArrivingCue);
+                        Brain.Actor.Prompt(m_OnPrepare);
                     },
                     () =>
                     {
-                        Brain.Actor.Prompt(m_OnArrivedCue);
-                        Brain.Actor.TurnToFace(m_InteractionPoint);
-                        if (m_OnArrivedCue)
-                        {
-                            EndTime = Time.timeSinceLevelLoad + m_OnArrivedCue.Duration;
-                        }
+                        PerformInteraction();
                     },
                     null
                 );
             }
         }
-        
+
+        private void PerformInteraction()
+        {
+            Brain.Actor.Prompt(m_OnPerformInteraction);
+            Brain.Actor.TurnToFace(m_InteractionGroupCenter);
+            if (m_OnPerformInteraction)
+            {
+                EndTime = Time.timeSinceLevelLoad + m_OnPerformInteraction.Duration;
+            }
+        }
+
         private void UpdateParticipantsList()
         {
             participants.Clear();
@@ -295,14 +310,18 @@ namespace WizardsCode.Character.AI
             }
          }
 
-        internal override void FinishBehaviour()
+        /// <summary>
+        /// Finish the behaviour, prompting any cue needed.
+        /// </summary>
+        /// <returns>The time at which this behaviour should end, if zero then it ends immediately.</returns>
+        internal override float FinishBehaviour()
         {
             for (int i = 0; i < participants.Count; i++)
             {
                 ((GenericActorInteractionBehaviour)participants[i].ActiveBlockingBehaviour).RemoveParticipant(Brain);
             }
 
-            base.FinishBehaviour();
+            return base.FinishBehaviour();
         }
 
         internal void RemoveParticipant(Brain brain)

@@ -88,11 +88,12 @@ namespace WizardsCode.Character
             }
         }
 
-        internal override void FinishBehaviour()
+        internal override float FinishBehaviour()
         {
-            base.FinishBehaviour();
+            float endTime = base.FinishBehaviour();
             Brain.Actor.StopMoving();
             timeToNextWanderPathChange = float.MinValue;
+            return endTime;
         }
 
         /// <summary>
