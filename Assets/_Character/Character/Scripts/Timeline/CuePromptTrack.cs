@@ -10,7 +10,7 @@ namespace WizardsCode.Character
     /// ActorCharacter.
     /// </summary>
     [TrackColor(241/255, 249/255, 99/255)]
-    [TrackBindingType(typeof(ActorController))]
+    [TrackBindingType(typeof(BaseActorController))]
     [TrackClipType(typeof(CuePromptAsset))]
     public class CuePromptTrack : TrackAsset
     {

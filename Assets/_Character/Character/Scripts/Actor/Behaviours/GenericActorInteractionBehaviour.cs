@@ -38,7 +38,7 @@ namespace WizardsCode.Character.AI
         private float m_Duration;
         private float m_HandshakeEndTime;
         private bool m_IsHandshaking = false;
-        List<Brain> participants = new List<Brain>();
+        List<StatsTracker> participants = new List<StatsTracker>();
         private NavMeshAgent m_Agent;
         private Transform interactionPointT;
 
@@ -59,7 +59,7 @@ namespace WizardsCode.Character.AI
 
                 reasoning.Append("Maybe ");
                 reasoning.Append(DisplayName);
-                reasoning.AppendLine(" (see required senses)");
+                reasoning.AppendLine(" (sensed required objects)");
                 return true;
             }
         }
@@ -74,6 +74,8 @@ namespace WizardsCode.Character.AI
 
         protected override void OnUpdate()
         {
+            if (!base.IsAvailable) FinishBehaviour();
+
             //TODO OPTIMIZATION probably don't need to update participants and position every tick
             int count = participants.Count;
             UpdateParticipantsList();
@@ -107,7 +109,14 @@ namespace WizardsCode.Character.AI
             // at the time of writing this comment we don't support adding participants during an interaction, this is here to accomodate for that when we do support it
             if (participants.Count > m_MaxGroupSize)
             {
-                participants[participants.Count - 1].ActiveBlockingBehaviour.FinishBehaviour();
+                if (participants[participants.Count - 1] is Brain)
+                {
+                    AbstractAIBehaviour behaviour = ((Brain)participants[participants.Count - 1]).ActiveBlockingBehaviour;
+                    if (behaviour != null)
+                    {
+                        behaviour.FinishBehaviour();
+                    }
+                }
             }
 
             // If this is an interuptable behaviour participants may finish early, leaving us with a group that is too small
@@ -174,16 +183,16 @@ namespace WizardsCode.Character.AI
         /// <summary>
         /// Invite this actor to join a group proposing to enact this behaviour.
         /// </summary>
-        /// <param name="brain">The brain extending the invite.</param>
-        internal void InviteToGroup(Brain brain)
+        /// <param name="stats">The stats of the participant to invite.</param>
+        internal void InviteToGroup(StatsTracker stats)
         {
             //TODO actors should be more likley to engage with other actors they like or who have valuable information.             
             m_IsHandshaking = m_RequireConsent;
         }
 
-        protected override float BaseWeight(Brain brain)
+        protected override float BaseWeight(StatsTracker stats)
         {
-            float weight = base.BaseWeight(brain);
+            float weight = base.BaseWeight(stats);
             if (m_IsHandshaking)
             {
                 return weight * 1.2f;
@@ -194,7 +203,7 @@ namespace WizardsCode.Character.AI
         }
 
         Vector3 m_InteractionPoint;
-        private Vector3 m_InteractionGroupCenter;
+        Vector3 m_InteractionGroupCenter;
 
         private void UpdateInteractionPosition(bool setOnNavMesh)
         {
@@ -207,6 +216,7 @@ namespace WizardsCode.Character.AI
                 {
                     totalX += participants[i].GetInteractionPosition().x;
                     totalY += participants[i].GetInteractionPosition().z;
+                    m_ActorController.LookAtTarget = participants[i].transform;
                 }
             }
 
@@ -249,7 +259,7 @@ namespace WizardsCode.Character.AI
             }
             interactionPointT.position = m_InteractionPoint;
 
-            if (Vector3.SqrMagnitude(Brain.Actor.MoveTargetPosition - m_InteractionPoint) > 0.25f)
+            if (Vector3.SqrMagnitude(Brain.Actor.MoveTargetPosition - m_InteractionPoint) > 0.2f)
             {
                 Brain.Actor.MoveTo(m_InteractionPoint,
                     () =>
@@ -267,11 +277,13 @@ namespace WizardsCode.Character.AI
 
         private void PerformInteraction()
         {
-            Brain.Actor.Prompt(m_OnPerformInteraction);
-            Brain.Actor.TurnToFace(m_InteractionGroupCenter);
-            if (m_OnPerformInteraction)
+            Brain.Actor.TurnToFace(m_ActorController.LookAtTarget.position);
+
+            if (m_OnPerformInteraction.Length > 0)
             {
-                EndTime = Time.timeSinceLevelLoad + m_OnPerformInteraction.Duration;
+                ActorCue cue = m_OnPerformInteraction[Random.Range(0, m_OnPerformInteraction.Length)];
+                Brain.Actor.Prompt(cue);
+                EndTime = Time.timeSinceLevelLoad + cue.Duration;
             }
         }
 
@@ -302,9 +314,9 @@ namespace WizardsCode.Character.AI
                 }
                 else
                 {
-                    Brain brain = SensedThings[i].GetComponentInChildren<Brain>();
-                    if (brain) { 
-                        participants.Add(brain);
+                    StatsTracker stats = SensedThings[i].GetComponentInChildren<StatsTracker>();
+                    if (stats) { 
+                        participants.Add(stats);
                     }
                 }
             }
@@ -318,7 +330,14 @@ namespace WizardsCode.Character.AI
         {
             for (int i = 0; i < participants.Count; i++)
             {
-                ((GenericActorInteractionBehaviour)participants[i].ActiveBlockingBehaviour).RemoveParticipant(Brain);
+                if (participants[i] is Brain)
+                {
+                    AbstractAIBehaviour behaviour = ((Brain)participants[i]).ActiveBlockingBehaviour;
+                    if (behaviour != null)
+                    {
+                        ((GenericActorInteractionBehaviour)behaviour).RemoveParticipant(Brain);
+                    }
+                }
             }
 
             return base.FinishBehaviour();

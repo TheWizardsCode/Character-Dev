@@ -62,10 +62,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466693, guid: 7eff6a92dc3534740911b2ece7526899,
+        type: 3}
+      propertyPath: m_MaxWanderRange
+      value: 75
+      objectReference: {fileID: 0}
     - target: {fileID: 3454999400584466695, guid: 7eff6a92dc3534740911b2ece7526899,
         type: 3}
       propertyPath: m_Name
       value: Wander Behaviour
+      objectReference: {fileID: 0}
+    - target: {fileID: 3454999400584466695, guid: 7eff6a92dc3534740911b2ece7526899,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7eff6a92dc3534740911b2ece7526899, type: 3}
@@ -105,37 +115,37 @@ PrefabInstance:
     - target: {fileID: 5115762418512223567, guid: 5946825c01ac14c4b8a72b03526b1f70,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7.707519
+      value: -7.6925454
       objectReference: {fileID: 0}
     - target: {fileID: 5115762418512223567, guid: 5946825c01ac14c4b8a72b03526b1f70,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.7937986e-18
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5115762418512223567, guid: 5946825c01ac14c4b8a72b03526b1f70,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 6.68
+      value: 6.786986
       objectReference: {fileID: 0}
     - target: {fileID: 5115762418512223567, guid: 5946825c01ac14c4b8a72b03526b1f70,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0
+      value: -0.13052423
       objectReference: {fileID: 0}
     - target: {fileID: 5115762418512223567, guid: 5946825c01ac14c4b8a72b03526b1f70,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5115762418512223567, guid: 5946825c01ac14c4b8a72b03526b1f70,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 1
+      value: 0.9914451
       objectReference: {fileID: 0}
     - target: {fileID: 5115762418512223567, guid: 5946825c01ac14c4b8a72b03526b1f70,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5115762418512223567, guid: 5946825c01ac14c4b8a72b03526b1f70,
         type: 3}
@@ -145,7 +155,7 @@ PrefabInstance:
     - target: {fileID: 5115762418512223567, guid: 5946825c01ac14c4b8a72b03526b1f70,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 180
+      value: 194.99998
       objectReference: {fileID: 0}
     - target: {fileID: 5115762418512223567, guid: 5946825c01ac14c4b8a72b03526b1f70,
         type: 3}
@@ -160,7 +170,7 @@ PrefabInstance:
     - target: {fileID: 8444945103901806786, guid: 5946825c01ac14c4b8a72b03526b1f70,
         type: 3}
       propertyPath: m_Name
-      value: 310 Combat Neo
+      value: Combat Neo 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 2851913596218926374, guid: 5946825c01ac14c4b8a72b03526b1f70, type: 3}
@@ -348,6 +358,28 @@ PrefabInstance:
       propertyPath: m_Name
       value: Melee Combat Behaviours
       objectReference: {fileID: 0}
+    - target: {fileID: 7699099111442129957, guid: 93a6c4d2e19ea7145925c17817adf330,
+        type: 3}
+      propertyPath: m_OnEnd
+      value: 
+      objectReference: {fileID: 11400000, guid: 90fe31304202f63478beccae32a8ccc5,
+        type: 2}
+    - target: {fileID: 7699099111442129957, guid: 93a6c4d2e19ea7145925c17817adf330,
+        type: 3}
+      propertyPath: m_GroupDistance
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7699099111442129957, guid: 93a6c4d2e19ea7145925c17817adf330,
+        type: 3}
+      propertyPath: m_CooldownDuration
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7699099111442129957, guid: 93a6c4d2e19ea7145925c17817adf330,
+        type: 3}
+      propertyPath: m_OnPerformInteraction
+      value: 
+      objectReference: {fileID: 11400000, guid: cd61d23578984444bb2ca0ef73fa8237,
+        type: 2}
     - target: {fileID: 7699099111442129957, guid: 93a6c4d2e19ea7145925c17817adf330,
         type: 3}
       propertyPath: m_RequiredSenses.Array.data[0]

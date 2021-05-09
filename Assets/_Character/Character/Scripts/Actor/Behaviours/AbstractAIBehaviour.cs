@@ -48,9 +48,8 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("An actor cue to send to the actor as they start the prepare phase of this interaction. This is where you will typically play wind up animations and the like.")]
         [FormerlySerializedAs("m_OnArrivingCue")] // v0.11
         protected ActorCue m_OnPrepare;
-        [SerializeField, Tooltip("An actor cue to sent to the actor when they are ready to perform this interaction. This is where you will usually play animations and sounds reflecting the interaction itself.")]
-        [FormerlySerializedAs("m_OnArrivedCue")] // v0.11
-        protected ActorCue m_OnPerformInteraction;
+        [SerializeField, Tooltip("A set of actor cues from which to select the appropriate behaviour when performing this interaction. This is where you will usually play animations and sounds reflecting the interaction itself.")]
+        protected ActorCue[] m_OnPerformInteraction;
         [SerializeField, Tooltip("An actor cue sent when ending this interaction. This should set the character back to their default state.")]
         [FormerlySerializedAs("m_OnEndCue")] // v0.11
         protected ActorCue m_OnEnd;
@@ -58,6 +57,8 @@ namespace WizardsCode.Character
         [Header("Conditions")]
         [SerializeField, Range(0.1f, 5), Tooltip("The Weight Multiplier is used to lower or higher the priority of this behaviour relative to others the actor has. The higher this multiplier is the more likely it is the behaviour will be fired. The lower, the less likely.")]
         float m_WeightMultiplier = 1;
+        [SerializeField, Range(0f, 2f), Tooltip("An allowable variation in the Weight Multiplier. Each time the behaviour is evaluated the base weight multiplier will be increased or decreased by a random number between +/- this amount.")]
+        float m_WeightVariation = 0.1f;
         [SerializeField, Tooltip("The required senses about the current world state around the actor. For example, we may have a sense for whether there is a willing mate nearby which will permit a make babies  behaviour to fire. Another example is that a" +
             "character will only sleep in the open if they sense there are no threats nearby.")]
         AbstractSense[] m_RequiredSenses;
@@ -95,7 +96,7 @@ namespace WizardsCode.Character
         }
 
         Brain m_Brain;
-        internal ActorController m_ActorController;
+        internal BaseActorController m_ActorController;
         private bool m_IsExecuting = false;
         private float m_NextRetryTime;
 
@@ -133,7 +134,7 @@ namespace WizardsCode.Character
         /// <summary>
         /// Get the ActorController this behaviour movements are managed by.
         /// </summary>
-        internal ActorController ActorController
+        internal BaseActorController ActorController
         {
             get
             {
@@ -306,30 +307,8 @@ namespace WizardsCode.Character
         /// </summary>
         protected virtual void Init()
         {
-            if (m_Brain == null)
-            {
-                m_Brain = transform.root.GetComponentInChildren<Brain>();
-                if (m_Brain != null)
-                {
-                    Debug.LogWarning("Brain was not configured in " + DisplayName + ". " + m_Brain.DisplayName + " was automatically discovered. It is safer to set the brain in the inspector.");
-                } else
-                {
-                    Debug.LogWarning("Brain was not configured in " + DisplayName + ". Set the brain in the inspector.");
-                }
-            }
-
-            if (m_ActorController == null)
-            {
-                m_ActorController = transform.root.GetComponentInChildren<ActorController>();
-                if (m_ActorController != null)
-                {
-                    Debug.LogWarning("ActorController was not configured in " + DisplayName + ". " + m_ActorController.name + " was automatically discovered. It is safer to set the ActorController in the inspector.");
-                }
-                else
-                {
-                    Debug.LogWarning("ActorController was not configured in " + DisplayName + ". Set the ActorController in the inspector.");
-                }
-            }
+            m_Brain = transform.root.GetComponentInChildren<Brain>();
+            m_ActorController = transform.root.GetComponentInChildren<BaseActorController>();
         }
 
         /// <summary>
@@ -391,28 +370,27 @@ namespace WizardsCode.Character
         /// </summary>
         internal virtual float Weight(Brain brain)
         {
-            float weight = BaseWeight(brain) * m_WeightMultiplier;
-
-            return weight;
+            float multiplier = m_WeightMultiplier + (Random.Range(-m_WeightVariation, m_WeightVariation));
+            return BaseWeight(brain) * multiplier;
         }
         
         /// <summary>
         /// The base weight is the weight befre the multiplier is applied.
         /// </summary>
-        /// <param name="brain">The brain containing the stats to be applied</param>
+        /// <param name="stats">The stats to be applied</param>
         /// <returns>The base weight, before the multiplier is applied.</returns>
-        protected virtual float BaseWeight(Brain brain)
+        protected virtual float BaseWeight(StatsTracker stats)
         {
             float weight = 1f;
-            for (int i = 0; i < brain.UnsatisfiedDesiredStates.Count; i++)
+            for (int i = 0; i < stats.UnsatisfiedDesiredStates.Count; i++)
             {
                 for (int idx = 0; idx < DesiredStateImpacts.Length; idx++)
                 {
-                    if (brain.UnsatisfiedDesiredStates[i].statTemplate == DesiredStateImpacts[idx].statTemplate)
+                    if (stats.UnsatisfiedDesiredStates[i].statTemplate == DesiredStateImpacts[idx].statTemplate)
                     {
-                        float impact = Math.Abs(brain.UnsatisfiedDesiredStates[i].normalizedTargetValue - brain.GetStat(brain.UnsatisfiedDesiredStates[i].statTemplate).NormalizedValue);
+                        float impact = Math.Abs(stats.UnsatisfiedDesiredStates[i].normalizedTargetValue - stats.GetStat(stats.UnsatisfiedDesiredStates[i].statTemplate).NormalizedValue);
                         reasoning.Append("They are not ");
-                        reasoning.Append(brain.UnsatisfiedDesiredStates[i].name);
+                        reasoning.Append(stats.UnsatisfiedDesiredStates[i].name);
                         reasoning.AppendLine(" and this behaviour will help.");
                         //TODO higher weight should be given to behaviours that will bring the stat into the desired state
                         weight += impact;

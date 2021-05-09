@@ -16,6 +16,9 @@ namespace WizardsCode.Stats {
 #endif
     {
         [Header("Behaviour Manager")]
+        [SerializeField, Tooltip("The % variation to create in timing of updates. This is used to ensure that actors using the same AI do not make decisions at precisely the same time. The time of each update will be increased or decreased by a random % between 0 and this value.")]
+        [Range(0, 1)]
+        float m_TimingVariation = 0.2f;
         [SerializeField, Tooltip("If the actor has an interaction behaviour as the preferred behaviour and no interactable is nearby then this behaviour will become the active behaviour. This will typically be a search behaviour of some form.")]
         AbstractAIBehaviour m_FallbackBehaviour;
 
@@ -30,24 +33,14 @@ namespace WizardsCode.Stats {
         [SerializeField, Tooltip("The icon to use when there is an active blocking behaviour, but that behaviour does not have an icon.")]
         Sprite m_MissingIcon;
 
-        ActorController m_Controller;
+        BaseActorController m_Controller;
         List<AbstractAIBehaviour> m_AvailableBehaviours = new List<AbstractAIBehaviour>();
         List<AbstractAIBehaviour> m_ActiveNonBlockingBehaviours = new List<AbstractAIBehaviour>();
-        private Interactable m_TargetInteractable;
         Camera m_Camera;
 
         private AbstractAIBehaviour m_ActiveBlockingBehaviour;
         private string m_RequestedBehaviour;
-
-        protected float interactionOffset = 1;
-        /// <summary>
-        /// Return an available interaction position for this brain.
-        /// </summary>
-        /// <returns></returns>
-        public Vector3 GetInteractionPosition()
-        {
-            return transform.position + (transform.forward * interactionOffset);
-        }
+        private float m_TimeOfNextBehaviourUpdate;
 
         public AbstractAIBehaviour ActiveBlockingBehaviour {
             get { return m_ActiveBlockingBehaviour; }
@@ -80,11 +73,16 @@ namespace WizardsCode.Stats {
 
         public MemoryController Memory { get; private set; }
 
-        internal Interactable TargetInteractable
+        public BaseActorController Actor {
+            get { return m_Controller; }
+        }
+        internal override Interactable TargetInteractable
         {
-            get { return m_TargetInteractable; }
+            get { return base.TargetInteractable; }
             set
             {
+                base.TargetInteractable = value;
+
                 if (Actor != null
                     && value != null)
                 {
@@ -94,13 +92,7 @@ namespace WizardsCode.Stats {
                         Actor.MoveTargetPosition = value.transform.position;
                     }
                 }
-
-                m_TargetInteractable = value;
             }
-        }
-
-        public ActorController Actor {
-            get { return m_Controller; } 
         }
 
         /// <summary>
@@ -120,7 +112,7 @@ namespace WizardsCode.Stats {
         {
             m_Camera = Camera.main;
 
-            m_Controller = GetComponentInParent<ActorController>();
+            m_Controller = GetComponentInParent<BaseActorController>();
             Memory = transform.root.GetComponentInChildren<MemoryController>();
 
             if (m_IconUI == null)
@@ -167,22 +159,6 @@ namespace WizardsCode.Stats {
             return m_AvailableBehaviours.Remove(behaviour);
         }
 
-        /// <summary>
-        /// Decide whether the actor should interact with an influencer trigger they just entered.
-        /// </summary>
-        /// <param name="interactable">The influencer trigger that was activated and can now be interacted with.</param>
-        /// <returns></returns>
-        internal bool ShouldInteractWith(Interactable interactable)
-        {
-            if (interactable != null && GameObject.ReferenceEquals(interactable, TargetInteractable))
-            {
-                return true;
-            } else
-            {
-                return false;
-            }
-        }
-
         internal bool IsReadyToUpdateBehaviour
         {
             get
@@ -197,7 +173,7 @@ namespace WizardsCode.Stats {
                     return false;
                 }
 
-                return Time.timeSinceLevelLoad > m_TimeOfNextUpdate;
+                return Time.timeSinceLevelLoad > m_TimeOfNextBehaviourUpdate;
             }
         }
 
@@ -213,6 +189,8 @@ namespace WizardsCode.Stats {
             base.Update();
 
             UpdateActiveBehaviour();
+
+            m_TimeOfNextBehaviourUpdate = Time.timeSinceLevelLoad + (m_TimeBetweenUpdates * (1 + Random.Range(-m_TimingVariation, m_TimingVariation)));
         }
 
         void LateUpdate()

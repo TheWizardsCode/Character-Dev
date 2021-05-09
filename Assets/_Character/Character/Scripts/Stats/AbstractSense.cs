@@ -19,7 +19,7 @@ namespace WizardsCode.Character.AI
         [SerializeField, Tooltip("The range over which this sense will work under normal circumstances.")]
         float range = 100f;
         [SerializeField, Tooltip("The layermask to use when detecting colliders. Use this to ensure only the right kind of objects are detected.")]
-        LayerMask m_LayerMask;
+        LayerMask m_LayerMask = 1;
         [SerializeField, Tooltip("The maximum number of sensed objects.")]
         int maxSensedColliders = 50;
 

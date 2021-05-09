@@ -45,7 +45,7 @@ namespace WizardsCode.Character
                 pos.z -= sittingOffset; // slide back in the chair a little
                 Brain.Actor.MoveTo(pos, null, null, () =>
                 {
-                    Brain.Actor.isFootIKActive = true;
+                    ((AnimatorActorController)Brain.Actor).isFootIKActive = true;
                     Brain.Actor.Animator.SetBool("Sitting", true);
                 });
             },

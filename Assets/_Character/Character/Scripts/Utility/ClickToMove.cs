@@ -17,13 +17,13 @@ namespace WizardsCode.Utility
         [SerializeField, Tooltip("The layer mask for the click to move script, only objects in this layer will be valid targets for the move.")]
         LayerMask m_LayerMask;
 
-        ActorController m_Actor;
+        BaseActorController m_Actor;
         Animator m_Animator;
         int m_CrouchHash;
 
         void Awake()
         {
-            m_Actor = GetComponent<ActorController>();
+            m_Actor = GetComponent<BaseActorController>();
             m_Animator = GetComponent<Animator>();
             m_CrouchHash = Animator.StringToHash(m_CrouchParamName);
         }

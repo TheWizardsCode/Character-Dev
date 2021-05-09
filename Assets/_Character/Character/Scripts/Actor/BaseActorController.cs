@@ -11,32 +11,29 @@ namespace WizardsCode.Character
     /// Converts NavMesh movement to animation controller parameters.
     /// </summary>
     [RequireComponent(typeof(NavMeshAgent))]
-    public class ActorController : MonoBehaviour
+    public class BaseActorController : MonoBehaviour
     {
         public enum States { Stationary, Moving, Arriving, Arrived }
 
         #region InspectorParameters
         [Header("Character Setup")]
         [SerializeField, Tooltip("The maximum speed of this character, this will usually be a full sprint.")]
-        private float m_MaxSpeed = 8f;
-        [SerializeField, Tooltip("The factor used to calculate the normal (usually walking) speed of the character relative to the maximum speed. Normally you won't want to change this, but if your character is sliding when walking this can help.")]
-        float m_NormalSpeedFactor = 0.4375f;
+        protected float m_MaxSpeed = 8f;
+        [SerializeField, Tooltip("If the distance the actor needs to travel to reach their destination is greater than this and the actor can run then they will do so.")]
+        protected float m_MinRunDistance = 15;
+        [SerializeField, Tooltip("If the distance the actor needs to travel to reach their destination is greater than this and the actor can sprint then they will do so.")]
+        protected float m_MinSprintDistance = 30;
+        [SerializeField, Tooltip("The factor used to calculate the top walking speed of the character relative to the maximum speed. The higher this value the faster the character needs to be moving before switching to a run animation.")]
+        protected float m_WalkSpeedFactor = 0.45f;
+        [SerializeField, Tooltip("The factor used to calculate the top running speed of the character relative to the maximum speed. The higher this value the faster the character needs to be moving before switching to a sprint animation.")]
+        protected float m_RunSpeedFactor = 0.8f;
         [SerializeField, Tooltip("The distance within which the character is considered to be arriving at their destination. This is used to allow callbacks for when the character has nearly completed their movement. This can be useful when the character needs to, for example, turn to sit on a chair just before reaching the final stopping point.")]
-        float m_ArrivingDistance = 1f;
+        protected float m_ArrivingDistance = 1f;
 
-        [Header("Animation")]
-        [SerializeField, Tooltip("The name of the parameter in the animator that sets the forward speed of the character.")]
-        private string m_SpeedParameterName = "Forward";
-        [SerializeField, Tooltip("The name of the parameter in the animator that sets the turn angle of the character.")]
-        private string m_TurnParameterName = "Turn";
-        [SerializeField, Tooltip("The speed of this character when at a run. It will usually be going slower than this, and for short periods, can go faster (at a spring).")]
-        private float m_RunningSpeed = 8;
+
+        [Header("Look")]
         [SerializeField, Tooltip("A transform at the point in space that the actor should look towards.")]
         Transform m_LookAtTarget;
-        
-        [Header("IK")]
-        [Tooltip("If true then this script will control IK configuration of the character.")]
-        public bool isFootIKActive = false;
         [SerializeField, Tooltip("Should the actor use IK to look at a given target.")]
         bool m_IsLookAtIKActive = true;
         [SerializeField, Tooltip("The head bone, used for Look IK. If this is blank there will be an attempt to automatically find the head upon startup.")]
@@ -59,29 +56,55 @@ namespace WizardsCode.Character
         public Action onArrived;
         #endregion
 
-        #region Private Members
-        private Animator m_Animator;
-        private NavMeshAgent m_Agent;
-        private Brain m_Brain;
+        #region Members
+        protected Animator m_Animator;
+        protected NavMeshAgent m_Agent;
+        protected Brain m_Brain;
 
-        States m_State;
+        protected States m_State;
 
         private Vector3 m_CurrentLookAtPosition;
         private float lookAtWeight = 0.0f;
 
-        float m_NormalSpeed;
-
-        Transform m_LeftFootPosition = default;
-        Transform m_RightFootPosition = default;
+        protected float m_WalkSpeed;
+        protected float m_RunSpeed;
 
         Quaternion desiredRotation = default;
         bool isRotating = false;
 
         AnimationLayerController m_AnimationLayers;
-    #endregion
+        #endregion
 
+        private void OnAnimatorIK(int layerIndex)
+        {
+            LookAtIK();
+        }
 
-    internal Transform LookAtTarget
+        protected void LookAtIK()
+        {
+            if (!m_IsLookAtIKActive)
+            {
+                return;
+            }
+
+            Vector3 pos = LookAtTarget.position;
+            //pos.y = head.position.y;
+
+            float lookAtTargetWeight = m_IsLookAtIKActive ? 1.0f : 0.0f;
+
+            Vector3 curDir = m_CurrentLookAtPosition - head.position;
+            Vector3 futDir = pos - head.position;
+
+            curDir = Vector3.RotateTowards(curDir, futDir, m_LookAtSpeed * Time.deltaTime, float.PositiveInfinity);
+            m_CurrentLookAtPosition = head.position + curDir;
+
+            float blendTime = lookAtTargetWeight > lookAtWeight ? m_LookAtHeatTime : m_LookAtCoolTime;
+            lookAtWeight = Mathf.MoveTowards(lookAtWeight, lookAtTargetWeight, Time.deltaTime / blendTime);
+            m_Animator.SetLookAtWeight(lookAtWeight, 0.2f, 0.5f, 0.7f, 0.5f);
+            m_Animator.SetLookAtPosition(m_CurrentLookAtPosition);
+        }
+
+        internal Transform LookAtTarget
         {
             get { return m_LookAtTarget; }
             set
@@ -127,8 +150,7 @@ namespace WizardsCode.Character
 
         internal void TurnToFace(Vector3 position)
         {
-            desiredRotation = Quaternion.LookRotation(position - transform.position, Vector3.up);
-            isRotating = true;
+            TurnTo(Quaternion.LookRotation(position - transform.position, Vector3.up));
         }
         #endregion
 
@@ -169,16 +191,22 @@ namespace WizardsCode.Character
             }
         }
 
+        protected float m_runSqrMagnitude;
+        protected float m_sprintSqrMagnitude;
+
         protected virtual void Awake()
         {
+            m_WalkSpeed = m_MaxSpeed * m_WalkSpeedFactor;
+            m_RunSpeed = m_MaxSpeed * m_RunSpeedFactor;
+            m_runSqrMagnitude = m_WalkSpeed * m_WalkSpeed;
+            m_sprintSqrMagnitude = m_RunSpeed * m_RunSpeed;
+
             m_Animator = GetComponentInChildren<Animator>();
             m_AnimationLayers = GetComponentInChildren<AnimationLayerController>();
 
             m_Agent = GetComponent<NavMeshAgent>();
             m_Brain = GetComponent<Brain>();
             MoveTargetPosition = transform.position;
-
-            m_NormalSpeed = m_MaxSpeed * m_NormalSpeedFactor;
 
             // Look IK Setup
             if (!head)
@@ -201,9 +229,19 @@ namespace WizardsCode.Character
 
         protected virtual void Update()
         {
-            SetForwardAndTurnParameters();
-            ManageState();
+            if (m_Agent.remainingDistance <= m_MinRunDistance)
+            {
+                m_Agent.speed = m_WalkSpeed;
+            } else if (m_Agent.remainingDistance >= m_MinSprintDistance)
+            {
+                m_Agent.speed = m_MaxSpeed;
+            } else
+            {
+                m_Agent.speed = m_MaxSpeed * m_RunSpeedFactor;
+            }
 
+            ManageState();
+            
             if (LookAtTarget != null)
             {
                 float sqrMagToLookAtTarget = Vector3.SqrMagnitude(LookAtTarget.position - transform.position);
@@ -213,7 +251,9 @@ namespace WizardsCode.Character
                 }
             }
 
+            /*TODO this is causing MxM to spin uncontrollably. Need to turn it offin MxM but leave it on in others.
             RotateIfNeeded();
+            */
         }
 
         /// <summary>
@@ -238,7 +278,7 @@ namespace WizardsCode.Character
             {
                 if (transform.rotation != desiredRotation)
                 {
-                    transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, 0.05f);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, 0.5f);
                 }
                 else
                 {
@@ -253,7 +293,7 @@ namespace WizardsCode.Character
         /// </summary>
         private void ManageState()
         {
-             switch (m_State)
+            switch (m_State)
             {
                 case States.Stationary:
                     if (hasMoved && onStationary != null)
@@ -295,33 +335,7 @@ namespace WizardsCode.Character
             }
         }
 
-        private void SetForwardAndTurnParameters()
-        {
-            float magVelocity = m_Agent.velocity.magnitude;
-            float speedParam = 0;
-            if (!Mathf.Approximately(magVelocity, 0))
-            {
-                if (magVelocity <= m_NormalSpeed)
-                {
-                    speedParam = magVelocity / (m_NormalSpeed + m_MaxSpeed);
-                }
-                else
-                {
-                    speedParam = magVelocity / m_MaxSpeed;
-                }
-            }
 
-            Vector3 s = m_Agent.transform.InverseTransformDirection(m_Agent.velocity).normalized;
-            float turn = s.x;
-
-            m_Animator.SetFloat(m_SpeedParameterName, speedParam);
-            m_Animator.SetFloat(m_TurnParameterName, turn);
-
-            if (speedParam > 0.01 || turn > 0.01)
-            {
-                m_State = States.Moving;
-            }
-        }
 
         internal bool IsMoving
         {
@@ -378,56 +392,6 @@ namespace WizardsCode.Character
             }
         }
 
-        void OnAnimatorIK()
-        {
-            LookAtIK();
-            FeetIK();
-        }
-
-        private void FeetIK()
-        {
-            if (!isFootIKActive) return;
-
-            if (m_RightFootPosition != null)
-            {
-                m_Animator.SetIKPositionWeight(AvatarIKGoal.RightFoot, 1);
-                m_Animator.SetIKRotationWeight(AvatarIKGoal.RightFoot, 1);
-                m_Animator.SetIKPosition(AvatarIKGoal.RightFoot, m_RightFootPosition.position);
-                m_Animator.SetIKRotation(AvatarIKGoal.RightFoot, m_RightFootPosition.rotation);
-            }
-            if (m_LeftFootPosition != null)
-            {
-                m_Animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1);
-                m_Animator.SetIKRotationWeight(AvatarIKGoal.LeftFoot, 1);
-                m_Animator.SetIKPosition(AvatarIKGoal.LeftFoot, m_LeftFootPosition.position);
-                m_Animator.SetIKRotation(AvatarIKGoal.LeftFoot, m_LeftFootPosition.rotation);
-            }
-        }
-
-        private void LookAtIK()
-        {
-            if (!m_IsLookAtIKActive)
-            {
-                return;
-            }
-
-            Vector3 pos = LookAtTarget.position;
-            //pos.y = head.position.y;
-
-            float lookAtTargetWeight = m_IsLookAtIKActive ? 1.0f : 0.0f;
-
-            Vector3 curDir = m_CurrentLookAtPosition - head.position;
-            Vector3 futDir = pos - head.position;
-
-            curDir = Vector3.RotateTowards(curDir, futDir, m_LookAtSpeed * Time.deltaTime, float.PositiveInfinity);
-            m_CurrentLookAtPosition = head.position + curDir;
-
-            float blendTime = lookAtTargetWeight > lookAtWeight ? m_LookAtHeatTime : m_LookAtCoolTime;
-            lookAtWeight = Mathf.MoveTowards(lookAtWeight, lookAtTargetWeight, Time.deltaTime / blendTime);
-            m_Animator.SetLookAtWeight(lookAtWeight, 0.2f, 0.5f, 0.7f, 0.5f);
-            m_Animator.SetLookAtPosition(m_CurrentLookAtPosition);
-        }
-
         /// <summary>
         /// Move the look at target to its default position and parent it to the actor.
         /// </summary>
@@ -437,6 +401,7 @@ namespace WizardsCode.Character
             LookAtTarget.transform.localPosition = head.position + new Vector3(0, 0, 1);
             isRotating = false;
         }
+
         public void StartTalking()
         {
             if (m_AnimationLayers != null)

@@ -14,7 +14,7 @@ namespace WizardsCode.Utility
     public class ThirdPersonCameraController : MonoBehaviour
     {
         [SerializeField, Tooltip("The ActorController converts movement into animations and actions.")]
-        ActorController m_Actor;
+        BaseActorController m_Actor;
         [SerializeField, Tooltip("Invert the y axis so that moving the mouse up will result in the view moving up?")]
         bool m_InvertY = false;
 
@@ -29,7 +29,7 @@ namespace WizardsCode.Utility
 
         private void Awake()
         {
-            m_Actor = GetComponent<ActorController>();
+            m_Actor = GetComponent<BaseActorController>();
         }
         public void OnLookMove(InputValue value)
         {

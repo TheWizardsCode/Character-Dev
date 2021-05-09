@@ -52,7 +52,7 @@ namespace WizardsCode.Character
         List<StatsTracker> m_Reservations = new List<StatsTracker>();
 
         StatsTracker m_StatsTracker;
-        private Dictionary<Brain, float> m_TimeOfLastInfluence = new Dictionary<Brain, float>();
+        private Dictionary<StatsTracker, float> m_TimeOfLastInfluence = new Dictionary<StatsTracker, float>();
         private List<StatsTracker> m_ActiveInteractors = new List<StatsTracker>();
 
         /// <summary>
@@ -146,9 +146,9 @@ namespace WizardsCode.Character
         /// Clears any reservation for this interactable by an actor using
         /// the ReservedFor(brain) method;
         /// </summary>
-        internal void ClearReservation(Brain brain)
+        internal void ClearReservation(StatsTracker stats)
         {
-            m_Reservations.Remove(brain);
+            m_Reservations.Remove(stats);
         }
 
         /// <summary>
@@ -183,12 +183,12 @@ namespace WizardsCode.Character
         /// <summary>
         /// Test to see if this influencer trigger is on cooldown for a given actor.
         /// </summary>
-        /// <param name="brain">The brain of the actor we are testing against</param>
+        /// <param name="stats">The Stats of the interacting object we are testing against</param>
         /// <returns>True if this influencer is on cooldown, meaning the actor cannot use it yet.</returns>
-        internal bool IsOnCooldownFor(Brain brain)
+        internal bool IsOnCooldownFor(StatsTracker stats)
         {
             float lastTime;
-            if (m_TimeOfLastInfluence.TryGetValue(brain, out lastTime))
+            if (m_TimeOfLastInfluence.TryGetValue(stats, out lastTime))
             {
                 return Time.timeSinceLevelLoad < lastTime + m_Cooldown;
             }
@@ -202,9 +202,9 @@ namespace WizardsCode.Character
         /// Tests to see if the interactable has space in the reservation queue 
         /// for this actor, or has an existing reservation for it.
         /// </summary>
-        /// <param name="brain"></param>
+        /// <param name="stats">The StatsTracker of the object we are testing for</param>
         /// <returns></returns>
-        public bool HasSpaceFor(Brain brain)
+        public bool HasSpaceFor(StatsTracker stats)
         {
             bool hasSpace = m_MaxInteractors > m_ActiveInteractors.Count + m_Reservations.Count; 
             if (hasSpace)
@@ -212,7 +212,7 @@ namespace WizardsCode.Character
                 return true;
             } else
             {
-                return m_Reservations.Contains(brain);
+                return m_Reservations.Contains(stats);
             }
         }
 
@@ -234,16 +234,16 @@ namespace WizardsCode.Character
         {
             if (other.gameObject == this.gameObject) return;
 
-            Brain brain = other.transform.root.GetComponentInChildren<Brain>();
-            if (brain == null || !brain.ShouldInteractWith(this)) return;
+            StatsTracker stats = other.transform.root.GetComponentInChildren<StatsTracker>();
+            if (stats == null || !stats.ShouldInteractWith(this)) return;
 
-            if (!HasSpaceFor(brain))
+            if (!HasSpaceFor(stats))
             {
-                brain.TargetInteractable = null;
+                stats.TargetInteractable = null;
                 return;
             }
 
-            StartCharacterInteraction(brain);
+            StartCharacterInteraction(stats);
             AddObjectInfluence();
         }
 
@@ -254,36 +254,40 @@ namespace WizardsCode.Character
                 return;
             }
 
-            Brain brain = other.transform.root.GetComponentInChildren<Brain>();
-            if (brain == null
+            StatsTracker stats = other.transform.root.GetComponentInChildren<StatsTracker>();
+            if (stats == null
                 || (!m_IsRepeating
-                && m_ActiveInteractors.Contains(brain)))
+                && m_ActiveInteractors.Contains(stats)))
             {
                 return;
             }
 
-            if (!brain.ShouldInteractWith(this))
+            if (!stats.ShouldInteractWith(this))
             {
                 return;
             }
 
-            if (!HasSpaceFor(brain))
+            if (!HasSpaceFor(stats))
             {
-                brain.TargetInteractable = null;
+                stats.TargetInteractable = null;
                 return;
             }
 
-            if (!IsOnCooldownFor(brain))
+            if (!IsOnCooldownFor(stats))
             {
-                StartCharacterInteraction(brain);
+                StartCharacterInteraction(stats);
                 AddObjectInfluence();
             }
         }
 
-        private void StartCharacterInteraction(Brain brain)
+        private void StartCharacterInteraction(StatsTracker stats)
         {
-            GenericInteractionAIBehaviour behaviour = (GenericInteractionAIBehaviour)brain.ActiveBlockingBehaviour;
-            behaviour.StartBehaviour(this);
+            if (stats is Brain)
+            {
+                Brain brain = (Brain)stats;
+                GenericInteractionAIBehaviour behaviour = (GenericInteractionAIBehaviour)brain.ActiveBlockingBehaviour;
+                behaviour.StartBehaviour(this);
+            }
 
             for (int i = 0; i < CharacterInfluences.Length; i++)
             {
@@ -295,12 +299,12 @@ namespace WizardsCode.Character
                 influencer.duration = m_Duration;
                 influencer.CooldownDuration = m_Cooldown;
 
-                if (brain.TryAddInfluencer(influencer))
+                if (stats.TryAddInfluencer(influencer))
                 {
-                    m_Reservations.Remove(brain);
-                    m_ActiveInteractors.Add(brain);
-                    m_TimeOfLastInfluence.Remove(brain);
-                    m_TimeOfLastInfluence.Add(brain, Time.timeSinceLevelLoad);
+                    m_Reservations.Remove(stats);
+                    m_ActiveInteractors.Add(stats);
+                    m_TimeOfLastInfluence.Remove(stats);
+                    m_TimeOfLastInfluence.Add(stats, Time.timeSinceLevelLoad);
                 }
             }
         }

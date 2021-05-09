@@ -72,19 +72,20 @@ namespace WizardsCode.Character
             }
         }
 
+        internal override void StartBehaviour(float duration)
+        {
+            base.StartBehaviour(duration);
+            UpdateMove();
+        }
+
         protected override void OnUpdate()
         {
             timeToNextWanderPathChange -= Time.deltaTime;
 
-            if (timeToNextWanderPathChange > 0 && ActorController.IsMoving)
+            if (timeToNextWanderPathChange <= 0)
             {
                 OnReachedTarget();
                 FinishBehaviour();
-            }
-
-            if (timeToNextWanderPathChange <= 0) //  || !m_Agent.hasPath || m_Agent.pathStatus == NavMeshPathStatus.PathInvalid
-            {
-                UpdateMove();
             }
         }
 

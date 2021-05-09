@@ -56,11 +56,11 @@ MonoBehaviour:
   m_OnEndEvent:
     m_PersistentCalls:
       m_Calls: []
-  m_OnStart: {fileID: 0}
+  m_OnStart: {fileID: 11400000, guid: 0ee63b6e13454634fa62cfe48f82d15f, type: 2}
   m_OnPrepare: {fileID: 0}
-  m_OnPerformInteraction: {fileID: 11400000, guid: dc5834a45bace2d4f86aab4f95bc0411,
+  m_OnPerformInteraction: {fileID: 11400000, guid: cd61d23578984444bb2ca0ef73fa8237,
     type: 2}
-  m_OnEnd: {fileID: 0}
+  m_OnEnd: {fileID: 11400000, guid: 90fe31304202f63478beccae32a8ccc5, type: 2}
   m_WeightMultiplier: 1
   m_RequiredSenses:
   - {fileID: 0}
@@ -71,7 +71,7 @@ MonoBehaviour:
   m_RequireConsent: 0
   m_MinGroupSize: 2
   m_MaxGroupSize: 5
-  m_GroupDistance: 0
+  m_GroupDistance: 0.5
   m_HandshakeTimeout: 4
-  m_CooldownDuration: 60
+  m_CooldownDuration: 1
   m_NavMeshMask: -1
