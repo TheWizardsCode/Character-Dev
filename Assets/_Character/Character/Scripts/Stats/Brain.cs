@@ -375,6 +375,17 @@ namespace WizardsCode.Stats {
         }
 
         /// <summary>
+        /// This actor will prioritize the named behaviour over all others. Under normal
+        /// circumstances this means the behaviour will be actioned as soon as possible.
+        /// </summary>
+        /// <param name="behaviour">The behaviour to prioritize.</param>
+        public void PrioritizeBehaviour(AbstractAIBehaviour behaviour)
+        {
+            m_RequestedBehaviour = behaviour.DisplayName;
+            m_TimeOfNextUpdate = Time.timeSinceLevelLoad;
+        }
+
+        /// <summary>
         /// Add an influencer to this controller. If this controller is not managing the required stat then 
         /// do nothing.
         /// </summary>

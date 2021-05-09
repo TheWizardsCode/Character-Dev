@@ -53,6 +53,8 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("An actor cue sent when ending this interaction. This should set the character back to their default state.")]
         [FormerlySerializedAs("m_OnEndCue")] // v0.11
         protected ActorCue m_OnEnd;
+        [SerializeField, Tooltip("If this behaviour should always be followed by the same behaviour (assuming it is possible) drop the behaviour here. If this is null the brain will be free to select its own behaviour")]
+        AbstractAIBehaviour m_NextBehaviour;
 
         [Header("Conditions")]
         [SerializeField, Range(0.1f, 5), Tooltip("The Weight Multiplier is used to lower or higher the priority of this behaviour relative to others the actor has. The higher this multiplier is the more likely it is the behaviour will be fired. The lower, the less likely.")]
@@ -471,11 +473,17 @@ namespace WizardsCode.Character
                 m_OnEndEvent.Invoke();
             }
 
+            if (m_NextBehaviour != null)
+            {
+                Brain.PrioritizeBehaviour(m_NextBehaviour);
+            }
+
             if (m_OnEnd != null)
             {
                 Brain.Actor.Prompt(m_OnEnd);
                 return Time.timeSinceLevelLoad + m_OnEnd.Duration;
             }
+
             return Time.timeSinceLevelLoad;
         }
 
