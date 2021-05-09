@@ -16,6 +16,7 @@ namespace WizardsCode.Character
         , IDebug
 #endif
     {
+
         [SerializeField, Tooltip("The set of currently retained short term memories.")]
         List<MemorySO> m_ShortTermMemories = new List<MemorySO>();
         [SerializeField, Tooltip("The set of currently retained long term memories. Long term memories are discard when space runs out.")]
