@@ -1,3 +1,4 @@
+#if INK_PRESENT
 using UnityEngine;
 
 namespace WizardsCode.Ink
@@ -33,3 +34,4 @@ namespace WizardsCode.Ink
         }
     }
 }
+#endif

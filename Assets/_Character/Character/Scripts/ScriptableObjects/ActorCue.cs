@@ -24,11 +24,14 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("Audio files for spoken lines")]
         public AudioClip audioClip;
 
+        //TODO remove Ink sections to an InkActorCue object
+        #if INK_PRESENT
         [Header("Ink")]
         [SerializeField, Tooltip("The name of the knot to jump to on this cue.")]
         string m_KnotName;
         [SerializeField, Tooltip("The name of the stitch to jump to on this cue.")]
         string m_StitchName;
+        #endif
 
         internal BaseActorController m_Actor;
         internal NavMeshAgent m_Agent;
@@ -55,17 +58,21 @@ namespace WizardsCode.Character
 
             ProcessMove();
             ProcessAudio();
+#if INK_PRESENT
             ProcessInk();
+#endif
 
             return UpdateCoroutine();
         }
 
+#if INK_PRESENT
         internal void ProcessInk()
         {
             if (!string.IsNullOrEmpty(m_KnotName) || !string.IsNullOrEmpty(m_StitchName)) {
                 InkManager.Instance.ChoosePath(m_KnotName, m_StitchName);
             }
         }
+#endif
 
         internal virtual IEnumerator UpdateCoroutine()
         {
