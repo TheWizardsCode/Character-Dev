@@ -1,5 +1,49 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8170536346842772865
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65aaaabfda1387c43aa9a38099837301, type: 3}
+  m_Name: 01_IdleLoop
+  m_EditorClassIdentifier: 
+  PrimaryClip: {fileID: 7400002, guid: d9b2ee02710f70746b6aa2acbe11a1f7, type: 3}
+  SecondaryClips: []
+  TransitionClips: []
+  Tags: 0
+  FavourTags: 0
+  MinLoops: 1
+  MaxLoops: 2
+  Traits: []
+  m_targetPreProcessData: {fileID: 11400000}
+  m_targetAnimModule: {fileID: 0}
+--- !u!114 &-221685016033821229
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65aaaabfda1387c43aa9a38099837301, type: 3}
+  m_Name: 01_IdleLoop_MIRROR
+  m_EditorClassIdentifier: 
+  PrimaryClip: {fileID: 7400028, guid: d9b2ee02710f70746b6aa2acbe11a1f7, type: 3}
+  SecondaryClips: []
+  TransitionClips: []
+  Tags: 0
+  FavourTags: 0
+  MinLoops: 1
+  MaxLoops: 2
+  Traits: []
+  m_targetPreProcessData: {fileID: 11400000}
+  m_targetAnimModule: {fileID: 0}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -141,8 +185,8 @@ MonoBehaviour:
   m_animModules:
   - {fileID: 11400000, guid: 919d25982dbe50c48bb003a3a9ab488a, type: 2}
   m_animIdleSets:
-  - {fileID: 114440151072782856}
-  - {fileID: 114654413280891308}
+  - {fileID: -8170536346842772865}
+  - {fileID: -221685016033821229}
   m_blendSpaces: []
   m_motionTimingPresets: {fileID: 0}
   m_embedAnimClipsInAnimData: 0
@@ -153,9 +197,9 @@ MonoBehaviour:
   m_animationFoldout: 1
   m_animModuleFoldout: 1
   m_compositeFoldout: 0
-  m_idleSetFoldout: 0
+  m_idleSetFoldout: 1
   m_blendSpaceFoldout: 0
-  m_metaDataFoldout: 0
+  m_metaDataFoldout: 1
   m_tagsFoldout: 0
   m_favourTagsFoldout: 0
   m_userTagsFoldout: 0
