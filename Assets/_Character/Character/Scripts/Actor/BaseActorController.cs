@@ -167,6 +167,21 @@ namespace WizardsCode.Character
         }
 
         /// <summary>
+        /// If this actor is currently preparing to, or actively interacting with an object this transform is the point at which they should be standing.
+        /// </summary>
+        internal Transform InteractionPoint
+        {
+            get
+            {
+                return m_InteractionPoint;
+            }
+            set
+            {
+                m_InteractionPoint = value;
+            }
+        }
+
+        /// <summary>
         /// Stop the actor from moving. Clearing the current path if there is one.
         /// </summary>
         internal void StopMoving()
@@ -193,6 +208,7 @@ namespace WizardsCode.Character
 
         protected float m_runSqrMagnitude;
         protected float m_sprintSqrMagnitude;
+        private Transform m_InteractionPoint;
 
         protected virtual void Awake()
         {
@@ -218,6 +234,10 @@ namespace WizardsCode.Character
                 Debug.LogWarning("No head transform set on " + gameObject.name + " and one could not be found automatically - LookAt disabled");
                 m_IsLookAtIKActive = false;
             }
+
+            m_InteractionPoint = new GameObject(transform.root.name + " Interaction Point").transform;
+
+            m_LookAtTarget.name = transform.root.name + " Look At Target";
         }
 
         [Obsolete("Use an ActorCue that plays the chosen Emote.")] // v0.0.9

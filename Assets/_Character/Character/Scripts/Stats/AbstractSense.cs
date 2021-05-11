@@ -16,8 +16,11 @@ namespace WizardsCode.Character.AI
     {
         [SerializeField, TextArea, Tooltip("Description field for use in the editor")]
         string description;
-        [SerializeField, Tooltip("The range over which this sense will work under normal circumstances.")]
-        float range = 100f;
+        [SerializeField, Tooltip("The minimum range over which this sense will work under normal circumstances.")]
+        float m_MinRange = 1f;
+        [SerializeField, Tooltip("The maximum range over which this sense will work under normal circumstances.")]
+        [FormerlySerializedAs("range")]
+        float m_MaxRange = 100f;
         [SerializeField, Tooltip("The layermask to use when detecting colliders. Use this to ensure only the right kind of objects are detected.")]
         LayerMask m_LayerMask = 1;
         [SerializeField, Tooltip("The maximum number of sensed objects.")]
@@ -67,7 +70,7 @@ namespace WizardsCode.Character.AI
         {
             //TODO move the overall sense code into the ActorController where it can cache the sensed object list. Implementations of this class can then filter for items they care about.
             Collider[] hitColliders = new Collider[maxSensedColliders];
-            int numColliders = Physics.OverlapSphereNonAlloc(transform.position, range, hitColliders, m_LayerMask);
+            int numColliders = Physics.OverlapSphereNonAlloc(transform.position, m_MaxRange, hitColliders, m_LayerMask);
             m_SensedObjects = new List<Transform>();
             for (int i = numColliders - 1; i >= 0; i--)
             {
@@ -77,7 +80,8 @@ namespace WizardsCode.Character.AI
                     continue;
                 }
 
-                if (root.GetComponentInChildren(ComponentType))
+                //TODO OPTIMIZATION use sqrmagnitude not distance
+                if (Vector3.Distance(this.transform.root.transform.position, root.position) >= m_MinRange  && root.GetComponentInChildren(ComponentType))
                 {
                     m_SensedObjects.Add(root);
                 }

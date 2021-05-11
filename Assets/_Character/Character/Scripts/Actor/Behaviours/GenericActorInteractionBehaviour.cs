@@ -40,7 +40,6 @@ namespace WizardsCode.Character.AI
         private bool m_IsHandshaking = false;
         List<StatsTracker> participants = new List<StatsTracker>();
         private NavMeshAgent m_Agent;
-        private Transform interactionPointT;
 
         private string InteractionPointName { get; set; }
 
@@ -252,12 +251,7 @@ namespace WizardsCode.Character.AI
                 EndTime = FinishBehaviour();
                 return;
             }
-
-            if (!interactionPointT)
-            {
-                interactionPointT = new GameObject(InteractionPointName).transform;
-            }
-            interactionPointT.position = m_InteractionPoint;
+            Brain.Actor.InteractionPoint.position = m_InteractionPoint;
 
             if (Vector3.SqrMagnitude(Brain.Actor.MoveTargetPosition - m_InteractionPoint) > 0.2f)
             {
