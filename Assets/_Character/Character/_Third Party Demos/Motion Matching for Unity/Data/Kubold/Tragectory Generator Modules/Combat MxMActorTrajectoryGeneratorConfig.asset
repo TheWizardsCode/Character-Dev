@@ -9,15 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c78a8c623092a904dad3f8d594867736, type: 3}
-  m_Name: Kubold Movement AnimSet TrajGenModule
+  m_Script: {fileID: 11500000, guid: d3b5b9b5728f41f4fbb3920b9addcf93, type: 3}
+  m_Name: Combat MxMActorTrajectoryGeneratorConfig
   m_EditorClassIdentifier: 
-  MaxSpeed: 4.3
-  PosBias: 9
-  DirBias: 9
+  MaxSpeed: 0.6
+  MoveResponsiveness: 20
+  TurnResponsiveness: 15
   TrajectoryMode: 0
-  FlattenTrajectory: 1
-  CustomInput: 0
-  ResetDirectionOnNoInput: 0
-  CamTransform: {fileID: 0}
-  InputProfile: {fileID: 0}

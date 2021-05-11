@@ -40,6 +40,7 @@ namespace WizardsCode.Character.AI
         private bool m_IsHandshaking = false;
         List<StatsTracker> participants = new List<StatsTracker>();
         private NavMeshAgent m_Agent;
+        private float m_SqrArrivingDistance;
 
         private string InteractionPointName { get; set; }
 
@@ -69,6 +70,8 @@ namespace WizardsCode.Character.AI
 
             m_Agent = GetComponentInParent<NavMeshAgent>();
             InteractionPointName = Brain.DisplayName + " - Interaction point";
+
+            m_SqrArrivingDistance = Brain.Actor.ArrivingDistance * Brain.Actor.ArrivingDistance;
         }
 
         protected override void OnUpdate()
@@ -253,7 +256,7 @@ namespace WizardsCode.Character.AI
             }
             Brain.Actor.InteractionPoint.position = m_InteractionPoint;
 
-            if (Vector3.SqrMagnitude(Brain.Actor.MoveTargetPosition - m_InteractionPoint) > 0.2f)
+            if (Vector3.SqrMagnitude(Brain.Actor.MoveTargetPosition - m_InteractionPoint) > m_SqrArrivingDistance)
             {
                 Brain.Actor.MoveTo(m_InteractionPoint,
                     () =>

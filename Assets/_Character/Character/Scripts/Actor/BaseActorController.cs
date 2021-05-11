@@ -30,7 +30,6 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("The distance within which the character is considered to be arriving at their destination. This is used to allow callbacks for when the character has nearly completed their movement. This can be useful when the character needs to, for example, turn to sit on a chair just before reaching the final stopping point.")]
         protected float m_ArrivingDistance = 1f;
 
-
         [Header("Look")]
         [SerializeField, Tooltip("A transform at the point in space that the actor should look towards.")]
         Transform m_LookAtTarget;
@@ -74,6 +73,12 @@ namespace WizardsCode.Character
 
         AnimationLayerController m_AnimationLayers;
         #endregion
+
+        public float ArrivingDistance
+        {
+            get { return m_ArrivingDistance; }
+            set { m_ArrivingDistance = value; }
+        }
 
         private void OnAnimatorIK(int layerIndex)
         {
@@ -221,6 +226,10 @@ namespace WizardsCode.Character
             m_AnimationLayers = GetComponentInChildren<AnimationLayerController>();
 
             m_Agent = GetComponent<NavMeshAgent>();
+            if (m_Agent != null)
+            {
+                m_Agent.stoppingDistance = ArrivingDistance / 2;
+            }
             m_Brain = GetComponent<Brain>();
             MoveTargetPosition = transform.position;
 
@@ -271,9 +280,7 @@ namespace WizardsCode.Character
                 }
             }
 
-            /*TODO this is causing MxM to spin uncontrollably. Need to turn it offin MxM but leave it on in others.
             RotateIfNeeded();
-            */
         }
 
         /// <summary>
@@ -296,9 +303,9 @@ namespace WizardsCode.Character
 
             if (isRotating)
             {
-                if (transform.rotation != desiredRotation)
+                if (Quaternion.Angle(transform.rotation, desiredRotation) >= 0.5f)
                 {
-                    transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, 0.5f);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, Time.deltaTime * m_LookAtSpeed);
                 }
                 else
                 {
@@ -321,10 +328,13 @@ namespace WizardsCode.Character
                         onStationary();
                         onStationary = null;
                         hasMoved = false;
+                    } else if (m_Agent.remainingDistance > ArrivingDistance)
+                    {
+                        m_State = States.Moving;
                     }
                     break;
                 case States.Moving:
-                    if (m_Agent.remainingDistance <= m_ArrivingDistance)
+                    if (!m_Agent.pathPending && m_Agent.remainingDistance <= ArrivingDistance)
                     {
                         m_State = States.Arriving;
                     }
@@ -337,6 +347,7 @@ namespace WizardsCode.Character
                         onArriving();
                         onArriving = null;
                     }
+
                     if (m_Agent.remainingDistance <= m_Agent.stoppingDistance)
                     {
                         m_State = States.Arrived;
@@ -418,7 +429,7 @@ namespace WizardsCode.Character
         internal void ResetLookAt()
         {
             LookAtTarget.transform.SetParent(transform);
-            LookAtTarget.transform.localPosition = head.position + new Vector3(0, 0, 1);
+            LookAtTarget.transform.position = head.position + transform.forward;
             isRotating = false;
         }
 
@@ -436,6 +447,14 @@ namespace WizardsCode.Character
             {
                 m_AnimationLayers.isTalking = false;
             }
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            // Look At
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(LookAtTarget.position, 0.15f);
+            Gizmos.DrawLine(head.position, LookAtTarget.position);
         }
     }
 }
