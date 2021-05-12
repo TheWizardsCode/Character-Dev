@@ -30,17 +30,17 @@ MonoBehaviour:
     - 1
     - 1
   - CalibrationName: Combat
-    PoseTrajectoryRatio: 0.775
-    PoseVelocityWeight: 8
-    PoseAspectMultiplier: 1
+    PoseTrajectoryRatio: 0.137
+    PoseVelocityWeight: 3
+    PoseAspectMultiplier: 0.8
     PoseResultantVelocityMultiplier: 0.2
     TrajPosMultiplier: 3
     TrajFAngleMultiplier: 0.02
     JointPositionWeights:
-    - 2
-    - 2
+    - 1
+    - 1
     - 1
     JointVelocityWeights:
-    - 1
-    - 1
+    - 2
+    - 2
     - 1

@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 316ca862c074e1741bb37ecbefd40148, type: 3}
-  m_Name: Attack Light MxMEventDefinition
+  m_Name: Sidestep Left MxMEventDefinition
   m_EditorClassIdentifier: 
-  Id: 0
-  EventName: Attack Light
+  Id: 2
+  EventName: Sidestep Left
   EventType: 0
   Priority: -1
   ContactCountToMatch: 0
@@ -33,7 +33,7 @@ MonoBehaviour:
   ContactCountToTimeScale: 1
   MinWarpTimeScale: 0.9
   MaxWarpTimeScale: 1.2
-  MatchRotation: 1
-  RotationWeight: 0.6
+  MatchRotation: 0
+  RotationWeight: 0
   RotationWarpType: 0
   m_targetAnimData: {fileID: 11400000, guid: 38b80bd731fcb984491c17fd6c9c8996, type: 2}

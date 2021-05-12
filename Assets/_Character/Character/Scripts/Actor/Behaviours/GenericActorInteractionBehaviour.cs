@@ -178,7 +178,7 @@ namespace WizardsCode.Character.AI
 
             if (Vector3.SqrMagnitude(Brain.Actor.transform.position - m_InteractionPoint) <= 0.25f)
             {
-                PerformInteraction();
+                PerformAction();
             }
         }
 
@@ -265,22 +265,10 @@ namespace WizardsCode.Character.AI
                     },
                     () =>
                     {
-                        PerformInteraction();
+                        PerformAction();
                     },
                     null
                 );
-            }
-        }
-
-        private void PerformInteraction()
-        {
-            Brain.Actor.TurnToFace(m_ActorController.LookAtTarget.position);
-
-            if (m_OnPerformInteraction.Length > 0)
-            {
-                ActorCue cue = m_OnPerformInteraction[Random.Range(0, m_OnPerformInteraction.Length)];
-                Brain.Actor.Prompt(cue);
-                EndTime = Time.timeSinceLevelLoad + cue.Duration;
             }
         }
 

@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 316ca862c074e1741bb37ecbefd40148, type: 3}
-  m_Name: Skip Back MxMEventDefinition
+  m_Name: Skip Backward MxMEventDefinition
   m_EditorClassIdentifier: 
-  Id: 0
-  EventName: 
+  Id: 4
+  EventName: Skip Backwards
   EventType: 0
   Priority: -1
   ContactCountToMatch: 0
@@ -36,4 +36,4 @@ MonoBehaviour:
   MatchRotation: 0
   RotationWeight: 0
   RotationWarpType: 0
-  m_targetAnimData: {fileID: 0}
+  m_targetAnimData: {fileID: 11400000, guid: 38b80bd731fcb984491c17fd6c9c8996, type: 2}

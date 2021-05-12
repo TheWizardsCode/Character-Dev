@@ -75,6 +75,10 @@ namespace WizardsCode.Character
         internal override void StartBehaviour(float duration)
         {
             base.StartBehaviour(duration);
+
+            Brain.Actor.Prompt(m_OnStart);
+            Brain.Actor.Prompt(m_OnPrepare);
+
             UpdateMove();
         }
 

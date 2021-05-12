@@ -39,17 +39,18 @@ namespace WizardsCode.Character
 
         [Header("Actions")]
         [SerializeField, Tooltip("Events to fire when this behaviour is started.")]
-        UnityEvent m_OnStartEvent;
+        protected UnityEvent m_OnStartEvent;
         [SerializeField, Tooltip("Events to fire when this behaviour is finished.")]
-        UnityEvent m_OnEndEvent;
+        protected UnityEvent m_OnEndEvent;
         [SerializeField, Tooltip("An actor cue to send to the actor upon the start of this interaction. It should be used to configure the actor ready for the interaction.")]
         [FormerlySerializedAs("m_OnStartCue")] // v0.11
         protected ActorCue m_OnStart;
         [SerializeField, Tooltip("An actor cue to send to the actor as they start the prepare phase of this interaction. This is where you will typically play wind up animations and the like.")]
         [FormerlySerializedAs("m_OnArrivingCue")] // v0.11
         protected ActorCue m_OnPrepare;
-        [SerializeField, Tooltip("A set of actor cues from which to select the appropriate behaviour when performing this interaction. This is where you will usually play animations and sounds reflecting the interaction itself.")]
-        protected ActorCue[] m_OnPerformInteraction;
+        [SerializeField, Tooltip("A set of actor cues from which to select the appropriate behaviour when performing this behaviour. This is where you will usually play animations and sounds reflecting the interaction itself.")]
+        [FormerlySerializedAs("m_OnPerformInteraction")] // changed in v0.1.1
+        protected ActorCue[] m_OnPerformAction;
         [SerializeField, Tooltip("An actor cue sent when ending this interaction. This should set the character back to their default state.")]
         [FormerlySerializedAs("m_OnEndCue")] // v0.11
         protected ActorCue m_OnEnd;
@@ -330,10 +331,17 @@ namespace WizardsCode.Character
             {
                 m_OnStartEvent.Invoke();
             }
+        }
 
-            if (m_OnStart != null)
+        protected void PerformAction()
+        {
+            Brain.Actor.TurnToFace(m_ActorController.LookAtTarget.position);
+
+            if (m_OnPerformAction.Length > 0)
             {
-                Brain.Actor.Prompt(m_OnStart);
+                ActorCue cue = m_OnPerformAction[Random.Range(0, m_OnPerformAction.Length)];
+                Brain.Actor.Prompt(cue);
+                EndTime = Time.timeSinceLevelLoad + cue.Duration;
             }
         }
 
