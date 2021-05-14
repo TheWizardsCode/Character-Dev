@@ -168,11 +168,11 @@ namespace WizardsCode.Stats {
         {
             get
             {
-                if (ActiveBlockingBehaviour == null)
+                if (ActiveBlockingBehaviour == null && Time.timeSinceLevelLoad > m_TimeOfNextBehaviourUpdate)
                 {
                     return true;
-                }
-
+                } 
+                
                 if (ActiveBlockingBehaviour.IsExecuting && !ActiveBlockingBehaviour.IsInteruptable)
                 {
                     return false;

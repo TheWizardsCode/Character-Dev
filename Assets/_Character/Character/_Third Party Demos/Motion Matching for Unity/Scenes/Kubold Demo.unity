@@ -161,17 +161,17 @@ PrefabInstance:
     - target: {fileID: 4849660329302262542, guid: cd043fd3fea236849a96c95ac0e6903a,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.08248051
+      value: 0.08248054
       objectReference: {fileID: 0}
     - target: {fileID: 4849660329302262542, guid: cd043fd3fea236849a96c95ac0e6903a,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.000000029969623
+      value: -0.000000010849329
       objectReference: {fileID: 0}
     - target: {fileID: 4849660329302262542, guid: cd043fd3fea236849a96c95ac0e6903a,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.0000000024803608
+      value: 8.979193e-10
       objectReference: {fileID: 0}
     - target: {fileID: 4849660329302262542, guid: cd043fd3fea236849a96c95ac0e6903a,
         type: 3}
@@ -1049,7 +1049,7 @@ MonoBehaviour:
   m_Description: Punch an enemy that is close by.
   m_DisplayName: Punch Enemy
   Icon: {fileID: 0}
-  m_RetryFrequency: 0.16
+  m_RetryFrequency: 0.3
   m_isInteruptable: 0
   m_MaximumExecutionTime: 0.6
   m_IsBlocking: 1
@@ -1068,7 +1068,7 @@ MonoBehaviour:
   m_OnEnd: {fileID: 0}
   m_NextBehaviour: {fileID: 0}
   m_WeightMultiplier: 1
-  m_WeightVariation: 0.1
+  m_WeightVariation: 0.15
   m_RequiredSenses:
   - {fileID: 655761845}
   m_RequiredStats: []
@@ -1308,7 +1308,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1490220373
 Transform:
   m_ObjectHideFlags: 0
@@ -1338,7 +1338,7 @@ MonoBehaviour:
   m_Description: Kick an enemy that is close by.
   m_DisplayName: Kick Enemy
   Icon: {fileID: 0}
-  m_RetryFrequency: 0.16
+  m_RetryFrequency: 0.3
   m_isInteruptable: 0
   m_MaximumExecutionTime: 0.6
   m_IsBlocking: 1
@@ -1351,9 +1351,9 @@ MonoBehaviour:
   m_OnStart: {fileID: 0}
   m_OnPrepare: {fileID: 0}
   m_OnPerformAction:
-  - {fileID: 11400000, guid: 918f23e61dec4434c910e1bfdea07795, type: 2}
-  - {fileID: 11400000, guid: c2ec91f88c1484448b8beb6525e773fe, type: 2}
-  - {fileID: 11400000, guid: 9d4ae548234004f45bf8746abf6d60e5, type: 2}
+  - {fileID: 11400000, guid: 792a91c0482b255488acbc355e97a87a, type: 2}
+  - {fileID: 11400000, guid: b80ace0da6dce73468967846a184e754, type: 2}
+  - {fileID: 11400000, guid: 792a91c0482b255488acbc355e97a87a, type: 2}
   m_OnEnd: {fileID: 0}
   m_NextBehaviour: {fileID: 0}
   m_WeightMultiplier: 0.9
@@ -1617,7 +1617,7 @@ MonoBehaviour:
   Icon: {fileID: 0}
   m_RetryFrequency: 0.2
   m_isInteruptable: 0
-  m_MaximumExecutionTime: 30
+  m_MaximumExecutionTime: 5
   m_IsBlocking: 1
   m_OnStartEvent:
     m_PersistentCalls:
@@ -1691,7 +1691,7 @@ MonoBehaviour:
   m_Description: Move about randomly in the fight
   m_DisplayName: Dance like a Butterfly
   Icon: {fileID: 0}
-  m_RetryFrequency: 0.34
+  m_RetryFrequency: 0.4
   m_isInteruptable: 1
   m_MaximumExecutionTime: 0.45
   m_IsBlocking: 0
@@ -2249,47 +2249,47 @@ PrefabInstance:
     - target: {fileID: 5585836341280861828, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.08248051
+      value: 0.08248054
       objectReference: {fileID: 0}
     - target: {fileID: 5585836341280861828, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.000000029969623
+      value: -0.0000000108493285
       objectReference: {fileID: 0}
     - target: {fileID: 5585836341280861828, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.000000002480361
+      value: 8.979193e-10
       objectReference: {fileID: 0}
     - target: {fileID: 5585836341545092607, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.1733999
+      value: 1.9845309
       objectReference: {fileID: 0}
     - target: {fileID: 5585836341545092607, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.8136811
+      value: 2.91943
       objectReference: {fileID: 0}
     - target: {fileID: 5585836341545092607, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.98038006
+      value: 0.9268802
       objectReference: {fileID: 0}
     - target: {fileID: 5585836341545092607, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.19711672
+      value: 0.37535745
       objectReference: {fileID: 0}
     - target: {fileID: 5585836341545092607, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.000000030116816
+      value: -0.0000000069057964
       objectReference: {fileID: 0}
     - target: {fileID: 5585836341545092607, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.000000006055333
+      value: 0.0000000027966311
       objectReference: {fileID: 0}
     - target: {fileID: 5585836341601848407, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
@@ -2309,17 +2309,17 @@ PrefabInstance:
     - target: {fileID: 5585836341601848407, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.08248051
+      value: 0.08248054
       objectReference: {fileID: 0}
     - target: {fileID: 5585836341601848407, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.000000014550837
+      value: -0.000000035229295
       objectReference: {fileID: 0}
     - target: {fileID: 5585836341601848407, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.0000000012042642
+      value: 0.0000000029156657
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7509674b61ab1874b9afbdd3015c09a8, type: 3}
@@ -2840,7 +2840,7 @@ PrefabInstance:
     - target: {fileID: 5819142872271090333, guid: e1e8e82ae1c28e14e8e96f43d602c2a5,
         type: 3}
       propertyPath: m_TimeBetweenUpdates
-      value: 0.4
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8398253830063905793, guid: e1e8e82ae1c28e14e8e96f43d602c2a5, type: 3}
