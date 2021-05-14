@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 717707e1dfd27844db11247bb58e0d96, type: 3}
-  m_Name: Combat Skip Backawards MxM ActorCue
+  m_Name: Combat  Kick Heavy MxM ActorCue
   m_EditorClassIdentifier: 
   Duration: 0.75
   markName: 
@@ -19,11 +19,11 @@ MonoBehaviour:
   m_calibrationName: 
   m_TrajectoryConfig: {fileID: 0}
   m_WarpingConfig: {fileID: 0}
-  m_MxMEvent: {fileID: 11400000, guid: 9fd1b6ef75bfb794fb3216bfcaf2b9e5, type: 2}
+  m_MxMEvent: {fileID: 11400000, guid: 3b2df3c53621e454c861f36be62b7334, type: 2}
   m_RemoveAllRequiredTags: 0
   m_AddRequiredTag: 1
-  m_RequiredTag: Combat
-  m_RemoveAllFavouredTags: 0
+  m_RequiredTag: 
+  m_RemoveAllFavouredTags: 1
   m_AddFavouredTag: 1
-  m_FavourTag: 
+  m_FavourTag: Kick
   m_favourMultiplier: 0.6

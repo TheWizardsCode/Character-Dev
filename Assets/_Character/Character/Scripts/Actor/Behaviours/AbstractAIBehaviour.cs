@@ -162,11 +162,6 @@ namespace WizardsCode.Character
             internal set; 
         }
 
-        private void Awake()
-        {
-            Init();
-        }
-
         /// <summary>
         /// If true then this behaviour will be prioritized until such a time as it is executed.
         /// </summary>
@@ -431,6 +426,7 @@ namespace WizardsCode.Character
 
         private void OnEnable()
         {
+            Init();
             Brain.RegisterBehaviour(this);
         }
 

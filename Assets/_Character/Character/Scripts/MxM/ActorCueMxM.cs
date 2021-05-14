@@ -47,7 +47,7 @@ namespace WizardsCode.MxMExtensions
             m_mxmAnimator = actor.GetComponent<MxMAnimator>();
             trajectoryGenerator = actor.GetComponent<MxMActorTrajectoryGenerator>();
 
-            if (m_RemoveAllRequiredTags)
+            if (m_RemoveAllFavouredTags)
             {
                 m_mxmAnimator.ClearFavourTags();
             }

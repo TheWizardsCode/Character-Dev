@@ -74,7 +74,13 @@ namespace WizardsCode.Stats {
         public MemoryController Memory { get; private set; }
 
         public BaseActorController Actor {
-            get { return m_Controller; }
+            get { 
+                if (m_Controller == null)
+                {
+                    m_Controller = GetComponentInParent<BaseActorController>();
+                }
+                return m_Controller; 
+            }
         }
         internal override Interactable TargetInteractable
         {
@@ -112,7 +118,6 @@ namespace WizardsCode.Stats {
         {
             m_Camera = Camera.main;
 
-            m_Controller = GetComponentInParent<BaseActorController>();
             Memory = transform.root.GetComponentInChildren<MemoryController>();
 
             if (m_IconUI == null)
