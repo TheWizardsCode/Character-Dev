@@ -3,6 +3,7 @@ using MxM;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WizardsCode.MxMExtensions;
 
 namespace WizardsCode.Character
 {
@@ -32,6 +33,18 @@ namespace WizardsCode.Character
             m_sprintTagHandle = m_mxmAnimator.CurrentAnimData.FavourTagFromName(LocomotionType.Sprint.ToString());
 
             m_mxmAnimator.SetFavourMultiplier(m_favourMultiplier);
+        }
+
+        public override void Prompt(ActorCue cue)
+        {
+            ActorCueMxM mxm = (ActorCueMxM)cue;
+            if (mxm != null)
+            {
+                Vector3 pos = LookAtTarget.position;
+                mxm.contactPoints = new EventContact[] { new EventContact(pos, 0) };
+            }
+
+            base.Prompt(cue);
         }
 
 #region Locomotion Style

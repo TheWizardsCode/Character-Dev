@@ -20,7 +20,7 @@ namespace WizardsCode.MxMExtensions
 
         [Header("MxM Events and Tags")]
         [SerializeField, Tooltip("The MxM event to fire when this cue is prompted.")]
-        MxMEventDefinition m_MxMEvent;
+        internal MxMEventDefinition m_MxMEvent;
         [SerializeField, Tooltip("Remove all required tags?")]
         bool m_RemoveAllRequiredTags = false;
         [SerializeField, Tooltip("If there is a required tag set do we need to add it (set to true) or remove it (set to false)?")]
@@ -33,13 +33,17 @@ namespace WizardsCode.MxMExtensions
         bool m_AddFavouredTag = true;
         [SerializeField, Tooltip("The MxM favoured tag to set.")]
         string m_FavourTag;
-        [SerializeField, Tooltip("The multiplier to use for the favour tags. The lower this multiplier the more likely an animation with this tag will be used.")] 
+        [SerializeField, Tooltip("The multiplier to use for the favour tags. The lower this multiplier the more likely an animation with this tag will be used.")]
         float m_favourMultiplier = 0.6f;
 
         private MxMAnimator m_mxmAnimator;
         private MxMActorTrajectoryGenerator trajectoryGenerator;
         private ETags requiredEtag;
         private ETags favouredEtag;
+
+        public EventContact[] contactPoints {
+            get; set;
+        }
 
         public override IEnumerator Prompt(BaseActorController actor)
         {
@@ -100,6 +104,11 @@ namespace WizardsCode.MxMExtensions
 
             if (m_MxMEvent != null)
             {
+                m_MxMEvent.ClearContacts();
+                for (int i = 0; i < contactPoints.Length; i++)
+                {
+                    m_MxMEvent.AddEventContact(contactPoints[i]);
+                }
                 m_mxmAnimator.BeginEvent(m_MxMEvent);
             }
 

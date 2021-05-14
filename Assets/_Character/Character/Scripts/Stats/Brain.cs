@@ -173,7 +173,7 @@ namespace WizardsCode.Stats {
                     return true;
                 } 
                 
-                if (ActiveBlockingBehaviour.IsExecuting && !ActiveBlockingBehaviour.IsInteruptable)
+                if (ActiveBlockingBehaviour != null && ActiveBlockingBehaviour.IsExecuting && !ActiveBlockingBehaviour.IsInteruptable)
                 {
                     return false;
                 }

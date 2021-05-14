@@ -200,7 +200,7 @@ namespace WizardsCode.Character
         /// a position and actions that an actor should take.
         /// </summary>
         /// <param name="cue">The cue to enact.</param>
-        public void Prompt(ActorCue cue)
+        public virtual void Prompt(ActorCue cue)
         {
             if (cue == null) return;
 
@@ -230,7 +230,7 @@ namespace WizardsCode.Character
             {
                 m_Agent.stoppingDistance = ArrivingDistance / 2;
             }
-            m_Brain = GetComponent<Brain>();
+            m_Brain = GetComponentInChildren<Brain>();
             MoveTargetPosition = transform.position;
 
             // Look IK Setup
