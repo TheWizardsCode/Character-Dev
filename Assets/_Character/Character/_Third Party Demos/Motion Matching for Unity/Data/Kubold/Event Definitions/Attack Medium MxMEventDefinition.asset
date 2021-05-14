@@ -16,7 +16,7 @@ MonoBehaviour:
   EventName: Attack Medium
   EventType: 0
   Priority: -1
-  ContactCountToMatch: 0
+  ContactCountToMatch: 1
   ContactCountToWarp: 0
   ExitWithMotion: 1
   MatchPose: 1
@@ -26,8 +26,8 @@ MonoBehaviour:
   MatchTiming: 0
   TimingWeight: 0
   TimingWarpType: 0
-  MatchPosition: 0
-  PositionWeight: 0
+  MatchPosition: 1
+  PositionWeight: 10
   MotionWarpType: 0
   WarpTimeScaling: 0
   ContactCountToTimeScale: 1

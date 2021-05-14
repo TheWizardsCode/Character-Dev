@@ -41,6 +41,7 @@ namespace WizardsCode.Character
             if (mxm != null)
             {
                 Vector3 pos = LookAtTarget.position;
+                pos.y = 1f;
                 mxm.contactPoints = new EventContact[] { new EventContact(pos, 0) };
             }
 
