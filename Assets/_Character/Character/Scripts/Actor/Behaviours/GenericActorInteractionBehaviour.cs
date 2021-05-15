@@ -218,7 +218,15 @@ namespace WizardsCode.Character.AI
                 {
                     totalX += participants[i].GetInteractionPosition().x;
                     totalY += participants[i].GetInteractionPosition().z;
-                    m_ActorController.LookAtTarget = participants[i].transform;
+                    BaseActorController other = participants[i].GetComponentInParent<BaseActorController>();
+                    if (other != null)
+                    {
+                        m_ActorController.LookAtTarget = other.head;
+                    } else
+                    {
+                        m_ActorController.LookAtTarget = participants[i].transform;
+                        m_ActorController.LookAtTarget.position = new Vector3(m_ActorController.LookAtTarget.position.x, m_ActorController.LookAtTarget.position.y, m_ActorController.LookAtTarget.position.z);
+                    }
                 }
             }
 
