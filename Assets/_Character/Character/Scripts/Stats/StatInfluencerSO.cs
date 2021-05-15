@@ -214,7 +214,7 @@ namespace WizardsCode.Stats
             }
         }
 
-        internal Brain StatTracker { get; set; }
+        internal StatsTracker StatTracker { get; set; }
 
         public float CooldownCompleteTime {
             get { return m_CooldownCompleteTime; }

@@ -1,3 +1,4 @@
+#if INK_PRESENT
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -49,7 +50,7 @@ namespace WizardsCode.Ink
         [SerializeField, Tooltip("The Ink file to work with.")]
         TextAsset m_InkJSON;
         [SerializeField, Tooltip("The actors that are available in this scene.")]
-        ActorController[] m_Actors;
+        BaseActorController[] m_Actors;
         [SerializeField, Tooltip("The cues that will be used in this scene.")]
         ActorCue[] m_Cues;
         [SerializeField, Tooltip("Should the story start as soon as the game starts. If this is set to false the story will not start until a trigger or similar is set.")]
@@ -89,7 +90,7 @@ namespace WizardsCode.Ink
 
         //TODO REFACTOR managing the waiting for directions has become unwieldly. There are too many combinations of variables with unclear names
         bool wasWaiting = false;
-        private ActorController m_WaitingForActor;
+        private BaseActorController m_WaitingForActor;
         private string m_WaitingForState = "";
         private float m_WaitUntilTime = float.NegativeInfinity;
 
@@ -121,7 +122,7 @@ namespace WizardsCode.Ink
         /// <returns>a % chance of being noticed</returns>
         float GetPartyNoticability()
         {
-            List<ActorController> members = GetNearbyPartyMembers();
+            List<BaseActorController> members = GetNearbyPartyMembers();
             float noticability = 0.5f;
             for (int i = 0; i < members.Count; i++)
             {
@@ -135,16 +136,16 @@ namespace WizardsCode.Ink
         /// Check for party members nearby and return a list of all such actors.
         /// </summary>
         /// <returns>All actors allied to the player that are nearby.</returns>
-        List<ActorController> GetNearbyPartyMembers()
+        List<BaseActorController> GetNearbyPartyMembers()
         {
-            List<ActorController> result = new List<ActorController>();
+            List<BaseActorController> result = new List<BaseActorController>();
 
-            ActorController player = FindActor(m_PlayerName);
+            BaseActorController player = FindActor(m_PlayerName);
             Collider[] all = Physics.OverlapSphere(player.transform.position, 10, m_PartyLayerMask);
-            ActorController current;
+            BaseActorController current;
             for (int i = 0; i < all.Length; i++)
             {
-                current = all[i].GetComponentInParent<ActorController>();
+                current = all[i].GetComponentInParent<BaseActorController>();
                 if (current)
                 {
                     result.Add(current);
@@ -317,7 +318,7 @@ namespace WizardsCode.Ink
                 return;
             }
 
-            ActorController actor = FindActor(args[0].Trim());
+            BaseActorController actor = FindActor(args[0].Trim());
             ActorCue cue = FindCue(args[1].Trim());
 
             if (actor != null)
@@ -338,7 +339,7 @@ namespace WizardsCode.Ink
                 return;
             }
 
-            ActorController actor = FindActor(args[0].Trim());
+            BaseActorController actor = FindActor(args[0].Trim());
             Transform target = FindTarget(args[1].Trim());
 
             if (actor != null)
@@ -359,7 +360,7 @@ namespace WizardsCode.Ink
                 return;
             }
 
-            ActorController actor = FindActor(args[0].Trim());
+            BaseActorController actor = FindActor(args[0].Trim());
             if (actor)
             {
                 EmotionalState emotions = FindEmotionalState(actor);
@@ -385,7 +386,7 @@ namespace WizardsCode.Ink
                 return;
             }
 
-            ActorController actor = FindActor(args[0].Trim());
+            BaseActorController actor = FindActor(args[0].Trim());
             Brain brain = actor.GetComponentInChildren<Brain>();
             brain.PrioritizeBehaviour(args[1].Trim());
         }
@@ -402,7 +403,7 @@ namespace WizardsCode.Ink
                 return;
             }
 
-            ActorController actor = FindActor(args[0].Trim());
+            BaseActorController actor = FindActor(args[0].Trim());
             actor.StopMoving();
         }
 
@@ -418,7 +419,7 @@ namespace WizardsCode.Ink
                 return;
             }
 
-            ActorController actor = FindActor(args[0].Trim());
+            BaseActorController actor = FindActor(args[0].Trim());
             string paramName = args[1].Trim();
 
             if (args.Length == 2)
@@ -564,7 +565,7 @@ namespace WizardsCode.Ink
             }
             else if (!string.IsNullOrEmpty(args[1]))
             {
-                ActorController actor = FindActor(args[1].Trim());
+                BaseActorController actor = FindActor(args[1].Trim());
                 if (actor != null)
                 {
                     source = actor.GetComponentInChildren<AudioSource>();
@@ -667,7 +668,7 @@ namespace WizardsCode.Ink
                 return;
             }
 
-            ActorController actor = FindActor(args[0].Trim());
+            BaseActorController actor = FindActor(args[0].Trim());
             string targetName = args[1].Trim();
             Transform target = null;
             if (targetName != "Nothing") {
@@ -683,7 +684,7 @@ namespace WizardsCode.Ink
             }
         }
 
-        EmotionalState FindEmotionalState(ActorController actor)
+        EmotionalState FindEmotionalState(BaseActorController actor)
         {
             EmotionalState emotions = actor.GetComponent<EmotionalState>();
             if (!emotions)
@@ -695,7 +696,7 @@ namespace WizardsCode.Ink
 
         Transform FindTarget(string objectName)
         {
-            ActorController actor = FindActor(objectName, false);
+            BaseActorController actor = FindActor(objectName, false);
             if (actor != null)
             {
                 return actor.transform.root;
@@ -719,9 +720,9 @@ namespace WizardsCode.Ink
         /// <param name="actorName">The name of the actor we want.</param>
         /// <param name="logError">If true (the default) an error will be logged to the console if the actor is not found.</param>
         /// <returns>The actor with the given name or null if they cannot be found.</returns>
-        private ActorController FindActor(string actorName, bool logError = true)
+        private BaseActorController FindActor(string actorName, bool logError = true)
         {
-            ActorController actor = null;
+            BaseActorController actor = null;
             for (int i = 0; i < m_Actors.Length; i++)
             {
                 if (m_Actors[i].name == actorName.Trim())
@@ -959,3 +960,4 @@ namespace WizardsCode.Ink
         }
     }
 }
+#endif

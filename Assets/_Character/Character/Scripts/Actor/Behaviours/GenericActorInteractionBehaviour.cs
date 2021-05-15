@@ -38,9 +38,9 @@ namespace WizardsCode.Character.AI
         private float m_Duration;
         private float m_HandshakeEndTime;
         private bool m_IsHandshaking = false;
-        List<Brain> participants = new List<Brain>();
+        List<StatsTracker> participants = new List<StatsTracker>();
         private NavMeshAgent m_Agent;
-        private Transform interactionPointT;
+        private float m_SqrArrivingDistance;
 
         private string InteractionPointName { get; set; }
 
@@ -59,7 +59,7 @@ namespace WizardsCode.Character.AI
 
                 reasoning.Append("Maybe ");
                 reasoning.Append(DisplayName);
-                reasoning.AppendLine(" (see required senses)");
+                reasoning.AppendLine(" (sensed required objects)");
                 return true;
             }
         }
@@ -70,10 +70,14 @@ namespace WizardsCode.Character.AI
 
             m_Agent = GetComponentInParent<NavMeshAgent>();
             InteractionPointName = Brain.DisplayName + " - Interaction point";
+
+            m_SqrArrivingDistance = Brain.Actor.ArrivingDistance * Brain.Actor.ArrivingDistance;
         }
 
         protected override void OnUpdate()
         {
+            if (!base.IsAvailable) FinishBehaviour();
+
             //TODO OPTIMIZATION probably don't need to update participants and position every tick
             int count = participants.Count;
             UpdateParticipantsList();
@@ -107,7 +111,14 @@ namespace WizardsCode.Character.AI
             // at the time of writing this comment we don't support adding participants during an interaction, this is here to accomodate for that when we do support it
             if (participants.Count > m_MaxGroupSize)
             {
-                participants[participants.Count - 1].ActiveBlockingBehaviour.FinishBehaviour();
+                if (participants[participants.Count - 1] is Brain)
+                {
+                    AbstractAIBehaviour behaviour = ((Brain)participants[participants.Count - 1]).ActiveBlockingBehaviour;
+                    if (behaviour != null)
+                    {
+                        behaviour.FinishBehaviour();
+                    }
+                }
             }
 
             // If this is an interuptable behaviour participants may finish early, leaving us with a group that is too small
@@ -167,23 +178,23 @@ namespace WizardsCode.Character.AI
 
             if (Vector3.SqrMagnitude(Brain.Actor.transform.position - m_InteractionPoint) <= 0.25f)
             {
-                PerformInteraction();
+                PerformAction();
             }
         }
 
         /// <summary>
         /// Invite this actor to join a group proposing to enact this behaviour.
         /// </summary>
-        /// <param name="brain">The brain extending the invite.</param>
-        internal void InviteToGroup(Brain brain)
+        /// <param name="stats">The stats of the participant to invite.</param>
+        internal void InviteToGroup(StatsTracker stats)
         {
             //TODO actors should be more likley to engage with other actors they like or who have valuable information.             
             m_IsHandshaking = m_RequireConsent;
         }
 
-        protected override float BaseWeight(Brain brain)
+        protected override float BaseWeight(StatsTracker stats)
         {
-            float weight = base.BaseWeight(brain);
+            float weight = base.BaseWeight(stats);
             if (m_IsHandshaking)
             {
                 return weight * 1.2f;
@@ -194,7 +205,7 @@ namespace WizardsCode.Character.AI
         }
 
         Vector3 m_InteractionPoint;
-        private Vector3 m_InteractionGroupCenter;
+        Vector3 m_InteractionGroupCenter;
 
         private void UpdateInteractionPosition(bool setOnNavMesh)
         {
@@ -207,6 +218,15 @@ namespace WizardsCode.Character.AI
                 {
                     totalX += participants[i].GetInteractionPosition().x;
                     totalY += participants[i].GetInteractionPosition().z;
+                    BaseActorController other = participants[i].GetComponentInParent<BaseActorController>();
+                    if (other != null)
+                    {
+                        m_ActorController.LookAtTarget = other.head;
+                    } else
+                    {
+                        m_ActorController.LookAtTarget = participants[i].transform;
+                        m_ActorController.LookAtTarget.position = new Vector3(m_ActorController.LookAtTarget.position.x, m_ActorController.LookAtTarget.position.y, m_ActorController.LookAtTarget.position.z);
+                    }
                 }
             }
 
@@ -232,6 +252,11 @@ namespace WizardsCode.Character.AI
             heading.Normalize();
             m_InteractionPoint = m_InteractionGroupCenter + (-m_GroupDistance * heading);
 
+            if (Terrain.activeTerrain != null)
+            {
+                m_InteractionPoint.y = Terrain.activeTerrain.SampleHeight(m_InteractionPoint);
+            }
+
             NavMeshHit hit;
             if (NavMesh.SamplePosition(m_InteractionPoint, out hit, 5, m_NavMeshMask))
             {
@@ -242,14 +267,9 @@ namespace WizardsCode.Character.AI
                 EndTime = FinishBehaviour();
                 return;
             }
+            Brain.Actor.InteractionPoint.position = m_InteractionPoint;
 
-            if (!interactionPointT)
-            {
-                interactionPointT = new GameObject(InteractionPointName).transform;
-            }
-            interactionPointT.position = m_InteractionPoint;
-
-            if (Vector3.SqrMagnitude(Brain.Actor.MoveTargetPosition - m_InteractionPoint) > 0.25f)
+            if (Vector3.SqrMagnitude(Brain.Actor.MoveTargetPosition - m_InteractionPoint) > m_SqrArrivingDistance)
             {
                 Brain.Actor.MoveTo(m_InteractionPoint,
                     () =>
@@ -258,25 +278,17 @@ namespace WizardsCode.Character.AI
                     },
                     () =>
                     {
-                        PerformInteraction();
+                        PerformAction();
                     },
                     null
                 );
             }
         }
 
-        private void PerformInteraction()
-        {
-            Brain.Actor.Prompt(m_OnPerformInteraction);
-            Brain.Actor.TurnToFace(m_InteractionGroupCenter);
-            if (m_OnPerformInteraction)
-            {
-                EndTime = Time.timeSinceLevelLoad + m_OnPerformInteraction.Duration;
-            }
-        }
-
         private void UpdateParticipantsList()
         {
+            float nearestSqrMag = float.MaxValue;
+
             participants.Clear();
             participants.Add(Brain);
 
@@ -297,15 +309,33 @@ namespace WizardsCode.Character.AI
                     AbstractAIBehaviour behaviour = behaviours[0].Brain.ActiveBlockingBehaviour;
                     if (behaviour != null && behaviour.DisplayName == this.DisplayName)
                     {
-                        participants.Add(behaviours[0].Brain);
+                        float sqrMag = Vector3.SqrMagnitude(transform.root.position - behaviours[0].Brain.Actor.transform.position);
+
+                        if (sqrMag < nearestSqrMag)
+                        {
+                            participants.Add(behaviours[0].Brain);
+                            nearestSqrMag = sqrMag;
+                        }
                     }
                 }
                 else
                 {
-                    Brain brain = SensedThings[i].GetComponentInChildren<Brain>();
-                    if (brain) { 
-                        participants.Add(brain);
+                    StatsTracker stats = SensedThings[i].GetComponentInChildren<StatsTracker>();
+                    if (stats)
+                    {
+                        float sqrMag = Vector3.SqrMagnitude(transform.root.position - stats.transform.root.position);
+
+                        if (sqrMag < nearestSqrMag)
+                        {
+                            participants.Add(stats);
+                            nearestSqrMag = sqrMag;
+                        }
                     }
+                }
+
+                while (participants.Count > m_MaxGroupSize)
+                {
+                    participants.RemoveAt(Random.Range(0, participants.Count - 1)); // the last one will always be nearest if oversized
                 }
             }
          }
@@ -318,7 +348,14 @@ namespace WizardsCode.Character.AI
         {
             for (int i = 0; i < participants.Count; i++)
             {
-                ((GenericActorInteractionBehaviour)participants[i].ActiveBlockingBehaviour).RemoveParticipant(Brain);
+                if (participants[i] is Brain)
+                {
+                    AbstractAIBehaviour behaviour = ((Brain)participants[i]).ActiveBlockingBehaviour;
+                    if (behaviour != null)
+                    {
+                        ((GenericActorInteractionBehaviour)behaviour).RemoveParticipant(Brain);
+                    }
+                }
             }
 
             return base.FinishBehaviour();

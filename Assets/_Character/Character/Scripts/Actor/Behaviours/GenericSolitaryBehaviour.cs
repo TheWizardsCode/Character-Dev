@@ -32,6 +32,11 @@ namespace WizardsCode.Character
         {
             m_EndCooldownTime = Time.timeSinceLevelLoad + m_CooldownDuration;
             base.StartBehaviour(duration);
+
+            Brain.Actor.Prompt(m_OnStart);
+            Brain.Actor.Prompt(m_OnPrepare);
+
+            PerformAction();
         }
     }
 }

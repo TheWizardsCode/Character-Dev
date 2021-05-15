@@ -48,7 +48,7 @@ namespace WizardsCode.Character
             }
         }
 
-        public override IEnumerator Prompt(ActorController actor)
+        public override IEnumerator Prompt(BaseActorController actor)
         {
             m_Actor = actor;
 

@@ -17,18 +17,23 @@ namespace WizardsCode.Character
         [Header("Movement")]
         [SerializeField, Tooltip("The name of the mark the actor should move to on this cue.")]
         string markName;
+        [SerializeField, Tooltip("Stop movement upon recieving this cue. Note that this will override the markName setting above, that is if this is set and markName is set then no movement will occur.")]
+        bool m_StopMovement = false;
 
         [Header("Sound")]
         [SerializeField, Tooltip("Audio files for spoken lines")]
         public AudioClip audioClip;
 
+        //TODO remove Ink sections to an InkActorCue object
+        #if INK_PRESENT
         [Header("Ink")]
         [SerializeField, Tooltip("The name of the knot to jump to on this cue.")]
         string m_KnotName;
         [SerializeField, Tooltip("The name of the stitch to jump to on this cue.")]
         string m_StitchName;
+        #endif
 
-        internal ActorController m_Actor;
+        internal BaseActorController m_Actor;
         internal NavMeshAgent m_Agent;
         internal bool m_AgentEnabled;
 
@@ -47,23 +52,27 @@ namespace WizardsCode.Character
         /// Prompt and actor to enact the actions identified in this cue.
         /// </summary>
         /// <returns>An optional coroutine that shouold be started by the calling MonoBehaviour</returns>
-        public virtual IEnumerator Prompt(ActorController actor)
+        public virtual IEnumerator Prompt(BaseActorController actor)
         {
             m_Actor = actor;
 
             ProcessMove();
             ProcessAudio();
+#if INK_PRESENT
             ProcessInk();
+#endif
 
             return UpdateCoroutine();
         }
 
+#if INK_PRESENT
         internal void ProcessInk()
         {
             if (!string.IsNullOrEmpty(m_KnotName) || !string.IsNullOrEmpty(m_StitchName)) {
                 InkManager.Instance.ChoosePath(m_KnotName, m_StitchName);
             }
         }
+#endif
 
         internal virtual IEnumerator UpdateCoroutine()
         {
@@ -77,15 +86,17 @@ namespace WizardsCode.Character
             }
         }
 
-        
-
-        
-
         /// <summary>
         /// If this cue has a mark defined move to it.
         /// </summary>
         void ProcessMove()
         {
+            if (m_StopMovement)
+            {
+                m_Actor.StopMoving();
+                return;
+            }
+
             if (!string.IsNullOrWhiteSpace(markName))
             {
                 m_Agent = m_Actor.GetComponent<NavMeshAgent>();

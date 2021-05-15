@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5234edad54b60dc43b8750cbfd6bdf8a, type: 3}
+  m_Name: Kubold MxMCalibrationModule
+  m_EditorClassIdentifier: 
+  m_targetAnimData: {fileID: 11400000, guid: 38b80bd731fcb984491c17fd6c9c8996, type: 2}
+  m_calibrationSets:
+  - CalibrationName: General
+    PoseTrajectoryRatio: 0.316
+    PoseVelocityWeight: 3
+    PoseAspectMultiplier: 0.8
+    PoseResultantVelocityMultiplier: 0.2
+    TrajPosMultiplier: 10
+    TrajFAngleMultiplier: 0.1
+    JointPositionWeights:
+    - 3
+    - 3
+    - 6
+    JointVelocityWeights:
+    - 1
+    - 1
+    - 1
+  - CalibrationName: Combat
+    PoseTrajectoryRatio: 1
+    PoseVelocityWeight: 3
+    PoseAspectMultiplier: 0.8
+    PoseResultantVelocityMultiplier: 0.2
+    TrajPosMultiplier: 3
+    TrajFAngleMultiplier: 0.02
+    JointPositionWeights:
+    - 1
+    - 1
+    - 1
+    JointVelocityWeights:
+    - 2
+    - 2
+    - 1

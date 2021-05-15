@@ -43,13 +43,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74c88fa94d915b74baa4e2395df4111f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Description: 
   m_DisplayName: Wander
+  Icon: {fileID: 0}
   m_RetryFrequency: 2
-  m_AbortDuration: 30
+  m_isInteruptable: 1
+  m_MaximumExecutionTime: 30
+  m_IsBlocking: 1
+  m_OnStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStart: {fileID: 0}
+  m_OnPrepare: {fileID: 0}
+  m_OnPerformInteraction: []
+  m_OnEnd: {fileID: 0}
+  m_NextBehaviour: {fileID: 0}
+  m_WeightMultiplier: 0.2
+  m_WeightVariation: 0.1
+  m_RequiredSenses: []
   m_RequiredStats: []
-  m_RequiresInteractable: 0
+  m_CharacterInfluences: []
   m_DesiredStateImpacts: []
-  awarenessRange: 10
+  m_RequiredWorldState: []
   minTimeBetweenRandomPathChanges: 5
   maxTimeBetweenRandomPathChanges: 15
   minDistanceOfRandomPathChange: 30
