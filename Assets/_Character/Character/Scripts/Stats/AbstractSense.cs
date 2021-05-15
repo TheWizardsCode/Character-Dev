@@ -23,6 +23,8 @@ namespace WizardsCode.Character.AI
         float m_MaxRange = 100f;
         [SerializeField, Tooltip("The layermask to use when detecting colliders. Use this to ensure only the right kind of objects are detected.")]
         LayerMask m_LayerMask = 1;
+        [SerializeField, Tooltip("A tag that is required on the sensed objects. If null any object will be sensed.")]
+        string m_Tag;
         [SerializeField, Tooltip("The maximum number of sensed objects.")]
         int maxSensedColliders = 50;
         [SerializeField, Tooltip("The name of the Component type we require the sensed object to have.")]
@@ -81,9 +83,12 @@ namespace WizardsCode.Character.AI
                 }
 
                 //TODO OPTIMIZATION use sqrmagnitude not distance
-                if (Vector3.Distance(this.transform.root.transform.position, root.position) >= m_MinRange  && root.GetComponentInChildren(ComponentType))
+                if (string.IsNullOrEmpty(m_Tag) || root.CompareTag(m_Tag))
                 {
-                    m_SensedObjects.Add(root);
+                    if (Vector3.Distance(this.transform.root.transform.position, root.position) >= m_MinRange && root.GetComponentInChildren(ComponentType))
+                    {
+                        m_SensedObjects.Add(root);
+                    }
                 }
             }
 

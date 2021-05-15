@@ -274,6 +274,8 @@ namespace WizardsCode.Character.AI
 
         private void UpdateParticipantsList()
         {
+            float nearestSqrMag = float.MaxValue;
+
             participants.Clear();
             participants.Add(Brain);
 
@@ -294,15 +296,33 @@ namespace WizardsCode.Character.AI
                     AbstractAIBehaviour behaviour = behaviours[0].Brain.ActiveBlockingBehaviour;
                     if (behaviour != null && behaviour.DisplayName == this.DisplayName)
                     {
-                        participants.Add(behaviours[0].Brain);
+                        float sqrMag = Vector3.SqrMagnitude(transform.root.position - behaviours[0].Brain.Actor.transform.position);
+
+                        if (sqrMag < nearestSqrMag)
+                        {
+                            participants.Add(behaviours[0].Brain);
+                            nearestSqrMag = sqrMag;
+                        }
                     }
                 }
                 else
                 {
                     StatsTracker stats = SensedThings[i].GetComponentInChildren<StatsTracker>();
-                    if (stats) { 
-                        participants.Add(stats);
+                    if (stats)
+                    {
+                        float sqrMag = Vector3.SqrMagnitude(transform.root.position - stats.transform.root.position);
+
+                        if (sqrMag < nearestSqrMag)
+                        {
+                            participants.Add(stats);
+                            nearestSqrMag = sqrMag;
+                        }
                     }
+                }
+
+                while (participants.Count > m_MaxGroupSize)
+                {
+                    participants.RemoveAt(Random.Range(0, participants.Count - 1)); // the last one will always be nearest if oversized
                 }
             }
          }
