@@ -252,6 +252,11 @@ namespace WizardsCode.Character.AI
             heading.Normalize();
             m_InteractionPoint = m_InteractionGroupCenter + (-m_GroupDistance * heading);
 
+            if (Terrain.activeTerrain != null)
+            {
+                m_InteractionPoint.y = Terrain.activeTerrain.SampleHeight(m_InteractionPoint);
+            }
+
             NavMeshHit hit;
             if (NavMesh.SamplePosition(m_InteractionPoint, out hit, 5, m_NavMeshMask))
             {

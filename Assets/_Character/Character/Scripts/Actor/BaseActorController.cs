@@ -109,7 +109,7 @@ namespace WizardsCode.Character
             m_Animator.SetLookAtPosition(m_CurrentLookAtPosition);
         }
 
-        internal Transform LookAtTarget
+        public Transform LookAtTarget
         {
             get { return m_LookAtTarget; }
             set
