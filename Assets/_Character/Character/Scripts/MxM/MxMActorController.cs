@@ -37,11 +37,10 @@ namespace WizardsCode.Character
 
         public override void Prompt(ActorCue cue)
         {
-            ActorCueMxM mxm = (ActorCueMxM)cue;
-            if (mxm != null)
+            if (cue is ActorCueMxM)
             {
                 Vector3 pos = LookAtTarget.position;
-                mxm.contactPoints = new EventContact[] { new EventContact(pos, 0) };
+                ((ActorCueMxM)cue).contactPoints = new EventContact[] { new EventContact(pos, 0) };
             }
 
             base.Prompt(cue);

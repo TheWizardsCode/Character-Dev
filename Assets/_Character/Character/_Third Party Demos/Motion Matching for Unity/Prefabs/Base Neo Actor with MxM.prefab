@@ -42,11 +42,11 @@ GameObject:
   m_Component:
   - component: {fileID: 6122627037475415923}
   - component: {fileID: 6122627037475415922}
-  - component: {fileID: 6122627037475415921}
   - component: {fileID: 6122627037475415916}
-  - component: {fileID: 6122627037475415917}
   - component: {fileID: 6122627037475415918}
-  m_Layer: 0
+  - component: {fileID: 6269245682269304689}
+  - component: {fileID: 9031286272874869228}
+  m_Layer: 8
   m_Name: Base Neo Actor with MxM
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,30 +92,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &6122627037475415921
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6122627037475415920}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07e0b7e52b4c7a04a81409d3db752322, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MaxSpeed: 8
-  m_MinRunDistance: 15
-  m_MinSprintDistance: 30
-  m_WalkSpeedFactor: 0.45
-  m_RunSpeedFactor: 0.8
-  m_ArrivingDistance: 1
-  m_LookAtTarget: {fileID: 1192875431203092380}
-  m_IsLookAtIKActive: 1
-  head: {fileID: 3221596823418789837}
-  m_LookAtSpeed: 6
-  m_LookAtHeatTime: 0.2
-  m_LookAtCoolTime: 0.2
 --- !u!114 &6122627037475415916
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -203,28 +179,6 @@ MonoBehaviour:
   m_onRightFootStepStart:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &6122627037475415917
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6122627037475415920}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 861e3a10f612f434ca284ec9e779c180, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  p_recordingFrequency: 0
-  p_sampleRate: 20
-  p_flattenTrajectory: 1
-  m_maxSpeed: 4.2
-  m_moveRate: 15
-  m_turnRate: 10
-  m_stoppingDist: 1
-  m_strafe: 0
-  m_applyRootSpeedToNavAgent: 1
-  m_faceDirectionOnIdle: 0
 --- !u!95 &6122627037475415918
 Animator:
   serializedVersion: 3
@@ -244,6 +198,54 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &6269245682269304689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6122627037475415920}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64bdd6ad955c87a44b72985735d51f3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MaxSpeed: 8
+  m_MinRunDistance: 15
+  m_MinSprintDistance: 30
+  m_WalkSpeedFactor: 0.45
+  m_RunSpeedFactor: 0.8
+  m_ArrivingDistance: 1
+  m_LookAtTarget: {fileID: 1192875431203092380}
+  m_IsLookAtIKActive: 1
+  head: {fileID: 3221596823418789837}
+  m_LookAtSpeed: 6
+  m_LookAtHeatTime: 0.2
+  m_LookAtCoolTime: 0.2
+  m_speedDowngradeTime: 0.3
+  m_favourMultiplier: 0.6
+--- !u!114 &9031286272874869228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6122627037475415920}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bfb9510fc533ef46ac231f29a4fb686, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  p_recordingFrequency: 0
+  p_sampleRate: 20
+  p_flattenTrajectory: 0
+  m_maxSpeed: 4
+  m_moveResponsiveness: 15
+  m_turnResponsiveness: 10
+  m_stoppingDist: 1
+  m_trajectoryMode: 0
+  m_applyRootSpeedToNavAgent: 1
+  m_faceDirectionOnIdle: 0
 --- !u!1 &8268363804237328087
 GameObject:
   m_ObjectHideFlags: 0
