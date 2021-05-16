@@ -102,6 +102,12 @@ namespace WizardsCode.Character.AI
                     EndTime = FinishBehaviour();
                 }
                 return;
+            } else
+            {
+                if (m_OnStart != null)
+                {
+                    Brain.Actor.Prompt(m_OnStart);
+                }
             }
 
             Vector3 lookTarget = m_InteractionPoint;

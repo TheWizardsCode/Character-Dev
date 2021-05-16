@@ -15,6 +15,10 @@ namespace WizardsCode.Character
 {
     public abstract class AbstractAIBehaviour : MonoBehaviour
     {
+        [Header("Debug")]
+        [SerializeField, Tooltip("Show debug information during execution.")]
+        bool m_IsDebug = false;
+
         [Header("UI")]
         [SerializeField, Tooltip("A player readable description of the behaviour.")]
         [TextArea(3, 10)]
@@ -317,6 +321,12 @@ namespace WizardsCode.Character
         /// <param name="duration">The maximum duration that this behaviuour can take</param>
         internal virtual void StartBehaviour(float duration)
         {
+#if UNITY_EDITOR
+            if (m_IsDebug)
+            {
+                Debug.Log(m_ActorController.name + " is starting Behaviour " + DisplayName);
+            }
+#endif
             isPrioritized = false;
             IsExecuting = true;
             EndTime = Time.timeSinceLevelLoad + duration;
@@ -460,6 +470,13 @@ namespace WizardsCode.Character
         /// <returns>The time, since level load, at which this behaviour should end, if zero then it ends immediately.</returns>
         internal virtual float FinishBehaviour()
         {
+#if UNITY_EDITOR
+            if (m_IsDebug)
+            {
+                Debug.Log(m_ActorController.name + " is finishing Behaviour " + DisplayName);
+            }
+#endif
+
             IsExecuting = false;
             EndTime = 0;
 

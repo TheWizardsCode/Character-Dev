@@ -161,17 +161,17 @@ PrefabInstance:
     - target: {fileID: 4849660329302262542, guid: cd043fd3fea236849a96c95ac0e6903a,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.17824742
+      value: 0.17824744
       objectReference: {fileID: 0}
     - target: {fileID: 4849660329302262542, guid: cd043fd3fea236849a96c95ac0e6903a,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 1.0182738e-22
+      value: 0.00000002146744
       objectReference: {fileID: 0}
     - target: {fileID: 4849660329302262542, guid: cd043fd3fea236849a96c95ac0e6903a,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -1.8445864e-23
+      value: -0.000000003888793
       objectReference: {fileID: 0}
     - target: {fileID: 4849660329302262542, guid: cd043fd3fea236849a96c95ac0e6903a,
         type: 3}
@@ -808,6 +808,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4bd4c0148aafcb4097755794c8ecb63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_IsDebug: 0
   m_Description: Kick an enemy that is close by.
   m_DisplayName: Kick Enemy
   Icon: {fileID: 0}
@@ -951,6 +952,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67754f2c8fb50d34bbcdd8a78ba35a25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_IsDebug: 0
   m_Description: Patrol waypoints
   m_DisplayName: Patrol Waypoints
   Icon: {fileID: 0}
@@ -1785,6 +1787,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4bd4c0148aafcb4097755794c8ecb63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_IsDebug: 0
   m_Description: If an enemy is known with attack range then approach that enemy.
   m_DisplayName: Approach Enemy
   Icon: {fileID: 0}
@@ -2467,6 +2470,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4bd4c0148aafcb4097755794c8ecb63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_IsDebug: 0
   m_Description: Punch an enemy that is close by.
   m_DisplayName: Punch Enemy
   Icon: {fileID: 0}
@@ -2702,6 +2706,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4bd4c0148aafcb4097755794c8ecb63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_IsDebug: 0
   m_Description: If an enemy is known with attack range then approach that enemy.
   m_DisplayName: Approach Enemy
   Icon: {fileID: 0}
@@ -3022,6 +3027,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4bd4c0148aafcb4097755794c8ecb63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_IsDebug: 0
   m_Description: Punch an enemy that is close by.
   m_DisplayName: Punch Enemy
   Icon: {fileID: 0}
@@ -3233,6 +3239,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67754f2c8fb50d34bbcdd8a78ba35a25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_IsDebug: 0
   m_Description: Move about randomly in the fight
   m_DisplayName: Dance like a Butterfly
   Icon: {fileID: 0}
@@ -3540,6 +3547,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4bd4c0148aafcb4097755794c8ecb63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_IsDebug: 1
   m_Description: Punch an enemy that is close by.
   m_DisplayName: Punch Enemy
   Icon: {fileID: 0}
@@ -3619,6 +3627,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4bd4c0148aafcb4097755794c8ecb63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_IsDebug: 0
   m_Description: Kick an enemy that is close by.
   m_DisplayName: Kick Enemy
   Icon: {fileID: 0}
@@ -4625,6 +4634,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4bd4c0148aafcb4097755794c8ecb63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_IsDebug: 1
   m_Description: Kick an enemy that is close by.
   m_DisplayName: Kick Enemy
   Icon: {fileID: 0}
@@ -5309,6 +5319,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4bd4c0148aafcb4097755794c8ecb63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_IsDebug: 1
   m_Description: If an enemy is known with attack range then approach that enemy.
   m_DisplayName: Approach Enemy
   Icon: {fileID: 0}
@@ -5322,7 +5333,7 @@ MonoBehaviour:
   m_OnEndEvent:
     m_PersistentCalls:
       m_Calls: []
-  m_OnStart: {fileID: 0}
+  m_OnStart: {fileID: 11400000, guid: 1f34388603fb18f4e8369ad3386e03e8, type: 2}
   m_OnPrepare: {fileID: 11400000, guid: 1180c8b60aee4254080e112f92a99650, type: 2}
   m_OnPerformAction: []
   m_OnEnd: {fileID: 0}
@@ -5385,6 +5396,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67754f2c8fb50d34bbcdd8a78ba35a25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_IsDebug: 1
   m_Description: Move about randomly in the fight
   m_DisplayName: Dance like a Butterfly
   Icon: {fileID: 0}
@@ -6532,6 +6544,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67754f2c8fb50d34bbcdd8a78ba35a25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_IsDebug: 0
   m_Description: Move about randomly in the fight
   m_DisplayName: Dance like a Butterfly
   Icon: {fileID: 0}
@@ -6605,6 +6618,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67754f2c8fb50d34bbcdd8a78ba35a25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_IsDebug: 0
   m_Description: Patrol waypoints
   m_DisplayName: Patrol Waypoints
   Icon: {fileID: 0}
@@ -6674,6 +6688,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45e2d955ea028604c9552bc8d9e5cf47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_IsDebug: 0
   m_Description: When the player is seen, flee
   m_DisplayName: Flee from the player
   Icon: {fileID: 0}
@@ -6711,32 +6726,32 @@ PrefabInstance:
     - target: {fileID: 2284030374123064920, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 1.278615
       objectReference: {fileID: 0}
     - target: {fileID: 2284030374123064920, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.9988899
       objectReference: {fileID: 0}
     - target: {fileID: 2284030374123064920, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9805807
+      value: 0.9481212
       objectReference: {fileID: 0}
     - target: {fileID: 2284030374123064920, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.1961161
+      value: 0.3179092
       objectReference: {fileID: 0}
     - target: {fileID: 2284030374123064920, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.00000000986564
+      value: 0.00000003159141
       objectReference: {fileID: 0}
     - target: {fileID: 2284030374123064920, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.0000000024592608
+      value: -0.000000010592737
       objectReference: {fileID: 0}
     - target: {fileID: 2359159519390410401, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
@@ -6756,17 +6771,17 @@ PrefabInstance:
     - target: {fileID: 2359159519390410401, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.17824739
+      value: 0.1782474
       objectReference: {fileID: 0}
     - target: {fileID: 2359159519390410401, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 9.9813554e-23
+      value: 0.000000021467438
       objectReference: {fileID: 0}
     - target: {fileID: 2359159519390410401, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -8.6294946e-24
+      value: -0.000000003888791
       objectReference: {fileID: 0}
     - target: {fileID: 2899736570354529142, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
@@ -6781,22 +6796,22 @@ PrefabInstance:
     - target: {fileID: 2899736570354529142, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.98705745
+      value: 0.9870575
       objectReference: {fileID: 0}
     - target: {fileID: 2899736570354529142, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.16036713
+      value: 0.1603671
       objectReference: {fileID: 0}
     - target: {fileID: 2899736570354529142, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.000000016077243
+      value: -0.00000004160136
       objectReference: {fileID: 0}
     - target: {fileID: 2899736570354529142, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.0000000026120681
+      value: 0.000000006758968
       objectReference: {fileID: 0}
     - target: {fileID: 5585836340673138438, guid: 7509674b61ab1874b9afbdd3015c09a8,
         type: 3}

@@ -15,6 +15,10 @@ namespace WizardsCode.Stats {
         , IDebug
 #endif
     {
+        [Header("Debug")]
+        [SerializeField, Tooltip("Show debug information during execution.")]
+        bool m_IsDebug = false;
+
         [Header("Behaviour Manager")]
         [SerializeField, Tooltip("The % variation to create in timing of updates. This is used to ensure that actors using the same AI do not make decisions at precisely the same time. The time of each update will be increased or decreased by a random % between 0 and this value.")]
         [Range(0, 1)]
@@ -70,7 +74,7 @@ namespace WizardsCode.Stats {
         /// Stop the brain from functioning. All active behaviours will be stopped 
         /// (not finished) and the brain will be disabled.
         /// </summary>
-        internal void Die()
+        public void Die()
         {
             ActiveBlockingBehaviour.IsExecuting = false;
             for (int i = 0; i < ActiveNonBlockingBehaviours.Count; i++)
@@ -320,6 +324,11 @@ namespace WizardsCode.Stats {
                 ActiveBlockingBehaviour.FinishBehaviour();
             }
 
+            if (candidateBehaviour == ActiveBlockingBehaviour)
+            {
+                return;
+            }
+
             if (candidateBehaviour.IsBlocking)
             {
                 ActiveBlockingBehaviour = candidateBehaviour;
@@ -471,10 +480,15 @@ namespace WizardsCode.Stats {
         /// <param name="log"></param>
         private void Log(string log)
         {
-            if (string.IsNullOrEmpty(log)) return;
+#if UNITY_EDITOR
+            if (m_IsDebug)
+            {
+                if (string.IsNullOrEmpty(log)) return;
 
-            //TODO don't log to console, log to a characters history
-            Debug.Log(log);
+                //TODO don't log to console, log to a characters history
+                Debug.Log(log);
+            }
+#endif
         }
 
 #if UNITY_EDITOR
