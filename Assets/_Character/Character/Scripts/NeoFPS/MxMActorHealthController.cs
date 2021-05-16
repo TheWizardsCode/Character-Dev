@@ -10,10 +10,12 @@ using MxM;
 namespace WizardsCode.Character.Stats
 {
     /// <summary>
-    /// MxMNeoFPSActorHealthController bridges between NeoFPS the WizardsCode Character 
-    /// system (to handle health) and Motion Matching for Unity (MxM) to handle animation.
+    /// MxMActorHealthController can be used to bridge between the Character AI health and any third party
+    /// solutions that need to track health. When a character dies an appropriate Motion Matching for Unity 
+    /// (MxM) ActorCue will be prompted. The can be used, for example, to fire a die event on the MxM 
+    /// animator.
     /// </summary>
-    public class MxMNeoFPSActorHealthController : MonoBehaviour
+    public class MxMActorHealthController : MonoBehaviour
     {
         [Header("Stats Controller Config")]
         [SerializeField, Tooltip("A template used to create the main health statistic.")]
@@ -58,7 +60,10 @@ namespace WizardsCode.Character.Stats
         {
             if (health.NormalizedValue == 0)
             {
-                m_DieActorCue.Prompt(controller.Actor);
+                m_DieActorCue.Prompt(controller.Actor); 
+                animator = GetComponent<MxMAnimator>();
+                animator.OnEventComplete.AddListener(DisableCharacter);
+
                 controller.enabled = false;
 
                 NavMeshAgent agent = GetComponentInParent<NavMeshAgent>();
@@ -67,8 +72,10 @@ namespace WizardsCode.Character.Stats
                     agent.isStopped = true;
                 }
 
-                animator = GetComponent<MxMAnimator>();
-                animator.OnEventComplete.AddListener(DisableCharacter);
+                if (controller is Brain)
+                {
+                    ((Brain)controller).Die();
+                }
             }
         }
 

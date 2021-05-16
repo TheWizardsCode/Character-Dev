@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
+using WizardsCode.Stats;
 
 namespace WizardsCode.Character.MxM
 {
@@ -11,23 +12,23 @@ namespace WizardsCode.Character.MxM
         RectTransform m_UI;
         [SerializeField, Tooltip("The Cinemachine virtual camera to use.")]
         CinemachineFreeLook m_Cinemachine;
+        [SerializeField, Tooltip("The health stat template used to track character health.")]
+        StatSO m_HealthStatTemplate;
 
         private int m_CharacterIndex;
-        private List<Transform> m_Characters = new List<Transform>();
+        private List<StatsTracker> m_Characters = new List<StatsTracker>();
 
         private void Start()
         {
-            MxMActorController[] allActors = GameObject.FindObjectsOfType<MxMActorController>();
+            StatsTracker[] allActors = GameObject.FindObjectsOfType<StatsTracker>();
             for (int i = 0; i < allActors.Length; i++)
             {
-                m_Characters.Add(allActors[i].transform);
+                m_Characters.Add(allActors[i]);
             }
 
-            m_Characters.Add(GameObject.FindObjectOfType<CharacterController>().transform);
-
             m_CharacterIndex = m_Characters.Count - 1;
-            m_Cinemachine.Follow = m_Characters[m_CharacterIndex];
-            m_Cinemachine.LookAt = m_Characters[m_CharacterIndex];
+            m_Cinemachine.Follow = m_Characters[m_CharacterIndex].transform.root;
+            m_Cinemachine.LookAt = m_Characters[m_CharacterIndex].transform.root;
         }
 
         public void Update()
@@ -44,8 +45,15 @@ namespace WizardsCode.Character.MxM
                 {
                     m_CharacterIndex = 0;
                 }
-                m_Cinemachine.Follow = m_Characters[m_CharacterIndex];
-                m_Cinemachine.LookAt = m_Characters[m_CharacterIndex];
+                m_Cinemachine.Follow = m_Characters[m_CharacterIndex].transform.root;
+                m_Cinemachine.LookAt = m_Characters[m_CharacterIndex].transform.root;
+                Debug.Log("Target changed to " + m_Characters[m_CharacterIndex].transform.root.name);
+            }
+
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                StatSO health = m_Characters[m_CharacterIndex].GetOrCreateStat(m_HealthStatTemplate);
+                health.Value = 0;
             }
         }
     }

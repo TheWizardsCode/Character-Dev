@@ -66,6 +66,20 @@ namespace WizardsCode.Stats {
             } 
         }
 
+        /// <summary>
+        /// Stop the brain from functioning. All active behaviours will be stopped 
+        /// (not finished) and the brain will be disabled.
+        /// </summary>
+        internal void Die()
+        {
+            ActiveBlockingBehaviour.IsExecuting = false;
+            for (int i = 0; i < ActiveNonBlockingBehaviours.Count; i++)
+            {
+                ActiveNonBlockingBehaviours[i].IsExecuting = false;
+            }
+            this.enabled = false;
+        }
+
         public List<AbstractAIBehaviour> ActiveNonBlockingBehaviours
         {
             get { return m_ActiveNonBlockingBehaviours; }
