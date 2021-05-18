@@ -8,16 +8,6 @@ namespace WizardsCode.Character
 {
     public class MxMActorTrajectoryGenerator : MxMTrajectoryGenerator_BasicAI
     {
-        public Vector3 desiredVelocity
-        {
-            get { return m_navAgent.desiredVelocity; }
-        }
-
-        public float remainingDistance
-        {
-            get { return m_navAgent.remainingDistance; }
-        }
-
         public void SetTrajectoryConfig(MxMActorTrajectoryGeneratorConfig config)
         {
             if (config == null)

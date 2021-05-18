@@ -20,6 +20,7 @@ namespace WizardsCode.Character.MxM
 
         private void Start()
         {
+            m_UI.gameObject.SetActive(true);
             StatsTracker[] allActors = GameObject.FindObjectsOfType<StatsTracker>();
             for (int i = 0; i < allActors.Length; i++)
             {
