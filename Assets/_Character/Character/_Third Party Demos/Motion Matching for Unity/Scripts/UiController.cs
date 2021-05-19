@@ -8,6 +8,8 @@ namespace WizardsCode.Character.MxM
 {
     public class UiController : MonoBehaviour
     {
+        [SerializeField, Tooltip("Should the UI always be shown on startup regardless of whether it is active in the editor or not?")]
+        bool m_AlwaysShowOnStart = true;
         [SerializeField, Tooltip("The UI Canvas to control.")]
         RectTransform m_UI;
         [SerializeField, Tooltip("The Cinemachine virtual camera to use.")]
@@ -20,7 +22,11 @@ namespace WizardsCode.Character.MxM
 
         private void Start()
         {
-            m_UI.gameObject.SetActive(true);
+            if (m_AlwaysShowOnStart)
+            {
+                m_UI.gameObject.SetActive(true);
+            }
+
             StatsTracker[] allActors = GameObject.FindObjectsOfType<StatsTracker>();
             for (int i = 0; i < allActors.Length; i++)
             {

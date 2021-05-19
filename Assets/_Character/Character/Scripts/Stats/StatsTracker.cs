@@ -17,6 +17,8 @@ namespace WizardsCode.Stats {
         , IDebug
 #endif
     {
+        [SerializeField, Tooltip("Show debug information during execution.")]
+        protected bool m_IsDebug = false;
         [SerializeField, Tooltip("Desired States are the states that the actor would like to satisfy. These are, essentially, the things that drive the actor.")]
         StateSO[] m_DesiredStates = default;
 
