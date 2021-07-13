@@ -16,6 +16,7 @@ namespace WizardsCode.Character
         public enum EmotionType { Anger, Interest, Fear, Sadness, Pleasure }
 
         [Header("Animator")]
+        // TODO consider if this is the right place for this parameter, it seems odd to directly control it in the emotional state. Can it be separated out into another layer? Or perhaps this class is poorly named?
         [SerializeField, Tooltip("Should the character crouch when fearful, interested and not angry?")]
         internal bool m_CrouchInFear = true;
         [SerializeField, Tooltip("The Animator boolean parameter name that will cause the character to crouch when moving/idle.")]

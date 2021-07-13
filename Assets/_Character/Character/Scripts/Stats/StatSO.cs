@@ -64,7 +64,7 @@ namespace WizardsCode.Stats
         public float NormalizedValue
         {
             get { return m_CurrentNormalizedValue; }
-            internal set
+            set
             {
                 if (m_CurrentNormalizedValue != value)
                 {

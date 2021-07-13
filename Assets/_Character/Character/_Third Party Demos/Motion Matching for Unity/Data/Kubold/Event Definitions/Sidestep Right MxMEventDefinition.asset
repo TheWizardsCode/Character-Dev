@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 316ca862c074e1741bb37ecbefd40148, type: 3}
+  m_Name: Sidestep Right MxMEventDefinition
+  m_EditorClassIdentifier: 
+  Id: 3
+  EventName: Sidestep Right
+  EventType: 0
+  Priority: -1
+  ContactCountToMatch: 0
+  ContactCountToWarp: 0
+  ExitWithMotion: 1
+  MatchPose: 1
+  MatchTrajectory: 1
+  MatchRequireTags: 0
+  PostEventTrajectoryMode: 1
+  MatchTiming: 0
+  TimingWeight: 0
+  TimingWarpType: 0
+  MatchPosition: 0
+  PositionWeight: 0
+  MotionWarpType: 0
+  WarpTimeScaling: 0
+  ContactCountToTimeScale: 1
+  MinWarpTimeScale: 0.9
+  MaxWarpTimeScale: 1.2
+  MatchRotation: 0
+  RotationWeight: 0
+  RotationWarpType: 0
+  m_targetAnimData: {fileID: 11400000, guid: 38b80bd731fcb984491c17fd6c9c8996, type: 2}

@@ -1,12 +1,5 @@
 {
   "dependencies": {
-    "com.inklestudios.ink-unity-integration": {
-      "version": "1.0.2",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://package.openupm.com"
-    },
     "com.jeffcampbellmakesgames.packagetools": {
       "version": "https://github.com/jeffcampbellmakesgames/unity-package-tools.git#release/stable",
       "depth": 0,
@@ -94,13 +87,6 @@
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
-    "com.unity.nuget.newtonsoft-json": {
-      "version": "2.0.0-preview",
-      "depth": 3,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://packages.unity.com"
-    },
     "com.unity.postprocessing": {
       "version": "3.0.3",
       "depth": 0,
@@ -163,12 +149,12 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.test-framework.performance": {
-      "version": "2.0.8-preview",
-      "depth": 2,
+      "version": "2.8.0-preview",
+      "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.test-framework": "1.1.0",
-        "com.unity.nuget.newtonsoft-json": "2.0.0-preview"
+        "com.unity.modules.jsonserialize": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },
@@ -210,6 +196,14 @@
       "dependencies": {
         "com.unity.modules.ui": "1.0.0",
         "com.unity.modules.imgui": "1.0.0"
+      }
+    },
+    "org.wizardscode.devlogger": {
+      "version": "file:E:/WizardsCode/DevLogger-Dev",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {
+        "com.unity.postprocessing": "2.3.0"
       }
     },
     "com.unity.modules.ai": {

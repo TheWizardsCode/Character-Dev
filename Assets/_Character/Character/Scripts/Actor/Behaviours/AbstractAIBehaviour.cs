@@ -9,6 +9,7 @@ using System.Text;
 using WizardsCode.Character.WorldState;
 using WizardsCode.Character.AI;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace WizardsCode.Character
 {
@@ -38,17 +39,29 @@ namespace WizardsCode.Character
 
         [Header("Actions")]
         [SerializeField, Tooltip("Events to fire when this behaviour is started.")]
-        UnityEvent m_OnStartEvent;
+        protected UnityEvent m_OnStartEvent;
         [SerializeField, Tooltip("Events to fire when this behaviour is finished.")]
-        UnityEvent m_OnEndEvent;
-        [SerializeField, Tooltip("An actor cue to send to the actor upon the start of this interaction.")]
-        protected ActorCue m_OnStartCue;
-        [SerializeField, Tooltip("An actor cue to send to the actor upon the ending of this interaction. This should set the character back to their default state.")]
-        protected ActorCue m_OnEndCue;
+        protected UnityEvent m_OnEndEvent;
+        [SerializeField, Tooltip("An actor cue to send to the actor upon the start of this interaction. It should be used to configure the actor ready for the interaction.")]
+        [FormerlySerializedAs("m_OnStartCue")] // v0.11
+        protected ActorCue m_OnStart;
+        [SerializeField, Tooltip("An actor cue to send to the actor as they start the prepare phase of this interaction. This is where you will typically play wind up animations and the like.")]
+        [FormerlySerializedAs("m_OnArrivingCue")] // v0.11
+        protected ActorCue m_OnPrepare;
+        [SerializeField, Tooltip("A set of actor cues from which to select the appropriate behaviour when performing this behaviour. This is where you will usually play animations and sounds reflecting the interaction itself.")]
+        [FormerlySerializedAs("m_OnPerformInteraction")] // changed in v0.1.1
+        protected ActorCue[] m_OnPerformAction;
+        [SerializeField, Tooltip("An actor cue sent when ending this interaction. This should set the character back to their default state.")]
+        [FormerlySerializedAs("m_OnEndCue")] // v0.11
+        protected ActorCue m_OnEnd;
+        [SerializeField, Tooltip("If this behaviour should always be followed by the same behaviour (assuming it is possible) drop the behaviour here. If this is null the brain will be free to select its own behaviour")]
+        AbstractAIBehaviour m_NextBehaviour;
 
         [Header("Conditions")]
         [SerializeField, Range(0.1f, 5), Tooltip("The Weight Multiplier is used to lower or higher the priority of this behaviour relative to others the actor has. The higher this multiplier is the more likely it is the behaviour will be fired. The lower, the less likely.")]
         float m_WeightMultiplier = 1;
+        [SerializeField, Range(0f, 2f), Tooltip("An allowable variation in the Weight Multiplier. Each time the behaviour is evaluated the base weight multiplier will be increased or decreased by a random number between +/- this amount.")]
+        float m_WeightVariation = 0.1f;
         [SerializeField, Tooltip("The required senses about the current world state around the actor. For example, we may have a sense for whether there is a willing mate nearby which will permit a make babies  behaviour to fire. Another example is that a" +
             "character will only sleep in the open if they sense there are no threats nearby.")]
         AbstractSense[] m_RequiredSenses;
@@ -86,7 +99,7 @@ namespace WizardsCode.Character
         }
 
         Brain m_Brain;
-        internal ActorController controller;
+        internal BaseActorController m_ActorController;
         private bool m_IsExecuting = false;
         private float m_NextRetryTime;
 
@@ -121,6 +134,17 @@ namespace WizardsCode.Character
             }
         }
 
+        /// <summary>
+        /// Get the ActorController this behaviour movements are managed by.
+        /// </summary>
+        internal BaseActorController ActorController
+        {
+            get
+            {
+                return m_ActorController;
+            }
+        }
+
         public string DisplayName
         {
             get { return m_DisplayName; }
@@ -136,11 +160,6 @@ namespace WizardsCode.Character
         public float EndTime { 
             get; 
             internal set; 
-        }
-
-        private void Awake()
-        {
-            Init();
         }
 
         /// <summary>
@@ -286,19 +305,8 @@ namespace WizardsCode.Character
         /// </summary>
         protected virtual void Init()
         {
-
-            if (m_Brain == null)
-            {
-                m_Brain = transform.root.GetComponentInChildren<Brain>();
-                if (m_Brain != null)
-                {
-                    Debug.LogWarning("Brain was not configured in " + DisplayName + ". " + m_Brain.DisplayName + " was automatically discovered. It is safer to set the brain in the inspector.");
-                } else
-                {
-                    Debug.LogWarning("Brain was not configured in " + DisplayName + ". Set the brain in the inspector.");
-                }
-            }
-            controller = GetComponentInParent<ActorController>();
+            m_Brain = transform.root.GetComponentInChildren<Brain>();
+            m_ActorController = transform.root.GetComponentInChildren<BaseActorController>();
         }
 
         /// <summary>
@@ -306,6 +314,7 @@ namespace WizardsCode.Character
         /// an interactable and somehow this method gets called it will return with no
         /// actions (after logging a warning).
         /// </summary>
+        /// <param name="duration">The maximum duration that this behaviuour can take</param>
         internal virtual void StartBehaviour(float duration)
         {
             isPrioritized = false;
@@ -317,10 +326,17 @@ namespace WizardsCode.Character
             {
                 m_OnStartEvent.Invoke();
             }
+        }
 
-            if (m_OnStartCue != null)
+        protected void PerformAction()
+        {
+            Brain.Actor.TurnToFace(m_ActorController.LookAtTarget.position);
+
+            if (m_OnPerformAction.Length > 0)
             {
-                Brain.Actor.Prompt(m_OnStartCue);
+                ActorCue cue = m_OnPerformAction[Random.Range(0, m_OnPerformAction.Length)];
+                Brain.Actor.Prompt(cue);
+                EndTime = Time.timeSinceLevelLoad + cue.Duration;
             }
         }
 
@@ -359,28 +375,27 @@ namespace WizardsCode.Character
         /// </summary>
         internal virtual float Weight(Brain brain)
         {
-            float weight = BaseWeight(brain) * m_WeightMultiplier;
-
-            return weight;
+            float multiplier = m_WeightMultiplier + (Random.Range(-m_WeightVariation, m_WeightVariation));
+            return BaseWeight(brain) * multiplier;
         }
         
         /// <summary>
         /// The base weight is the weight befre the multiplier is applied.
         /// </summary>
-        /// <param name="brain">The brain containing the stats to be applied</param>
+        /// <param name="stats">The stats to be applied</param>
         /// <returns>The base weight, before the multiplier is applied.</returns>
-        protected virtual float BaseWeight(Brain brain)
+        protected virtual float BaseWeight(StatsTracker stats)
         {
             float weight = 1f;
-            for (int i = 0; i < brain.UnsatisfiedDesiredStates.Count; i++)
+            for (int i = 0; i < stats.UnsatisfiedDesiredStates.Count; i++)
             {
                 for (int idx = 0; idx < DesiredStateImpacts.Length; idx++)
                 {
-                    if (brain.UnsatisfiedDesiredStates[i].statTemplate == DesiredStateImpacts[idx].statTemplate)
+                    if (stats.UnsatisfiedDesiredStates[i].statTemplate == DesiredStateImpacts[idx].statTemplate)
                     {
-                        float impact = Math.Abs(brain.UnsatisfiedDesiredStates[i].normalizedTargetValue - brain.GetStat(brain.UnsatisfiedDesiredStates[i].statTemplate).NormalizedValue);
+                        float impact = Math.Abs(stats.UnsatisfiedDesiredStates[i].normalizedTargetValue - stats.GetStat(stats.UnsatisfiedDesiredStates[i].statTemplate).NormalizedValue);
                         reasoning.Append("They are not ");
-                        reasoning.Append(brain.UnsatisfiedDesiredStates[i].name);
+                        reasoning.Append(stats.UnsatisfiedDesiredStates[i].name);
                         reasoning.AppendLine(" and this behaviour will help.");
                         //TODO higher weight should be given to behaviours that will bring the stat into the desired state
                         weight += impact;
@@ -405,12 +420,13 @@ namespace WizardsCode.Character
         {
             if (EndTime < Time.timeSinceLevelLoad)
             {
-                FinishBehaviour();
+                EndTime = FinishBehaviour();
             }
         }
 
         private void OnEnable()
         {
+            Init();
             Brain.RegisterBehaviour(this);
         }
 
@@ -437,7 +453,12 @@ namespace WizardsCode.Character
             return true;
         }
 
-        internal virtual void FinishBehaviour()
+
+        /// <summary>
+        /// Finish the behaviour, prompting any cue needed.
+        /// </summary>
+        /// <returns>The time, since level load, at which this behaviour should end, if zero then it ends immediately.</returns>
+        internal virtual float FinishBehaviour()
         {
             IsExecuting = false;
             EndTime = 0;
@@ -456,10 +477,18 @@ namespace WizardsCode.Character
                 m_OnEndEvent.Invoke();
             }
 
-            if (m_OnEndCue != null)
+            if (m_NextBehaviour != null)
             {
-                 Brain.Actor.Prompt(m_OnEndCue);
+                Brain.PrioritizeBehaviour(m_NextBehaviour);
             }
+
+            if (m_OnEnd != null)
+            {
+                Brain.Actor.Prompt(m_OnEnd);
+                return Time.timeSinceLevelLoad + m_OnEnd.Duration;
+            }
+
+            return Time.timeSinceLevelLoad;
         }
 
         public override string ToString()

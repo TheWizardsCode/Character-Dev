@@ -66,33 +66,39 @@ namespace WizardsCode.Character
                 if (m_TargetPosition != value)
                 {
                     m_TargetPosition = value;
-                    controller.MoveTargetPosition = value;
+                    ActorController.MoveTargetPosition = value;
                     timeToNextWanderPathChange = Random.Range(minTimeBetweenRandomPathChanges, maxTimeBetweenRandomPathChanges);
                 }
             }
+        }
+
+        internal override void StartBehaviour(float duration)
+        {
+            base.StartBehaviour(duration);
+
+            Brain.Actor.Prompt(m_OnStart);
+            Brain.Actor.Prompt(m_OnPrepare);
+
+            UpdateMove();
         }
 
         protected override void OnUpdate()
         {
             timeToNextWanderPathChange -= Time.deltaTime;
 
-            if (timeToNextWanderPathChange > 0 && controller.HasReachedTarget)
+            if (timeToNextWanderPathChange <= 0)
             {
                 OnReachedTarget();
                 FinishBehaviour();
             }
-
-            if (timeToNextWanderPathChange <= 0) //  || !m_Agent.hasPath || m_Agent.pathStatus == NavMeshPathStatus.PathInvalid
-            {
-                UpdateMove();
-            }
         }
 
-        internal override void FinishBehaviour()
+        internal override float FinishBehaviour()
         {
-            base.FinishBehaviour();
+            float endTime = base.FinishBehaviour();
             Brain.Actor.StopMoving();
             timeToNextWanderPathChange = float.MinValue;
+            return endTime;
         }
 
         /// <summary>

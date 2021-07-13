@@ -16,6 +16,9 @@ namespace WizardsCode.Stats {
 #endif
     {
         [Header("Behaviour Manager")]
+        [SerializeField, Tooltip("The % variation to create in timing of updates. This is used to ensure that actors using the same AI do not make decisions at precisely the same time. The time of each update will be increased or decreased by a random % between 0 and this value.")]
+        [Range(0, 1)]
+        float m_TimingVariation = 0.2f;
         [SerializeField, Tooltip("If the actor has an interaction behaviour as the preferred behaviour and no interactable is nearby then this behaviour will become the active behaviour. This will typically be a search behaviour of some form.")]
         AbstractAIBehaviour m_FallbackBehaviour;
 
@@ -30,14 +33,14 @@ namespace WizardsCode.Stats {
         [SerializeField, Tooltip("The icon to use when there is an active blocking behaviour, but that behaviour does not have an icon.")]
         Sprite m_MissingIcon;
 
-        ActorController m_Controller;
+        BaseActorController m_Controller;
         List<AbstractAIBehaviour> m_AvailableBehaviours = new List<AbstractAIBehaviour>();
         List<AbstractAIBehaviour> m_ActiveNonBlockingBehaviours = new List<AbstractAIBehaviour>();
-        private Interactable m_TargetInteractable;
         Camera m_Camera;
 
         private AbstractAIBehaviour m_ActiveBlockingBehaviour;
         private string m_RequestedBehaviour;
+        private float m_TimeOfNextBehaviourUpdate;
 
         public AbstractAIBehaviour ActiveBlockingBehaviour {
             get { return m_ActiveBlockingBehaviour; }
@@ -70,11 +73,22 @@ namespace WizardsCode.Stats {
 
         public MemoryController Memory { get; private set; }
 
-        internal Interactable TargetInteractable
+        public BaseActorController Actor {
+            get { 
+                if (m_Controller == null)
+                {
+                    m_Controller = GetComponentInParent<BaseActorController>();
+                }
+                return m_Controller; 
+            }
+        }
+        internal override Interactable TargetInteractable
         {
-            get { return m_TargetInteractable; }
+            get { return base.TargetInteractable; }
             set
             {
+                base.TargetInteractable = value;
+
                 if (Actor != null
                     && value != null)
                 {
@@ -84,13 +98,7 @@ namespace WizardsCode.Stats {
                         Actor.MoveTargetPosition = value.transform.position;
                     }
                 }
-
-                m_TargetInteractable = value;
             }
-        }
-
-        public ActorController Actor {
-            get { return m_Controller; } 
         }
 
         /// <summary>
@@ -110,7 +118,6 @@ namespace WizardsCode.Stats {
         {
             m_Camera = Camera.main;
 
-            m_Controller = GetComponentInParent<ActorController>();
             Memory = transform.root.GetComponentInChildren<MemoryController>();
 
             if (m_IconUI == null)
@@ -157,37 +164,21 @@ namespace WizardsCode.Stats {
             return m_AvailableBehaviours.Remove(behaviour);
         }
 
-        /// <summary>
-        /// Decide whether the actor should interact with an influencer trigger they just entered.
-        /// </summary>
-        /// <param name="interactable">The influencer trigger that was activated and can now be interacted with.</param>
-        /// <returns></returns>
-        internal bool ShouldInteractWith(Interactable interactable)
-        {
-            if (interactable != null && GameObject.ReferenceEquals(interactable, TargetInteractable))
-            {
-                return true;
-            } else
-            {
-                return false;
-            }
-        }
-
         internal bool IsReadyToUpdateBehaviour
         {
             get
             {
-                if (ActiveBlockingBehaviour == null)
+                if (ActiveBlockingBehaviour == null && Time.timeSinceLevelLoad > m_TimeOfNextBehaviourUpdate)
                 {
                     return true;
-                }
-
-                if (ActiveBlockingBehaviour.IsExecuting && !ActiveBlockingBehaviour.IsInteruptable)
+                } 
+                
+                if (ActiveBlockingBehaviour != null && ActiveBlockingBehaviour.IsExecuting && !ActiveBlockingBehaviour.IsInteruptable)
                 {
                     return false;
                 }
 
-                return Time.timeSinceLevelLoad > m_TimeOfNextUpdate;
+                return Time.timeSinceLevelLoad > m_TimeOfNextBehaviourUpdate;
             }
         }
 
@@ -203,6 +194,8 @@ namespace WizardsCode.Stats {
             base.Update();
 
             UpdateActiveBehaviour();
+
+            m_TimeOfNextBehaviourUpdate = Time.timeSinceLevelLoad + (m_TimeBetweenUpdates * (1 + Random.Range(-m_TimingVariation, m_TimingVariation)));
         }
 
         void LateUpdate()
@@ -383,6 +376,17 @@ namespace WizardsCode.Stats {
         public void PrioritizeBehaviour(string behaviourName)
         {
             m_RequestedBehaviour = behaviourName;
+            m_TimeOfNextUpdate = Time.timeSinceLevelLoad;
+        }
+
+        /// <summary>
+        /// This actor will prioritize the named behaviour over all others. Under normal
+        /// circumstances this means the behaviour will be actioned as soon as possible.
+        /// </summary>
+        /// <param name="behaviour">The behaviour to prioritize.</param>
+        public void PrioritizeBehaviour(AbstractAIBehaviour behaviour)
+        {
+            m_RequestedBehaviour = behaviour.DisplayName;
             m_TimeOfNextUpdate = Time.timeSinceLevelLoad;
         }
 

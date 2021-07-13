@@ -20,9 +20,9 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("The prefab to spawn when the build is complete.")]
         SpawnerDefinition m_BuiltPrefab;
 
-        internal override void FinishBehaviour()
+        internal override float FinishBehaviour()
         {
-            base.FinishBehaviour();
+            float endTime = base.FinishBehaviour();
 
             m_BuiltPrefab.InstantiatePrefabs(transform.position, "built by " + Brain.Actor.name);
             MemorySO memory = ScriptableObject.CreateInstance<MemorySO>();
@@ -31,6 +31,8 @@ namespace WizardsCode.Character
             memory.isGood = true;
 
             Brain.Memory.AddMemory(memory);
+
+            return endTime;
         }
     }
 }

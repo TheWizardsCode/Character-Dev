@@ -3,9 +3,9 @@ The 101 scene shows the absolute minimal setup for a Wizards Code character. als
 
 # Required Components
 
-## Actor Controller
+## Base Actor Controller
 
-This is resonsible for controlling the movement and animation of the character. It requires a NavMeshAgent component be attached.
+This is responsible for controlling the Actor. It does not make decisions (see Brain) but it does enact those decisions in terms of movement etc. It requires a NavMeshAgent component be attached. This Base Actor does not have any knowledge of an animation system. Although there is an animator controller on the character and so the Actor will idle. In the next scene we will see how to use Mecanim and in later scenes we will use Motion Matching for our characters. The ActorController is separated out like this to ensure you have maximum flexibility in selecting your chosen animation engine.
 
 ## Brain
 

@@ -22,7 +22,7 @@ namespace WizardsCode.Stats {
 
         [Header("Optimization")]
         [SerializeField, Tooltip("How often stats should be processed for changes.")]
-        float m_TimeBetweenUpdates = 0.5f;
+        protected float m_TimeBetweenUpdates = 0.5f;
 
         [HideInInspector, SerializeField]
         internal List<StatSO> m_Stats = new List<StatSO>();
@@ -31,6 +31,7 @@ namespace WizardsCode.Stats {
 
         internal float m_TimeOfNextUpdate = 0;
         private List<StateSO> m_UnsatisfiedDesiredStatesCache = new List<StateSO>();
+        private Interactable m_TargetInteractable;
 
         internal List<StatInfluencerSO> StatsInfluencers
         {
@@ -56,6 +57,7 @@ namespace WizardsCode.Stats {
             get { return m_UnsatisfiedDesiredStatesCache; }
             internal set { m_UnsatisfiedDesiredStatesCache = value; }
         }
+
         /// <summary>
         /// Tests to see if this stats tracker satisfies the requirements of a state.
         /// </summary>
@@ -64,6 +66,41 @@ namespace WizardsCode.Stats {
         internal bool SatisfiesState(StateSO stateTemplate)
         {
             return !UnsatisfiedDesiredStates.Contains(stateTemplate);
+        }
+        internal virtual Interactable TargetInteractable
+        {
+            get { return m_TargetInteractable; }
+            set
+            {
+                m_TargetInteractable = value;
+            }
+        }
+
+        protected float interactionOffset = 0.5f;
+        /// <summary>
+        /// Return an available interaction position for this brain.
+        /// </summary>
+        /// <returns></returns>
+        public Vector3 GetInteractionPosition()
+        {
+            return transform.position + (transform.forward * interactionOffset);
+        }
+
+        /// <summary>
+        /// Decide whether the actor should interact with an influencer trigger they just entered.
+        /// </summary>
+        /// <param name="interactable">The influencer trigger that was activated and can now be interacted with.</param>
+        /// <returns></returns>
+        internal bool ShouldInteractWith(Interactable interactable)
+        {
+            if (interactable != null && GameObject.ReferenceEquals(interactable, TargetInteractable))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         internal virtual void Update()
@@ -120,6 +157,8 @@ namespace WizardsCode.Stats {
             List<AbstractAIBehaviour> behaviours = new List<AbstractAIBehaviour>();
             bool isSatisfied;
             UnsatisfiedDesiredStates.Clear();
+
+            if (DesiredStates == null) return;
 
             for (int i = 0; i < DesiredStates.Length; i++)
             {

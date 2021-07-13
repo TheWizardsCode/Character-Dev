@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3454999400584466692}
   - component: {fileID: 4231892305239988136}
   m_Layer: 0
-  m_Name: Socialize Behaviour Set
+  m_Name: Basic Socialize Behaviour Set
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -50,9 +50,17 @@ MonoBehaviour:
   m_isInteruptable: 0
   m_MaximumExecutionTime: 30
   m_IsBlocking: 1
+  m_OnStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
   m_OnStartCue: {fileID: 0}
+  m_OnArrivingCue: {fileID: 0}
+  m_OnArrivedCue: {fileID: 0}
   m_OnEndCue: {fileID: 0}
-  m_MinimumWeight: 0
+  m_WeightMultiplier: 1
   m_RequiredSenses: []
   m_RequiredStats:
   - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}

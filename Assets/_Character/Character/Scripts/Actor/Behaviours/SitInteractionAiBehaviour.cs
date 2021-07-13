@@ -21,14 +21,16 @@ namespace WizardsCode.Character
             Sit(CurrentInteractableTarget.interactionPoint);
         }
 
-        internal override void FinishBehaviour()
+        internal override float FinishBehaviour()
         {
-            base.FinishBehaviour();
+            float endTime = base.FinishBehaviour();
 
             Brain.Actor.Animator.SetBool("Sitting", false);
             Vector3 pos = transform.position;
             pos.z += sittingOffset;
             Brain.Actor.MoveTargetPosition = pos;
+
+            return endTime;
         }
 
         public void Sit(Transform sitPosition)
@@ -43,7 +45,7 @@ namespace WizardsCode.Character
                 pos.z -= sittingOffset; // slide back in the chair a little
                 Brain.Actor.MoveTo(pos, null, null, () =>
                 {
-                    Brain.Actor.isFootIKActive = true;
+                    ((AnimatorActorController)Brain.Actor).isFootIKActive = true;
                     Brain.Actor.Animator.SetBool("Sitting", true);
                 });
             },
