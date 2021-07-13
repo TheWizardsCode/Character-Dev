@@ -1,0 +1,125 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3454999400584466695
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3454999400584466692}
+  - component: {fileID: 4231892305239988136}
+  - component: {fileID: 4480479654926369997}
+  m_Layer: 0
+  m_Name: Advanced Socialize Behaviour Set
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3454999400584466692
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3454999400584466695}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.003282249, z: 0.12968259}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4231892305239988136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3454999400584466695}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e2d955ea028604c9552bc8d9e5cf47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Description: 
+  m_DisplayName: Socialize
+  Icon: {fileID: 21300000, guid: 50b60d0a2300872418328435f316a1f1, type: 3}
+  m_RetryFrequency: 2
+  m_isInteruptable: 0
+  m_MaximumExecutionTime: 30
+  m_IsBlocking: 1
+  m_OnStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStartCue: {fileID: 0}
+  m_OnStartMovingCue: {fileID: 0}
+  m_OnArrivingCue: {fileID: 0}
+  m_OnArrivedCue: {fileID: 0}
+  m_OnEndCue: {fileID: 0}
+  m_WeightMultiplier: 0.3
+  m_RequiredSenses: []
+  m_RequiredStats:
+  - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
+    objective: 2
+    m_Value: 30.000002
+  m_CharacterInfluences: []
+  m_DesiredStateImpacts:
+  - statTemplate: {fileID: 11400000, guid: e7d5ac7f90040d04b892ec7dda97749d, type: 2}
+    objective: 2
+  m_RequiredWorldState: []
+  awarenessRange: 10
+--- !u!114 &4480479654926369997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3454999400584466695}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4bd4c0148aafcb4097755794c8ecb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Description: Engage in a conversation with another actor.
+  m_DisplayName: Talk
+  Icon: {fileID: 21300000, guid: 94dfb5b430ba78940b2907211005b063, type: 3}
+  m_RetryFrequency: 2
+  m_isInteruptable: 0
+  m_MaximumExecutionTime: 30
+  m_IsBlocking: 1
+  m_OnStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStartCue: {fileID: 11400000, guid: 64adc2cf94e21b64c91d06b5f0018f04, type: 2}
+  m_OnStartMovingCue: {fileID: 0}
+  m_OnArrivingCue: {fileID: 0}
+  m_OnArrivedCue: {fileID: 0}
+  m_OnEndCue: {fileID: 11400000, guid: 84021eebbf895b8439a97a8d49ebd50d, type: 2}
+  m_WeightMultiplier: 0.3
+  m_RequiredSenses:
+  - {fileID: 0}
+  m_RequiredStats: []
+  m_CharacterInfluences:
+  - statTemplate: {fileID: 11400000, guid: e7d5ac7f90040d04b892ec7dda97749d, type: 2}
+    maxChange: 3
+    applyOnCompletion: 0
+  m_DesiredStateImpacts:
+  - statTemplate: {fileID: 11400000, guid: e7d5ac7f90040d04b892ec7dda97749d, type: 2}
+    objective: 2
+  m_RequiredWorldState: []
+  m_RequireConsent: 1
+  m_MinGroupSize: 2
+  m_MaxGroupSize: 3
+  m_GroupDistance: 0
+  m_HandshakeTimeout: 10
+  m_CooldownDuration: 45
+  m_NavMeshMask: 33

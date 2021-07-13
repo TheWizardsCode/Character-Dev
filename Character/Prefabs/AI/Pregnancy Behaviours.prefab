@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2383312330551507642
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3943744177616273979}
+  - component: {fileID: 4880973134859110382}
+  m_Layer: 0
+  m_Name: Pregnancy Behaviours
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3943744177616273979
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2383312330551507642}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4880973134859110382
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2383312330551507642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c1975602ac29e745898da24569dd426, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Description: This behaviour sees the character gestating a baby.
+  m_DisplayName: Gestate Baby
+  m_RetryFrequency: 5
+  m_isInteruptable: 0
+  m_MaximumExecutionTime: 5
+  m_IsBlocking: 0
+  m_OnStartCue: {fileID: 0}
+  m_OnEndCue: {fileID: 0}
+  m_MinimumWeight: 1
+  m_RequiredStats:
+  - statTemplate: {fileID: 11400000, guid: 2f5d19bc19f76514ea83b23aa9d7d7a1, type: 2}
+    objective: 1
+    m_Value: 100
+  m_CharacterInfluences:
+  - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
+    maxChange: -100
+    applyOnCompletion: 0
+  - statTemplate: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
+    maxChange: 100
+    applyOnCompletion: 0
+  - statTemplate: {fileID: 11400000, guid: 2f5d19bc19f76514ea83b23aa9d7d7a1, type: 2}
+    maxChange: -100
+    applyOnCompletion: 1
+  m_DesiredStateImpacts: []
+  m_RequiredWorldState: []
+  m_BuiltPrefab: {fileID: 11400000, guid: efa39bd386836bc4fa8f04a8c26eb122, type: 2}

@@ -1,0 +1,104 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5811580139640864974
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5811580139640864975}
+  - component: {fileID: 733152248967867467}
+  - component: {fileID: 4749425025260289966}
+  m_Layer: 0
+  m_Name: Trader Behaviour Set
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5811580139640864975
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5811580139640864974}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.003282249, z: 0.12968259}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &733152248967867467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5811580139640864974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e2d955ea028604c9552bc8d9e5cf47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Description: 
+  m_DisplayName: Sell Raw Food
+  Icon: {fileID: 21300000, guid: 5dd9d2a9f05968f4aa950ec4951ddcd1, type: 3}
+  m_RetryFrequency: 2
+  m_isInteruptable: 0
+  m_MaximumExecutionTime: 30
+  m_IsBlocking: 1
+  m_OnStartCue: {fileID: 0}
+  m_OnEndCue: {fileID: 0}
+  m_MinimumWeight: 0
+  m_RequiredSenses: []
+  m_RequiredStats:
+  - statTemplate: {fileID: 11400000, guid: cf9e8ec2f416536438ba755bec4df9d6, type: 2}
+    objective: 2
+    m_Value: 0
+  m_CharacterInfluences: []
+  m_DesiredStateImpacts:
+  - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
+    objective: 2
+  - statTemplate: {fileID: 11400000, guid: cf9e8ec2f416536438ba755bec4df9d6, type: 2}
+    objective: 0
+  m_RequiredWorldState: []
+  awarenessRange: 60
+--- !u!114 &4749425025260289966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5811580139640864974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e2d955ea028604c9552bc8d9e5cf47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Description: 
+  m_DisplayName: Buy Raw Food
+  Icon: {fileID: 21300000, guid: 7212006516ce3654ea2ab15382947142, type: 3}
+  m_RetryFrequency: 2
+  m_isInteruptable: 0
+  m_MaximumExecutionTime: 30
+  m_IsBlocking: 1
+  m_OnStartCue: {fileID: 0}
+  m_OnEndCue: {fileID: 0}
+  m_MinimumWeight: 0
+  m_RequiredSenses: []
+  m_RequiredStats:
+  - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
+    objective: 2
+    m_Value: 20
+  m_CharacterInfluences: []
+  m_DesiredStateImpacts:
+  - statTemplate: {fileID: 11400000, guid: cf9e8ec2f416536438ba755bec4df9d6, type: 2}
+    objective: 2
+  - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
+    objective: 0
+  m_RequiredWorldState: []
+  awarenessRange: 60

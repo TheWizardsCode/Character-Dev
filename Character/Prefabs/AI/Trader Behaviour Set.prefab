@@ -1,0 +1,254 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1031709833432347785
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1031709833432347784}
+  - component: {fileID: 1031709833432347894}
+  - component: {fileID: 7604596892291220884}
+  - component: {fileID: 6114500633455450124}
+  - component: {fileID: 2242483778498595817}
+  - component: {fileID: 1031709833432347895}
+  - component: {fileID: 3634621180718998709}
+  - component: {fileID: 4140300809958389971}
+  - component: {fileID: 1031709833432347893}
+  m_Layer: 0
+  m_Name: Trader Behaviour Set
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1031709833432347784
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1031709833432347785}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.003282249, z: 0.12968259}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1031709833432347894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1031709833432347785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e2d955ea028604c9552bc8d9e5cf47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_DisplayName: Eat
+  m_RetryFrequency: 2
+  m_AbortDuration: 30
+  m_RequiredStats:
+  - statTemplate: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
+    objective: 2
+    m_Value: 75
+    m_NormalizedValue: 0.75
+  - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
+    objective: 2
+    m_Value: 20
+    m_NormalizedValue: 0.2
+  m_RequiresInteractable: 1
+  m_DesiredStateImpacts:
+  - statTemplate: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
+    objective: 0
+  awarenessRange: 10
+--- !u!114 &7604596892291220884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1031709833432347785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e2d955ea028604c9552bc8d9e5cf47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_DisplayName: Sleep
+  m_RetryFrequency: 2
+  m_AbortDuration: 30
+  m_RequiredStats:
+  - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
+    objective: 0
+    m_Value: 70
+    m_NormalizedValue: 0.7
+  m_RequiresInteractable: 1
+  m_DesiredStateImpacts:
+  - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
+    objective: 2
+  awarenessRange: 10
+--- !u!114 &6114500633455450124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1031709833432347785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e2d955ea028604c9552bc8d9e5cf47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_DisplayName: Sell Raw Food
+  m_RetryFrequency: 2
+  m_AbortDuration: 30
+  m_RequiredStats:
+  - statTemplate: {fileID: 11400000, guid: cf9e8ec2f416536438ba755bec4df9d6, type: 2}
+    objective: 2
+    m_Value: 0
+    m_NormalizedValue: 0
+  m_RequiresInteractable: 1
+  m_DesiredStateImpacts:
+  - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
+    objective: 2
+  - statTemplate: {fileID: 11400000, guid: cf9e8ec2f416536438ba755bec4df9d6, type: 2}
+    objective: 0
+  awarenessRange: 40
+--- !u!114 &2242483778498595817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1031709833432347785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e2d955ea028604c9552bc8d9e5cf47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_DisplayName: Buy Raw Food
+  m_RetryFrequency: 2
+  m_AbortDuration: 30
+  m_RequiredStats:
+  - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
+    objective: 2
+    m_Value: 20
+    m_NormalizedValue: 0.2
+  m_RequiresInteractable: 1
+  m_DesiredStateImpacts:
+  - statTemplate: {fileID: 11400000, guid: cf9e8ec2f416536438ba755bec4df9d6, type: 2}
+    objective: 2
+  - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
+    objective: 0
+  awarenessRange: 40
+--- !u!114 &1031709833432347895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1031709833432347785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e2d955ea028604c9552bc8d9e5cf47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_DisplayName: Learn
+  m_RetryFrequency: 2
+  m_AbortDuration: 30
+  m_RequiredStats:
+  - statTemplate: {fileID: 11400000, guid: 3091b91fc8dcd26428dac24f52b6116e, type: 2}
+    objective: 0
+    m_Value: 100
+    m_NormalizedValue: 1
+  m_RequiresInteractable: 1
+  m_DesiredStateImpacts:
+  - statTemplate: {fileID: 11400000, guid: 3091b91fc8dcd26428dac24f52b6116e, type: 2}
+    objective: 2
+  awarenessRange: 10
+--- !u!114 &3634621180718998709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1031709833432347785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e2d955ea028604c9552bc8d9e5cf47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_DisplayName: Socialize
+  m_RetryFrequency: 2
+  m_AbortDuration: 30
+  m_RequiredStats:
+  - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
+    objective: 2
+    m_Value: 30.000002
+    m_NormalizedValue: 0.3
+  m_RequiresInteractable: 1
+  m_DesiredStateImpacts:
+  - statTemplate: {fileID: 11400000, guid: e7d5ac7f90040d04b892ec7dda97749d, type: 2}
+    objective: 2
+  awarenessRange: 10
+--- !u!114 &4140300809958389971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1031709833432347785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45e2d955ea028604c9552bc8d9e5cf47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_DisplayName: Work
+  m_RetryFrequency: 2
+  m_AbortDuration: 30
+  m_RequiredStats:
+  - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
+    objective: 0
+    m_Value: 20
+    m_NormalizedValue: 0.2
+  - statTemplate: {fileID: 11400000, guid: cf9e8ec2f416536438ba755bec4df9d6, type: 2}
+    objective: 0
+    m_Value: 20
+    m_NormalizedValue: 0.2
+  m_RequiresInteractable: 1
+  m_DesiredStateImpacts:
+  - statTemplate: {fileID: 11400000, guid: be586581a85615540afb94067ec131a2, type: 2}
+    objective: 2
+  awarenessRange: 25
+--- !u!114 &1031709833432347893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1031709833432347785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74c88fa94d915b74baa4e2395df4111f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_DisplayName: Wander
+  m_RetryFrequency: 2
+  m_AbortDuration: 30
+  m_RequiredStats: []
+  m_RequiresInteractable: 0
+  m_DesiredStateImpacts: []
+  awarenessRange: 10
+  minTimeBetweenRandomPathChanges: 5
+  maxTimeBetweenRandomPathChanges: 15
+  minDistanceOfRandomPathChange: 10
+  maxDistanceOfRandomPathChange: 20
+  minAngleOfRandomPathChange: -60
+  maxAngleOfRandomPathChange: 60
+  m_MaxWanderRange: 50
+  navMeshAreaMask: -1

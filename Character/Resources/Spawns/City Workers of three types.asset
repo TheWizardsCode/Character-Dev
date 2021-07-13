@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba49fb3df4b7a244090097f880942ad3, type: 3}
+  m_Name: City Workers of three types
+  m_EditorClassIdentifier: 
+  m_SpawnObjectDefinitions:
+  - prefab: {fileID: 3960940756751266216, guid: 79e372b920c1a8248baf810de6f2b990,
+      type: 3}
+    probability: 0.4
+    stopSpawning: 1
+  - prefab: {fileID: 7957637473932545155, guid: ceeaee56a69c12d4fa8839a798e0d15b,
+      type: 3}
+    probability: 0.4
+    stopSpawning: 1
+  - prefab: {fileID: 5628486730217652901, guid: 57625122eb4180f49825d30262e550cf,
+      type: 3}
+    probability: 1
+    stopSpawning: 1

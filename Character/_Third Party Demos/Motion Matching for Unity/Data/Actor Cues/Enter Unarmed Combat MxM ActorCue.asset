@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 717707e1dfd27844db11247bb58e0d96, type: 3}
+  m_Name: Enter Unarmed Combat MxM ActorCue
+  m_EditorClassIdentifier: 
+  Duration: 5
+  markName: 
+  m_StopMovement: 0
+  audioClip: {fileID: 0}
+  m_calibrationName: Combat
+  m_TrajectoryConfig: {fileID: 11400000, guid: 9da9c9e1de7c59841bbcf86498b2ec4f, type: 2}
+  m_WarpingConfig: {fileID: 0}
+  m_MxMEvent: {fileID: 0}
+  m_RemoveAllRequiredTags: 0
+  m_AddRequiredTag: 1
+  m_RequiredTag: Combat
+  m_RemoveAllFavouredTags: 0
+  m_AddFavouredTag: 1
+  m_FavourTag: Punch
+  m_favourMultiplier: 0.6

@@ -1,0 +1,1 @@
+In this scene rather than having triggering cues from a UI button we trigger them from a timeline. This allows sequencues of cues to be played with a single in-game event.

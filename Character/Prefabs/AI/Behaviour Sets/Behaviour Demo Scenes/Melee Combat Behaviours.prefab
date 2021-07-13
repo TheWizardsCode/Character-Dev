@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &23036477790514286
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8389062257679507857}
+  - component: {fileID: 7699099111442129957}
+  m_Layer: 0
+  m_Name: Melee Combat Behaviours
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8389062257679507857
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 23036477790514286}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7699099111442129957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 23036477790514286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4bd4c0148aafcb4097755794c8ecb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Description: Melee attack all other actors
+  m_DisplayName: Attack Actors
+  Icon: {fileID: 0}
+  m_RetryFrequency: 2
+  m_isInteruptable: 0
+  m_MaximumExecutionTime: 30
+  m_IsBlocking: 1
+  m_OnStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStart: {fileID: 11400000, guid: 0ee63b6e13454634fa62cfe48f82d15f, type: 2}
+  m_OnPrepare: {fileID: 0}
+  m_OnPerformInteraction: {fileID: 11400000, guid: cd61d23578984444bb2ca0ef73fa8237,
+    type: 2}
+  m_OnEnd: {fileID: 11400000, guid: 90fe31304202f63478beccae32a8ccc5, type: 2}
+  m_WeightMultiplier: 1
+  m_RequiredSenses:
+  - {fileID: 0}
+  m_RequiredStats: []
+  m_CharacterInfluences: []
+  m_DesiredStateImpacts: []
+  m_RequiredWorldState: []
+  m_RequireConsent: 0
+  m_MinGroupSize: 2
+  m_MaxGroupSize: 5
+  m_GroupDistance: 0.5
+  m_HandshakeTimeout: 4
+  m_CooldownDuration: 1
+  m_NavMeshMask: -1
