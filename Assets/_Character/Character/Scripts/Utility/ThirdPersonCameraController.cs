@@ -1,3 +1,4 @@
+#if ENABLE_INPUT_SYSTEM
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.AI;
@@ -48,7 +49,7 @@ namespace WizardsCode.Utility
             transform.rotation *= Quaternion.AngleAxis(_look.x * rotationPower, Vector3.up);
             followTransform.transform.rotation *= Quaternion.AngleAxis(_look.x * rotationPower, Vector3.up);
 
-            #region Vertical Rotation
+#region Vertical Rotation
             float rotateY = m_InvertY ? -_look.y * rotationPower : _look.y * rotationPower;
             followTransform.transform.rotation *= Quaternion.AngleAxis(rotateY, Vector3.right);
 
@@ -68,7 +69,7 @@ namespace WizardsCode.Utility
 
 
             followTransform.transform.localEulerAngles = angles;
-            #endregion
+#endregion
 
 
             nextRotation = Quaternion.Lerp(followTransform.transform.rotation, nextRotation, Time.deltaTime * rotationLerp);
@@ -78,3 +79,4 @@ namespace WizardsCode.Utility
         }
     }
 }
+#endif
