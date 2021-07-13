@@ -57,7 +57,7 @@ We use [PackageTools](https://github.com/jeffcampbellmakesgames/unity-package-to
 NOTE there is currently a [bug](https://github.com/jeffcampbellmakesgames/unity-package-tools/issues/11) in the package manager tool that prevents the above from working, at least on my machine. You can work around the bug with the following steps:
 
 1. Delete the existing package directory
-2. Export the package source as desccribed above
+2. Export the package source as described above
 3. cd into the package directory
 4. `git init`
 5. `git remote add origin git@github.com:TheWizardsCode/Character.git`
