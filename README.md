@@ -34,6 +34,13 @@ If you find a bug or want to make an improvement do it inside the Character proj
 
 Once you have tested the changes please issue a pull request against our repo so we can make the code better for everyone.
 
+### INK support
+
+Ink is an open source scripting language for writing interactive narrative, both for text-centric games as well as more graphical games that contain highly branching stories. It's designed to be easy to learn, but with powerful enough features to allow an advanced level of structuring. This package has code within it to allow your characters to be controlled from Ink scripts. By default, however, it will not be compiled as we don't want to assume everyone wants Ink. To enable it:
+
+  1. Install the free [Ink package](https://bit.ly/InkNarrative) from the Unity Asset Store
+  2. Add a script defines of `INK_PREASENT` to your project
+
 # Release Process
 
 We use [PackageTools](https://github.com/jeffcampbellmakesgames/unity-package-tools) to create our releases. To build a release:

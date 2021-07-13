@@ -89,18 +89,21 @@ namespace WizardsCode.Character
             ProcessAnimationClips();
             ProcessMove();
             ProcessAudio();
+#if INK_PRESENT
             ProcessInk();
+#endif 
 
             return UpdateCoroutine();
         }
 
+#if INK_PRESENT
         internal void ProcessInk()
         {
             if (!string.IsNullOrEmpty(m_KnotName) || !string.IsNullOrEmpty(m_StitchName)) {
                 InkManager.Instance.ChoosePath(m_KnotName, m_StitchName);
             }
         }
-
+#endif
         private void ProcessAnimationLayerWeights()
         {
             if (m_Actor.Animator != null)

@@ -1,3 +1,4 @@
+#if INK_PRESENT
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.AI;
@@ -78,3 +79,4 @@ namespace WizardsCode.Utility
         }
     }
 }
+#endif
