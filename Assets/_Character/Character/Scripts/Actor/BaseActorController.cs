@@ -217,6 +217,13 @@ namespace WizardsCode.Character
 
         protected virtual void Awake()
         {
+            if (m_LookAtTarget == null)
+            {
+                m_LookAtTarget = new GameObject("Look At Target").transform;
+                m_LookAtTarget.SetParent(transform);
+                m_LookAtTarget.localPosition = new Vector3(0, 1.6f, 0.5f);
+            }
+
             m_WalkSpeed = m_MaxSpeed * m_WalkSpeedFactor;
             m_RunSpeed = m_MaxSpeed * m_RunSpeedFactor;
             m_runSqrMagnitude = m_WalkSpeed * m_WalkSpeed;
@@ -452,9 +459,12 @@ namespace WizardsCode.Character
         private void OnDrawGizmosSelected()
         {
             // Look At
-            Gizmos.color = Color.green;
-            Gizmos.DrawSphere(LookAtTarget.position, 0.15f);
-            Gizmos.DrawLine(head.position, LookAtTarget.position);
+            if (LookAtTarget != null)
+            {
+                Gizmos.color = Color.green;
+                Gizmos.DrawSphere(LookAtTarget.position, 0.15f);
+                Gizmos.DrawLine(head.position, LookAtTarget.position);
+            }
         }
     }
 }
