@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 335506291277d6e4093c10c51e9a20df, type: 3}
-  m_Name: Sleep - Start
+  m_Name: Action - End
   m_EditorClassIdentifier: 
-  Duration: 5
+  m_Description: Prepare to commence and action.
+  Duration: 0
   markName: 
   m_StopMovement: 0
   audioClip: {fileID: 0}
@@ -20,10 +21,10 @@ MonoBehaviour:
   m_LayerWeight: 1
   m_LayerChangeSpeed: 5
   m_AnimationParams:
-  - paramName: Sleeping
+  - paramName: Action
     paramType: 2
     paramFloatValue: 0
     paramIntValue: 0
-    paramBoolValue: 1
+    paramBoolValue: 0
   animationClipName: 
   animationNormalizedTime: 0

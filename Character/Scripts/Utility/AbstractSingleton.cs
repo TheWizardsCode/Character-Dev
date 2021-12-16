@@ -22,7 +22,7 @@ namespace WizardsCode.Utility
                 if (m_ShuttingDown)
                 {
                     Debug.LogWarning("[Singleton] Instance '" + typeof(T) +
-                        "' already destroyed. Returning null.");
+                        "' already destroyed. Returning null. This can happen in the Editor as the application shuts down.");
                     return null;
                 }
 

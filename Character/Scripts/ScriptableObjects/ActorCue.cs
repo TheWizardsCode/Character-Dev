@@ -11,6 +11,9 @@ namespace WizardsCode.Character
     [CreateAssetMenu(fileName = "ActorCue", menuName = "Wizards Code/Actor/Cue")]
     public class ActorCue : ScriptableObject
     {
+        [TextArea, SerializeField, Tooltip("A description of this actor cue.")]
+        string m_Description;
+
         [SerializeField, Tooltip("Duration of this phase of this cue action. If 0 then it is unlimited.")]
         public float Duration = 5;
 

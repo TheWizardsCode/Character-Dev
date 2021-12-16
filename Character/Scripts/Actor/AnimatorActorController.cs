@@ -34,14 +34,7 @@ namespace WizardsCode.Character
             float speedParam = 0;
             if (!Mathf.Approximately(magVelocity, 0))
             {
-                if (magVelocity <= m_WalkSpeed)
-                {
-                    speedParam = magVelocity / (m_WalkSpeed + m_MaxSpeed);
-                }
-                else
-                {
-                    speedParam = magVelocity / m_MaxSpeed;
-                }
+                speedParam = magVelocity / m_MaxSpeed;
             }
 
             Vector3 s = m_Agent.transform.InverseTransformDirection(m_Agent.velocity).normalized;

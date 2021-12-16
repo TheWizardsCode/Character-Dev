@@ -2,6 +2,9 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using WizardsCode.Character;
+using static WizardsCode.Character.ActorCueAnimator;
+using System;
+using UnityEngine.Serialization;
 
 namespace WizardsCode.Character
 {
@@ -21,16 +24,8 @@ namespace WizardsCode.Character
 
         public enum ParameterType { Float, Int, Bool, Trigger }
         [Header("Animation Parameters")]
-        [SerializeField, Tooltip("The name of the animation parameter to set the value to.")]
-        public string paramName;
-        [SerializeField, Tooltip("The type of parameter to set.")]
-        public ParameterType paramType;
-        [SerializeField, Tooltip("The float value of the parameter, value is ignored if parameter is not a float")]
-        public float paramFloatValue;
-        [SerializeField, Tooltip("The int value of the parameter, value is ignored if parameter is not a int")]
-        public int paramIntValue;
-        [SerializeField, Tooltip("The bool value of the parameter, value is ignored if parameter is not a bool")]
-        public bool paramBoolValue;
+        [SerializeField, Tooltip("A set of animation parameter changes to make.")]
+        AnimationParameter[] m_AnimationParams;
 
         [Header("Animation Clips")]
         [SerializeField, Tooltip("Tha name of the animation clip to play.")]
@@ -93,24 +88,42 @@ namespace WizardsCode.Character
         /// <param name="m_Actor">The actor to enact the animation changes.</param>
         private void ProcessAnimationParameters()
         {
-            if (!string.IsNullOrWhiteSpace(paramName))
+            for (int i = 0; i < m_AnimationParams.Length; i++)
             {
-                switch (paramType)
+                if (!string.IsNullOrWhiteSpace(m_AnimationParams[i].paramName))
                 {
-                    case ParameterType.Trigger:
-                        m_Actor.Animator.SetTrigger(paramName);
-                        break;
-                    case ParameterType.Bool:
-                        m_Actor.Animator.SetBool(paramName, paramBoolValue);
-                        break;
-                    case ParameterType.Int:
-                        m_Actor.Animator.SetInteger(paramName, paramIntValue);
-                        break;
-                    case ParameterType.Float:
-                        m_Actor.Animator.SetBool(paramName, paramBoolValue);
-                        break;
+                    switch (m_AnimationParams[i].paramType)
+                    {
+                        case ParameterType.Trigger:
+                            m_Actor.Animator.SetTrigger(m_AnimationParams[i].paramName);
+                            break;
+                        case ParameterType.Bool:
+                            m_Actor.Animator.SetBool(m_AnimationParams[i].paramName, m_AnimationParams[i].paramBoolValue);
+                            break;
+                        case ParameterType.Int:
+                            m_Actor.Animator.SetInteger(m_AnimationParams[i].paramName, m_AnimationParams[i].paramIntValue);
+                            break;
+                        case ParameterType.Float:
+                            m_Actor.Animator.SetBool(m_AnimationParams[i].paramName, m_AnimationParams[i].paramBoolValue);
+                            break;
+                    }
                 }
             }
         }
+    }
+
+    [Serializable]
+    struct AnimationParameter
+    {
+        [SerializeField, Tooltip("The name of the animation parameter to set the value to.")]
+        public string paramName;
+        [SerializeField, Tooltip("The type of parameter to set.")]
+        public ParameterType paramType;
+        [SerializeField, Tooltip("The float value of the parameter, value is ignored if parameter is not a float")]
+        public float paramFloatValue;
+        [SerializeField, Tooltip("The int value of the parameter, value is ignored if parameter is not a int")]
+        public int paramIntValue;
+        [SerializeField, Tooltip("The bool value of the parameter, value is ignored if parameter is not a bool")]
+        public bool paramBoolValue;
     }
 }

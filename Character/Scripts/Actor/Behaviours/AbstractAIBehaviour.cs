@@ -29,9 +29,10 @@ namespace WizardsCode.Character
         float m_RetryFrequency = 2;
         [SerializeField, Tooltip("Is this behaviour interuptable. That is if the actor decides something else is more important can this behaviour be finished early.")]
         bool m_isInteruptable = false;
-        [SerializeField, Tooltip("Time until execution of this behaviour is ended. " +
-            "For behaviours that act on the self rather than another interaction this is the duration of the behaviour." +
-            "For behaviours that involve an interaction this is also used as a safeguard in case something prevents the actor from completing " +
+        [SerializeField, Tooltip("Maximum time until execution of this behaviour is ended. " +
+            "For behaviours that act on the self rather than another interactable object or actor this is the duration of the behaviour." +
+            "For behaviours that involve an interaction with another object or actor the duration is defined by that interaction. " +
+            "In this situation this valu is used as a safeguard in case something prevents the actor from completing " +
             "the actions associated with this behaviour, e.g. if they are unable to reach the chosen interactable.")]
         float m_MaximumExecutionTime = 30;
         [SerializeField, Tooltip("If a behaviour is blocking it means no other blocking behaviour can be carried out at the same time. Most behaviours are blocking, however, some special behaviours, such as being preganant, do not entirely block other behaviours.")]
@@ -48,9 +49,11 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("An actor cue to send to the actor as they start the prepare phase of this interaction. This is where you will typically play wind up animations and the like.")]
         [FormerlySerializedAs("m_OnArrivingCue")] // v0.11
         protected ActorCue m_OnPrepare;
-        [SerializeField, Tooltip("A set of actor cues from which to select the appropriate behaviour when performing this behaviour. This is where you will usually play animations and sounds reflecting the interaction itself.")]
+        [SerializeField, Tooltip("A set of actor cues from which to randomly select an appropriate cue when enacting this behaviour. This is where you will usually play animations and sounds reflecting the interaction itself.")]
         [FormerlySerializedAs("m_OnPerformInteraction")] // changed in v0.1.1
         protected ActorCue[] m_OnPerformAction;
+        [SerializeField, Tooltip("An actor cue to send to the actor as they finalize this interaction. This is where you will typically play wind up animations and the like.")]
+        protected ActorCue m_OnFinalize;
         [SerializeField, Tooltip("An actor cue sent when ending this interaction. This should set the character back to their default state.")]
         [FormerlySerializedAs("m_OnEndCue")] // v0.11
         protected ActorCue m_OnEnd;
@@ -73,6 +76,9 @@ namespace WizardsCode.Character
         DesiredStatImpact[] m_DesiredStateImpacts = new DesiredStatImpact[0];
         [SerializeField, Tooltip("The conditions required in the worldstate for this behaviour to be valid.")]
         WorldStateSO[] m_RequiredWorldState;
+
+        enum State { Starting, Preparing, Performing, Finalizing, Ending }
+        State currentState = State.Starting;
 
         public float MaximumExecutionTime
         {
@@ -245,26 +251,26 @@ namespace WizardsCode.Character
             bool thisRequirementMet = false;
             for (int i = 0; i < m_RequiredStats.Length; i++)
             {
-                reasoning.Append(m_RequiredStats[i].statTemplate.DisplayName);
-                reasoning.Append(" is ");
+                StatSO stat = Brain.GetOrCreateStat(m_RequiredStats[i].statTemplate);
+                reasoning.Append($"{stat.DisplayName} ({stat.Value})");
 
                 switch (m_RequiredStats[i].objective)
                 {
                     case Objective.LessThan:
-                        thisRequirementMet = Brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).Value < m_RequiredStats[i].Value;
+                        thisRequirementMet = stat.Value < m_RequiredStats[i].Value;
                         if (!thisRequirementMet) {
-                            reasoning.Append("in the wrong range since it is not less than ");
+                            reasoning.Append(" is in the wrong range since it is not less than ");
                         }
                         break;
                     case Objective.Approximately:
-                        thisRequirementMet = Mathf.Approximately(Brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).Value, m_RequiredStats[i].Value);
+                        thisRequirementMet = Mathf.Approximately(stat.Value, m_RequiredStats[i].Value);
                         if (!thisRequirementMet)
                         {
-                            reasoning.Append("in the wrong range since it is not approximately equal to ");
+                            reasoning.Append(" is in the wrong range since it is not approximately equal to ");
                         }
                         break;
                     case Objective.GreaterThan:
-                        thisRequirementMet = Brain.GetOrCreateStat(m_RequiredStats[i].statTemplate).Value > m_RequiredStats[i].Value;
+                        thisRequirementMet = stat.Value > m_RequiredStats[i].Value;
                         if (!thisRequirementMet)
                         {
                             reasoning.Append("is in the wrong range since it is not greater than ");
@@ -317,26 +323,36 @@ namespace WizardsCode.Character
         /// <param name="duration">The maximum duration that this behaviuour can take</param>
         internal virtual void StartBehaviour(float duration)
         {
+            currentState = State.Starting;
+
             isPrioritized = false;
             IsExecuting = true;
             EndTime = Time.timeSinceLevelLoad + duration;
             AddCharacterInfluencers(duration);
 
+            if (m_OnStart != null)
+            {
+                Brain.Actor.Prompt(m_OnStart);
+            }
+
             if (m_OnStartEvent != null)
             {
                 m_OnStartEvent.Invoke();
             }
+
+            PerformAction();
         }
 
         protected void PerformAction()
         {
-            Brain.Actor.TurnToFace(m_ActorController.LookAtTarget.position);
+            currentState = State.Performing;
+            // TODO If this is enabled we get loads of twitching.
+            // Brain.Actor.TurnToFace(m_ActorController.LookAtTarget.position);
 
             if (m_OnPerformAction.Length > 0)
             {
                 ActorCue cue = m_OnPerformAction[Random.Range(0, m_OnPerformAction.Length)];
                 Brain.Actor.Prompt(cue);
-                EndTime = Time.timeSinceLevelLoad + cue.Duration;
             }
         }
 
@@ -420,7 +436,19 @@ namespace WizardsCode.Character
         {
             if (EndTime < Time.timeSinceLevelLoad)
             {
-                EndTime = FinishBehaviour();
+                if (currentState == State.Finalizing)
+                {
+                    EndTime = FinishBehaviour();
+                }
+                else
+                {
+                    if (m_OnFinalize != null)
+                    {
+                        Brain.Actor.Prompt(m_OnFinalize);
+                        EndTime = Time.timeSinceLevelLoad + m_OnFinalize.Duration;
+                    }
+                    currentState = State.Finalizing;
+                }
             }
         }
 
@@ -488,6 +516,7 @@ namespace WizardsCode.Character
                 return Time.timeSinceLevelLoad + m_OnEnd.Duration;
             }
 
+            currentState = State.Ending;
             return Time.timeSinceLevelLoad;
         }
 

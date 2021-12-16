@@ -9,7 +9,7 @@ using WizardsCode.Utility;
 namespace WizardsCode.Character.AI
 {
     /// <summary>
-    /// A GenericCharacterInteractionBehaviour is a behaviour that happens
+    /// A GenericActorInteractionBehaviour is a behaviour that happens
     /// involving two or more characters. Unlike the GenericInteractionBehaviour
     /// these behaviours need a number of other characters to be within range and in agreement that they will each carry out
     /// the same behaviour.
