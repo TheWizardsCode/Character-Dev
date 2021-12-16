@@ -1,4 +1,4 @@
-﻿#if NEOFPS
+﻿#if NEOFPS2
 using NeoFPS;
 using System.Collections;
 using System.Collections.Generic;
