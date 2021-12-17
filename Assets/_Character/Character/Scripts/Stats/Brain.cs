@@ -95,7 +95,7 @@ namespace WizardsCode.Stats {
                     if (value.ReserveFor(this))
                     {
                         //TODO move to an interaction point not to the transform position
-                        Actor.MoveTargetPosition = value.transform.position;
+                        Actor.MoveTargetPosition = value.interactionPoint.position;
                     }
                 }
             }

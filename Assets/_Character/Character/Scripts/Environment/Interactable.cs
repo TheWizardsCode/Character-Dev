@@ -17,6 +17,7 @@ namespace WizardsCode.Character
     /// 
     /// A stats tracker required in an ancestor.
     /// </summary>
+    [RequireComponent(typeof(Collider))]
     public class Interactable : MonoBehaviour
     {
         [Header("Overview")]
@@ -33,11 +34,8 @@ namespace WizardsCode.Character
         int m_MaxInteractors = 1;
         [SerializeField, Tooltip("The set of character stats and the influence to apply to them when a character interacts with the object.")]
         internal StatInfluence[] m_CharacterInfluences;
-        [SerializeField, Tooltip("The position an actor should be in to interact with this interactable. Both the rotation and the position will be respected.")]
+        [SerializeField, Tooltip("The position an actor should be in to interact with this interactable. If this is left blank then a best guess interaction point will be selected.")]
         Transform m_InteractionPoint;
-
-        [SerializeField, Tooltip("If the actor stays within the trigger area can they get a new influencer after the duration + cooldown has expired?")]
-        bool m_IsRepeating = false;
 
         [Header("Object Settings")]
         [SerializeField, Tooltip("When an actor has finished interacting with the object should the object be destroyed?")]
@@ -63,13 +61,22 @@ namespace WizardsCode.Character
         {
             get
             {
-                if (m_InteractionPoint != null)
+                if (m_InteractionPoint == null)
                 {
-                    return m_InteractionPoint;
-                } else
-                {
-                    return transform;
+                    float distance = float.MinValue;
+                    Collider[] colliders = GetComponents<Collider>();
+                    for (int i = 0; i < colliders.Length; i++)
+                    {
+                        if (colliders[i].isTrigger && distance < colliders[i].bounds.extents.x)
+                        {
+                            distance = colliders[i].bounds.extents.x * 0.8f;
+                        }
+                    }
+                    m_InteractionPoint = new GameObject("Interaction Point").transform;
+                    m_InteractionPoint.position = transform.position + transform.forward * distance;
+                    m_InteractionPoint.SetParent(transform);
                 }
+                return m_InteractionPoint;
             }
         }
 
@@ -247,39 +254,6 @@ namespace WizardsCode.Character
             AddObjectInfluence();
         }
 
-        private void OnTriggerStay(Collider other)
-        {
-            if (other.gameObject == this.gameObject)
-            {
-                return;
-            }
-
-            StatsTracker stats = other.transform.root.GetComponentInChildren<StatsTracker>();
-            if (stats == null
-                || (!m_IsRepeating
-                && m_ActiveInteractors.Contains(stats)))
-            {
-                return;
-            }
-
-            if (!stats.ShouldInteractWith(this))
-            {
-                return;
-            }
-
-            if (!HasSpaceFor(stats))
-            {
-                stats.TargetInteractable = null;
-                return;
-            }
-
-            if (!IsOnCooldownFor(stats))
-            {
-                StartCharacterInteraction(stats);
-                AddObjectInfluence();
-            }
-        }
-
         private void StartCharacterInteraction(StatsTracker stats)
         {
             if (stats is Brain)
@@ -314,6 +288,10 @@ namespace WizardsCode.Character
             m_ActiveInteractors.Remove(statsTracker);
             if (m_DestroyOnUse)
             {
+                if (statsTracker is Brain)
+                {
+                    ((Brain)statsTracker).Actor.ResetLookAt();
+                }
                 Destroy(gameObject, 0.05f);
             }
         }

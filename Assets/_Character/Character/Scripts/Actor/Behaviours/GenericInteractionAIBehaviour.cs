@@ -32,6 +32,8 @@ namespace WizardsCode.Character
         /// <param name="interactable">The interactable we are working on.</param>
         internal virtual void StartBehaviour(Interactable interactable)
         {
+            m_ActorController.LookAtTarget = interactable.transform;
+            m_ActorController.TurnToFace(interactable.transform.position);
             StartBehaviour(interactable.Duration);
         }
 
