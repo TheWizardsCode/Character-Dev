@@ -1,3 +1,4 @@
+#if MXM_PRESENT
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -50,3 +51,4 @@ namespace WizardsCode.Character.MxM
         }
     }
 }
+#endif
