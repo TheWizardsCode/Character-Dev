@@ -7,13 +7,15 @@ The 101 scene shows the absolute minimal setup for a Wizards Code character. als
 
 This is responsible for controlling the Actor. It does not make decisions (see Brain) but it does enact those decisions in terms of movement etc. It requires a NavMeshAgent component be attached. This Base Actor does not have any knowledge of an animation system. Although there is an animator controller on the character and so the Actor will idle. In the next scene we will see how to use Mecanim and in later scenes we will use Motion Matching for our characters. The ActorController is separated out like this to ensure you have maximum flexibility in selecting your chosen animation engine.
 
+While the Base Actor Controller is fully functional it is very limited in what it can do. In most cases you will use another controller, such as the `Animator Actor Controller` which will convert movement on the navmesh to animation parameters. This allows the character to be automatically animated.
+
 ## Brain
 
 The brain tracks all the characters stats and makes decisions about what the charcter will do.
 
 ## Animator
 
-This is a standard Unity Animtor component. You can use any animation controller you want as long as it uses the parameters setup in the Actor Controller. If you want to get going quickly you can use the Basic Humanoid Controller that is part of the Wizards Code Animation pack (also open source).
+This is a standard Unity Animtor component. You can use any animation controller you want as long as it uses the parameters setup in the Actor Controller. If you want to get going quickly you can either copy or override the `Animations/Controllers/Humanoid Controller (Override This)`.
 
 # NavMeshAgent
 

@@ -168,6 +168,8 @@ namespace WizardsCode.Stats {
         {
             get
             {
+                if (!Actor.isIdle) return false;
+
                 if (ActiveBlockingBehaviour == null && Time.timeSinceLevelLoad > m_TimeOfNextBehaviourUpdate)
                 {
                     return true;

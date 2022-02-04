@@ -13,10 +13,10 @@ namespace WizardsCode.Character
     [RequireComponent(typeof(NavMeshAgent))]
     public class BaseActorController : MonoBehaviour
     {
-        public enum States { Stationary, Moving, Arriving, Arrived }
+        public enum States { Idle, Moving, Arriving, Arrived }
 
         #region InspectorParameters
-        [Header("Character Setup")]
+        [Header("Character Ground Movement")]
         [SerializeField, Tooltip("The maximum speed of this character, this will usually be a full sprint.")]
         protected float m_MaxSpeed = 8f;
         [SerializeField, Tooltip("If the distance the actor needs to travel to reach their destination is greater than this and the actor can run then they will do so.")]
@@ -43,6 +43,10 @@ namespace WizardsCode.Character
         float m_LookAtHeatTime = 0.2f;
         [SerializeField, Tooltip("The time it takes for the look IK rig to cool after reaching the correct look angle.")]
         float m_LookAtCoolTime = 0.2f;
+
+        [Header("Animation")]
+        [SerializeField, Tooltip("The animation controller for updating animations.")]
+        protected Animator m_Animator;
         #endregion
 
         #region Public
@@ -56,7 +60,6 @@ namespace WizardsCode.Character
         #endregion
 
         #region Members
-        protected Animator m_Animator;
         protected NavMeshAgent m_Agent;
         protected Brain m_Brain;
 
@@ -111,7 +114,15 @@ namespace WizardsCode.Character
 
         public Transform LookAtTarget
         {
-            get { return m_LookAtTarget; }
+            get {
+                if (!m_LookAtTarget)
+                {
+                    GameObject go = new GameObject($"Look At target for {gameObject.name}");
+                    go.transform.SetParent(gameObject.transform);
+                    ResetLookAt();
+                }
+                return m_LookAtTarget;
+            }
             set
             {
                 m_LookAtTarget.transform.SetParent(value);
@@ -120,7 +131,7 @@ namespace WizardsCode.Character
             }
         }
 
-        internal Animator Animator
+        public Animator Animator
         {
             get { return m_Animator; }
         }
@@ -142,24 +153,24 @@ namespace WizardsCode.Character
             MoveTargetPosition = position;
         }
 
-        internal void MoveTo(Transform destination)
+        public virtual void MoveTo(Transform destination)
         {
             MoveTo(destination.position, null, null, null);
         }
 
-        internal void TurnTo(Quaternion rotation)
+        public void TurnTo(Quaternion rotation)
         {
             desiredRotation = rotation;
             isRotating = true;
         }
 
-        internal void TurnToFace(Vector3 position)
+        public void TurnToFace(Vector3 position)
         {
             TurnTo(Quaternion.LookRotation(position - transform.position, Vector3.up));
         }
         #endregion
 
-        internal Vector3 MoveTargetPosition
+        public Vector3 MoveTargetPosition
         {
             get { return m_Agent.destination; }
             set
@@ -174,7 +185,7 @@ namespace WizardsCode.Character
         /// <summary>
         /// If this actor is currently preparing to, or actively interacting with an object this transform is the point at which they should be standing.
         /// </summary>
-        internal Transform InteractionPoint
+        public Transform InteractionPoint
         {
             get
             {
@@ -189,7 +200,7 @@ namespace WizardsCode.Character
         /// <summary>
         /// Stop the actor from moving. Clearing the current path if there is one.
         /// </summary>
-        internal void StopMoving()
+        public void StopMoving()
         {
             m_Agent.ResetPath();
         }
@@ -229,7 +240,10 @@ namespace WizardsCode.Character
             m_runSqrMagnitude = m_WalkSpeed * m_WalkSpeed;
             m_sprintSqrMagnitude = m_RunSpeed * m_RunSpeed;
 
-            m_Animator = GetComponentInChildren<Animator>();
+            if (m_Animator == null)
+            {
+                m_Animator = GetComponentInChildren<Animator>();
+            }
             m_AnimationLayers = GetComponentInChildren<AnimationLayerController>();
 
             m_Agent = GetComponent<NavMeshAgent>();
@@ -329,7 +343,7 @@ namespace WizardsCode.Character
         {
             switch (m_State)
             {
-                case States.Stationary:
+                case States.Idle:
                     if (hasMoved && onStationary != null)
                     {
                         onStationary();
@@ -366,7 +380,7 @@ namespace WizardsCode.Character
                         onArrived();
                         onArrived = null;
                     }
-                    m_State = States.Stationary;
+                    m_State = States.Idle;
                     break;
                 default:
                     break;
@@ -375,7 +389,7 @@ namespace WizardsCode.Character
 
 
 
-        internal bool IsMoving
+        public bool IsMoving
         {
             get
             {
@@ -399,7 +413,7 @@ namespace WizardsCode.Character
         }
 
         [Obsolete("Use IsMoving instead")] // v0.0.11
-        internal bool HasReachedTarget
+        public bool HasReachedTarget
         {
             get { return IsMoving; }
         }
@@ -430,13 +444,25 @@ namespace WizardsCode.Character
             }
         }
 
+        public bool isIdle { 
+            get { return m_State == States.Idle; }
+        }
+
         /// <summary>
         /// Move the look at target to its default position and parent it to the actor.
         /// </summary>
-        internal void ResetLookAt()
+        public void ResetLookAt()
         {
             LookAtTarget.transform.SetParent(transform);
-            LookAtTarget.transform.position = head.position + transform.forward;
+            Vector3 pos = Vector3.zero;
+            if (head)
+            {
+                pos = head.position + transform.forward;
+            } else
+            {
+                new Vector3(0, 1.7f, 1);
+            }
+            LookAtTarget.transform.position = pos;
             isRotating = false;
         }
 
@@ -463,7 +489,10 @@ namespace WizardsCode.Character
             {
                 Gizmos.color = Color.green;
                 Gizmos.DrawSphere(LookAtTarget.position, 0.15f);
-                Gizmos.DrawLine(head.position, LookAtTarget.position);
+                if (head != null)
+                {
+                    Gizmos.DrawLine(head.position, LookAtTarget.position);
+                }
             }
         }
     }

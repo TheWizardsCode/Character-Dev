@@ -53,7 +53,7 @@ namespace WizardsCode.Character
             return base.Prompt(actor);
         }
 
-        internal override IEnumerator UpdateCoroutine()
+        protected override IEnumerator UpdateCoroutine()
         {
             // Update Layers
             if (m_Actor.Animator != null && m_LayerIndex >= 0 && m_Actor.Animator.GetLayerWeight(m_LayerIndex) != m_LayerWeight)

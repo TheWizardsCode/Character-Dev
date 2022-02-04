@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
-using WizardsCode.Ink;
 
 namespace WizardsCode.Character
 {
@@ -27,16 +26,7 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("Audio files for spoken lines")]
         public AudioClip audioClip;
 
-        //TODO remove Ink sections to an InkActorCue object
-        #if INK_PRESENT
-        [Header("Ink")]
-        [SerializeField, Tooltip("The name of the knot to jump to on this cue.")]
-        string m_KnotName;
-        [SerializeField, Tooltip("The name of the stitch to jump to on this cue.")]
-        string m_StitchName;
-        #endif
-
-        internal BaseActorController m_Actor;
+        protected BaseActorController m_Actor;
         internal NavMeshAgent m_Agent;
         internal bool m_AgentEnabled;
 
@@ -61,23 +51,11 @@ namespace WizardsCode.Character
 
             ProcessMove();
             ProcessAudio();
-#if INK_PRESENT
-            ProcessInk();
-#endif
 
             return UpdateCoroutine();
         }
 
-#if INK_PRESENT
-        internal void ProcessInk()
-        {
-            if (!string.IsNullOrEmpty(m_KnotName) || !string.IsNullOrEmpty(m_StitchName)) {
-                InkManager.Instance.ChoosePath(m_KnotName, m_StitchName);
-            }
-        }
-#endif
-
-        internal virtual IEnumerator UpdateCoroutine()
+        protected virtual IEnumerator UpdateCoroutine()
         {
             if (m_Agent != null)
             {
@@ -92,7 +70,7 @@ namespace WizardsCode.Character
         /// <summary>
         /// If this cue has a mark defined move to it.
         /// </summary>
-        void ProcessMove()
+        protected virtual void ProcessMove()
         {
             if (m_StopMovement)
             {
@@ -117,7 +95,7 @@ namespace WizardsCode.Character
             }
         }
 
-        void ProcessAudio()
+        protected virtual void ProcessAudio()
         {
             if (audioClip != null)
             {
