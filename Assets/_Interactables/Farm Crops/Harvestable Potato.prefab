@@ -1,0 +1,155 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1819358590325638
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4812309500268030}
+  - component: {fileID: 33773876670190712}
+  - component: {fileID: 23976823614827798}
+  - component: {fileID: 7266941749201725836}
+  - component: {fileID: 4413536199031376769}
+  m_Layer: 0
+  m_Name: Harvestable Potato
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4812309500268030
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1819358590325638}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 5279098342180571328}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &33773876670190712
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1819358590325638}
+  m_Mesh: {fileID: 4300000, guid: 5ff177d63a1d75442aee573d15d26ffd, type: 3}
+--- !u!23 &23976823614827798
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1819358590325638}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: da5a311d3775332478c396918dda3aaa, type: 2}
+  - {fileID: 2100000, guid: fdf18c58b725a2f469593ece1786d307, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 0
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+--- !u!135 &7266941749201725836
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1819358590325638}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.58772075
+  m_Center: {x: 0.024079412, y: 0.47395343, z: -0.006249696}
+--- !u!114 &4413536199031376769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1819358590325638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66f048bfe15920a4e9328734b8239ff0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Description: This potato plant looks mature enough to harvest.
+  m_Type: {fileID: 11400000, guid: 71645a06cc86a75429783b63e74e2b38, type: 2}
+  m_InteractionNameFromActorsPerspective: Harvest potatoes
+  m_MaxInteractors: 1
+  m_CharacterInfluences:
+  - statTemplate: {fileID: 11400000, guid: cf9e8ec2f416536438ba755bec4df9d6, type: 2}
+    maxChange: 3
+    applyOnCompletion: 0
+  - statTemplate: {fileID: 11400000, guid: 1134128b230d7734dad1c54314c6d317, type: 2}
+    maxChange: -1
+    applyOnCompletion: 0
+  m_InteractionPoint: {fileID: 5279098342180571328}
+  m_DestroyOnUse: 1
+  m_ObjectInfluences: []
+  m_Cooldown: 30
+--- !u!1 &8139288593006387790
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5279098342180571328}
+  m_Layer: 0
+  m_Name: Interaction Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5279098342180571328
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8139288593006387790}
+  m_LocalRotation: {x: 0, y: -0.91876715, z: 0, w: 0.39479995}
+  m_LocalPosition: {x: 0.534, y: 0, z: 0.533}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4812309500268030}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: -133.49301, z: 0}
