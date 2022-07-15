@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19d0479af55690b459aa37cc281af882, type: 3}
+  m_Name: Pregnant
+  m_EditorClassIdentifier: 
+  DisplayName: Pregnant
+  m_Stat: {fileID: 11400000, guid: 2f5d19bc19f76514ea83b23aa9d7d7a1, type: 2}
+  m_Objective: 1
+  m_NormalizeTargetValue: 1
+  m_NotInDesiredState: []
+  m_InDesiredState:
+  - {fileID: 11400000, guid: 7bee0263aebcdc34194128a10d72b3fe, type: 2}
+  m_SatisfiedBehaviours:
+  - {fileID: 4880973134859110382, guid: 36f65457c65f0fd4c825c1a7ad4df679, type: 3}
+  m_SubStates: []

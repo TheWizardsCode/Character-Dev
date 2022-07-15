@@ -1,0 +1,3 @@
+This scene demonstrates the use of a kind of behaviour that happens between actors. That is, rather than interacting with an interactable, two or more characters will interact with one another. This also demonstrates the use of senses in an actor. Finally, we add in the ability to trigger cues during a behaviour so that the actors will perform animations and other actions.
+
+In this simple scene two characters have talking and wander behaviours. They will wander until they come near to one another. Once they come near, if they both agree, they will approach one another and talk.

@@ -1,0 +1,3 @@
+In this demo our characters will initially wander semi-randomly. They will keep wandering in roughly the same direction until they hit the edge of their wander radius or they cannot find a valid spot to wander to. Then they will turn and wander again.
+
+The agent can, optionally, be set to avoid certain NavMesh areas on Spawn. In this demo it will avoid the red areas. However, they can walk onto this area in gameplay. This allows for more controlled spawning in gameplay.

@@ -1,0 +1,5 @@
+When a character interacts with an interactable object it imparts one or more Stat Influencer on the actor. This will change stats over a period of time. To prevent the actor returning repeatedly and interacting with an object too frequently influencers have a cooldown time.  The character cannot return to the interactable within this cooldown period. 
+
+Both the table and bed interactables in previous scenes have demonstrated this, but their cooldowns have been short and thus you may not have noticed them having any effect. In the `221 Adding a Learn Behaviour` we create a new Interactable for a Library.
+
+The actor can visit the library in order to learn. This will increase their experience stat, slowly. However, they will not be able to return to the library for a number of minutes. Consequently when they are well fed and rested they will visit the library and then wander until the library is available to them again.

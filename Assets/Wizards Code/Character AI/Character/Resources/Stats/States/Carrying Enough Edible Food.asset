@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19d0479af55690b459aa37cc281af882, type: 3}
+  m_Name: Carrying Enough Edible Food
+  m_EditorClassIdentifier: 
+  DisplayName: Enough Raw Food Stocked
+  m_Stat: {fileID: 11400000, guid: f7d4bfdde3e47184c8ffab37da1f1d1c, type: 2}
+  m_Objective: 2
+  m_NormalizedTargetValue: 0.255
+  m_NotInDesiredState: []
+  m_InDesiredState: []
+  m_SatisfiedBehaviours: []
+  m_UnsatisfiedBehaviours:
+  - {fileID: 2329549644042378362, guid: 29c06b45c2967ca4fa57173a82c0506a, type: 3}
+  m_SubStates: []

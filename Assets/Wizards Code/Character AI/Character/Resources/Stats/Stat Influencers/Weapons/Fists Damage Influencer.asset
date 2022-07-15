@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 415d279d9d5523c49bbf529ff168d783, type: 3}
+  m_Name: Fists Damage Influencer
+  m_EditorClassIdentifier: 
+  m_InteractionName: 
+  m_stat: {fileID: 11400000, guid: 4cf63de4e2fa1b1469bf45c8150329bd, type: 2}
+  m_MaxChange: -7
+  m_Duration: 0
+  m_CooldownDuration: 0
+  m_InfluenceApplied: 7

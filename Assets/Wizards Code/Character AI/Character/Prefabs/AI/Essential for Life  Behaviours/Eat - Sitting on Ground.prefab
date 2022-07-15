@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5984986022434306911
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8690188709291111566}
+  - component: {fileID: 885747846369560876}
+  m_Layer: 0
+  m_Name: Eat - Sitting on Ground
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8690188709291111566
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5984986022434306911}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &885747846369560876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5984986022434306911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67754f2c8fb50d34bbcdd8a78ba35a25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Description: When hungry every animal needs to eat in some way.
+  m_DisplayName: Eat
+  Icon: {fileID: 21300000, guid: 35050101c6c72554bbdf22092c230583, type: 3}
+  m_RetryFrequency: 2
+  m_isInteruptable: 1
+  m_MaximumExecutionTime: 30
+  m_IsBlocking: 1
+  m_OnStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnStartCue: {fileID: 0}
+  m_OnPrepareCue: {fileID: 11400000, guid: 95b6bb841faa8134ca543a5203b0b624, type: 2}
+  m_OnPerformCue:
+  - {fileID: 11400000, guid: 2df81705c23f54345806e9f434cf1922, type: 2}
+  m_OnFinalizeCue: {fileID: 11400000, guid: 4885cdae116e77b4e8d96ba857124e58, type: 2}
+  m_OnEndCue: {fileID: 0}
+  m_NextBehaviour: {fileID: 0}
+  m_WeightMultiplier: 4
+  m_WeightVariation: 0.1
+  m_RequiredSenses: []
+  m_RequiredStats:
+  - statTemplate: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
+    objective: 2
+    m_Value: 60.000004
+  - statTemplate: {fileID: 11400000, guid: f7d4bfdde3e47184c8ffab37da1f1d1c, type: 2}
+    objective: 2
+    m_Value: 8
+  m_CharacterInfluences:
+  - statTemplate: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
+    maxChange: -8
+    applyOnCompletion: 0
+  m_DesiredStateImpacts: []
+  m_RequiredWorldState: []
+  CurrentState: 5
+  DestoryOnInactive: 0
+  m_CooldownDuration: 60

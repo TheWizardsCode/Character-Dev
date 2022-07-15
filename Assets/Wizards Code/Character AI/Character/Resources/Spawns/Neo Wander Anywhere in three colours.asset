@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba49fb3df4b7a244090097f880942ad3, type: 3}
+  m_Name: Neo Wander Anywhere in three colours
+  m_EditorClassIdentifier: 
+  m_SpawnObjectDefinitions:
+  - prefab: {fileID: 4685788128067775126, guid: 947c211cc3e57b54baf8aea021d9c5c5,
+      type: 3}
+    probability: 0.33
+    stopSpawning: 1
+  - prefab: {fileID: 4776419753246694006, guid: 49f49e0cdd1613149ab19e87afcae247,
+      type: 3}
+    probability: 0.33
+    stopSpawning: 1
+  - prefab: {fileID: 143589889887610850, guid: e578a5040fa352c4b98dc3d5fba3e4d2, type: 3}
+    probability: 1
+    stopSpawning: 1
