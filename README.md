@@ -6,9 +6,7 @@ the character package itself. It also contains some configurations of popular ch
 # Dev Setup
 
   * Checkout this project using `git clone https://github.com/TheWizardsCode/Character-Dev.git`
-  * Checkout [Character Unity Package](https://github.com/TheWizardsCode/Character-Unity-Package) using `git clone https://github.com/TheWizardsCode/Character-Unity-Package.git`
   * Open the Character Dev project in Unity.
-  * In Package Manager add the Character Unity Package path to the disk ![image](https://user-images.githubusercontent.com/250240/159505725-4bc5311b-c8a5-4128-9d64-58e6b6259abd.png)
 
 # Getting Started
 
@@ -16,12 +14,9 @@ This section will walk you through getting started with the Character Dev projec
 
 ## Testing Character Unity Package
 
-The Character Unity Package is where all the action happens. This project is a placeholder for development work. So lets start off by taking a look at the Character Unity Package project first.
-Since it is improted as a package it's files are in the `Packages/Wizards Code - Character` folder. Let's start by opening `Packages/Wizards Code - Character/Scenes/Village Life`. 
-This scene has some reasonably complex AI characters that eat, sleep work and play. Go ahead and hit the play button in Unity, the characters will start to live their lives. 
-Note the animations and models used in these demo scenes are minimalistic. We are trying to ensure this package can be used without being required to purchase additional assets.
+The project is intended to be self documenting through demo scens, so get started in the `Assets/Wizards Code/Character AI/Character/Documentation` folder. Work through the 100+ scenes, then the 200+ and so on.
 
-There are many test scenes in the Character Unity Package project.
+Note this is an ever evolving project and you are working with development code. There is no guarantee that things will work as expected since we've not yet released an alpha stage, let alone a beta or production stage. This code is for the brave. We welcome your questions on [Discord](http://bit.ly/WizardsCodeDiscord) - better yet we welcome your contributions to make the code and documentation more valuable.
 
 ## Creating a new Scene
 
