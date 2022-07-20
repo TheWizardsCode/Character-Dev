@@ -14,9 +14,13 @@ This section will walk you through getting started with the Character Dev projec
 
 ## Testing Character Unity Package
 
-The project is intended to be self documenting through demo scens, so get started in the `Assets/Wizards Code/Character AI/Character/Documentation` folder. Work through the 100+ scenes, then the 200+ and so on.
+The project is intended to be self documenting through demo scens, so get started in the `Assets/Wizards Code/Character AI/Scenes/` folder. Within there you will find a number of numbered subfolders. Inside each subfolder are some numbered scenes. The intention is that you will work through the scenes in order as each one introduces a new concept. 
 
-Note this is an ever evolving project and you are working with development code. There is no guarantee that things will work as expected since we've not yet released an alpha stage, let alone a beta or production stage. This code is for the brave. We welcome your questions on [Discord](http://bit.ly/WizardsCodeDiscord) - better yet we welcome your contributions to make the code and documentation more valuable.
+When you load a scene it will first show you a brief description of the scene. The goal is for this description to give you enough information to dig into the scene game objects to understand what it happening. Therefore, if you don't know your way around Unity yet you will be pretty lost. But if you are comfortable in unity you should be able to find your way around.
+
+Note this is an ever evolving project and you are working with development code. There is no guarantee that things will work as expected. The code is not necessarily well structured either, we do try to refactor as we go, but we've not yet released an alpha stage, let alone a beta or production stage. This code is for the brave. 
+
+We welcome your questions on [Discord](http://bit.ly/WizardsCodeDiscord) - better yet we welcome your contributions to make the code and documentation more valuable.
 
 ## Creating a new Scene
 
