@@ -16,12 +16,9 @@ This section will walk you through getting started with the Character Dev projec
 
 ## Testing Character Unity Package
 
-The Character Unity Package is where all the action happens. This project is a placeholder for development work. So lets start off by taking a look at the Character Unity Package project first.
-Since it is improted as a package it's files are in the `Packages/Wizards Code - Character` folder. Let's start by opening `Packages/Wizards Code - Character/Scenes/Village Life`. 
-This scene has some reasonably complex AI characters that eat, sleep work and play. Go ahead and hit the play button in Unity, the characters will start to live their lives. 
-Note the animations and models used in these demo scenes are minimalistic. We are trying to ensure this package can be used without being required to purchase additional assets.
+The Character Unity Package is where all the action happens. The project is intended to be self documenting through demo scens, so get started in the `Wizards Code/Character AI/Character/Documentation` folder. Work through the 100+ scenes, then the 200+ and so on.
 
-There are many test scenes in the Character Unity Package project.
+Note this is an ever evolving project and you are working with development code. There is no guarantee that things will work as expected since we've not yet released an alpha stage, let alone a beta or production stage. This code is for the brave. We welcome your questions on [Discord](http://bit.ly/WizardsCodeDiscord) - better yet we welcome your contributions to make the code and documentation more valuable.
 
 ## Creating a new Scene
 
