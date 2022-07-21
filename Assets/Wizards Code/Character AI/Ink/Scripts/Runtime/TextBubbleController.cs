@@ -20,7 +20,7 @@ namespace WizardsCode.Ink
         TextMeshProUGUI m_StoryText;
 
         [SerializeField]
-        [FormerlySerializedAs("Whether or not sounds should be played.")]
+        [Tooltip("Whether or not sounds should be played.")]
         bool m_PlaySpeakingSounds = true;
         private Coroutine revealCo;
         [SerializeField]
