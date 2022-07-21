@@ -16,6 +16,7 @@ using UnityEngine.Serialization;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Collections;
+using WizardsCode.BackgroundAI;
 
 namespace WizardsCode.Ink
 {
