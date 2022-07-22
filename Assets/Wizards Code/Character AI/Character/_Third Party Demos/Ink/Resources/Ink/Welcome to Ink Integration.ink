@@ -10,16 +10,37 @@ What would you like to learn more about?
 
 == Top_Knot
 
-* Talking with Actors -> Talking_To_Actors
-* Directing Actors to take actions -> Actor_Direction
-* Quit -> DONE
-    
+* [Configuring Actors] -> Configuring_Actors
+* [Talking with Actors] -> Talking_To_Actors
+* [Directing Actors to take actions] -> Actor_Direction
+* [Quit] -> DONE
+ 
+== Configuring_Actors
+
+Actors are standard AI characters. If you are not familiar with how to setup Wizartd AI Characters then you should probably go and learn about those before moving forwards. If, however, you know how to setup these characters then all you need to do is Add an `Ink Manager` component into your scene and reference any actors you want to control in Ink to the `Actors` field in the inspector.
+
+The name of your actor game object should be the same as the name you use in your ink file.
+
+-> Top_Knot
+
 == Talking_To_Actors
 
 Dialog is provided to Actors via an Ink script. This is made available to the character system via an API. Using the data in the script the Character System can present appropriate lines of text in any way that fits the game, such as text on the screen, voice actor audio and graphics or text to speech.
 
 After each piece of dialog the player can be presented with a series of choices.
 
+This dialog is not assigned to a specific actor and thus it is assumed that the narator is speaking.
+
+However, you could chat with the actor in this scene if you want to. To do this you need to mark up the script with an actors name in the format `ActorName: Dialog to speak`, where "Actorname" is the name of an `ActorController` in the scene.
+
+  * [Having a Conversation] -> Conversation
+  * [Directing Actors to take actions] -> Actor_Direction
+  * [Quit] -> DONE
+
+== Conversation
+
+Actor: Hello, I'm the actor in this scene.
+    
 -> Top_Knot
 
 == Actor_Direction
@@ -31,13 +52,13 @@ Actions are handled by direction in the narrative. An direction takes the follow
 `Keyword` is a keyword that tells the character system what direction this is.
 `[Paramameter1] [Paramameter2]` are 1, 2 or more parameters that the direction needs. What these parameters are varies with different Directions. See the documentation for each Direction to learn more.
 
-* SetEmotion -> SetEmotion
-* Cue -> Cue
-* MoveTo -> MoveTo
-* Camera -> Camera
-* Action -> Action
-* WaitFor -> WaitFor
-* Home -> Top_Knot
+* [SetEmotion] -> SetEmotion
+* [Cue] -> Cue
+* [MoveTo] -> MoveTo
+* [Camera] -> Camera
+* [Action] -> Action
+* [WaitFor] -> WaitFor
+* [Home] -> Top_Knot
 
 = Cue
 
@@ -52,7 +73,7 @@ A `Cue` direction instructs the character system to load an `ActorCue` and promp
 Cues are `ActorCues` in the Character System and as such provide a way of defining a number of items in a single Scriptable Object (e.g. movement, sound, animation and more), or even a chain of actions. They afford a significant amount of control over how the actor interprets the direction from the script. An alternative approach is to use a direction that allows the actor more control over how they interpret the direction. For example, you can use the `MoveTo` direction instead of a `Cue` direction.
 
 * [Cue Joe - who will run onto set] -> Joes_Entrance_Cue
-* Home -> Top_Knot
+* [Home] -> Top_Knot
 
 = MoveTo
 
@@ -65,14 +86,14 @@ The `MoveTo` direction tell an actor to move to a specific place in the environm
 `[MarkName]` Is the name of a mark in the scene. This is the name of any Game Object that can be reached by the actor.
 
 * [Have Joe move to Mark2] -> Joes_MoveTo
-* Home -> Top_Knot
+* [Home] -> Top_Knot
 
 = Joes_MoveTo
 >>> MoveTo: Joe, Mark2
 
 If you previously cued Joe they will move from Mark1 to Mark2. If you haven't yet brought Joe into the scene with the `Cue` direction then hw will move directly from offset to Mark2.
 
-* Home -> Top_Knot
+* [Home] -> Top_Knot
 
 = Joes_Entrance_Cue
 >>> Cue: Joe, WalkToMark1

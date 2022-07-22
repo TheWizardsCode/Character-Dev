@@ -147,7 +147,7 @@ namespace WizardsCode.Ink
                     ProduceSpeechSound(m_StoryText.text.ToCharArray()[m_StoryText.maxVisibleCharacters - 1]);
                 }
 
-                // scrollRect.verticalNormalizedPosition = 0;
+                scrollRect.verticalNormalizedPosition = 0;
 
                 lastTime = Time.realtimeSinceStartup;
                 yield return new WaitForSeconds(m_SecondsBetweenPrintingChars);

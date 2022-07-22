@@ -296,9 +296,9 @@ namespace WizardsCode.Character
             if (m_Animator == null)
             {
                 m_Animator = GetComponentInChildren<Animator>();
+                m_AnimatorController = m_Animator.runtimeAnimatorController;
             }
             m_AnimationLayers = GetComponentInChildren<AnimationLayerController>();
-            m_AnimatorController = m_Animator.runtimeAnimatorController;
 
             m_Agent = GetComponent<NavMeshAgent>();
             if (m_Agent != null)
