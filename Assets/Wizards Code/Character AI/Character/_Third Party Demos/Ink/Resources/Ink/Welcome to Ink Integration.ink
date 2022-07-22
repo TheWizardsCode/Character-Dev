@@ -40,8 +40,13 @@ However, you could chat with the actor in this scene if you want to. To do this 
 == Conversation
 
 Actor: Hello, I'm the actor in this scene.
-    
--> Top_Knot
+
+  * [How are you today?]
+    I'm doing pretty well, all the better for having someone to talk to.
+    -> Top_Knot
+  * [Why are you here?]
+    Well someone has to handg around to show you how to make actors converse with the player, right?
+    -> Top_Knot
 
 == Actor_Direction
 
