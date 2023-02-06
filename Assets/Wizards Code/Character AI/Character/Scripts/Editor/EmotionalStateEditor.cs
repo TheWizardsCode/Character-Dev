@@ -76,7 +76,7 @@ namespace WizardsCode.Character
             EditorGUILayout.LabelField("Current enjoyment: (" + state.enjoymentValue + ") " + state.enjoymentDescriptor );
             EditorGUILayout.LabelField("Current activation: (" + state.activationValue + ") " + state.activationDescriptor);
 
-            EditorGUILayout.PropertyField(emotionsProp , true);
+            EditorGUILayout.PropertyField(emotionsProp, true);
             
             serializedObject.ApplyModifiedProperties();
 
