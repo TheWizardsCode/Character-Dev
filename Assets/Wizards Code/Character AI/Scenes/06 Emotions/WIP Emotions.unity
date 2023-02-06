@@ -407,54 +407,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9aaa3b670d7156c42a12af0bb27e7a35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_CrouchInFear: 1
+  m_CrouchInFear: 0
   m_CrouchParameterName: Crouch
   emotions:
   - type: 0
-    value: 0
     activationMultiplier: 1
     enjoymentMultiplier: -0.2
   - type: 2
-    value: 0
     activationMultiplier: 0.1
     enjoymentMultiplier: -1
   - type: 3
-    value: 0
     activationMultiplier: -1
     enjoymentMultiplier: -0.1
   - type: 4
-    value: 0
     activationMultiplier: 0.1
     enjoymentMultiplier: 1
   - type: 1
-    value: 0
     activationMultiplier: 0.45
     enjoymentMultiplier: 0.2
---- !u!114 &182637586
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 182637580}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a6accd2cb69e3e4fa6abfca9de05a98, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MaxSpeed: 8
-  m_NormalSpeedFactor: 0.4375
-  m_ArrivingDistance: 1
-  m_SpeedParameterName: Forward
-  m_TurnParameterName: Turn
-  m_RunningSpeed: 8
-  m_LookAtTarget: {fileID: 1506182244}
-  isFootIKActive: 0
-  m_IsLookAtIKActive: 0
-  head: {fileID: 787148109}
-  m_LookAtSpeed: 6
-  m_LookAtHeatTime: 0.2
-  m_LookAtCoolTime: 0.2
 --- !u!195 &182637587
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -648,7 +618,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 182637586}
+      - m_Target: {fileID: 0}
         m_MethodName: StartTalking
         m_Mode: 1
         m_Arguments:
@@ -1054,12 +1024,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 565f3debb24a0b24bb53067f704ee61d, type: 3}
---- !u!4 &787148109 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1720912700621420585, guid: 87462c24ce279474399ebb38ddf128c6,
-    type: 3}
-  m_PrefabInstance: {fileID: 6748843229712783237}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1294473889 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5104572892388718558, guid: 7a17c6bb2ca7c2748860603b4499aa21,
@@ -1671,7 +1635,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 182637586}
+      - m_Target: {fileID: 0}
         m_MethodName: StopTalking
         m_Mode: 1
         m_Arguments:

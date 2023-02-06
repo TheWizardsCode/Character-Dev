@@ -1,4 +1,4 @@
-﻿#if SALSA
+﻿#if CMS_SALSA
 using CrazyMinnow.SALSA;
 #endif
 using System;
@@ -23,7 +23,7 @@ namespace WizardsCode.AnimationControl
         private float m_GoalWeight;
         private float m_ChangeProgress = 0;
 
-#if SALSA
+#if CMS_SALSA
         private Salsa m_salsa;
 #else
         private bool m_IsTalking;
@@ -37,24 +37,35 @@ namespace WizardsCode.AnimationControl
         {
             m_animator = GetComponentInParent<Animator>();
 
-#if SALSA
+#if CMS_SALSA
             m_salsa = GetComponent<Salsa>();
 #endif
         }
 
         void Update()
         {
+            SetTalkingLayerWeight();
+
             float currentWeight = m_animator.GetLayerWeight(TALKING_LAYER_INDEX);
             if (!Mathf.Approximately(currentWeight, m_GoalWeight))
             {
                 m_animator.SetLayerWeight(TALKING_LAYER_INDEX, Mathf.Lerp(currentWeight, m_GoalWeight, m_ChangeDuration));
-            } else
-            {
-                m_ChangeProgress = 0;
             }
         }
 
-#if Salsa
+        void SetTalkingLayerWeight()
+        {
+            if (isTalking)
+            {
+                m_GoalWeight = m_TalkingLayerWieght;
+            }
+            else
+            {
+                m_GoalWeight = 0;
+            }
+        }
+
+#if CMS_SALSA
         public bool isTalking
         {
             get
@@ -78,13 +89,6 @@ namespace WizardsCode.AnimationControl
             set
             {
                 m_IsTalking = value;
-                if (m_IsTalking)
-                {
-                    m_GoalWeight = m_TalkingLayerWieght;
-                } else
-                {
-                    m_GoalWeight = 0;
-                }
             }
         }
 #endif
