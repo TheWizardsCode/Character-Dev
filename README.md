@@ -3,6 +3,11 @@ This is developer project to accompany the [Character Unity Package](https://git
 If you want to use the character package in your own project you do not need this project, however, this is useful for developing
 the character package itself. It also contains some configurations of popular character packs and animation packs. 
 
+# User Setup
+
+Install, via Package Manager, from Git:
+ * https://github.com/TheWizardsCode/Character-Dev.git?path=/Assets/Wizards%20Code/Character%20AI
+
 # Dev Setup
 
   * Checkout this project using `git clone https://github.com/TheWizardsCode/Character-Dev.git`
