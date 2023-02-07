@@ -69,8 +69,8 @@ namespace WizardsCode.AnimationControl
                 AddRandomization(animator);
             }
 
-            animator.SetFloat(activationParamHash, Mathf.SmoothStep(startActivation, endActivation, m_PoseChangeTime ));
-            animator.SetFloat(enjoymentParamHash, Mathf.SmoothStep(startEnjoyment, endEnjoyment, m_PoseChangeTime));
+            animator.SetFloat(activationParamHash, Mathf.SmoothStep(startActivation, endActivation, m_PoseChangeTime * Time.deltaTime));
+            animator.SetFloat(enjoymentParamHash, Mathf.SmoothStep(startEnjoyment, endEnjoyment, m_PoseChangeTime * Time.deltaTime));
         }
 
         /// <summary>
