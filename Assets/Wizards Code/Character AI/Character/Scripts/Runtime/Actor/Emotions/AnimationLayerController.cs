@@ -49,7 +49,7 @@ namespace WizardsCode.AnimationControl
             float currentWeight = m_animator.GetLayerWeight(TALKING_LAYER_INDEX);
             if (!Mathf.Approximately(currentWeight, m_GoalWeight))
             {
-                m_animator.SetLayerWeight(TALKING_LAYER_INDEX, Mathf.Lerp(currentWeight, m_GoalWeight, m_ChangeDuration));
+                m_animator.SetLayerWeight(TALKING_LAYER_INDEX, Mathf.Lerp(currentWeight, m_GoalWeight, m_ChangeDuration * Time.deltaTime));
             }
         }
 
