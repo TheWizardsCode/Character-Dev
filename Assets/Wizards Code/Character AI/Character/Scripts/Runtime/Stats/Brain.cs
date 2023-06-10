@@ -93,6 +93,10 @@ namespace WizardsCode.Stats {
                 if (m_Controller == null)
                 {
                     m_Controller = GetComponentInParent<BaseActorController>();
+                    if (m_Controller == null)
+                    {
+                        Debug.LogError($"{this} cannot find a BaseActorController in its parent.");
+                    }
                 }
                 return m_Controller; 
             }
@@ -131,7 +135,13 @@ namespace WizardsCode.Stats {
 
         private void OnEnable()
         {
-            ActorManager.Instance.RegisterBrain(this);
+            if (ActorManager.Instance)
+            {
+                ActorManager.Instance.RegisterBrain(this);
+            } else
+            {
+                Debug.LogError("You have an Actor in the scene but no ActorManager.");
+            }
         }
 
         private void OnDisable()

@@ -8,16 +8,19 @@ using Random = UnityEngine.Random;
 
 namespace WizardsCode.Ink
 {
-    public class TextBubbleController : MonoBehaviour
+    public class TextController : MonoBehaviour
     {
         #region Inspector Fields
         [SerializeField]
         [FormerlySerializedAs("The GUI component that will display the speakers name.")]
         TextMeshProUGUI m_SpeakersName;
 
-        [SerializeField]
-        [FormerlySerializedAs("The GUI component that will display the complete text of this chunk.")]
-        TextMeshProUGUI m_StoryText;
+        [SerializeField, Tooltip("The GUI component that will display the current text of this chunk.")]
+        TextMeshProUGUI m_CurrentText;
+        [SerializeField, Tooltip("The GUI component that will display the previos text of this chunk. If this is set then each time new text is sent to the story text the current content will be moved to this component, unless clear on new text is true.")]
+        TextMeshProUGUI m_PreviousText;
+        [SerializeField, Tooltip("Should the story text in the UI be cleared every time we add new text? Set to true if your UI does not handle scrolling well.")]
+        bool m_ClearOnNewText = false;
 
         [SerializeField]
         [FormerlySerializedAs("Whether or not sounds should be played.")]
@@ -40,15 +43,11 @@ namespace WizardsCode.Ink
         AudioSource m_AudioSourcePunctuation;
 
         [SerializeField]
-        [FormerlySerializedAs("RUNTIME ONLY: The delay between characters being printed. If set to 0 all characters will be printed at once. In the editor a value of 0 will always be used, regardless of the setting here.")]
+        [FormerlySerializedAs("RUNTIME ONLY: The delay between characters being printed. If set to 0 all characters will be printed at once." +
+            " Note that the minimum time between characters is the duration of a single frame (at 60fps that is 0.0167s)," +
+            " any setting below this will have the effect of displaying one character per frame." +
+            " In the editor a value of 0 will always be used, regardless of the setting here.")]
         internal float m_SecondsBetweenPrintingChars = 0.01f;
-
-        [SerializeField]
-        [FormerlySerializedAs("_GrowShrinkSpeed")]
-        float m_GrowOrShrinkSpeed = 4.0f;
-
-        [SerializeField, Tooltip("Should the story text in the UI be cleared every time we add new text? Set to true if your UI does not handle scrolling well.")]
-        bool m_ClearOnNewText = false;
         #endregion
 
 
@@ -71,9 +70,8 @@ namespace WizardsCode.Ink
         void Start()
         {
             isFinished = true;
-            m_StoryText.maxVisibleCharacters = 0;
+            m_CurrentText.maxVisibleCharacters = 0;
             ClearText();
-            ShowWidget(false);
             scrollRect = GetComponentInChildren<ScrollRect>();
 #if UNITY_EDITOR
             //m_SecondsBetweenPrintingChars = 0;
@@ -97,54 +95,30 @@ namespace WizardsCode.Ink
         }
         #endregion
 
-        IEnumerator ShowOrHide()
-        {
-            RectTransform rectTransform = GetComponent<RectTransform>();
-            while (!ScaleIsCloseEnough(rectTransform))
-            {
-                InterpScale(rectTransform);
-                yield return null;
-            }
-
-            if (_targetScale < _prettySmall)
-            {
-                rectTransform.transform.localScale = new Vector2(0.0f, 0.0f);
-            }
-        }
-
-        bool ScaleIsCloseEnough(RectTransform rectTransform)
-        {
-            return Mathf.Abs(rectTransform.transform.localScale.x - _targetScale) < _closeEnough &&
-                   Mathf.Abs(rectTransform.transform.localScale.y - _targetScale) < _closeEnough;
-        }
-
-
-        void InterpScale(RectTransform rectTransform)
-        {
-            float t = Time.deltaTime * m_GrowOrShrinkSpeed;
-            float x = rectTransform.transform.localScale.x * (1 - t) + (_targetScale * t);
-            float y = rectTransform.transform.localScale.y * (1 - t) + (_targetScale * t);
-            rectTransform.transform.localScale = new Vector2(x, y);
-        }
-
         /** reveal chars, once per pass */
         IEnumerator RevealChars()
         {
             isFinished = false;
             float lastTime = Time.realtimeSinceStartup;
 
-            while (m_StoryText.maxVisibleCharacters < m_StoryText.text.Length)
+            while (m_CurrentText.maxVisibleCharacters < m_CurrentText.text.Length)
             {
                 if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Mouse1))
                 {
-                    m_StoryText.maxVisibleCharacters = m_StoryText.text.Length;
+                    m_CurrentText.maxVisibleCharacters = m_CurrentText.text.Length;
                     break;
                 }
 
-                m_StoryText.maxVisibleCharacters += Mathf.RoundToInt((Time.realtimeSinceStartup - lastTime) / m_SecondsBetweenPrintingChars);
-                if (m_PlaySpeakingSounds)
+                m_CurrentText.maxVisibleCharacters += Mathf.RoundToInt((Time.realtimeSinceStartup - lastTime) / m_SecondsBetweenPrintingChars);
+                if (m_PlaySpeakingSounds && m_CurrentText.text.Length > 0)
                 {
-                    ProduceSpeechSound(m_StoryText.text.ToCharArray()[m_StoryText.maxVisibleCharacters - 1]);
+                    if (m_CurrentText.text.Length < m_CurrentText.maxVisibleCharacters)
+                    {
+                        ProduceSpeechSound(m_CurrentText.text.ToCharArray()[m_CurrentText.maxVisibleCharacters - 1]);
+                    } else
+                    {
+                        ProduceSpeechSound(m_CurrentText.text.ToCharArray()[m_CurrentText.text.Length - 1]);
+                    }
                 }
 
                 scrollRect.verticalNormalizedPosition = 0;
@@ -179,10 +153,7 @@ namespace WizardsCode.Ink
                 }
             }
         }
-
-
-
-        // ****************************************************************************** public methods
+        
         /** convenience method, detects if _trget_ scale is small */
         public bool IsHidden()
         {
@@ -190,36 +161,33 @@ namespace WizardsCode.Ink
         }
 
         /// <summary>
-        /// Add text to the current speech bubble. If the speaker has changed then clear the existing text, otherwise add the new text to existing text. The number of displayed characters will remain the same. This has the effect of continuing the display cycle.
+        /// Add text to the current text element, clearing the existing text if the speaker has changed.
+        /// If clearOnNewText is true clear the existing text regardless of speaker change status. 
+        /// If a previousText component is set then any existing text will first be mved to that.
         /// </summary>
         /// <param name="speaker">The curent speaker. Set to null if this is descriptive text or an unnamed narrator.</param>
         /// <param name="text">The text to display. This will be displayed one character at a time based on the default delay between characters (set in the inspector, use `SetText(speaker, text, playSounds, delay)` to override.</param>
         public void AddText(BaseActorController speaker, string text)
         {
-            ShowWidget(true);
-            
-            if (m_ActiveSpeaker != null && m_ActiveSpeaker != speaker)
+            if (m_ActiveSpeaker != speaker)
             {
-                if (m_ClearOnNewText)
-                {
-                    ClearText();
-                    m_StoryText.maxVisibleCharacters = 0;
-                }
+                ClearText();
+                m_CurrentText.maxVisibleCharacters = 0;
             }
             m_ActiveSpeaker = speaker;
 
-            int displayedCharacters = m_StoryText.maxVisibleCharacters;
+            int displayedCharacters = m_CurrentText.maxVisibleCharacters;
             if (m_ActiveSpeaker)
             {
-                SetText(speaker, $"{m_StoryText.text}\n\n{speaker.displayName}: {text}");
+                SetText(speaker, $"{m_CurrentText.text}\n{speaker.displayName}> {text}");
             } else
             {
-                SetText(speaker, $"{m_StoryText.text}\n\n{text}");
+                SetText(speaker, $"{m_CurrentText.text}\n{text}");
             }
 
             if (m_SecondsBetweenPrintingChars > 0)
             {
-                m_StoryText.maxVisibleCharacters = displayedCharacters;
+                m_CurrentText.maxVisibleCharacters = displayedCharacters;
             }
         }
 
@@ -229,15 +197,20 @@ namespace WizardsCode.Ink
         }
 
         /// <summary>
-        /// Set the test to a specific value. Any previous content will be removed.
+        /// Set the text to a specific value. Any content in the currentText element be added to the previousText and then removed from currentText.
         /// </summary>
         /// <param name="speaker">The curent speaker. Set to null if this is descriptive text or an unnamed narrator.</param>
         /// <param name="text">The text to display. This will be displayed one character at a time based on the default delay between characters (set in the inspector, use `SetText(speaker, text, playSounds, delay)` to override.</param>
         /// <param name="bPlaySpeakingSounds">Override the default setting (in the inspector) for playing speaking sounds.</param>
         public void SetText(BaseActorController speaker, string text, bool bPlaySpeakingSounds)
         {
+            if (m_ClearOnNewText)
+            {
+                ClearText();
+                m_CurrentText.maxVisibleCharacters = 0;
+            }
+            
             m_PlaySpeakingSounds = bPlaySpeakingSounds;
-            ShowWidget(true);
 
             m_ActiveSpeaker = speaker;
             if (speaker)
@@ -250,16 +223,16 @@ namespace WizardsCode.Ink
                 // FIXME: shouldn't be navigating the tree like this, make the speakers name element the root object and discover the text object beneath
                 m_SpeakersName.transform.parent.gameObject.SetActive(false);
             }
-
-            m_StoryText.text = text;
+            
+            m_CurrentText.text = text;
             if (m_SecondsBetweenPrintingChars > 0)
             {
-                m_StoryText.maxVisibleCharacters = 0;
+                m_CurrentText.maxVisibleCharacters = 0;
                 revealCo = StartCoroutine(RevealChars());
             }
             else
             {
-                m_StoryText.maxVisibleCharacters = m_StoryText.text.Length;
+                m_CurrentText.maxVisibleCharacters = m_CurrentText.text.Length;
                 if (m_PlaySpeakingSounds)
                 {
                     ProduceSpeechSound('a');
@@ -268,41 +241,29 @@ namespace WizardsCode.Ink
             }
         }
 
-        /** note: this invokes show widget automatically */
         public void SetText(BaseActorController speaker, string text, bool bPlaySpeakingSounds, float secondsBetweenPrintingChars)
         {
-            ShowWidget(true);
             m_SecondsBetweenPrintingChars = secondsBetweenPrintingChars;
             SetText(speaker, text, bPlaySpeakingSounds);
         }
 
+        /// <summary>
+        /// Clear all current text, stopping the reveal co routine if it is running.
+        /// If previousText is set then move all existing text into the previousText element before clearing.
+        /// </summary>
         public void ClearText()
         {
             m_SpeakersName.text = "";
-            m_StoryText.text = "";
+            if (m_PreviousText != null)
+            {
+                m_PreviousText.text += m_CurrentText.text;
+            }
+            m_CurrentText.text = "";
             if (revealCo != null)
             {
                 StopCoroutine(revealCo);
                 revealCo = null;
             }
-        }
-
-        /** if false and currently not hidden, it will call ClearText() automatically */
-        public void ShowWidget(bool Value)
-        {
-            if (Value)
-            {
-                if (!IsHidden()) return;
-                _targetScale = 1.0f;
-            }
-            else
-            {
-                if (IsHidden()) return;
-                ClearText();
-                _targetScale = 0.0f;
-            }
-
-            StartCoroutine("ShowOrHide");
         }
     }
 }
