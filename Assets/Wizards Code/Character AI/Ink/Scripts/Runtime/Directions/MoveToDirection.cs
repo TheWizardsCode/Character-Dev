@@ -11,7 +11,7 @@ namespace WizardsCode.Ink
     /// to decide how they should move. By default the story
     /// will wait for the actor to reach their mark before continuing. Add a NoWait parameter to allow the story to continue without waiting.
     /// </summary>
-    /// <param name="parameters">ACTOR, LOCATION [, Wait|No Wait]</param>
+    /// <param name="parameters">ACTOR, LOCATION [, Wait(default)|No Wait]</param>
     public class MoveToDirection : AbstractDirection
     {
         public override void Execute(string[] parameters)
@@ -38,10 +38,13 @@ namespace WizardsCode.Ink
                 }
                 else if (waitArg != "wait")
                 {
-                    Debug.LogError($"MoveTo instruction with arguments {string.Join(",", parameters)} has an invalid argument in posision 3. Valid values are 'Wait' and 'NoWait'. Falling back to the default of 'Wait'. Please correct the Ink Script.");
+                    Debug.LogError($"MoveTo instruction with arguments {string.Join(",", parameters)} has an invalid argument in posision 3. Valid values are 'Wait' and 'No Wait'. Falling back to the default of 'Wait'. Please correct the Ink Script.");
                 }
+                Manager.WaitFor(new string[] { parameters[0], "ReachedTarget" });
+            } else
+            {
+                Manager.WaitFor(new string[] { parameters[0], "ReachedTarget" });
             }
-            Manager.WaitFor(new string[] { parameters[0], "ReachedTarget" });
         }
     }
 }
