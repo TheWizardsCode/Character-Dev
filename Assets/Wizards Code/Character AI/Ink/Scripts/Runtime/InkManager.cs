@@ -17,6 +17,8 @@ using System.Text.RegularExpressions;
 using System.IO;
 using System.Collections;
 using WizardsCode.BackgroundAI;
+using System.Reflection;
+using System.Linq;
 
 namespace WizardsCode.Ink
 {
@@ -69,9 +71,9 @@ namespace WizardsCode.Ink
 
         [Header("Camera, Lights and Sound")]
         [SerializeField, Tooltip("The Cinemachine Brain used to control the virtual cameras.")]
-        CinemachineBrain cinemachine;
+        internal CinemachineBrain cinemachine;
         [SerializeField, Tooltip("Camera to use as a fade to black/white or other when transitioning betweeen cameras. If not null then this camera will be inserted between all camera changes. The actuable fade properties will be set in the Cinemachine Brain.")]
-        CinemachineVirtualCamera m_FadeCamera;
+        internal CinemachineVirtualCamera m_FadeCamera;
         [SerializeField, Tooltip("The audio source for music playback.")]
         AudioSource m_MusicAudioSource;
         [SerializeField, Tooltip("The audio source for sound effects.")]
@@ -94,9 +96,9 @@ namespace WizardsCode.Ink
         float m_ButtonYOffset = 100;
         [SerializeField, Tooltip("The time it takes for a button to move from its start position to its target position when spawned in.")]
         float m_ButtonAnimationTime = 0.6f;
-        [SerializeField, Tooltip("Dialogue and narration bubble controller that will display the text for the player.")]
-        [FormerlySerializedAs("m_TextBubbleComp")]
-        TextBubbleController m_TextBubble;
+        [SerializeField, Tooltip("Dialogue and narration text controller that will display the currently active text. If this is null then a TextController with the name 'Current Text' will be used.")]
+        [FormerlySerializedAs("m_TextBubble")]
+        TextController m_CurrentText;
         [SerializeField, Tooltip("When the Ink story calls for an actor to tall how longer, per character in the text, should they be kept in an active state. The actor will not carry out any other actions until this time has elepased. Set to 0 to not have the speaker wait.")]
         float m_ActiveTimePerCharacter = 0.01f;
         [SerializeField, Tooltip("If there is only one option available in the story should it automatically be chosen? If set to false the story will wait for the player to select the choice.")]
@@ -118,6 +120,8 @@ namespace WizardsCode.Ink
         private bool m_IsDisplayingUI = false;
         private BaseActorController m_activeSpeaker;
         private bool isAIActive = true;
+
+        private Dictionary<string, AbstractDirection> directions = new Dictionary<string, AbstractDirection>();
         #endregion
 
         #region Properties
@@ -151,12 +155,40 @@ namespace WizardsCode.Ink
                 cinemachine = GameObject.FindObjectOfType<CinemachineBrain>();
             }
 
+            // TODO: These lookups are here so that we can have the UI and the world in different scenes. However, looking up by name is very brittle. We should find a better way to do this.
+            if (choicesPanel == null)
+            {
+                choicesPanel = GameObject.Find("Choices Panel").GetComponent<RectTransform>();
+            }
+            if (m_CurrentText == null)
+            {
+                m_CurrentText = GameObject.Find("Current Text").GetComponent<TextController>();
+            }
+
             if (!string.IsNullOrEmpty(m_StartingPath))
             {
                 m_Story.ChoosePathString(m_StartingPath);
             }
 
+            LoadDirectionClasses();
+
             BindExternalFunctions();
+        }
+
+        /// <summary>
+        /// Finds all classes in the project that inherit from the AbstractDirection class and keeps a reference to them.
+        /// </summary>
+        private void LoadDirectionClasses()
+        {
+            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            IEnumerable<Type> implementingTypes = assemblies.SelectMany(a => a.GetTypes())
+                                             .Where(t => !t.IsAbstract && t.IsSubclassOf(typeof(AbstractDirection)));
+            foreach (var implementingType in implementingTypes)
+            {
+                AbstractDirection implementation = Activator.CreateInstance(implementingType) as AbstractDirection;
+                directions.Add(implementingType.Name.Substring(0, implementingType.Name.IndexOf("Direction")), implementation);
+            }
+
         }
 
         private void OnDestroy()
@@ -286,7 +318,7 @@ namespace WizardsCode.Ink
 
         public void Update()
         {
-            if (isWaiting || !m_TextBubble.isFinished) return;
+            if (isWaiting || !m_CurrentText.isFinished) return;
 
             if (IsDisplayingUI)
             {
@@ -302,11 +334,13 @@ namespace WizardsCode.Ink
                 }
             } else
             {
-                m_TextBubble.ShowWidget(false);
                 choicesPanel.gameObject.SetActive(false);
             }
         }
 
+        /// <summary>
+        /// Remove the choices buttons from the panel. This indicates that a choice has been made.
+        /// </summary>
         private void EraseChoices()
         {
             for (int i = 0; i < choicesPanel.transform.childCount; i++) {
@@ -320,21 +354,18 @@ namespace WizardsCode.Ink
 
             if (!string.IsNullOrEmpty(text))
             {
-                if (!text.EndsWith("\n\n"))
+                if (!text.EndsWith("\n"))
                 {
-                    if (text.EndsWith("\n"))
-                    {
-                        text += "\n";
-                    }
+                    text += "\n";
                 }
-                m_TextBubble.AddText(m_activeSpeaker, text);
+                m_CurrentText.AddText(m_activeSpeaker, text);
 
                 m_NewTextToDisplay.Clear();
             }
         }
 
         private void UpdateChoicesGUI() {
-            if (!m_TextBubble.isFinished) return;
+            if (!m_CurrentText.isFinished) return;
 
             if (m_Story.currentChoices.Count >= 1)
             {
@@ -361,9 +392,9 @@ namespace WizardsCode.Ink
                     Vector3 pos = new Vector3(m_ButtonXOffset, m_ButtonYOffset * (i + 1), 0);
                     StartCoroutine(AnimateButtonPlacement(choiceButton.GetComponent<RectTransform>(), pos));
                 }
-            }
 
-            isUIDirty = false;
+                isUIDirty = false;
+            }
         }
 
         IEnumerator AnimateButtonPlacement(RectTransform rect, Vector3 targetPos)
@@ -411,6 +442,7 @@ namespace WizardsCode.Ink
             EraseChoices();
             m_Story.ChooseChoiceIndex(choice.index);
             m_NewTextToDisplay.Clear();
+            m_CurrentText.ClearText();
             isUIDirty = true;
         }
 
@@ -418,6 +450,7 @@ namespace WizardsCode.Ink
         /// Prompt an actor with a specific cue. Note that cues must be known to the InkManager by adding them to the Cues collection in the inspector.
         /// </summary>
         /// <param name="args">ACTOR_NAME CUE_NAME</param>
+        [Obsolete("Should be implemented in an implementation of AbstractDirection")]
         void PromptCue(string[]args)
         {
             if (!ValidateArgumentCount(Direction.Cue, args, 2))
@@ -435,45 +468,11 @@ namespace WizardsCode.Ink
         }
 
         /// <summary>
-        /// The MoveTo direction instructs an actor to move to a specific location. It is up to the ActorController
-        /// to decide how they should move. By default the story
-        /// will wait for the actor to reach their mark before continuing. Add a NoWait parameter to allow the story to continue without waiting.
-        /// </summary>
-        /// <param name="args">ACTOR, LOCATION [, Wait|No Wait]</param>
-        void MoveTo(string[] args)
-        {
-            if (!ValidateArgumentCount(Direction.MoveTo, args, 2, 3))
-            {
-                return;
-            }
-
-            BaseActorController actor = FindActor(args[0].Trim());
-            if (actor == null) return;
-
-            Transform target = FindTarget(args[1].Trim());
-            if (target == null) return;
-
-            actor.MoveTo(target);
-
-            if (args.Length == 3)
-            {
-                string waitArg = args[2].ToLower().Trim();
-                if (waitArg == "no wait")
-                {
-                    return;
-                } else if (waitArg != "wait")
-                {
-                    Debug.LogError($"MoveTo instruction with arguments {string.Join(",", args)} has an invalid argument in posision 3. Valid values are 'Wait' and 'NoWait'. Falling back to the default of 'Wait'. Please correct the Ink Script.");
-                }
-            }
-            WaitFor(new string[] { args[0], "ReachedTarget" });
-        }
-
-        /// <summary>
         /// The SetEmotion direction looks for a defined emotion on an character and sets it if found.
         ///
         /// </summary>
         /// <param name="args">[ActorName], [EmotionName], [Float]</param>
+        [Obsolete("Should be implemented in an implementation of AbstractDirection")]
         void SetEmotion(string[] args)
         {
             if (!ValidateArgumentCount(Direction.SetEmotion, args, 3))
@@ -500,6 +499,7 @@ namespace WizardsCode.Ink
         ///
         /// </summary>
         /// <param name="args">[ActorName], [BehaviourName]</param>
+        [Obsolete("Should be implemented in an implementation of AbstractDirection")]
         void Action(string[] args)
         {
             if (!ValidateArgumentCount(Direction.Action, args, 2, 3))
@@ -517,6 +517,7 @@ namespace WizardsCode.Ink
         ///
         /// </summary>
         /// <param name="args">[ActorName]</param>
+        [Obsolete("Should be implemented in an implementation of AbstractDirection")]
         void StopMoving(string[] args)
         {
             if (!ValidateArgumentCount(Direction.StopMoving, args, 1))
@@ -533,6 +534,7 @@ namespace WizardsCode.Ink
         ///
         /// </summary>
         /// <param name="args">[ActorName], [ParameterName], [Value] - if Value is missing it is assumed that the parameter is a trigger</param>
+        [Obsolete("Should be implemented in an implementation of AbstractDirection")]
         void AnimationParam(string[] args)
         {
             Animator animator = null;
@@ -599,6 +601,7 @@ namespace WizardsCode.Ink
         ///
         /// </summary>
         /// <param name="args">ACTOR_NAME, MARK_NAME[, AI_ON_OR_OFF]/param>
+        [Obsolete("Should be implemented in an implementation of AbstractDirection")]
         void Teleport(string[] args)
         {
             if (!ValidateArgumentCount(Direction.Camera, args, 1, 2))
@@ -639,103 +642,8 @@ namespace WizardsCode.Ink
                 Debug.LogError($"Recieved direction `Teleport: {string.Join(", ", args)}`, however, no actor with the name `{args[0].Trim()}` was found.");
             }
         }
-
-        /// <summary>
-        /// Enable or Disable an object
-        ///
-        /// </summary>
-        /// <param name="args">OBJECT_NAME, TRUE_OR_FALSE/param>
-        void Enable(string[] args)
-        {
-            if (!ValidateArgumentCount(Direction.Camera, args, 2))
-            {
-                return;
-            }
-            
-            Transform transform = FindTarget(args[0].Trim());
-            if (transform)
-            {
-                if (args[1].Trim().ToLower() == "true")
-                {
-                    transform.gameObject.SetActive(true);
-                } else if (args[1].Trim().ToLower() == "false")
-                {
-                    transform.gameObject.SetActive(false);
-                } else
-                {
-                    Debug.LogError($"Recieved direction `Enable: {string.Join(", ", args)}`, however, only `true` or `false` values are allowed. `{args[1].Trim()}` was supplied. If this object is disabled on start you need to ensure that it is referenced in the `Cached Objects` section of the Ink Manager so that it can be discovered.");
-                }
-            }
-            else
-            {
-                Debug.LogError($"Recieved direction `Enable: {string.Join(", ", args)}`, however, no object with the name `{args[0].Trim()}` was found.");
-            }
-        }
-
-        /// <summary>
-        /// Switch to a specific camera and optionally look at a named object.
-        ///
-        /// </summary>
-        /// <param name="args">[CameraName] [FollowTargetName] [LookAtTargetName]</param>
-        void Camera(string[] args)
-        {
-            if (!ValidateArgumentCount(Direction.Camera, args, 1, 3))
-            {
-                return;
-            }
-
-            CinemachineVirtualCamera newCamera;
-            Transform camera = FindTarget(args[0].Trim());
-            if (camera)
-            {
-                newCamera = camera.gameObject.GetComponent<CinemachineVirtualCamera>();
-                if (cinemachine.ActiveVirtualCamera != (ICinemachineCamera)newCamera) {
-                    cinemachine.ActiveVirtualCamera.Priority = 10;
-
-
-                    if (m_FadeCamera)
-                    {
-                        StartCoroutine(CrossFadeCamerasCo(newCamera));
-                    }
-                    else
-                    {
-                        newCamera.Priority = 99;
-                    }
-                }
-
-                Transform objectName;
-                if (args.Length >= 2)
-                {
-                    objectName = FindTarget(args[1].Trim());
-                    if (objectName)
-                    {
-                        if (args.Length == 2)
-                        {
-                            newCamera.Follow = objectName;
-                            newCamera.LookAt = objectName;
-                        }
-                        else
-                        {
-                            Transform childObject = FindChild(objectName, args[2].Trim());
-                            if (childObject)
-                            {
-                                newCamera.Follow = childObject;
-                                newCamera.LookAt = childObject;
-                            } else
-                            {
-                                newCamera.Follow = objectName;
-                                newCamera.LookAt = objectName;
-                            }
-                        }
-                    }
-                }
-            } else
-            {
-                Debug.LogError($"Recieved direction to switch to camera called {args[0].Trim()}, however, no such camera could not be found: ");
-            }
-        }
-
-        IEnumerator CrossFadeCamerasCo(CinemachineVirtualCamera newCamera)
+        
+        internal IEnumerator CrossFadeCamerasCo(CinemachineVirtualCamera newCamera)
         {
             m_FadeCamera.Priority = 99;
             yield return new WaitForSeconds(0.2f);
@@ -760,6 +668,7 @@ namespace WizardsCode.Ink
         /// 
         /// </summary>
         /// <param name="args">MOOD, NAME[, LOOP_TRUE_OR_FALSE_DEFAULT_TRUE]</param>
+        [Obsolete("Should be implemented in an implementation of AbstractDirection")]
         void Music(string[] args)
         {
             if (!ValidateArgumentCount(Direction.Music, args, 2, 3))
@@ -801,6 +710,7 @@ namespace WizardsCode.Ink
         /// 
         /// </summary>
         /// <param name="args">SOURCE, TYPE, NAME[, LOOP_TRUE_OR_FALSE_DEFAULT_FALSE]</param>
+        [Obsolete("Should be implemented in an implementation of AbstractDirection")]
         void SoundFX(string[] args)
         {
             if (!ValidateArgumentCount(Direction.Music, args, 3, 4))
@@ -860,6 +770,7 @@ namespace WizardsCode.Ink
         /// 0: The filename, inclusing extenstion, of the audio file
         /// 1: [Optional] The name of the actor or object that contains the AudioSource from which to play this audio
         /// </param>
+        [Obsolete("Should be implemented in an implementation of AbstractDirection")]
         void Audio(string[] args)
         {
             if (!ValidateArgumentCount(Direction.Music, args, 1, 2))
@@ -924,7 +835,8 @@ namespace WizardsCode.Ink
         ///
         /// </summary>
         /// <param name="args">[Actor] [State]</param>
-        void WaitFor(string[] args)
+        [Obsolete("Should be implemented in an implementation of AbstractDirection")]
+        internal void WaitFor(string[] args)
         {
             if (!ValidateArgumentCount(Direction.WaitFor, args, 1, 2))
             {
@@ -947,6 +859,7 @@ namespace WizardsCode.Ink
         /// Turn to face, and continue to look at, a target or, if no target is provided, stop looking at a specific target.
         /// </summary>
         /// <param name="args">ACTOR_NAME, [TARGET_NAME | Nothing]</param>
+        [Obsolete("Should be implemented in an implementation of AbstractDirection")]
         void TurnToFace(string[] args)
         {
             if (!ValidateArgumentCount(Direction.TurnToFace, args, 2))
@@ -980,7 +893,7 @@ namespace WizardsCode.Ink
             return emotions;
         }
 
-        Transform FindTarget(string objectName)
+        internal Transform FindTarget(string objectName)
         {
             Transform obj = null;
             for (int i = 0; i < m_CachedObjects.Count; i++)
@@ -997,10 +910,11 @@ namespace WizardsCode.Ink
                 return actor.transform.root;
             }
 
-            //OPTIMIZATION Don't use Find at runtime. When initiating the InkManager we should pre-emptively parse all directions and cache the results in m_CachedObjects - or perhaps (since the story may be larger or dynamic) we should do it in a Coroutine just ahead of execution of the story chunk
+            //OPTIMIZATION Don't use Find at runtime. When initiating the InkManager we should consider pre-emptively parse all directions and cache the results in m_CachedObjects - or perhaps (since the story may be larger or dynamic) we should do it in a Coroutine just ahead of execution of the story chunk
             GameObject go = GameObject.Find(objectName);
             if (go)
             {
+                Debug.LogWarning($"There is a direction that needs to operate on {objectName}, but the object was not found in the cached objects. Place the object in the InkManager cached objects to remove this message.");
                 m_CachedObjects.Add(go.transform);
                 return go.transform;
             }
@@ -1017,7 +931,8 @@ namespace WizardsCode.Ink
         /// <param name="actorName">The name of the actor we want.</param>
         /// <param name="logError">If true (the default) an error will be logged to the console if the actor is not found.</param>
         /// <returns>The actor with the given name or null if they cannot be found.</returns>
-        private BaseActorController FindActor(string actorName, bool logError = true)
+        /// 
+        internal BaseActorController FindActor(string actorName, bool logError = true)
         {
             BaseActorController actor = null;
             for (int i = 0; i < m_Actors.Length; i++)
@@ -1037,7 +952,7 @@ namespace WizardsCode.Ink
             return actor;
         }
 
-        private ActorCue FindCue(string cueName)
+        internal ActorCue FindCue(string cueName)
         {
             ActorCue cue = null;
             for (int i = 0; i < m_Cues.Length; i++)
@@ -1078,7 +993,7 @@ namespace WizardsCode.Ink
             }
 
             string line;
-            while (m_TextBubble.isFinished && m_Story.canContinue && !isWaiting)
+            while (m_CurrentText.isFinished && m_Story.canContinue && !isWaiting)
             {
                 line = m_Story.Continue();
 
@@ -1090,16 +1005,15 @@ namespace WizardsCode.Ink
 
                     int startIdx = line.IndexOf(' ', cmdIdx);
                     int endIdx = line.IndexOf(':') - startIdx;
-                    Enum.TryParse(line.Substring(startIdx, endIdx).Trim(), out Direction cmd);
+                    string name = line.Substring(startIdx, endIdx).Trim();
+                    Enum.TryParse(name, out Direction cmd);
                     string[] args = line.Substring(endIdx + startIdx + 1).Split(',');
+                    args = Array.ConvertAll(args, s => s.Trim());
 
                     m_StoryDebugLog.AppendLine($"Direction: {cmd}: {string.Join(", ", args)}");
 
                     switch (cmd)
                     {
-                        case Direction.Unkown:
-                            Debug.LogError("Unknown Direction: " + line);
-                            break;
                         case Direction.Cue:
                             PromptCue(args);
                             break;
@@ -1109,9 +1023,6 @@ namespace WizardsCode.Ink
                         case Direction.PlayerControl:
                             SetPlayerControl(args);
                             string resp = m_Story.ContinueMaximally();
-                            break;
-                        case Direction.MoveTo:
-                            MoveTo(args);
                             break;
                         case Direction.SetEmotion:
                             SetEmotion(args);
@@ -1124,9 +1035,6 @@ namespace WizardsCode.Ink
                             break;
                         case Direction.AnimationParam:
                             AnimationParam(args);
-                            break;
-                        case Direction.Camera:
-                            Camera(args);
                             break;
                         case Direction.Music:
                             Music(args);
@@ -1146,20 +1054,26 @@ namespace WizardsCode.Ink
                         case Direction.Teleport:
                             Teleport(args);
                             break;
-                        case Direction.Enable:
-                            Enable(args);
-                            break;
                         default:
-                            Debug.LogError("Unknown Direction: " + line);
+                            AbstractDirection implementation;
+                            if (directions.TryGetValue(name, out implementation))
+                            {
+                                implementation.Execute(args);
+                            }
+                            else
+                            {
+                                Debug.LogError("Unknown Direction: " + line);
+                            }
                             break;
                     }
                 }
+
                 // is it dialogue?
-                else if (Regex.IsMatch(line, "^(\\w*:)|^(\\w*\\s\\w*:)", RegexOptions.IgnoreCase)) // we have an actors name
+                else if (Regex.IsMatch(line, "^(\\w*>)|^(\\w*\\s\\w*>)", RegexOptions.IgnoreCase)) // we have an actors name
                 {
-                    int indexOfColon = line.IndexOf(":");
-                    string speaker = line.Substring(0, indexOfColon).Trim();
-                    string speech = line.Substring(indexOfColon + 1).Trim();
+                    int indexOfSpeakerChar = line.IndexOf(">");
+                    string speaker = line.Substring(0, indexOfSpeakerChar).Trim();
+                    string speech = line.Substring(indexOfSpeakerChar + 1).Trim();
 
                     m_StoryDebugLog.AppendLine($"{speaker}: \"{speech}\"");
 
@@ -1180,9 +1094,10 @@ namespace WizardsCode.Ink
 
                     isUIDirty = true;
                 }
-                else // No named actor, so interpret it as narration or descriptive text
+                // No named actor, so interpret it as narration/descriptive text
+                else
                 {
-                    m_StoryDebugLog.AppendLine($"Narration: {line}");
+                    m_StoryDebugLog.AppendLine($"Narration> {line}");
 
                     m_NewTextToDisplay.Clear();
 
@@ -1276,6 +1191,7 @@ namespace WizardsCode.Ink
             return null;
         }
 
+        [Obsolete("Once no methods are using this it will be removed. All methods using it should be marked deprectated and moved into implementations of AbstractDirection")]
         bool ValidateArgumentCount(Direction direction, string[] args, int minRequiredCount, int maxRequiredCount = 0)
         {
             string error = "";
