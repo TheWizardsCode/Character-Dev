@@ -1,3 +1,4 @@
+#if INK_PRESENT
 using UnityEngine;
 using WizardsCode.Character;
 
@@ -86,3 +87,4 @@ namespace WizardsCode.Ink
         }
     }
 }
+#endif
