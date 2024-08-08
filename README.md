@@ -11,7 +11,9 @@ Install, via Package Manager, from Git:
 # Dev Setup
 
   * Checkout this project using `git clone https://github.com/TheWizardsCode/Character-Dev.git`
-  * Open the Character Dev project in Unity.
+  * Open the Character Dev project in Unity - you will have compilation errors, that's OK we will fix them below
+  * Add the https://github.com/TheWizardsCode/Character-Unity-Package package to your project, we recommend checking out as a submodule
+  * Be sure to add `INK_RESENT` to the script defines if you intend to use the INK integrations
 
 # Getting Started
 
