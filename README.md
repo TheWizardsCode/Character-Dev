@@ -1,5 +1,5 @@
 # Unity Character-Dev
-This is developer project to accompany the [Character Unity Package](https://github.com/TheWizardsCode/Character-Unity-Package) you will need this installed in order to compile this project. See below for more details. 
+This is developer project to accompany the [Character Unity Package](https://github.com/TheWizardsCode/Character-Unity-Package) you will need that project installed in order to compile this project. See below for more details. 
 If you want to use the character package in your own project you do not need this project, however, this is useful for developing
 the character package itself. It also contains some configurations of popular character packs and animation packs. 
 
