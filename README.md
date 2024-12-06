@@ -1,7 +1,12 @@
 # Unity Character-Dev
-This is developer project to accompany the [Character Unity Package](https://github.com/TheWizardsCode/Character-Unity-Package) you will need that project installed in order to compile this project. See below for more details. 
-If you want to use the character package in your own project you do not need this project, however, this is useful for developing
-the character package itself. It also contains some configurations of popular character packs and animation packs. 
+
+This package contains code for creating AI controlled characters in Unity. The AI system is based on a Utility AI model.
+
+Remember this is an open source project in a state of ongoing development. Sometimes it goes for long periods with no attention
+other times it is under very active development. When under development it will usually be a specific set of features that are
+being worked on. We try to not break things, but the reality is that we do sometimes make mistakes.
+
+Let us know if you find bugs via the issue tracker, ideally give us a patch to fix it too.
 
 # User Setup
 
@@ -10,20 +15,19 @@ Install, via Package Manager, from Git:
 
 # Dev Setup
 
-  * Checkout this project using `git clone https://github.com/TheWizardsCode/Character-Dev.git`
-  * Open the Character Dev project in Unity - you will have compilation errors, that's OK we will fix them below
-  * Add the https://github.com/TheWizardsCode/Character-Unity-Package package to your project, we recommend checking out as a submodule
-  * Be sure to add `INK_RESENT` to the script defines if you intend to use the INK integrations
+  * Fork this repo and checkout your fork
+  * Open the Character Dev project in Unity
+  * If you want to use the INK integration install the Ink package and add `INK_RESENT` to the script defines.
 
 # Getting Started
 
 This section will walk you through getting started with the Character Dev project.
 
-## Testing Character Unity Package
+## Documentation
 
-The project is intended to be self documenting through demo scens, so get started in the `Assets/Wizards Code/Character AI/Scenes/` folder. Within there you will find a number of numbered subfolders. Inside each subfolder are some numbered scenes. The intention is that you will work through the scenes in order as each one introduces a new concept. 
+The project is intended to be self documenting through demo scenes, so get started in the `Assets/Wizards Code/Character AI/Scenes/` folder. Within there you will find a set of numbered subfolders, each covering a different feature set. Inside each subfolder are some numbered scenes. The intention is that you will work through the scenes in order as each one introduces a new concept. 
 
-When you load a scene it will first show you a brief description of the scene. The goal is for this description to give you enough information to dig into the scene game objects to understand what it happening. Therefore, if you don't know your way around Unity yet you will be pretty lost. But if you are comfortable in unity you should be able to find your way around.
+When you load a scene it will first show you a brief description of the scene. The goal is for this description to give you enough information to dig into the scene and objects within to understand what it happening. Therefore, if you don't know your way around Unity yet you will be pretty lost. But if you are comfortable in unity you should be able to find your way around. If you want to view the text of these scenes without loading the scenes up you can find it in `Assets/Wizards Code/Character AI/Character/Documentation`.
 
 Note this is an ever evolving project and you are working with development code. There is no guarantee that things will work as expected. The code is not necessarily well structured either, we do try to refactor as we go, but we've not yet released an alpha stage, let alone a beta or production stage. This code is for the brave. 
 

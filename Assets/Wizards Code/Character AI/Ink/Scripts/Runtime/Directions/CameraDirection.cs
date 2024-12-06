@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if INK_PRESENT
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using WizardsCode.Ink;
@@ -74,3 +75,4 @@ namespace WizardsCode.Ink
         }
     }
 }
+#endif
