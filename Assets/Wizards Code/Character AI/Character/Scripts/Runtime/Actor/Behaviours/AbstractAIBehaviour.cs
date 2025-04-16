@@ -464,7 +464,9 @@ namespace WizardsCode.Character
             {
                 if (CurrentState == State.Starting)
                 {
-                    m_ActorController.Animator.applyRootMotion = true;
+                    if (m_ActorController.Animator != null) {
+                        m_ActorController.Animator.applyRootMotion = true;
+                    }
                     CurrentState = State.Performing;
                 }
 
@@ -473,7 +475,9 @@ namespace WizardsCode.Character
                     return;
                 } else
                 {
-                    m_ActorController.Animator.applyRootMotion = false;
+                    if (m_ActorController.Animator != null) {
+                        m_ActorController.Animator.applyRootMotion = false;
+                    }
                     EndBehaviour();
                     return;
                 }

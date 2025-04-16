@@ -73,7 +73,7 @@ namespace WizardsCode.Ink
         [SerializeField, Tooltip("The Cinemachine Brain used to control the virtual cameras.")]
         internal CinemachineBrain cinemachine;
         [SerializeField, Tooltip("Camera to use as a fade to black/white or other when transitioning betweeen cameras. If not null then this camera will be inserted between all camera changes. The actuable fade properties will be set in the Cinemachine Brain.")]
-        internal CinemachineVirtualCamera m_FadeCamera;
+        internal CinemachineCamera m_FadeCamera;
         [SerializeField, Tooltip("The audio source for music playback.")]
         AudioSource m_MusicAudioSource;
         [SerializeField, Tooltip("The audio source for sound effects.")]
@@ -643,7 +643,7 @@ namespace WizardsCode.Ink
             }
         }
         
-        internal IEnumerator CrossFadeCamerasCo(CinemachineVirtualCamera newCamera)
+        internal IEnumerator CrossFadeCamerasCo(CinemachineCamera newCamera)
         {
             m_FadeCamera.Priority = 99;
             yield return new WaitForSeconds(0.2f);

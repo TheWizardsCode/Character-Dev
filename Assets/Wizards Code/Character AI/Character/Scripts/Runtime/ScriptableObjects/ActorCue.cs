@@ -25,7 +25,7 @@ namespace WizardsCode.Character
         string m_MarkName;
         [SerializeField, Tooltip("Should the name of the mark be prefixed with the display name of the actor and a ' - ' separator (with spaces)?")]
         bool m_PrefixWithName = false;
-        [SerializeField, Tooltip("Stop movement upon recieving this cue. Note that this will override the markName setting above, that is if this is set and markName is set then no movement will occur.")]
+        [SerializeField, Tooltip("Stop movement upon receiving this cue. Note that this will override the markName setting above, that is if this is set and markName is set then no movement will occur.")]
         bool m_StopMovement = false;
 
         [Header("Sound")]
@@ -57,7 +57,7 @@ namespace WizardsCode.Character
         /// <summary>
         /// Prompt an actor to enact the actions identified in this cue.
         /// </summary>
-        /// <returns>An optional coroutine that shouold be started by the calling MonoBehaviour</returns>
+        /// <returns>An optional coroutine that should be started by the calling MonoBehaviour</returns>
         public virtual IEnumerator Prompt(BaseActorController actor)
         {
             m_Actor = actor;
@@ -71,7 +71,7 @@ namespace WizardsCode.Character
         /// <summary>
         /// Prompt an actor to revert any setup required by this cue.
         /// </summary>
-        /// <returns>An optional coroutine that shouold be started by the calling MonoBehaviour</returns>
+        /// <returns>An optional coroutine that should be started by the calling MonoBehaviour</returns>
         public virtual IEnumerator Revert(BaseActorController actor)
         {
             return null; // don't do anything by default. This is really only for AnimatorCues and similar that change state.

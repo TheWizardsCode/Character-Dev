@@ -25,7 +25,9 @@ namespace WizardsCode.Character
         {
             float endTime = base.FinishBehaviour();
 
-            Brain.Actor.Animator.SetBool("Sitting", false);
+            if (Brain.Actor.Animator) {
+                Brain.Actor.Animator.SetBool("Sitting", false);
+            }
             Vector3 pos = transform.position;
             pos.z += sittingOffset;
             Brain.Actor.MoveTargetPosition = pos;
@@ -45,8 +47,11 @@ namespace WizardsCode.Character
                 pos.z -= sittingOffset; // slide back in the chair a little
                 Brain.Actor.MoveTo(pos, null, null, () =>
                 {
-                    ((AnimatorActorController)Brain.Actor).isFootIKActive = true;
-                    Brain.Actor.Animator.SetBool("Sitting", true);
+                    if (Brain.Actor.Animator) 
+                    {
+                        ((AnimatorActorController)Brain.Actor).isFootIKActive = true;
+                        Brain.Actor.Animator.SetBool("Sitting", true);
+                    }
                 });
             },
             null);

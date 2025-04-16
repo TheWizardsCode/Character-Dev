@@ -11,7 +11,7 @@ namespace WizardsCode.Character.MxM
         [SerializeField, Tooltip("The UI Canvas to control.")]
         RectTransform m_UI;
         [SerializeField, Tooltip("The Cinemachine virtual camera to use.")]
-        CinemachineFreeLook m_Cinemachine;
+        CinemachineVirtualCameraBase m_Cinemachine;
 
         private int m_CharacterIndex;
         private List<Transform> m_Characters = new List<Transform>();

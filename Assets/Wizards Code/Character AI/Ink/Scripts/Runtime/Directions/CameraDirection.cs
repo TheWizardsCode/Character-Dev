@@ -21,11 +21,11 @@ namespace WizardsCode.Ink
                 return;
             }
             
-            CinemachineVirtualCamera newCamera;
+            CinemachineCamera newCamera;
             Transform camera = Manager.FindTarget(parameters[0].Trim());
             if (camera)
             {
-                newCamera = camera.gameObject.GetComponent<CinemachineVirtualCamera>();
+                newCamera = camera.gameObject.GetComponent<CinemachineCamera>();
                 if (Manager.cinemachine.ActiveVirtualCamera != (ICinemachineCamera)newCamera)
                 {
                     Manager.cinemachine.ActiveVirtualCamera.Priority = 10;

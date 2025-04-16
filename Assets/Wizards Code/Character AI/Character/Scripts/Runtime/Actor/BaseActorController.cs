@@ -35,6 +35,7 @@ namespace WizardsCode.Character
         [Header("Look")]
         [SerializeField, Tooltip("A transform at the point in space that the actor should look towards.")]
         Transform m_LookAtTarget;
+        // TODO: this requires an animator and thus should be pulled up to AnimatorActorController
         [SerializeField, Tooltip("Should the actor use IK to look at a given target.")]
         bool m_IsLookAtIKActive = true;
         [SerializeField, Tooltip("The head bone, used for Look IK. If this is blank there will be an attempt to automatically find the head upon startup.")]
@@ -119,8 +120,10 @@ namespace WizardsCode.Character
         /// If the clip is non null then it will be played using a Playable. 
         /// </summary>
         /// <param name="clip"></param>
+        // REFACTOR: PlayAnimationClip should be pulled up to the AnimatorActorController
         public void PlayAnimationClip(AnimationClip clip)
         {
+            if (Animator == null) return;
             if (clip)
             {
                 AnimationPlayableUtilities.PlayClip(Animator, clip, out _playableGraph);
@@ -131,7 +134,8 @@ namespace WizardsCode.Character
         /// Switch back to animating using the animation controller.
         /// </summary>
         public void PlayAnimatorController()
-        {
+        {           
+            if (Animator == null) return;
             AnimationPlayableUtilities.PlayAnimatorController(Animator, m_AnimatorController, out _playableGraph);
         }
 
@@ -188,6 +192,7 @@ namespace WizardsCode.Character
             }
         }
 
+        // REFACTOR: Animator should be pulled up to AnimatorActorController
         public Animator Animator
         {
             get { return m_Animator; }
@@ -293,12 +298,20 @@ namespace WizardsCode.Character
             m_runSqrMagnitude = m_WalkSpeed * m_WalkSpeed;
             m_sprintSqrMagnitude = m_RunSpeed * m_RunSpeed;
 
+            // REFACTOR: m_Animator, m_AnimatorLayers and m_AnimatorController references to the animator should be pulled up to AnimatorActorController
             if (m_Animator == null)
             {
                 m_Animator = GetComponentInChildren<Animator>();
             }
-            m_AnimationLayers = GetComponentInChildren<AnimationLayerController>();
-            m_AnimatorController = m_Animator.runtimeAnimatorController;
+            if (m_Animator != null)
+            {
+                m_AnimationLayers = GetComponentInChildren<AnimationLayerController>();
+                m_AnimatorController = m_Animator.runtimeAnimatorController;
+            } 
+            else 
+            {
+                m_IsLookAtIKActive = false;
+            }
 
             m_Agent = GetComponent<NavMeshAgent>();
             if (m_Agent != null)

@@ -17,7 +17,7 @@ namespace WizardsCode.Character
             base.DrawDefaultInspector();
             serializedObject.Update();
 
-            string[] areas = GameObjectUtility.GetNavMeshAreaNames();
+            string[] areas = UnityEngine.AI.NavMesh.GetAreaNames();
             navMeshMask.intValue = EditorGUILayout.MaskField("NavMesh Area Mask", navMeshMask.intValue, areas);
 
             serializedObject.ApplyModifiedProperties();
