@@ -316,9 +316,9 @@ namespace WizardsCode.Character
         /// </summary>
         protected virtual void Init()
         {
-            m_Brain = transform.root.GetComponentInChildren<Brain>();
-            m_ActorController = transform.root.GetComponentInChildren<BaseActorController>();
-            m_emotionalState = transform.root.GetComponentInChildren<EmotionalState>();
+            m_ActorController = GetComponentInParent<BaseActorController>();
+            m_Brain = m_ActorController.GetComponentInChildren<Brain>();
+            m_emotionalState = m_ActorController.GetComponentInChildren<EmotionalState>();
 
             m_Director = GetComponent<PlayableDirector>();
             if (m_Director == null)

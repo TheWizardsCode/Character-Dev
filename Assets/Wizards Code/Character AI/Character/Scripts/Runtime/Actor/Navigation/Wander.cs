@@ -1,15 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
-using WizardsCode.Character.Stats;
 using WizardsCode.BackgroundAI;
 
 namespace WizardsCode.Character
 {
     /// <summary>
-    /// Make the cahracter wander semi-randomly. They won't necessarily change
+    /// Make the character wander semi-randomly. They won't necessarily change
     /// direction frequently but will, instead, continue in roughly the same
     /// direction for some time. Eventually they will get bored and change
     /// direction.
@@ -129,7 +125,6 @@ namespace WizardsCode.Character
                 float minDistance = minDistanceOfRandomPathChange;
                 float maxDistance = maxDistanceOfRandomPathChange;
 
-
                 float rotation = Random.Range(minAngleOfRandomPathChange, maxAngleOfRandomPathChange);
                 Quaternion randAng = Quaternion.Euler(0, rotation, 0);
 
@@ -142,6 +137,7 @@ namespace WizardsCode.Character
                     // TODO Rather than turning 180 degress we should turn a multiple of the max or min angles.
                     position = transform.position + ((randAng * -transform.forward) * Random.Range(minDistance, maxDistance));
                 }
+
 
                 if (Vector3.Distance(m_StartPosition, position) <= m_MaxWanderRange)
                 {

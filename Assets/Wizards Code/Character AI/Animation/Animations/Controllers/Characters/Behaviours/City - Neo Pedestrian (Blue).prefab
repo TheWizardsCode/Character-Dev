@@ -5,6 +5,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 8037407031395599387}
     m_Modifications:
     - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4, type: 3}
@@ -17,11 +18,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.003282249
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.12968254
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4, type: 3}
       propertyPath: m_LocalRotation.w
@@ -60,16 +61,25 @@ PrefabInstance:
       value: Wander On Pavements Behaviour
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4, type: 3}
+--- !u!4 &3583619265264548948 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3454999400584466692, guid: 46ec751bcd1c73d46a9813e7c7f3ffb4, type: 3}
+  m_PrefabInstance: {fileID: 2182289901491367248}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2987097994697447764
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 431715539566918088, guid: 5946825c01ac14c4b8a72b03526b1f70, type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: a3222cf043fef624fb2d901c5fe11ca0, type: 2}
     - target: {fileID: 5115762418512223567, guid: 5946825c01ac14c4b8a72b03526b1f70, type: 3}
@@ -126,6 +136,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 2620785174358538292, guid: 5946825c01ac14c4b8a72b03526b1f70, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 5115762418512223567, guid: 5946825c01ac14c4b8a72b03526b1f70, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3583619265264548948}
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8444945103901806786, guid: 5946825c01ac14c4b8a72b03526b1f70, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1831208972794859360}
   m_SourcePrefab: {fileID: 100100000, guid: 5946825c01ac14c4b8a72b03526b1f70, type: 3}
 --- !u!4 &5768013052133017687 stripped
 Transform:
@@ -162,6 +181,7 @@ MonoBehaviour:
   m_LookAtHeatTime: 0.2
   m_LookAtCoolTime: 0.2
   m_Animator: {fileID: 0}
+  m_UseRootMotion: 0
   m_SpeedParameterName: Forward
   m_TurnParameterName: Turn
   m_RunningSpeed: 8

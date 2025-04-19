@@ -36,7 +36,6 @@ RectTransform:
   - {fileID: 5817045720164875235}
   - {fileID: 4275307429552885837}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -60,7 +59,9 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
+  m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -136,7 +137,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5817045719787785768}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -239,7 +239,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5817045719787785768}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -315,6 +314,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 5817045719787785768}
     m_Modifications:
     - target: {fileID: 89326569991039613, guid: ce29914a0a5470e46bc486ac245fce16, type: 3}
@@ -434,19 +434,19 @@ PrefabInstance:
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4275307429633941242, guid: ce29914a0a5470e46bc486ac245fce16, type: 3}
-      propertyPath: m_SpeechSounds.Array.data[0]
+      propertyPath: 'm_SpeechSounds.Array.data[0]'
       value: 
       objectReference: {fileID: 8300000, guid: 279436dd6780c8a409439805fa15223e, type: 3}
     - target: {fileID: 4275307429633941242, guid: ce29914a0a5470e46bc486ac245fce16, type: 3}
-      propertyPath: m_SpeechSounds.Array.data[1]
+      propertyPath: 'm_SpeechSounds.Array.data[1]'
       value: 
       objectReference: {fileID: 8300000, guid: 22c2a9f98e82ac247817ddc13f06f8ff, type: 3}
     - target: {fileID: 4275307429633941242, guid: ce29914a0a5470e46bc486ac245fce16, type: 3}
-      propertyPath: m_SpeechSounds.Array.data[2]
+      propertyPath: 'm_SpeechSounds.Array.data[2]'
       value: 
       objectReference: {fileID: 8300000, guid: d842e9ab2529bd2468b8878cea51a564, type: 3}
     - target: {fileID: 4275307429633941242, guid: ce29914a0a5470e46bc486ac245fce16, type: 3}
-      propertyPath: m_SpeechSounds.Array.data[3]
+      propertyPath: 'm_SpeechSounds.Array.data[3]'
       value: 
       objectReference: {fileID: 8300000, guid: 4673e2282fd1924448fa736e24dc6c80, type: 3}
     - target: {fileID: 4275307430197726364, guid: ce29914a0a5470e46bc486ac245fce16, type: 3}
@@ -577,6 +577,9 @@ PrefabInstance:
       value: 0.96897066
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ce29914a0a5470e46bc486ac245fce16, type: 3}
 --- !u!82 &4275307429552885824 stripped
 AudioSource:
@@ -593,6 +596,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 5817045719787785768}
     m_Modifications:
     - target: {fileID: 2813817014774236018, guid: 645a1047d06a7c543a52fd6f6ed28111, type: 3}
@@ -684,6 +688,9 @@ PrefabInstance:
       value: Ink Choice Button
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 645a1047d06a7c543a52fd6f6ed28111, type: 3}
 --- !u!224 &427822294652087772 stripped
 RectTransform:

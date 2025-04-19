@@ -318,6 +318,7 @@ namespace WizardsCode.Character
             {
                 m_Agent.stoppingDistance = ArrivingDistance / 2;
             }
+            
             brain = GetComponentInChildren<Brain>();
             if (m_Agent.isOnNavMesh)
             {
@@ -379,7 +380,7 @@ namespace WizardsCode.Character
 
         /// <summary>
         /// If the actor is already rotating continue that rotation. If the character is trying
-        /// to look at something that is outside of the angle their head should turn then 
+        /// to look at something that is outside of the look angle range their head should turn then 
         /// start rotating the character.
         /// </summary>
         private void RotateIfNeeded()
