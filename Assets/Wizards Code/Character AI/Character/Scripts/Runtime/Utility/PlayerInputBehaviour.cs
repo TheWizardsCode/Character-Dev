@@ -10,25 +10,21 @@ namespace WizardsCode.BackgroundAI
     /// <summary>
     /// Click the left mouse button on the NavMesh to move the NavMeshAgent this scrpt is attached to.
     /// </summary>
-    public class ClickToMoveBehaviour : AbstractAIBehaviour
+    public class PlayerInputBehaviour : AbstractAIBehaviour
     {
-
-        NavMeshAgent m_Agent;
-
-        void Awake()
-        {
-            m_Agent = GetComponent<NavMeshAgent>();
-        }
-
         protected override void OnUpdateState()
         {
             if (Input.GetMouseButtonDown(0))
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit hitInfo;
-                if (Physics.Raycast(ray, out hitInfo))
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit))
                 {
-                    m_Agent.SetDestination(hitInfo.point);
+                    if (hit.collider.name.StartsWith("Ground"))
+                    {
+                        Brain.Actor.MoveTo(hit.point);
+                        Brain.Actor.TurnToFace(hit.point);
+                    }
                 }
             }
         }

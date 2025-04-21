@@ -648,24 +648,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 565f3debb24a0b24bb53067f704ee61d, type: 3}
---- !u!1 &392942005 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5104572892388718529, guid: 7a17c6bb2ca7c2748860603b4499aa21, type: 3}
-  m_PrefabInstance: {fileID: 1392659231}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &392942006
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 392942005}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60e3e1939933fd3448fb35a2843f7813, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Character: {fileID: 2620785174531866989}
 --- !u!1 &460839916
 GameObject:
   m_ObjectHideFlags: 0
@@ -1954,9 +1936,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1524781526}
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5104572892388718529, guid: 7a17c6bb2ca7c2748860603b4499aa21, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 392942006}
     - targetCorrespondingSourceObject: {fileID: 5104572893129094191, guid: 7a17c6bb2ca7c2748860603b4499aa21, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1950987769}
@@ -1966,6 +1945,79 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5104572892496895930, guid: 7a17c6bb2ca7c2748860603b4499aa21, type: 3}
   m_PrefabInstance: {fileID: 1392659231}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1466526436
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1466526437}
+  - component: {fileID: 1466526438}
+  m_Layer: 0
+  m_Name: Input Behaviours
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1466526437
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1466526436}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4794429403792946202}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1466526438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1466526436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f07a6581ccc9b84ca03f7506416dedd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_DisplayName: Player Input
+  m_Description: Allows the player to control an actor directly.
+  Icon: {fileID: 0}
+  m_RetryFrequency: 2
+  m_isInteruptable: 0
+  m_MaximumExecutionTime: 30
+  m_IsBlocking: 1
+  m_OnStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_timeline: {fileID: 0}
+  m_OnStartCue: {fileID: 0}
+  m_OnPrepareCue: {fileID: 0}
+  m_OnPerformCue: []
+  m_OnFinalizeCue: {fileID: 0}
+  m_OnEndCue: {fileID: 0}
+  m_NextBehaviour: {fileID: 0}
+  m_WeightMultiplier: 1
+  m_WeightVariation: 0.1
+  m_RequiredSenses: []
+  m_RequiredStats: []
+  m_CharacterInfluences: []
+  m_DesiredStateImpacts: []
+  m_RequiredWorldState: []
+  CurrentState: 5
+  DestroyOnInactive: 0
 --- !u!1 &1524781525
 GameObject:
   m_ObjectHideFlags: 0
@@ -2485,6 +2537,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3535767160013827392}
+  - {fileID: 1466526437}
   m_Father: {fileID: 5115762418674557974}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &5115762418674557974
@@ -2645,7 +2698,7 @@ GameObject:
   - component: {fileID: 4069216372523417722}
   - component: {fileID: 3261464737041949377}
   m_Layer: 0
-  m_Name: Minimal AI Character
+  m_Name: Player Controlled Actor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
