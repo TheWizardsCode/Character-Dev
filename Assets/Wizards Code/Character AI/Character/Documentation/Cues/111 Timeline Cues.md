@@ -1,1 +1,3 @@
-In this scene rather than having triggering cues from a UI button we trigger them from a timeline. This allows sequencues of cues to be played with a single in-game event.
+In this scene rather than triggering cues from a UI button we trigger them from a timeline. This allows sequences of cues to be played with a single in-game event. This is useful for cut scenes or scripted NPC events.
+
+The scene is setup the same to the 101 scene with three marks for the actor to move to. However, rather than clicking a button controlled by a director class to send the cues to the actor there is a `Scene Timeline` object which contains a standard Unity timeline containing each of the three cues. When the scene starts this timeline will start playing and thus the actor will move to the first mark, wait for a short while, then move to the second mark.

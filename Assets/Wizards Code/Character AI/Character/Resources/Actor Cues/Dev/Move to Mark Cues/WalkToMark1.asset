@@ -12,14 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95162dea08fa43a42b2ebe0dbe2ab9a2, type: 3}
   m_Name: WalkToMark1
   m_EditorClassIdentifier: 
-  markName: Mark 1
+  m_DisplayName: Walk to Mark 1
+  m_Description: Find an object in the scene named "Mark 1" and move the character
+    towards it.
+  m_Duration: 5
+  m_MarkName: Mark 1
+  m_PrefixWithName: 0
+  m_StopMovement: 0
   audioClip: {fileID: 0}
-  dialogue: 
-  paramName: 
-  paramType: 0
-  paramFloatValue: 0
-  paramIntValue: 0
-  paramBoolValue: 0
-  animationClipName: 
-  animationLayer: 0
-  animationNormalizedTime: 0
