@@ -163,7 +163,7 @@ namespace WizardsCode.Stats {
         }
 
         /// <summary>
-        /// Deegister a behaviour from the active list for this brain. Only registered behaviours will
+        /// Deregister a behaviour from the active list for this brain. Only registered behaviours will
         /// be evaluated for execution according to the brains decision making cycle.
         /// </summary>
         /// <param name="behaviour">The behaviour to deregister.</param>
@@ -248,11 +248,11 @@ namespace WizardsCode.Stats {
                 if (!hasPrioritized) return;
             }
 
-            bool isInterupting = false;
+            bool isInterrupting = false;
             if (ActiveBlockingBehaviour != null 
                 && ActiveBlockingBehaviour.CurrentState != AbstractAIBehaviour.State.Inactive)
             {
-                isInterupting = true;
+                isInterrupting = true;
             }
              
             StringBuilder log = new StringBuilder();
@@ -267,10 +267,10 @@ namespace WizardsCode.Stats {
 
                 if (m_AvailableBehaviours[i].CurrentState != AbstractAIBehaviour.State.Inactive)
                 {
-                    // if this is the current behaviour and it is interuptable we should evaluate the weight to see if we should interupt
+                    // if this is the current behaviour and it is interuptable we should evaluate the weight to see if we should interrupt
                     if (m_AvailableBehaviours[i].IsInteruptable)
                     {
-                        log.AppendLine("Already executing but can interupt - checking requirements are still valid.");
+                        log.AppendLine("Already executing but can interrupt - checking requirements are still valid.");
 
                         currentWeight = m_AvailableBehaviours[i].Weight(this) * 2;
 
@@ -321,7 +321,7 @@ namespace WizardsCode.Stats {
 
             if (candidateBehaviour == null) return; 
 
-            if (isInterupting && candidateBehaviour != ActiveBlockingBehaviour)
+            if (isInterrupting && candidateBehaviour != ActiveBlockingBehaviour)
             {
                 ActiveBlockingBehaviour.FinishBehaviour();
             }
@@ -429,7 +429,7 @@ namespace WizardsCode.Stats {
                         Destroy(behaviourT.gameObject);
                     } else
                     {
-                        behaviour.DestoryOnInactive = true;
+                        behaviour.DestroyOnInactive = true;
                     }
                 }
             }
@@ -439,7 +439,7 @@ namespace WizardsCode.Stats {
         /// This actor will prioritize the named behaviour over all others. Under normal
         /// circumstances this means the behaviour will be actioned as soon as possible.
         /// </summary>
-        /// <param name="behaviourName">The name of the behaviour to proritize.</param>
+        /// <param name="behaviourName">The name of the behaviour to prioritize.</param>
         public void PrioritizeBehaviour(string behaviourName)
         {
             m_RequestedBehaviour = behaviourName;

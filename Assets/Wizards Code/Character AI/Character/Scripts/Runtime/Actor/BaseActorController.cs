@@ -1,18 +1,16 @@
 using System;
 using UnityEngine;
-using UnityEngine.AI;
-using UnityEngine.Animations;
-using UnityEngine.Playables;
 using WizardsCode.AnimationControl;
 using WizardsCode.Stats;
 
 namespace WizardsCode.Character
 {
     /// <summary>
-    /// A character actor performs for the camera and takes cues from a director.
-    /// Converts NavMesh movement to animation controller parameters.
+    /// This is responsible for controlling the Actor. It does not make decisions (see `Brain` below) but it does enact those decisions in terms of movement etc.
+    /// 
+    /// While the Base Actor Controller is fully functional it is very limited in what it can do. In most cases you will use a controller that extends this one, 
+    /// such as the `Animator Actor Controller` which will convert movement on the navmesh to animation parameters. 
     /// </summary>
-    [RequireComponent(typeof(NavMeshAgent))]
     public class BaseActorController : MonoBehaviour
     {
         public enum States { Idle, Moving, Arriving, Arrived }
@@ -35,21 +33,10 @@ namespace WizardsCode.Character
         [Header("Look")]
         [SerializeField, Tooltip("A transform at the point in space that the actor should look towards.")]
         Transform m_LookAtTarget;
-        // TODO: this requires an animator and thus should be pulled up to AnimatorActorController
-        [SerializeField, Tooltip("Should the actor use IK to look at a given target.")]
-        bool m_IsLookAtIKActive = true;
-        [SerializeField, Tooltip("The head bone, used for Look IK. If this is blank there will be an attempt to automatically find the head upon startup.")]
+        [SerializeField, Tooltip("The \"head\" bone or object, used to look. If this is blank there will be an attempt to automatically find the head upon startup.")]
         public Transform head = null;
         [SerializeField, Tooltip("The speed at which a character will turn their head to look at a target.")]
-        float m_LookAtSpeed = 6f;
-        [SerializeField, Tooltip("The time it takes for the head to start moving when it needs to turn to look at something.")]
-        float m_LookAtHeatTime = 0.2f;
-        [SerializeField, Tooltip("The time it takes for the look IK rig to cool after reaching the correct look angle.")]
-        float m_LookAtCoolTime = 0.2f;
-
-        [Header("Animation")]
-        [SerializeField, Tooltip("The animation controller for updating animations of the model representing this actor. If left empty no animations will be played.")]
-        protected Animator m_Animator;
+        protected float m_LookAtSpeed = 6f;
         #endregion
 
         #region Public Variables
@@ -63,7 +50,6 @@ namespace WizardsCode.Character
         #endregion
 
         #region Members
-        protected NavMeshAgent m_Agent;
         private float lastStateChangeTime = float.NegativeInfinity;
         private States m_state;
         #endregion
@@ -80,7 +66,7 @@ namespace WizardsCode.Character
             internal set;
         }
 
-        public States state
+        public virtual States state
         {
             get { return m_state; } 
             set
@@ -93,8 +79,13 @@ namespace WizardsCode.Character
             }
         }
 
-        private Vector3 m_CurrentLookAtPosition;
-        private float lookAtWeight = 0.0f;
+        public float ArrivingDistance
+        {
+            get { return m_ArrivingDistance; }
+            set { m_ArrivingDistance = value; }
+        }
+
+        protected Vector3 m_CurrentLookAtPosition;
 
         protected float m_WalkSpeed;
         protected float m_RunSpeed;
@@ -105,68 +96,11 @@ namespace WizardsCode.Character
         AnimationLayerController m_AnimationLayers;
         #endregion
 
-        public float ArrivingDistance
-        {
-            get { return m_ArrivingDistance; }
-            set { m_ArrivingDistance = value; }
-        }
-
-        private void OnAnimatorIK(int layerIndex)
-        {
-            LookAtIK();
-        }
-
-        /// <summary>
-        /// If the clip is non null then it will be played using a Playable. 
-        /// </summary>
-        /// <param name="clip"></param>
-        // REFACTOR: PlayAnimationClip should be pulled up to the AnimatorActorController
-        public void PlayAnimationClip(AnimationClip clip)
-        {
-            if (Animator == null) return;
-            if (clip)
-            {
-                AnimationPlayableUtilities.PlayClip(Animator, clip, out _playableGraph);
-            }
-        }
-
-        /// <summary>
-        /// Switch back to animating using the animation controller.
-        /// </summary>
-        public void PlayAnimatorController()
-        {           
-            if (Animator == null) return;
-            AnimationPlayableUtilities.PlayAnimatorController(Animator, m_AnimatorController, out _playableGraph);
-        }
-
-        protected void LookAtIK()
-        {
-            if (!m_IsLookAtIKActive)
-            {
-                return;
-            }
-
-            Vector3 pos = LookAtTarget.position;
-            //pos.y = head.position.y;
-
-            float lookAtTargetWeight = m_IsLookAtIKActive ? 1.0f : 0.0f;
-
-            Vector3 curDir = m_CurrentLookAtPosition - head.position;
-            Vector3 futDir = pos - head.position;
-
-            curDir = Vector3.RotateTowards(curDir, futDir, m_LookAtSpeed * Time.deltaTime, float.PositiveInfinity);
-            m_CurrentLookAtPosition = head.position + curDir;
-
-            float blendTime = lookAtTargetWeight > lookAtWeight ? m_LookAtHeatTime : m_LookAtCoolTime;
-            lookAtWeight = Mathf.MoveTowards(lookAtWeight, lookAtTargetWeight, Time.deltaTime / blendTime);
-            m_Animator.SetLookAtWeight(lookAtWeight, 0.2f, 0.5f, 0.7f, 0.5f);
-            m_Animator.SetLookAtPosition(m_CurrentLookAtPosition);
-        }
-
         /// <summary>
         /// Set the LookAtTarget to a specific position in world space.
         /// </summary>
         /// <param name="position"></param>
+        [Obsolete("Use LookAtTarget instead. Deprecated in 0.4.0.")]
         public void LookAt(Vector3 position)
         {
             m_LookAtTarget.position = position;
@@ -192,15 +126,9 @@ namespace WizardsCode.Character
             }
         }
 
-        // REFACTOR: Animator should be pulled up to AnimatorActorController
-        public Animator Animator
-        {
-            get { return m_Animator; }
-        }
-
         #region Actions
         /// <summary>
-        /// Instruct the character to move to a defined positiion and, optionally, 
+        /// Instruct the character to move to a defined position and, optionally, 
         /// make callbacks at various points in the process.
         /// </summary>
         /// <param name="position">The position to move to.</param>
@@ -237,16 +165,13 @@ namespace WizardsCode.Character
         }
         #endregion
 
-        public Vector3 MoveTargetPosition
+        Vector3 m_MoveTarget = Vector3.zero;
+        public virtual Vector3 MoveTargetPosition
         {
-            get { return m_Agent.destination; }
+            get { return m_MoveTarget; }
             set
             {
-                if (Vector3.Distance(m_Agent.destination, value) > m_Agent.stoppingDistance)
-                {
-                    m_Agent.SetDestination(value);
-                    state = States.Moving;
-                }
+                m_MoveTarget = value;
             }
         }
 
@@ -254,11 +179,8 @@ namespace WizardsCode.Character
         /// <summary>
         /// Stop the actor from moving. Clearing the current path if there is one.
         /// </summary>
-        public void StopMoving()
+        public virtual void StopMoving()
         {
-            if (!m_Agent) return;
-
-            m_Agent.ResetPath();
         }
 
         System.Collections.IEnumerator cueCoroutine;
@@ -281,8 +203,14 @@ namespace WizardsCode.Character
         protected float m_runSqrMagnitude;
         protected float m_sprintSqrMagnitude;
         private Transform m_InteractionPoint;
-        private PlayableGraph _playableGraph;
-        private RuntimeAnimatorController m_AnimatorController;
+        
+        protected virtual bool HasArrived
+        {
+            get
+            {
+                return Vector3.SqrMagnitude(transform.position - MoveTargetPosition) <= m_ArrivingDistance * m_ArrivingDistance;
+            }
+        }
 
         protected virtual void Awake()
         {
@@ -292,41 +220,8 @@ namespace WizardsCode.Character
                 m_LookAtTarget.SetParent(transform);
                 m_LookAtTarget.localPosition = new Vector3(0, 1.6f, 0.5f);
             }
-
-            m_WalkSpeed = m_MaxSpeed * m_WalkSpeedFactor;
-            m_RunSpeed = m_MaxSpeed * m_RunSpeedFactor;
-            m_runSqrMagnitude = m_WalkSpeed * m_WalkSpeed;
-            m_sprintSqrMagnitude = m_RunSpeed * m_RunSpeed;
-
-            // REFACTOR: m_Animator, m_AnimatorLayers and m_AnimatorController references to the animator should be pulled up to AnimatorActorController
-            if (m_Animator == null)
-            {
-                m_Animator = GetComponentInChildren<Animator>();
-            }
-            if (m_Animator != null)
-            {
-                m_AnimationLayers = GetComponentInChildren<AnimationLayerController>();
-                m_AnimatorController = m_Animator.runtimeAnimatorController;
-            } 
-            else 
-            {
-                m_IsLookAtIKActive = false;
-            }
-
-            m_Agent = GetComponent<NavMeshAgent>();
-            if (m_Agent != null)
-            {
-                m_Agent.stoppingDistance = ArrivingDistance / 2;
-            }
             
             brain = GetComponentInChildren<Brain>();
-            if (m_Agent.isOnNavMesh)
-            {
-                MoveTargetPosition = transform.position;
-            } else
-            {
-                m_Agent.enabled = false;
-            }
 
             // Look IK Setup
             if (!head)
@@ -336,7 +231,6 @@ namespace WizardsCode.Character
             if (!head)
             {
                 Debug.LogWarning("No head transform set on " + gameObject.name + " and one could not be found automatically - LookAt disabled");
-                m_IsLookAtIKActive = false;
             }
 
             m_InteractionPoint = new GameObject(transform.root.name + " Interaction Point").transform;
@@ -344,25 +238,9 @@ namespace WizardsCode.Character
             m_LookAtTarget.name = transform.root.name + " Look At Target";
         }
 
-        [Obsolete("Use an ActorCue that plays the chosen Emote.")] // v0.0.9
-        public void PlayEmote(string name)
-        {
-            Animator animator = GetComponent<Animator>();
-            animator.Play(name);
-        }
-
         protected virtual void Update()
         {
-            if (m_Agent.remainingDistance <= m_MinRunDistance)
-            {
-                m_Agent.speed = m_WalkSpeed;
-            } else if (m_Agent.remainingDistance >= m_MinSprintDistance)
-            {
-                m_Agent.speed = m_MaxSpeed;
-            } else
-            {
-                m_Agent.speed = m_MaxSpeed * m_RunSpeedFactor;
-            }
+            UpdateMovement();
 
             ManageState();
             
@@ -376,6 +254,36 @@ namespace WizardsCode.Character
             }
 
             RotateIfNeeded();
+        }
+
+        protected virtual void UpdateMovement()
+        {
+            if (MoveTargetPosition != Vector3.zero)
+            {
+                Vector3 direction = (MoveTargetPosition - transform.position).normalized;
+                float distance = Vector3.Distance(transform.position, MoveTargetPosition);
+
+                float speed = m_MaxSpeed;
+                if (distance < m_MinRunDistance)
+                {
+                    speed *= m_WalkSpeedFactor;
+                }
+                else if (distance < m_MinSprintDistance)
+                {
+                    speed *= m_RunSpeedFactor;
+                }
+
+                transform.position = Vector3.MoveTowards(transform.position, MoveTargetPosition, speed * Time.deltaTime);
+
+                if (distance <= ArrivingDistance)
+                {
+                    state = States.Arriving;
+                }
+                else
+                {
+                    state = States.Moving;
+                }
+            }
         }
 
         /// <summary>
@@ -424,29 +332,26 @@ namespace WizardsCode.Character
                         onStationary = null;
                         hasMoved = false;
                     }
-                    else if (m_Agent.remainingDistance > ArrivingDistance)
+                    else if (!HasArrived)
                     {
                         state = States.Moving;
                     }
                     break;
                 case States.Moving:
-                    if (m_Agent != null)
+                    if (!HasArrived)
                     {
-                        if (!m_Agent.pathPending && m_Agent.remainingDistance <= ArrivingDistance)
+                        state = States.Arriving;
+                        if (onArriving != null)
                         {
-                            state = States.Arriving;
-                            if (onArriving != null)
-                            {
-                                onArriving();
-                                onArriving = null;
-                            }
+                            onArriving();
+                            onArriving = null;
                         }
                     }
-
+                    
                     hasMoved = true;
                     break;
                 case States.Arriving:
-                    if (HasArrived())
+                    if (HasArrived)
                     {
                         if (onArrived != null)
                         {
@@ -468,11 +373,6 @@ namespace WizardsCode.Character
             }
         }
 
-        internal bool HasArrived()
-        {
-            return m_Agent.remainingDistance <= m_Agent.stoppingDistance;
-        }
-
         public bool IsMoving
         {
             get
@@ -484,16 +384,16 @@ namespace WizardsCode.Character
         }
 
         /// <summary>
-        /// A measure of how noticable this character is from 0 to 1. 
+        /// A measure of how noticeable this character is from 0 to 1. 
         /// 0 is as good as invisible, 1 is can't miss them.
-        /// How noticable an actor is depends on what they are doing
-        /// at any given time as well as their emations. For example, 
+        /// How noticeable an actor is depends on what they are doing
+        /// at any given time as well as their emotions. For example, 
         /// a fearful character who is resting is less noticeable
-        /// than an interested character. Anger will increase noticability,
+        /// than an interested character. Anger will increase noticeability,
         /// but sadness will reduce it. Similarly a character who is attacking
-        /// is more noticable than one who is idle.
+        /// is more noticeable than one who is idle.
         /// </summary>
-        public float Noticability {
+        public float Noticeability {
             get
             {
                 float result = 0;
@@ -501,10 +401,10 @@ namespace WizardsCode.Character
                 EmotionalState emotion = GetComponent<EmotionalState>();
                 if (emotion)
                 {
-                    result = emotion.Noticability;
+                    result = emotion.Noticeability;
                 }
 
-                //TODO currently active behaviour should impact noticability. Add a noticability factor to behaviours.
+                //TODO currently active behaviour should impact noticeability. Add a noticeability factor to behaviours.
                 return Mathf.Clamp01(result);
             }
         }
@@ -567,15 +467,11 @@ namespace WizardsCode.Character
         /// </summary>
         /// <param name="location">The location to teleport to.</param>
         /// <param name="aiActive">Should the AI brain, if the actor has one, be active after the teleport?</param>
-        public void Teleport(Transform location, bool aiActive)
+        public virtual void Teleport(Transform location, bool aiActive)
         {
             transform.position = location.position;
             transform.rotation = location.rotation;
-            if (m_Agent)
-            {
-                m_Agent.Warp(location.position);
-            }
-
+            
             if (brain)
             {
                 brain.active = aiActive;

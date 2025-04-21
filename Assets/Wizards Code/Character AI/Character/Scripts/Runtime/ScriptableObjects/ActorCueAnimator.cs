@@ -48,12 +48,34 @@ namespace WizardsCode.Character
 
         public AnimationClip Clip { get { return m_AnimationClip; } }
 
+        AnimatorActorController m_AnimatorController;
+        /// <summary>
+        /// If the actor controller is an animator controller then this will return it, otherwise
+        /// it will return a null.
+        /// </summary>
+        internal AnimatorActorController AnimatorController {
+            get
+            {
+                if (m_AnimatorController == null)
+                {
+                    m_AnimatorController = m_Actor as AnimatorActorController;
+                    if (m_AnimatorController == null)
+                    {
+                        Debug.LogError("The actor controller is not an animator controller.");
+                        return null;
+                    }
+                }
+
+                return m_AnimatorController;
+            }
+        }
+
         private void ProcessAnimationLayerWeights()
         {
-            if (m_Actor.Animator != null && !string.IsNullOrEmpty(m_LayerName))
+            if (AnimatorController.Animator != null && !string.IsNullOrEmpty(m_LayerName))
             {
-                m_LayerIndex = m_Actor.Animator.GetLayerIndex(m_LayerName);
-                m_OriginalLayerWeight = m_Actor.Animator.GetLayerWeight(m_LayerIndex);
+                m_LayerIndex = AnimatorController.Animator.GetLayerIndex(m_LayerName);
+                m_OriginalLayerWeight = AnimatorController.Animator.GetLayerWeight(m_LayerIndex);
             }
         }
 
@@ -61,14 +83,14 @@ namespace WizardsCode.Character
         {
             if (m_RevertLayerWeight)
             {
-                if (m_Actor.Animator != null && m_LayerIndex >= 0 && m_Actor.Animator.GetLayerWeight(m_LayerIndex) != m_OriginalLayerWeight)
+                if (AnimatorController.Animator != null && m_LayerIndex >= 0 && AnimatorController.Animator.GetLayerWeight(m_LayerIndex) != m_OriginalLayerWeight)
                 {
-                    float originalWeight = m_Actor.Animator.GetLayerWeight(m_LayerIndex);
+                    float originalWeight = AnimatorController.Animator.GetLayerWeight(m_LayerIndex);
                     float time = 0;
-                    while (!Mathf.Approximately(m_Actor.Animator.GetLayerWeight(m_LayerIndex), m_LayerWeight))
+                    while (!Mathf.Approximately(AnimatorController.Animator.GetLayerWeight(m_LayerIndex), m_LayerWeight))
                     {
                         time += Time.deltaTime;
-                        m_Actor.Animator.SetLayerWeight(m_LayerIndex,
+                        AnimatorController.Animator.SetLayerWeight(m_LayerIndex,
                             Mathf.Lerp(originalWeight, m_LayerWeight, time / m_LayerWeightChangeTime));
                         yield return new WaitForEndOfFrame();
                     }
@@ -81,7 +103,7 @@ namespace WizardsCode.Character
         public override IEnumerator Prompt(BaseActorController actor)
         {
             m_Actor = actor;
-            RuntimeAnimatorController controller = m_Actor.Animator.runtimeAnimatorController;
+            RuntimeAnimatorController controller = AnimatorController.Animator.runtimeAnimatorController;
 
             if (m_AnimationClip != null && m_DurationMatchesAnimation)
             {
@@ -90,7 +112,7 @@ namespace WizardsCode.Character
 
             ProcessAnimationLayerWeights();
             ProcessAnimationParameters();
-            m_Actor.PlayAnimationClip(Clip);
+            AnimatorController.PlayAnimationClip(Clip);
 
             yield return base.Prompt(actor);
         }
@@ -105,14 +127,14 @@ namespace WizardsCode.Character
         protected override IEnumerator UpdateCoroutine()
         {
             // Update Layers
-            if (m_Actor.Animator != null && m_LayerIndex >= 0 && m_Actor.Animator.GetLayerWeight(m_LayerIndex) != m_LayerWeight)
+            if (AnimatorController.Animator != null && m_LayerIndex >= 0 && AnimatorController.Animator.GetLayerWeight(m_LayerIndex) != m_LayerWeight)
             {
-                float originalWeight = m_Actor.Animator.GetLayerWeight(m_LayerIndex);
+                float originalWeight = AnimatorController.Animator.GetLayerWeight(m_LayerIndex);
                 float time = 0;
-                while (!Mathf.Approximately(m_Actor.Animator.GetLayerWeight(m_LayerIndex), m_LayerWeight))
+                while (!Mathf.Approximately(AnimatorController.Animator.GetLayerWeight(m_LayerIndex), m_LayerWeight))
                 {
                     time += Time.deltaTime;
-                    m_Actor.Animator.SetLayerWeight(m_LayerIndex,
+                    AnimatorController.Animator.SetLayerWeight(m_LayerIndex,
                         Mathf.Lerp(originalWeight, m_LayerWeight, time / m_LayerWeightChangeTime));
                     yield return new WaitForEndOfFrame();
                 }
@@ -121,7 +143,7 @@ namespace WizardsCode.Character
             //TODO Remove the use of animationClipName and replace entirely with AnimationClip
             if (!string.IsNullOrWhiteSpace(animationClipName))
             {
-                m_Actor.Animator.Play(animationClipName, m_LayerIndex, animationNormalizedTime);
+                AnimatorController.Animator.Play(animationClipName, m_LayerIndex, animationNormalizedTime);
             }
 
             yield return base.UpdateCoroutine();
@@ -140,19 +162,19 @@ namespace WizardsCode.Character
                     switch (m_AnimationParams[i].paramType)
                     {
                         case ParameterType.Trigger:
-                            m_Actor.Animator.SetTrigger(m_AnimationParams[i].paramName);
+                            AnimatorController.Animator.SetTrigger(m_AnimationParams[i].paramName);
                             break;
                         case ParameterType.Bool:
-                            m_AnimationParams[i].originalBoolValue = m_Actor.Animator.GetBool(m_AnimationParams[i].paramName);
-                            m_Actor.Animator.SetBool(m_AnimationParams[i].paramName, m_AnimationParams[i].paramBoolValue);
+                            m_AnimationParams[i].originalBoolValue = AnimatorController.Animator.GetBool(m_AnimationParams[i].paramName);
+                            AnimatorController.Animator.SetBool(m_AnimationParams[i].paramName, m_AnimationParams[i].paramBoolValue);
                             break;
                         case ParameterType.Int:
-                            m_AnimationParams[i].originalIntValue = m_Actor.Animator.GetInteger(m_AnimationParams[i].paramName);
-                            m_Actor.Animator.SetInteger(m_AnimationParams[i].paramName, m_AnimationParams[i].paramIntValue);
+                            m_AnimationParams[i].originalIntValue = AnimatorController.Animator.GetInteger(m_AnimationParams[i].paramName);
+                            AnimatorController.Animator.SetInteger(m_AnimationParams[i].paramName, m_AnimationParams[i].paramIntValue);
                             break;
                         case ParameterType.Float:
-                            m_AnimationParams[i].originalFloatValue = m_Actor.Animator.GetFloat(m_AnimationParams[i].paramName);
-                            m_Actor.Animator.SetFloat(m_AnimationParams[i].paramName, m_AnimationParams[i].paramFloatValue);
+                            m_AnimationParams[i].originalFloatValue = AnimatorController.Animator.GetFloat(m_AnimationParams[i].paramName);
+                            AnimatorController.Animator.SetFloat(m_AnimationParams[i].paramName, m_AnimationParams[i].paramFloatValue);
                             break;
                     }
                 }
@@ -172,13 +194,13 @@ namespace WizardsCode.Character
                     switch (m_AnimationParams[i].paramType)
                     {
                         case ParameterType.Bool:
-                            m_Actor.Animator.SetBool(m_AnimationParams[i].paramName, m_AnimationParams[i].originalBoolValue);
+                            AnimatorController.Animator.SetBool(m_AnimationParams[i].paramName, m_AnimationParams[i].originalBoolValue);
                             break;
                         case ParameterType.Int:
-                            m_Actor.Animator.SetInteger(m_AnimationParams[i].paramName, m_AnimationParams[i].originalIntValue);
+                            AnimatorController.Animator.SetInteger(m_AnimationParams[i].paramName, m_AnimationParams[i].originalIntValue);
                             break;
                         case ParameterType.Float:
-                            m_Actor.Animator.SetFloat(m_AnimationParams[i].paramName, m_AnimationParams[i].originalFloatValue);
+                            AnimatorController.Animator.SetFloat(m_AnimationParams[i].paramName, m_AnimationParams[i].originalFloatValue);
                             break;
                     }
                 }

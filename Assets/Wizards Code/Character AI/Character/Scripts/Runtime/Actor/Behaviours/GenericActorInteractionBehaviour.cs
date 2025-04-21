@@ -107,7 +107,7 @@ namespace WizardsCode.Character.AI
                 return;
             }
 
-            // at the time of writing this comment we don't support adding participants during an interaction, this is here to accomodate for that when we do support it
+            // at the time of writing this comment we don't support adding participants during an interaction, this is here to accommodate for that when we do support it
             if (participants.Count > m_MaxGroupSize)
             {
                 if (participants[participants.Count - 1] is Brain)
@@ -179,7 +179,7 @@ namespace WizardsCode.Character.AI
         /// <param name="stats">The stats of the participant to invite.</param>
         internal void InviteToGroup(StatsTracker stats)
         {
-            //TODO actors should be more likley to engage with other actors they like or who have valuable information.             
+            //TODO actors should be more likely to engage with other actors they like or who have valuable information.             
             m_IsHandshaking = m_RequireConsent;
         }
 

@@ -33,7 +33,7 @@ namespace WizardsCode.Character
 
             if (cueButton == null)
             {
-                Debug.LogWarning("No cue button identified in th Director component. Either add an actor or remove the component. Destroyting the Director and its UI.");
+                Debug.LogWarning("No cue button identified in th Director component. Either add an actor or remove the component. Destroying the Director and its UI.");
                 Destroy(this.gameObject);
             }
         }

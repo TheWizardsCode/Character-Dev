@@ -1,6 +1,4 @@
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using WizardsCode.Stats;
 
@@ -41,6 +39,7 @@ namespace WizardsCode.Character
 
                 RaycastHit hit;
 
+                //OPTIMIZATION: don't use camera.main
                 if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100))
                 {
                     Brain candidate = hit.collider.transform.root.GetComponentInChildren<Brain>();
@@ -56,7 +55,7 @@ namespace WizardsCode.Character
 
             if (m_IsFollowCamera && m_CurrentlySelected != null)
             {
-                //TODO don't use camera.main
+                //OPTIMIZATION: don't use camera.main
                 Camera.main.transform.position = m_CurrentlySelected.transform.position + m_CameraOffset;
                 Camera.main.transform.LookAt(m_CurrentlySelected.transform);
             }

@@ -36,10 +36,10 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("Maximum time until execution of this behaviour is ended. " +
             "For behaviours that act on the self rather than another interactable object or actor this is the duration of the behaviour." +
             "For behaviours that involve an interaction with another object or actor the duration is defined by that interaction. " +
-            "In this situation this valu is used as a safeguard in case something prevents the actor from completing " +
+            "In this situation this value is used as a safeguard in case something prevents the actor from completing " +
             "the actions associated with this behaviour, e.g. if they are unable to reach the chosen interactable.")]
         float m_MaximumExecutionTime = 30;
-        [SerializeField, Tooltip("If a behaviour is blocking it means no other blocking behaviour can be carried out at the same time. Most behaviours are blocking, however, some special behaviours, such as being preganant, do not entirely block other behaviours.")]
+        [SerializeField, Tooltip("If a behaviour is blocking it means no other blocking behaviour can be carried out at the same time. Most behaviours are blocking, however, some special behaviours, such as being pregnant, do not entirely block other behaviours.")]
         bool m_IsBlocking = true;
 
         [Header("Events")]
@@ -81,16 +81,35 @@ namespace WizardsCode.Character
         AbstractSense[] m_RequiredSenses;
         [SerializeField, Tooltip("The required stats to enable this behaviour. Here you should set minimum, maximum or approximate values for stats that are needed for this behaviour to fire. For example, buying items is only possible if the actor has cash.")]
         RequiredStat[] m_RequiredStats = default;
-        [SerializeField, Tooltip("The set of character stats and the influence to apply to them when a character chooses this behaviour AND the behaviour does not require an interactable (influences come from the interactable if one is requried).")]
+        [SerializeField, Tooltip("The set of character stats and the influence to apply to them when a character chooses this behaviour AND the behaviour does not require an interactable (influences come from the interactable if one is required).")]
         internal StatInfluence[] m_CharacterInfluences;
         [SerializeField, Tooltip("The impacts we need an interactable to have on states for this behaviour to be enabled by it.")]
         DesiredStatImpact[] m_DesiredStateImpacts = new DesiredStatImpact[0];
-        [SerializeField, Tooltip("The conditions required in the worldstate for this behaviour to be valid.")]
+        [SerializeField, Tooltip("The conditions required in the world state for this behaviour to be valid.")]
         WorldStateSO[] m_RequiredWorldState;
         #endregion
 
         public enum State { Starting, Preparing, Performing, Finalizing, Ending, Inactive, MovingTo }
         public State CurrentState = State.Inactive;
+
+        AnimatorActorController m_AnimatorController;
+        bool m_AttemptedCastToAnimatorController = false;
+        /// <summary>
+        /// If the actor controller is an animator controller then this will return it, otherwise
+        /// it will return a null.
+        /// </summary>
+        internal AnimatorActorController AnimatorController {
+            get
+            {
+                if (m_AttemptedCastToAnimatorController && m_AnimatorController == null)
+                {
+                    m_AnimatorController = m_ActorController as AnimatorActorController;
+                    m_AttemptedCastToAnimatorController = true;
+                }
+
+                return m_AnimatorController;
+            }
+        }
 
         public float MaximumExecutionTime
         {
@@ -99,7 +118,7 @@ namespace WizardsCode.Character
 
         /// <summary>
         /// Is this a blocking behaviour? There can only be one blocking behaviour active at any one time.
-        /// However, there can be multipl non-blocking behaviours active at once.
+        /// However, there can be multiple non-blocking behaviours active at once.
         /// </summary>
         public bool IsBlocking
         {
@@ -200,7 +219,7 @@ namespace WizardsCode.Character
                 reasoning.Clear();
 
                 if ((CheckWorldState()
-                    && CheckCharacteHasRequiredStats()
+                    && CheckCharacterHasRequiredStats()
                     && CheckSenses()))
                 {
                     return true;
@@ -215,12 +234,12 @@ namespace WizardsCode.Character
         /// Indicates if this behaviour should be destroyed, and thus removed from the character
         /// when it next enters the Inactive state.
         /// </summary>
-        public bool DestoryOnInactive = false;
+        public bool DestroyOnInactive = false;
         private PlayableDirector m_Director;
         private EmotionalState m_emotionalState;
 
         /// <summary>
-        /// Check that all the required senses of the world around the cahracter are true.
+        /// Check that all the required senses of the world around the character are true.
         /// </summary>
         /// <returns>True if all senses are true</returns>
         public bool CheckSenses()
@@ -239,7 +258,7 @@ namespace WizardsCode.Character
 
         /// <summary>
         /// If any required world states are defined check they are valid.
-        /// If found to be invalid the reasining log will have details.
+        /// If found to be invalid the reasoning log will have details.
         /// </summary>
         /// <returns>True if all world states are valid.</returns>
         public bool CheckWorldState()
@@ -261,7 +280,7 @@ namespace WizardsCode.Character
         /// </summary>
         /// <param name="log">A string that will contain a textual description, in Ink format, describing why the character believes they can or cannot enable this behaviour.</param>
         /// <returns>True if the behaviour can be enabled, otherwise false.</returns>
-        private bool CheckCharacteHasRequiredStats()
+        private bool CheckCharacterHasRequiredStats()
         {
             if (m_RequiredStats.Length == 0)
             {
@@ -427,7 +446,7 @@ namespace WizardsCode.Character
         }
 
         /// <summary>
-        /// The base weight is the weight befre the multiplier is applied.
+        /// The base weight is the weight before the multiplier is applied.
         /// </summary>
         /// <param name="stats">The stats to be applied</param>
         /// <returns>The base weight, before the multiplier is applied.</returns>
@@ -464,8 +483,8 @@ namespace WizardsCode.Character
             {
                 if (CurrentState == State.Starting)
                 {
-                    if (m_ActorController.Animator != null) {
-                        m_ActorController.Animator.applyRootMotion = true;
+                    if (AnimatorController != null) {
+                        AnimatorController.Animator.applyRootMotion = true;
                     }
                     CurrentState = State.Performing;
                 }
@@ -475,8 +494,8 @@ namespace WizardsCode.Character
                     return;
                 } else
                 {
-                    if (m_ActorController.Animator != null) {
-                        m_ActorController.Animator.applyRootMotion = false;
+                    if (AnimatorController != null) {
+                        AnimatorController.Animator.applyRootMotion = false;
                     }
                     EndBehaviour();
                     return;
@@ -588,7 +607,7 @@ namespace WizardsCode.Character
             Brain.ClearTarget();
             CurrentState = State.Inactive;
 
-            if (DestoryOnInactive)
+            if (DestroyOnInactive)
             {
                 if (gameObject.GetComponents<AbstractAIBehaviour>().Length > 1)
                 {
@@ -693,8 +712,8 @@ namespace WizardsCode.Character
                 EndTime = Time.timeSinceLevelLoad + m_OnEndCue.m_Duration;
             }
 
-            Brain.Actor.PlayAnimatorController();
-
+            AnimatorController?.PlayAnimatorController();
+            
             return EndTime;
         }
 
@@ -721,11 +740,11 @@ namespace WizardsCode.Character
     [Serializable]
     public struct RequiredStat
     {
-        // These values are hidden in the insepctor because there is a custom editor
+        // These values are hidden in the inspector because there is a custom editor
         // But at the time of writing it is incomplete.
         [SerializeField, Tooltip("The stat we require a value for.")]
         public StatSO statTemplate;
-        [SerializeField, Tooltip("The object for this stats value, for example, greater than, less than or approximatly equal to.")]
+        [SerializeField, Tooltip("The object for this stats value, for example, greater than, less than or approximately equal to.")]
         public Objective objective;
         [SerializeField, Tooltip("The value required for this stat (used in conjunction with the objective).")]
         float m_Value;

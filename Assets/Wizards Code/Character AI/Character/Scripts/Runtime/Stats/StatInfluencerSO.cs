@@ -11,7 +11,7 @@ namespace WizardsCode.Stats
     /// A stats influencer is used to alter a Stat by a given amount over a given duration.
     /// 
     /// </summary>
-    [Obsolete("Use `AbstractAIBehavioue.StatInfluence` instead.")]
+    [Obsolete("Use `AbstractAIBehaviour.StatInfluence` instead.")]
     public class StatInfluencerSO : ScriptableObject
     {
         [HideInInspector, SerializeField, Tooltip("The name of the interaction that created this influencer.")]
@@ -24,7 +24,7 @@ namespace WizardsCode.Stats
         float m_Duration = 5;
         [SerializeField, Tooltip("The cooldown period before a character can be influenced by this same influencer again, in seconds.")]
         float m_CooldownDuration = 5;
-        [SerializeField, Tooltip("Should the influence applied be reset each time this influencer is added to an influenced object? If set to true then inflience applied will be set to 0 and up to Max Change will be applied again. If set to false then the influence applied will not be reset and thus the Max Change will be the difference between the Max Change set above and any influence previously applied - that is this influencers influence will run out.")]
+        [SerializeField, Tooltip("Should the influence applied be reset each time this influencer is added to an influenced object? If set to true then influence applied will be set to 0 and up to Max Change will be applied again. If set to false then the influence applied will not be reset and thus the Max Change will be the difference between the Max Change set above and any influence previously applied - that is this influencers influence will run out.")]
         internal bool ResetInfluenceApplied = true;
 
         [HideInInspector, SerializeField]
@@ -83,10 +83,10 @@ namespace WizardsCode.Stats
 
         /// <summary>
         /// Get the game object that imparted this influencer on the actor.
-        /// If no interactor is required for the behaviour that impartaed this
+        /// If no interactor is required for the behaviour that imparted this
         /// influencer then this will be null.
         /// This is used in the memory system to remember good/bad results of 
-        /// interations with objects.
+        /// interactions with objects.
         /// </summary>
         public GameObject Generator
         {
@@ -195,7 +195,7 @@ namespace WizardsCode.Stats
             influenceApplied += change;
 
             m_TimeOfLastUpdate = Time.timeSinceLevelLoad;
-            Debug.Log($"Changed stat {statToUpdate.DisplayName} by {change} to {statToUpdate.Value}");
+            // Debug.Log($"Changed stat {statToUpdate.DisplayName} by {change} to {statToUpdate.Value}");
         }
 
         /// <summary>

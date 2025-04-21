@@ -1,43 +1,37 @@
 The 101 scene shows the absolute minimal setup for a Wizards Code character, also known as an Actor.  
-The actor in this scene will not exhibit any behaviours and have no animations. 
-They are a blank slate for your creation of an AI.
 
+The actor in this scene will not exhibit any significant behaviours and has no animation controller. It  literally a blank slate for you to start the creation of an AI.
+
+So how do you know they are even "alive"? The clues are in the UI.
+
+# Developer UI
+
+These example scenes all have a similar developer UI. In the top line you can see how many active brains there are in the scene. Since this scene has the one active brain you will see the number 1 here.
+
+If you click on the actor then a status line will appear below this first line which tells you what the current behaviour of the character is. Since this character has no behaviours it will always be idle.
+
+You can move the camera around this scene using the same controls as you would to move the scene camera.
 
 # Required Components
 
-## Base Actor Controller
+The following is a list of the required components on this character and in the scene to make it work.
 
-This is responsible for controlling the Actor. It does not make decisions (see Brain) but it does enact those decisions in terms of movement etc. It requires a NavMeshAgent component be attached. This Base Actor does not have any knowledge of an animation system. Although there is an animator controller on the character and so the Actor will idle. In the next scene we will see how to use Mecanim and in later scenes we will use Motion Matching for our characters. The ActorController is separated out like this to ensure you have maximum flexibility in selecting your chosen animation engine.
+## On the Character
 
-While the Base Actor Controller is fully functional it is very limited in what it can do. In most cases you will use another controller, such as the `Animator Actor Controller` which will convert movement on the navmesh to animation parameters. This allows the character to be automatically animated.
+### Base Actor Controller
+
+This is responsible for controlling the Actor. It does not make decisions (see `Brain` below) but it does enact those decisions in terms of movement etc.
+
+While the Base Actor Controller is fully functional it is very limited in what it can do. In most cases you will use a controller that extends this one, such as the `Animator Actor Controller` which will convert movement on the navmesh to animation parameters. 
 
 ## Brain
 
-The brain tracks all the characters stats and makes decisions about what the charcter will do.
+The brain tracks all the characters stats and makes decisions about what the character will do. Since the character in this scene has no behaviours the brain has very little to do.
 
-## Animator
-
-This is a standard Unity Animtor component. You can use any animation controller you want as long as it uses the parameters setup in the Actor Controller. If you want to get going quickly you can either copy or override the `Animations/Controllers/Humanoid Controller (Override This)`.
-
-# NavMeshAgent
-
-A standard Unity NavMeshAgent used by the Actor Controller to move the actor.
-
-# Capsule Collider
-
-Required by NavMeshAgent
-
-# Rigidbody
+# Collider and Rigid Body
 
 Required to ensure colliders and triggers are effective in the scene.
 
 # Audio Source
 
 A standard unity Audio Source allowing the Actor to make sound.
-
-# Optional Components
-
-## DebugInfo
-
-This is a useful component when in development. If this component is attached to your character an gizmo containing debug info will be shown.
-

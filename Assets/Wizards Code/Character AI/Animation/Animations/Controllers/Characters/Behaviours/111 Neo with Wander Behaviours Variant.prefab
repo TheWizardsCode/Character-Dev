@@ -73,8 +73,11 @@ PrefabInstance:
       addedObject: {fileID: 6838161248532831662}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8444945103901806786, guid: 5946825c01ac14c4b8a72b03526b1f70, type: 3}
-      insertIndex: -1
+      insertIndex: 1
       addedObject: {fileID: 3561044896958907217}
+    - targetCorrespondingSourceObject: {fileID: 8444945103901806786, guid: 5946825c01ac14c4b8a72b03526b1f70, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 5915298679558152699}
   m_SourcePrefab: {fileID: 100100000, guid: 5946825c01ac14c4b8a72b03526b1f70, type: 3}
 --- !u!4 &1245088977310597757 stripped
 Transform:
@@ -105,17 +108,39 @@ MonoBehaviour:
   m_RunSpeedFactor: 0.8
   m_ArrivingDistance: 1
   m_LookAtTarget: {fileID: 3722352382284523398}
-  m_IsLookAtIKActive: 1
   head: {fileID: 1245088977310597757}
   m_LookAtSpeed: 6
+  m_IsLookAtIKActive: 1
   m_LookAtHeatTime: 0.2
   m_LookAtCoolTime: 0.2
   m_Animator: {fileID: 0}
-  m_UseRootMotion: 0
+  m_UseRootMotion: 1
   m_SpeedParameterName: Forward
   m_TurnParameterName: Turn
   m_RunningSpeed: 8
   isFootIKActive: 0
+--- !u!95 &5915298679558152699
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2093432225946796988}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: cadb587298909dd4dbdb1582f5c66a81, type: 3}
+  m_Controller: {fileID: 9100000, guid: 2fd4b20b21313844b895729f606de0aa, type: 2}
+  m_CullingMode: 1
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!4 &3369241727798939185 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5115762418512223567, guid: 5946825c01ac14c4b8a72b03526b1f70, type: 3}

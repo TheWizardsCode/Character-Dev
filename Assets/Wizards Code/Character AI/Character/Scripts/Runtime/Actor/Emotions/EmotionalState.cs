@@ -184,7 +184,7 @@ namespace WizardsCode.Character
         /// than an interested character. Anger will increase noticability,
         /// but sadness will reduce it.
         /// </summary>
-        public float Noticability
+        public float Noticeability
         {
             get
             {
