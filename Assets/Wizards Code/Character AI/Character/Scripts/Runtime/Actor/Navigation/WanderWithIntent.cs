@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using WizardsCode.Character.Stats;
+﻿using UnityEngine;
 using WizardsCode.Stats;
 using Random = UnityEngine.Random;
 
 namespace WizardsCode.Character
 {
     /// <summary>
-    /// Make the cahracter wander semi-randomly semi-Purposefully. 
-    /// They will wander until randomly until such a timme as a monitored
+    /// Make the character wander semi-randomly semi-Purposefully. 
+    /// They will wander until randomly until such a time as a monitored
     /// stat falls below a given level, at which point they
     /// will try to find an influencer that will raise that stat.
     /// 

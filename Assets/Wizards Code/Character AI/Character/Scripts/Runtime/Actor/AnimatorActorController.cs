@@ -50,6 +50,14 @@ namespace WizardsCode.Character
             get { return m_Animator; }
         }
         
+        protected override bool IsArriving
+        {
+            get
+            {
+                return !m_Agent.pathPending && m_Agent.remainingDistance <= ArrivingDistance;
+            }
+        }
+
         protected override bool HasArrived
         {
             get

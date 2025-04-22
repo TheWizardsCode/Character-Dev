@@ -10,9 +10,9 @@ namespace WizardsCode.Character.AI
         protected override void OnUpdateState()
         {
             Brain.active = false;
-            if (CurrentState == State.Finalizing && AnimatorController.Animator)
+            if (CurrentState == State.Finalizing && AnimatorActorController.Animator)
             {
-                AnimatorController.Animator.enabled = false;
+                AnimatorActorController.Animator.enabled = false;
             }
             base.OnUpdateState();
         }

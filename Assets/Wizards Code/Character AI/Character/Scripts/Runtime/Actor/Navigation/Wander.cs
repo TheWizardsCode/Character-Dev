@@ -15,6 +15,8 @@ namespace WizardsCode.Character
         , IDebug
 #endif
     {
+        [Space]
+        [Header("Wander Configuration")]
         [SerializeField, Tooltip("The minimum time that a character will continue on a random. If the character reaches a waypoint within this time then they will continue in roughly the same direction.")]
         private float minTimeBetweenRandomPathChanges = 10;
         [SerializeField, Tooltip("The maximum time that a character will continue on a random path.")]

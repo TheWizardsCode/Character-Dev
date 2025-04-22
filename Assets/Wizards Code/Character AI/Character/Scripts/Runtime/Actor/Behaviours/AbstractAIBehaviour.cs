@@ -94,11 +94,29 @@ namespace WizardsCode.Character
 
         AnimatorActorController m_AnimatorController;
         bool m_AttemptedCastToAnimatorController = false;
+        
+        /// <summary>
+        /// Get the ActorController this behaviour is influencing.
+        /// 
+        /// <seealso cref="AnimatorActorController"/> 
+        /// </summary>
+        internal BaseActorController ActorController
+        {
+            get
+            {
+                return m_ActorController;
+            }
+        }
+
         /// <summary>
         /// If the actor controller is an animator controller then this will return it, otherwise
         /// it will return a null.
+        /// 
+        /// This parameter is optimized to avoid multiple casts to AnimatorActorController. 
+        /// It is strongly recommended that this parameter be used instead of casting `ActorController`.
+        /// <seealso cref="ActorController"/>
         /// </summary>
-        internal AnimatorActorController AnimatorController {
+        internal AnimatorActorController AnimatorActorController {
             get
             {
                 if (m_AttemptedCastToAnimatorController && m_AnimatorController == null)
@@ -168,17 +186,6 @@ namespace WizardsCode.Character
             get
             {
                 return m_Brain;
-            }
-        }
-
-        /// <summary>
-        /// Get the ActorController this behaviour movements are managed by.
-        /// </summary>
-        internal BaseActorController ActorController
-        {
-            get
-            {
-                return m_ActorController;
             }
         }
 
@@ -330,8 +337,11 @@ namespace WizardsCode.Character
         }
 
         /// <summary>
-        /// Called when the behaviour is awoken, from the `Awake` method of the underlying
-        /// `MonoBehaviour`.
+        /// Called whenever the behaviour is enabled. Any configuration for all runs of the behaviour 
+        /// should be added here. It is important to recognize that this means it 
+        /// may be called multiple times since behaviours are enabled and disabled by the brain depending 
+        /// on their relevance to the current Actor state. Be sure to consider the impact of this on 
+        /// performance.
         /// </summary>
         protected virtual void Init()
         {
@@ -356,7 +366,10 @@ namespace WizardsCode.Character
         }
 
         /// <summary>
-        /// Start this behaviour without an interactable. If this behaviour requires
+        /// `StartBehaviour` called whenever the Brain wants this behaviour to be enacted. 
+        /// Any configuration for a specific execution of the behaviour should occur here.
+        /// 
+        /// If this behaviour requires
         /// an interactable and somehow this method gets called it will return with no
         /// actions (after logging a warning).
         /// </summary>
@@ -372,9 +385,10 @@ namespace WizardsCode.Character
         }
 
         /// <summary>
-        /// If this cue has animations for the start, prepare, perform, finalize and/or end phases then set
+        /// If this behaviour has animations for the start, prepare, perform, finalize and/or end phases then set
         /// them up in the animator.
         /// </summary>
+        [Obsolete("This method is deprecated and will be removed in a future release. Deprecated in v0.4.0")]
         void SetupAnimations()
         {
             if (m_OnStartCue is ActorCueAnimator)
@@ -472,6 +486,12 @@ namespace WizardsCode.Character
             return weight;
         }
 
+        /// <summary>
+        /// This is the standard Unity `Update` method. Generally this should not be overridden.
+        /// Use `OnUpdateState` instead.
+        /// 
+        /// <seealso cref="OnUpdateState"/>
+        /// </summary>
         public virtual void Update()
         {
             if (CurrentState == State.MovingTo || CurrentState == State.Inactive)
@@ -483,8 +503,8 @@ namespace WizardsCode.Character
             {
                 if (CurrentState == State.Starting)
                 {
-                    if (AnimatorController != null) {
-                        AnimatorController.Animator.applyRootMotion = true;
+                    if (AnimatorActorController != null) {
+                        AnimatorActorController.Animator.applyRootMotion = true;
                     }
                     CurrentState = State.Performing;
                 }
@@ -494,8 +514,8 @@ namespace WizardsCode.Character
                     return;
                 } else
                 {
-                    if (AnimatorController != null) {
-                        AnimatorController.Animator.applyRootMotion = false;
+                    if (AnimatorActorController != null) {
+                        AnimatorActorController.Animator.applyRootMotion = false;
                     }
                     EndBehaviour();
                     return;
@@ -511,8 +531,10 @@ namespace WizardsCode.Character
         }
 
         /// <summary>
-        /// Called whenever this behaviour needs to be updated. By default this will look
-        /// for interactables nearby that will satisfy the needs of this behaviour.
+        /// `OnUpdateState` this is used to update the behaviour while it is being executed. It is similar to the `Update` method in Unity except that it is not called every frame. 
+        /// The frequency of calls can be customized in the inspector. This is important from a performance perspective.
+        /// 
+        /// 
         /// </summary>
         protected virtual void OnUpdateState()
         {   
@@ -712,7 +734,7 @@ namespace WizardsCode.Character
                 EndTime = Time.timeSinceLevelLoad + m_OnEndCue.m_Duration;
             }
 
-            AnimatorController?.PlayAnimatorController();
+            AnimatorActorController?.PlayAnimatorController();
             
             return EndTime;
         }

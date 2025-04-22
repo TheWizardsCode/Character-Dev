@@ -203,7 +203,16 @@ namespace WizardsCode.Character
         protected float m_runSqrMagnitude;
         protected float m_sprintSqrMagnitude;
         private Transform m_InteractionPoint;
-        
+
+        protected virtual bool IsArriving
+        {
+            get
+            {
+                // TODO: add a stopping distance parameter and have it sync to namemesh agent in AnimatorActorController
+                return Vector3.SqrMagnitude(transform.position - MoveTargetPosition) <= (m_ArrivingDistance * m_ArrivingDistance) / 2;
+            }
+        }
+
         protected virtual bool HasArrived
         {
             get
@@ -338,7 +347,7 @@ namespace WizardsCode.Character
                     }
                     break;
                 case States.Moving:
-                    if (!HasArrived)
+                    if (IsArriving)
                     {
                         state = States.Arriving;
                         if (onArriving != null)
