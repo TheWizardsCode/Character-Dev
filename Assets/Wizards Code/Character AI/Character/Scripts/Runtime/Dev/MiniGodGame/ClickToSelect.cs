@@ -10,21 +10,14 @@ namespace WizardsCode.Character
         bool m_IsFollowCamera = true;
         [SerializeField, Tooltip("If the camera is to follow the selected object then offset it by this vector.")]
         Vector3 m_CameraOffset = new Vector3(0, 3, -7);
-
+        [SerializeField, Tooltip("If the currently selected actor is not null on startup then the scene will start with this actor selected. This can be changed at runtime by clicking on an actor.")]
         Brain m_CurrentlySelected;
 
         public Brain CurrentlySelected
         {
             get
             {
-                if (m_CurrentlySelected == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    return m_CurrentlySelected;
-                }
+                return m_CurrentlySelected;
             }
         }
 
