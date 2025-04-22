@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 335506291277d6e4093c10c51e9a20df, type: 3}
   m_Name: Sit Ground - Prepare
   m_EditorClassIdentifier: 
-  m_Description: Sometimes I just need to sit on the ground.
-  Duration: 5
-  markName: 
+  m_DisplayName: Sit down
+  m_Description: Sitting on the ground.
+  m_Duration: 5.816667
+  m_MarkName: 
+  m_PrefixWithName: 0
   m_StopMovement: 0
   audioClip: {fileID: 0}
   m_LayerName: 
@@ -23,5 +25,6 @@ MonoBehaviour:
   m_RevertLayerWeight: 0
   m_AnimationParams: []
   m_AnimationClip: {fileID: 7400028, guid: 6a3e767156412e0418b4f1f1f7ae3291, type: 3}
+  m_DurationMatchesAnimation: 1
   animationClipName: 
   animationNormalizedTime: 0
