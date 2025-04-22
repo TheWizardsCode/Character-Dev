@@ -36,7 +36,7 @@ Note that for testing purporses you can select the agent and then change the hun
 
 Behaviours that are intended to impact one or more desired state will often require an interactable in order to execute the behaviour. For example, to sleep the actor will need a safe place to lie down. To eat they will need a source of food. These are setup as Interactable Objects. 
 
-Interactable Objects have the `Interactable` component attached, they also need a collider (setup as a trigger) to allow detection of when an actor is interacting with the object. Note that this collider needs to be larger than the object itself so that the Actor can move within it.
+Interactable Objects have the `Interactable` component attached, they also need a `Collider` (setup as a trigger) to allow detection of when an actor is interacting with the object. Note that this collider needs to be larger than the object itself so that the Actor can move within it. To optimize for performance place all interactables onto the `Interactables` layer (Layer 10 by default).
 
 When a behaviour that uses an interactable is enacted the actor will first move to the object. Upon reaching it they will trigger the collider and an `influencer` will be added to the `Brain` of the actor. This `influencer` will change stats of the character and/or the interactable and this the world state is changed by the actors behaviour. 
 

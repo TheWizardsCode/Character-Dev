@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 335506291277d6e4093c10c51e9a20df, type: 3}
   m_Name: Sleep - Perform
   m_EditorClassIdentifier: 
-  m_Description: 
-  Duration: 60
-  markName: 
+  m_DisplayName: Sleeping
+  m_Description: A restful sleep.
+  m_Duration: 5
+  m_MarkName: 
+  m_PrefixWithName: 0
   m_StopMovement: 0
   audioClip: {fileID: 0}
   m_LayerName: 
@@ -28,5 +30,6 @@ MonoBehaviour:
     paramIntValue: 0
     paramBoolValue: 1
   m_AnimationClip: {fileID: 0}
+  m_DurationMatchesAnimation: 1
   animationClipName: 
   animationNormalizedTime: 0

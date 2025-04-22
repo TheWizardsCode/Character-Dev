@@ -271,38 +271,40 @@ namespace WizardsCode.Stats {
                     if (m_AvailableBehaviours[i].IsInteruptable)
                     {
                         log.AppendLine("Already executing but can interrupt - checking requirements are still valid.");
-
                         currentWeight = m_AvailableBehaviours[i].Weight(this) * 2;
 
-                        log.Append(m_AvailableBehaviours[i].DisplayName);
-                        log.Append(" has a weight of ");
-                        log.AppendLine(currentWeight.ToString());
                         if (currentWeight > highestWeight)
                         {
                             candidateBehaviour = m_AvailableBehaviours[i];
                             highestWeight = currentWeight;
                         }
+
+                        log.AppendLine($"{m_AvailableBehaviours[i].DisplayName} has a weight of {currentWeight}");
+                    } 
+                    else // otherwise, if this is not interuptable we should force it to be the candidate
+                    {
+                        log.AppendLine("Already executing and cannot interrupt.");
+                        candidateBehaviour = m_AvailableBehaviours[i];
+                        break;
                     }
-                } else if (m_AvailableBehaviours[i].DisplayName == m_RequestedBehaviour || m_AvailableBehaviours[i].IsAvailable)
+                } 
+                else if (m_AvailableBehaviours[i].DisplayName == m_RequestedBehaviour || m_AvailableBehaviours[i].IsAvailable)
                 {
-                    log.AppendLine("## Weight");
                     currentWeight = m_AvailableBehaviours[i].Weight(this); 
                     if (m_AvailableBehaviours[i].DisplayName == m_RequestedBehaviour)
                     {
-                        log.Append(m_RequestedBehaviour);
-                        log.AppendLine(" requested by the game engine, giving it a higher weight.");
+                        log.AppendLine($"{m_RequestedBehaviour} requested by the game engine, giving it a higher weight.");
                         currentWeight *= 10;
                     }
                     
-                    log.Append(m_AvailableBehaviours[i].DisplayName);
-                    log.Append(" has a weight of ");
-                    log.AppendLine(currentWeight.ToString());
+                    log.AppendLine($"{m_AvailableBehaviours[i].DisplayName} has a weight of {currentWeight}");
                     if (currentWeight > highestWeight)
                     {
                         candidateBehaviour = m_AvailableBehaviours[i];
                         highestWeight = currentWeight;
                     }
-                } else
+                } 
+                else
                 {
                     log.AppendLine("Behaviour is not available");
                 }
@@ -332,13 +334,19 @@ namespace WizardsCode.Stats {
                 if (ActiveBlockingBehaviour is GenericInteractionBehaviour)
                 {
                     SetTarget(((GenericInteractionBehaviour)ActiveBlockingBehaviour).CurrentInteractableTarget);
-                    if (GetTargetInteractable() == null)
+                    if (GetTargetInteractable() == null) 
                     {
                         ActiveBlockingBehaviour = m_FallbackBehaviour;
+                        
                         if (ActiveBlockingBehaviour != null)
                         {
                             ActiveBlockingBehaviour.StartBehaviour();
                         }
+                    }
+                    else
+                    {
+                        ActiveBlockingBehaviour.CurrentState = AbstractAIBehaviour.State.MovingTo;
+                        Actor.MoveTo(GetTargetInteractable().transform.position);
                     }
                 }
                 else

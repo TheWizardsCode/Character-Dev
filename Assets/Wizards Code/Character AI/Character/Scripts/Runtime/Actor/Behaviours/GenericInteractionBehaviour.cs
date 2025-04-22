@@ -1,9 +1,6 @@
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using WizardsCode.Character;
 using WizardsCode.Stats;
-using UnityEditor;
 using UnityEngine.AI;
 
 namespace WizardsCode.Character
@@ -83,7 +80,7 @@ namespace WizardsCode.Character
                 else
                 {
                     float nearestMag = float.MaxValue;
-                    //TODO select the optimal interactible based on distance and amount of influence
+                    //TODO select the optimal interactable based on distance and amount of influence
                     for (int interactablesIndex = 0; interactablesIndex < cachedAvailableInteractables.Count; interactablesIndex++)
                     {
                         float mag = Vector3.SqrMagnitude(transform.position - cachedAvailableInteractables[interactablesIndex].transform.position);
@@ -98,14 +95,11 @@ namespace WizardsCode.Character
                 if (CurrentInteractableTarget == null)
                 {
                     reasoning.AppendLine("Couldn't see or recall a suitable interactable nearby, will have to find one first.");
+                    reasoning.AppendLine($"{DisplayName} is not available.");
                     return false;
                 }
                 else
                 {
-                    reasoning.Append("Maybe go to ");
-                    reasoning.Append(CurrentInteractableTarget.DisplayName);
-                    reasoning.Append(" to ");
-                    reasoning.AppendLine(DisplayName);
                     return true;
                 }
             }
@@ -123,7 +117,7 @@ namespace WizardsCode.Character
         }
 
         /// <summary>
-        /// Updates the cache of interractables in the area and from memory that can be used by this
+        /// Updates the cache of interactables in the area and from memory that can be used by this
         /// behaviour. Only interactables that have the desired influences on the actor are returned.
         /// </summary>
         // OPTIMIZATION: make this a coroutine as it could be costly and we therefore shouldn't block on it
@@ -143,7 +137,7 @@ namespace WizardsCode.Character
                 }
             }
 
-            if (cachedAvailableInteractables.Count ==0 && Memory != null)
+            if (cachedAvailableInteractables.Count == 0 && Memory != null)
             {
                 //TODO rather than get all memories and then test for DesiredStateImpact add a method to do it in one pass
                 MemorySO[] memories = Memory.GetAllMemories(awarenessRange * 5);
@@ -206,27 +200,27 @@ namespace WizardsCode.Character
                 return false;
             }
 
-            reasoning.Append(interactable.name);
-            reasoning.Append(" might be a good place to ");
-            reasoning.AppendLine(interactable.InteractionName);
+            reasoning.Append($"{interactable.name} at {interactable.transform.position} ");
 
             if (!interactable.HasSpaceFor(Brain))
             {
-                reasoning.AppendLine("Looks like it is full.");
+                reasoning.AppendLine(" doesn't have space.");
                 return false;
             }
 
             if (interactable.IsOnCooldownFor(Brain))
             {
-                reasoning.AppendLine("I Went there recently, let's try somewhere different.");
+                reasoning.AppendLine("was visited recently, let's try somewhere different.");
                 return false;
             }
 
             if (!interactable.HasRequiredObjectStats())
             {
-                reasoning.AppendLine("Looks like they don't have what I need.");
+                reasoning.AppendLine("can't currently fulfill my needs.");
                 return false;
             }
+
+            reasoning.AppendLine($"seems like a good place to {interactable.InteractionName}.");
 
             NavMeshPath path = new NavMeshPath();
             if (!NavMesh.CalculatePath(m_ActorController.transform.position, interactable.GetInteractionPointFor(ActorController).position, NavMesh.AllAreas, path))
@@ -235,7 +229,6 @@ namespace WizardsCode.Character
                 return false;
             }
 
-            reasoning.AppendLine("Looks like a good candidate.");
             return true;
         }
 
@@ -257,22 +250,24 @@ namespace WizardsCode.Character
             return nearbyInteractablesCache;
         }
 
-        // REFACTOR this code is duplicated in MemoryController
+        Collider[] interactableColliders = new Collider[50];
+        // REFACTOR this code as it is duplicated in MemoryController
         internal List<Interactable> GetInteractiablesNear(Vector3 position, float range)
         {
             List<Interactable> interactables = new List<Interactable>();
 
-            //OPTIMIZATION Put interactables on a layer to make the physics operation faster
-            Collider[] hitColliders = Physics.OverlapSphere(position, range, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Collide);
+            int hitCount = Physics.OverlapSphereNonAlloc(position, range, interactableColliders, Settings.InteractableLayerMask, QueryTriggerInteraction.Collide);
+            
             Interactable[] currentInteractables;
-            for (int i = 0; i < hitColliders.Length; i++)
+            for (int i = 0; i < hitCount; i++)
             {
-                currentInteractables = hitColliders[i].GetComponentsInParent<Interactable>();
+                currentInteractables = interactableColliders[i].GetComponentsInParent<Interactable>();
                 for (int idx = 0; idx < currentInteractables.Length; idx++)
                 {
                     if (currentInteractables[idx].HasSpaceFor(Brain))
                     {
                         interactables.Add(currentInteractables[idx]);
+                        break;
                     }
                 }
             }

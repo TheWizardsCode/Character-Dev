@@ -96,8 +96,9 @@ namespace WizardsCode.Stats {
         }
         /// <summary>
         /// Set the current interactable target. The target is the thing that the AI is currently
-        /// focusing their attention on. if the interactable is also an actor then the appropriate
-        /// actor value will also be set.
+        /// focusing their attention on since it is needed for a behaviour they want to enact. 
+        /// The target could be an object or another actor.
+        /// 
         /// When retrieving the target you can use GetTarget() to get the transform, but
         /// you can also use GetTargetInteractable() or GetTargetActor().
         /// </summary>
@@ -118,6 +119,7 @@ namespace WizardsCode.Stats {
                 m_TargetActor = null;
             }
         }
+        
         /// <summary>
         /// Set the current actor target. The target is the thing that the AI is currently
         /// focusing their attention on. If the actor is also an interactable then the appropriate

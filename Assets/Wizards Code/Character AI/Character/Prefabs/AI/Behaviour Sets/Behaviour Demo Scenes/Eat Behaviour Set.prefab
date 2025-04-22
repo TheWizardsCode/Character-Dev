@@ -45,8 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45e2d955ea028604c9552bc8d9e5cf47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_DisplayName: Eat
-  m_Description: 
+  m_DisplayName: Eat out at a diner
+  m_Description: Sometimes eating out is a nice change.
   Icon: {fileID: 21300000, guid: 35050101c6c72554bbdf22092c230583, type: 3}
   m_RetryFrequency: 2
   m_isInteruptable: 0
@@ -78,7 +78,6 @@ MonoBehaviour:
   - statTemplate: {fileID: 11400000, guid: 4efea187304c1a04581b1f0b8cc341cf, type: 2}
     objective: 0
   m_RequiredWorldState: []
-  CurrentState: 5
   DestroyOnInactive: 0
   awarenessRange: 10
 --- !u!114 &-8709179742726273282
@@ -93,7 +92,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67754f2c8fb50d34bbcdd8a78ba35a25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_DisplayName: Eat
+  m_DisplayName: Eat on the go
   m_Description: When hungry every animal needs to eat in some way.
   Icon: {fileID: 21300000, guid: 35050101c6c72554bbdf22092c230583, type: 3}
   m_RetryFrequency: 2
@@ -133,6 +132,5 @@ MonoBehaviour:
     resetInfluenceApplied: 0
   m_DesiredStateImpacts: []
   m_RequiredWorldState: []
-  CurrentState: 5
   DestroyOnInactive: 0
   m_CooldownDuration: 60

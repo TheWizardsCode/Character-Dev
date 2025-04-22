@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using WizardsCode.Stats;
-using WizardsCode.Character.Stats;
 using System;
 using static WizardsCode.Character.StateSO;
 using UnityEngine.Serialization;
@@ -43,7 +41,7 @@ namespace WizardsCode.Character
         bool m_DestroyOnUse = false;
         [SerializeField, Tooltip("The set of object stats and the influence to apply to them when a character interacts with the object.")]
         internal StatInfluence[] m_ObjectInfluences;
-        [SerializeField, Tooltip("The cooldown time before a character can be influenced by this influencer again.")]
+        [SerializeField, Tooltip("The cooldown time before a character can be influenced by this influencer again. For example, if the character is harvesting a resource then the available resource within this object will be reduced.")]
         float m_Cooldown = 30;
         #endregion
 
@@ -132,6 +130,16 @@ namespace WizardsCode.Character
         #endregion
 
         #region Lifecycle
+        void OnEnable()
+        {
+            int interactableLayerMask = Settings.InteractableLayerMask;
+            if ((1 << gameObject.layer & interactableLayerMask) == 0)
+            {
+                Debug.LogError($"The Interactable GameObject '{gameObject.name}' is not on a layer included in the InteractableLayerMask. Please ensure it is on a valid layer. This change is being made automatically to ensure the correct running of the application.");
+                gameObject.layer = Mathf.RoundToInt(Mathf.Log(interactableLayerMask, 2));
+            }
+        }
+
         void Awake()
         {
             m_StatsTracker = GetComponentInParent<StatsTracker>();

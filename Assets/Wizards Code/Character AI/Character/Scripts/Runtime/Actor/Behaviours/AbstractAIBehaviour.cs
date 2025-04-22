@@ -90,7 +90,21 @@ namespace WizardsCode.Character
         #endregion
 
         public enum State { Starting, Preparing, Performing, Finalizing, Ending, Inactive, MovingTo }
-        public State CurrentState = State.Inactive;
+        State m_State = State.Inactive;
+        public State CurrentState {
+            get { return m_State; }
+            internal set
+            {
+                if (m_State != value)
+                {
+                    m_State = value;
+                    if (m_State == State.Inactive)
+                    {
+                        EndTime = 0;
+                    }
+                }
+            }
+        }
 
         AnimatorActorController m_AnimatorController;
         bool m_AttemptedCastToAnimatorController = false;
@@ -299,29 +313,20 @@ namespace WizardsCode.Character
             for (int i = 0; i < m_RequiredStats.Length; i++)
             {
                 StatSO stat = Brain.GetOrCreateStat(m_RequiredStats[i].statTemplate);
-                reasoning.Append($"{stat.DisplayName} ({stat.Value})");
-
+                reasoning.Append($"{stat.DisplayName} has a current value of {stat.Value}");
                 switch (m_RequiredStats[i].objective)
                 {
                     case Objective.LessThan:
                         thisRequirementMet = stat.Value < m_RequiredStats[i].Value;
-                        if (!thisRequirementMet) {
-                            reasoning.Append(" is in the wrong range since it is not less than ");
-                        }
+                        reasoning.Append($" and a target value of < {m_RequiredStats[i].Value}.");
                         break;
                     case Objective.Approximately:
                         thisRequirementMet = Mathf.Approximately(stat.Value, m_RequiredStats[i].Value);
-                        if (!thisRequirementMet)
-                        {
-                            reasoning.Append(" is in the wrong range since it is not approximately equal to ");
-                        }
+                        reasoning.Append($" and a target value of ~= {m_RequiredStats[i].Value}.");
                         break;
                     case Objective.GreaterThan:
                         thisRequirementMet = stat.Value > m_RequiredStats[i].Value;
-                        if (!thisRequirementMet)
-                        {
-                            reasoning.Append("is in the wrong range since it is not greater than ");
-                        }
+                        reasoning.Append($" and a target value of > {m_RequiredStats[i].Value}.");
                         break;
                     default:
                         Debug.LogError("Don't know how to handle an Objective of " + m_RequiredStats[i].objective);
@@ -329,7 +334,14 @@ namespace WizardsCode.Character
                         reasoning.Append("Error in processing " + m_RequiredStats[i] + " unrecognized objective: " + m_RequiredStats[i].objective);
                         break;
                 }
-                reasoning.AppendLine(m_RequiredStats[i].Value.ToString());
+                if (thisRequirementMet)
+                {
+                    reasoning.AppendLine($" This requirement /is/ met.");
+                }
+                else
+                {
+                    reasoning.AppendLine($" This requirement is /not/ met.");
+                }
                 allRequirementsMet &= thisRequirementMet;
             }
 
@@ -381,42 +393,6 @@ namespace WizardsCode.Character
             if (m_Director != null)
             {
                 m_Director.Play();
-            }
-        }
-
-        /// <summary>
-        /// If this behaviour has animations for the start, prepare, perform, finalize and/or end phases then set
-        /// them up in the animator.
-        /// </summary>
-        [Obsolete("This method is deprecated and will be removed in a future release. Deprecated in v0.4.0")]
-        void SetupAnimations()
-        {
-            if (m_OnStartCue is ActorCueAnimator)
-            {
-                Debug.Log("Setup Start Animations");
-            }
-            
-            if (m_OnPrepareCue is ActorCueAnimator)
-            {
-                //m_ActorController.Animator.SetPrepareClip(((ActorCueAnimator)m_OnPrepareCue).Clip);
-            }
-            
-            for (int i = 0; i < m_OnPerformCue.Length; i++)
-            {
-                if (m_OnPerformCue[i] is ActorCueAnimator)
-                {
-                    Debug.Log("Setup Perform Animations");
-                }
-            }
-
-            if (m_OnFinalizeCue is ActorCueAnimator)
-            {
-                Debug.Log("Setup Finalize Animations");
-            }
-            
-            if (m_OnEndCue is ActorCueAnimator)
-            {
-                Debug.Log("Setup End Animations");
             }
         }
 
@@ -474,9 +450,6 @@ namespace WizardsCode.Character
                     if (stats.UnsatisfiedDesiredStates[i].statTemplate == DesiredStateImpacts[idx].statTemplate)
                     {
                         float impact = Math.Abs(stats.UnsatisfiedDesiredStates[i].normalizedTargetValue - stats.GetStat(stats.UnsatisfiedDesiredStates[i].statTemplate).NormalizedValue);
-                        reasoning.Append("They are not ");
-                        reasoning.Append(stats.UnsatisfiedDesiredStates[i].name);
-                        reasoning.AppendLine(" and this behaviour will help.");
                         //TODO higher weight should be given to behaviours that will bring the stat into the desired state
                         weight += impact;
                     }
@@ -692,7 +665,7 @@ namespace WizardsCode.Character
             {
                 if (!interactable.HasInfluenceOn(DesiredStateImpacts[idx]))
                 {
-                    reasoning.Append($" doesn't have the desired effect on {DesiredStateImpacts[idx].statTemplate.DisplayName}.");
+                    reasoning.AppendLine($"{interactable.DisplayName} at {interactable.transform.position} doesn't have the desired effect on {DesiredStateImpacts[idx].statTemplate.DisplayName}.");
                     return false;
                 }
             }
