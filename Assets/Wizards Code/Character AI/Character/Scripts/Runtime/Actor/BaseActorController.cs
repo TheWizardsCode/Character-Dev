@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using WizardsCode.AnimationControl;
 using WizardsCode.Stats;
@@ -183,7 +184,7 @@ namespace WizardsCode.Character
         {
         }
 
-        System.Collections.IEnumerator cueCoroutine;
+        IEnumerator cueCoroutine;
         /// <summary>
         /// Prompt the actor to enact a cue. A cue describes
         /// a position and actions that an actor should take.
@@ -198,6 +199,14 @@ namespace WizardsCode.Character
             {
                 StartCoroutine(cueCoroutine);
             }
+        }
+
+        public virtual void Prompt(ActorCue cue, float duration) {
+            if (cue == null) return;
+
+            cue.Duration = duration;
+
+            Prompt(cue);
         }
 
         protected float m_runSqrMagnitude;

@@ -15,16 +15,16 @@ namespace WizardsCode.Character
         ActorCue cue;
 
         private bool isPrompted;
-        private BaseActorController actor;
 
         public override void ProcessFrame(Playable playable, FrameData info, object playerData)
         {
-            actor = playerData as BaseActorController;
-            if (actor == null) return;
+            BaseActorController baseActor = playerData as BaseActorController;
+            if (baseActor == null) return;
 
             if (!isPrompted)
             {
-                actor.Prompt(cue);
+                baseActor.Prompt(cue, (float)playable.GetDuration());
+                
                 isPrompted = true;
             }
         }
@@ -32,6 +32,6 @@ namespace WizardsCode.Character
         public override void OnBehaviourPlay(Playable playable, FrameData info)
         {
             isPrompted = false;
-        }
+          }
     }
 }

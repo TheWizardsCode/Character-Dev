@@ -1,4 +1,5 @@
 using System.Collections;
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Serialization;
@@ -16,8 +17,8 @@ namespace WizardsCode.Character
         [TextArea, SerializeField, Tooltip("A description of this actor cue.")]
         string m_Description;
 
-        [SerializeField, Tooltip("Duration of this phase of this cue action. If 0 then it is unlimited.")]
-        public float m_Duration = 5;
+        [SerializeField, Tooltip("Duration of this phase of this cue action. If 0 then it is unlimited. Note that this is overridden by the playable in the timeline since the timeline will set the duration of the cue.")]
+        float m_Duration = 5;
 
         [Header("Movement")]
         [SerializeField, Tooltip("The name of the mark the actor should move to on this cue.")]
@@ -33,6 +34,12 @@ namespace WizardsCode.Character
         public AudioClip audioClip;
 
         protected BaseActorController m_Actor;
+
+        public float Duration
+        {
+            get { return m_Duration; }
+            set { m_Duration = value; }
+        }
 
         /// <summary>
         /// Get or set the mark name, that is the name of an object in the scene the character should move to when this cue is prompted.
@@ -54,18 +61,25 @@ namespace WizardsCode.Character
             set { m_MarkName = value; }
         }
 
+        private float m_EndTime;
         /// <summary>
         /// Prompt an actor to enact the actions identified in this cue.
         /// </summary>
         /// <returns>An optional coroutine that should be started by the calling MonoBehaviour</returns>
         public virtual IEnumerator Prompt(BaseActorController actor)
         {
+            m_EndTime = Time.time + Duration;
+
             m_Actor = actor;
 
             ProcessMove();
             ProcessAudio();
 
             yield return UpdateCoroutine();
+
+            yield return new WaitForSeconds(m_EndTime - Time.time);
+
+            yield return Revert(actor);
         }
 
         /// <summary>

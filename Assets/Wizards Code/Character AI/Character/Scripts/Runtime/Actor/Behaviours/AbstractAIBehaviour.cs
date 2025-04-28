@@ -73,7 +73,7 @@ namespace WizardsCode.Character
 
         [Header("Conditions")]
         [SerializeField, Range(0.1f, 5), Tooltip("The Weight Multiplier is used to lower or higher the priority of this behaviour relative to others the actor has. The higher this multiplier is the more likely it is the behaviour will be fired. The lower, the less likely.")]
-        float m_WeightMultiplier = 1;
+        internal float m_WeightMultiplier = 1;
         [SerializeField, Range(0f, 2f), Tooltip("An allowable variation in the Weight Multiplier. Each time the behaviour is evaluated the base weight multiplier will be increased or decreased by a random number between +/- this amount.")]
         float m_WeightVariation = 0.1f;
         [SerializeField, Tooltip("The required senses about the current world state around the actor. For example, we may have a sense for whether there is a willing mate nearby which will permit a make babies  behaviour to fire. Another example is that a" +
@@ -104,6 +104,12 @@ namespace WizardsCode.Character
                     }
                 }
             }
+        }
+
+        public string Description
+        {
+            get { return m_Description; }
+            set { m_Description = value; }
         }
 
         AnimatorActorController m_AnimatorController;
@@ -527,7 +533,7 @@ namespace WizardsCode.Character
                 if (m_OnStartCue != null)
                 {
                     Brain.Actor.Prompt(m_OnStartCue);
-                    EndTime = Time.timeSinceLevelLoad + m_OnStartCue.m_Duration;
+                    EndTime = Time.timeSinceLevelLoad + m_OnStartCue.Duration;
                 }
 
                 if (m_OnStartEvent != null)
@@ -549,7 +555,7 @@ namespace WizardsCode.Character
                     if (performingCue != null)
                     {
                         Brain.Actor.Prompt(performingCue);
-                        EndTime = Time.timeSinceLevelLoad + performingCue.m_Duration;
+                        EndTime = Time.timeSinceLevelLoad + performingCue.Duration;
                     }
                 }
                 else
@@ -565,13 +571,14 @@ namespace WizardsCode.Character
 
                 if (performingCue != null)
                 {
+                    // TODO: Is this now being called twice as I added it into the Prompt method?
                     StartCoroutine(performingCue.Revert(Brain.Actor));
                 }
 
                 if (m_OnFinalizeCue != null)
                 {
                     Brain.Actor.Prompt(m_OnFinalizeCue);
-                    EndTime = Time.timeSinceLevelLoad + m_OnFinalizeCue.m_Duration;
+                    EndTime = Time.timeSinceLevelLoad + m_OnFinalizeCue.Duration;
                 }
                 else
                 {
@@ -624,7 +631,7 @@ namespace WizardsCode.Character
             if (m_OnPrepareCue)
             {
                 Brain.Actor.Prompt(m_OnPrepareCue);
-                EndTime = Time.timeSinceLevelLoad + m_OnPrepareCue.m_Duration;
+                EndTime = Time.timeSinceLevelLoad + m_OnPrepareCue.Duration;
             }
             else
             {
@@ -704,7 +711,7 @@ namespace WizardsCode.Character
             if (m_OnEndCue != null)
             {
                 Brain.Actor.Prompt(m_OnEndCue);
-                EndTime = Time.timeSinceLevelLoad + m_OnEndCue.m_Duration;
+                EndTime = Time.timeSinceLevelLoad + m_OnEndCue.Duration;
             }
 
             AnimatorActorController?.PlayAnimatorController();

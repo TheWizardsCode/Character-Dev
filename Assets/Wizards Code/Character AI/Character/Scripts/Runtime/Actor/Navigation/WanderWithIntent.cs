@@ -141,12 +141,11 @@ namespace WizardsCode.Character
             return msg;
         }
 
-        private void OnValidate()
+        void Reset()
         {
-            if (DisplayName == "Unnamed AI Behaviour")
-            {
-                DisplayName = "Wander with Intent";
-            }
+            DisplayName = "Wander with Intent";
+            Description = "Wander semi-randomly about the world. That is the character will usually pick a new destination in roughly the same direction unless they are reaching the edge of their range. If they are reaching the edge of their range then they will pick a new direction.";
+            m_WeightMultiplier = 1;
         }
 #endif
     }

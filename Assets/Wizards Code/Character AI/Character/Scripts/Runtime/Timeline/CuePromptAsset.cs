@@ -21,7 +21,8 @@ namespace WizardsCode.Character
 
         public override Playable CreatePlayable(PlayableGraph graph, GameObject owner)
         {
-            return ScriptPlayable<CuePromptPlayableBehaviour>.Create(graph, template);
+            Playable playable = ScriptPlayable<CuePromptPlayableBehaviour>.Create(graph, template);
+            return playable;
         }
     }
 }

@@ -90,6 +90,12 @@ namespace WizardsCode.Character
                 }
             }
 
+            m_AnimatorController = m_Animator.runtimeAnimatorController;
+            if (m_AnimatorController == null)
+            {
+                Debug.LogWarning($"`{displayName}` does not have an Animator Controller set in the Animator. No animations will be played.");
+            }
+
             if (!head || !animator)
             {
                 m_IsLookAtIKActive = false;
@@ -111,6 +117,18 @@ namespace WizardsCode.Character
         {
             base.Update();
             UpdateMovement();
+        }
+
+        public override void Prompt(ActorCue cue, float duration) {
+            if (cue == null) return;
+
+            cue.Duration = duration;
+            if (cue is ActorCueAnimator animationCue)
+            {
+                animationCue.DurationMatchesAnimation = false;
+            }
+
+            Prompt(cue);
         }
 
 #region Movement
@@ -153,13 +171,13 @@ namespace WizardsCode.Character
         {
             if (m_Agent.remainingDistance <= m_MinRunDistance)
             {
-                m_Agent.speed = m_WalkSpeed;
+                m_Agent.speed = Mathf.Lerp(m_Agent.speed, m_WalkSpeed, Time.deltaTime * 2);
             } else if (m_Agent.remainingDistance >= m_MinSprintDistance)
             {
-                m_Agent.speed = m_MaxSpeed;
+                m_Agent.speed = Mathf.Lerp(m_Agent.speed, m_MaxSpeed, Time.deltaTime * 2);
             } else
             {
-                m_Agent.speed = m_MaxSpeed * m_RunSpeedFactor;
+                m_Agent.speed = Mathf.Lerp(m_Agent.speed, m_RunSpeed, Time.deltaTime * 2);
             }
             
             SetForwardAndTurnParameters();
@@ -167,22 +185,26 @@ namespace WizardsCode.Character
 
         private void SetForwardAndTurnParameters()
         {
+            float directionDampTime = 0.25f;
+            float speedDampTime = 0.3f;
+
+            // Calculate the forward parameter from the speed of the character.
             float magVelocity = m_Agent.velocity.magnitude;
             float speedParam = 0;
             if (!Mathf.Approximately(magVelocity, 0))
             {
                 speedParam = magVelocity / m_MaxSpeed;
             }
+            // OPTIMIZATION: Use hashes for animation parameters
+            m_Animator.SetFloat(m_SpeedParameterName, speedParam, speedDampTime, Time.deltaTime);
 
+            // Calculate the turn parameter from the direction of the character.
             Vector3 s = m_Agent.transform.InverseTransformDirection(m_Agent.velocity).normalized;
             float turn = s.x;
+            // OPTIMIZATION: Use hashes for animation parameters
+            m_Animator.SetFloat(m_TurnParameterName, turn, directionDampTime, Time.deltaTime);
 
-            if (m_Animator)
-            {
-                m_Animator.SetFloat(m_SpeedParameterName, speedParam);
-                m_Animator.SetFloat(m_TurnParameterName, turn);
-            }
-
+            // Set state if moving or turning
             if (Mathf.Abs(speedParam) > 0.05 || Mathf.Abs(turn) > 0.05)
             {
                 state = States.Moving;
@@ -265,10 +287,11 @@ namespace WizardsCode.Character
 
 #region Animation
         /// <summary>
-        /// If the clip is non null then it will be played using a Playable. 
+        /// If the clip is non null then it will be played using a Playable. This will stop the animator from controlling the character.
+        /// To set the animator back to using the animator controller use `PlayAnimatorController()`.
         /// </summary>
         /// <param name="clip"></param>
-        // REFACTOR: PlayAnimationClip should be pulled up to the AnimatorActorController
+        /// <seealso cref="PlayAnimatorController"/>
         public void PlayAnimationClip(AnimationClip clip)
         {
             if (Animator == null) return;
@@ -279,8 +302,9 @@ namespace WizardsCode.Character
         }
 
         /// <summary>
-        /// Switch back to animating using the animation controller.
+        /// Switch back to animating using the animation controller after playing a clip using a playable.
         /// </summary>
+        /// <seealso cref="PlayAnimationClip"/>
         public void PlayAnimatorController()
         {           
             if (Animator == null) return;

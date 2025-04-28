@@ -33,8 +33,6 @@ namespace WizardsCode.Character
         AnimationClip m_AnimationClip;
         [SerializeField, Tooltip("Should the duration of this cue be set to the duration of the clip?")]
         bool m_DurationMatchesAnimation = true;
-        [SerializeField, Tooltip("Tha name of the animation clip to play, this should be the name of a clip in an Animator on the caharacter.")]
-        string animationClipName;
         [SerializeField, Tooltip("The normalized time from which to start the animation.")]
         float animationNormalizedTime = 0;
 
@@ -44,6 +42,18 @@ namespace WizardsCode.Character
         public float layerWeightChangeTime
         {
             get { return m_LayerWeightChangeTime; }
+        }
+
+        /// <summary>
+        /// If true then the duration of this cue will be set to the duration of the animation clip.
+        /// If false then the duration will be set to the value of the Duration property in the Inspector.
+        /// 
+        /// Note that this is overridden by the playable in the timeline since the timeline will set the duration of the cue.
+        /// </summary>
+        public bool DurationMatchesAnimation
+        {
+            get { return m_DurationMatchesAnimation; }
+            set { m_DurationMatchesAnimation = value; }
         }
 
         public AnimationClip Clip { get { return m_AnimationClip; } }
@@ -97,17 +107,18 @@ namespace WizardsCode.Character
                 }
             }
 
+            AnimatorController.PlayAnimatorController();
+
             yield return null;
         }
 
         public override IEnumerator Prompt(BaseActorController actor)
         {
             m_Actor = actor;
-            RuntimeAnimatorController controller = AnimatorController.Animator.runtimeAnimatorController;
 
-            if (m_AnimationClip != null && m_DurationMatchesAnimation)
+            if (m_AnimationClip != null && DurationMatchesAnimation)
             {
-                m_Duration = m_AnimationClip.length;
+                Duration = m_AnimationClip.length;
             }
 
             ProcessAnimationLayerWeights();
@@ -138,12 +149,6 @@ namespace WizardsCode.Character
                         Mathf.Lerp(originalWeight, m_LayerWeight, time / m_LayerWeightChangeTime));
                     yield return new WaitForEndOfFrame();
                 }
-            }
-
-            //TODO Remove the use of animationClipName and replace entirely with AnimationClip
-            if (!string.IsNullOrWhiteSpace(animationClipName))
-            {
-                AnimatorController.Animator.Play(animationClipName, m_LayerIndex, animationNormalizedTime);
             }
 
             yield return base.UpdateCoroutine();
