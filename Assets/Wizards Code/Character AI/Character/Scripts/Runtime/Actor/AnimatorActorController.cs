@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using NaughtyAttributes;
+using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Playables;
 
@@ -13,28 +14,30 @@ namespace WizardsCode.Character
     public class AnimatorActorController : BaseActorController
     {
         #region InspectorParameters
-        [Header("Look IK")]
-        [SerializeField, Tooltip("Should the actor use IK to look at a given target.")]
+        [Space]
+        // IK Configuration
+        [SerializeField, Tooltip("Should the actor use IK to look at a given target."), BoxGroup("IK Configuration")]
         bool m_IsLookAtIKActive = true;
-        [SerializeField, Tooltip("The time it takes for the head to start moving when it needs to turn to look at something.")]
+        [SerializeField, Tooltip("The time it takes for the head to start moving when it needs to turn to look at something."), ShowIf("m_IsLookAtIKActive"), BoxGroup("IK Configuration")]
         float m_LookAtHeatTime = 0.2f;
-        [SerializeField, Tooltip("The time it takes for the look IK rig to cool after reaching the correct look angle.")]
+        [SerializeField, Tooltip("The time it takes for the look IK rig to cool after reaching the correct look angle."), ShowIf("m_IsLookAtIKActive"), BoxGroup("IK Configuration")]
         float m_LookAtCoolTime = 0.2f;
-        
-        
-        [Header("Animation")]
-        [SerializeField, Tooltip("The animation controller for updating animations of the model representing this actor. If left empty no animations will be played.")]
-        protected Animator m_Animator;
-        [SerializeField, Tooltip("Should the character use Root Motion baked into the animations?")]
-        bool m_UseRootMotion = false;
-        [SerializeField, Tooltip("The name of the parameter in the animator that sets the forward speed of the character.")]
-        private string m_SpeedParameterName = "Forward";
-        [SerializeField, Tooltip("The name of the parameter in the animator that sets the turn angle of the character.")]
-        private string m_TurnParameterName = "Turn";
-        [SerializeField, Tooltip("The speed of this character when at a run. It will usually be going slower than this, and for short periods, can go faster (at a spring).")]
-        private float m_RunningSpeed = 8;
-        [Tooltip("If true then this script will control IK configuration of the character.")]
+        [SerializeField, Tooltip("If true then this script will control foot IK."), BoxGroup("IK Configuration")]
         public bool isFootIKActive = false;
+        
+        
+        [Space]
+        // Animation
+        [SerializeField, Tooltip("The animation controller for updating animations of the model representing this actor. If left empty no animations will be played."), BoxGroup("Animation")]
+        protected Animator m_Animator;
+        [SerializeField, Tooltip("Should the character use Root Motion baked into the animations?"), BoxGroup("Animation")]
+        bool m_UseRootMotion = false;
+        [SerializeField, Tooltip("The name of the parameter in the animator that sets the forward speed of the character."), BoxGroup("Animation")]
+        private string m_SpeedParameterName = "Forward";
+        [SerializeField, Tooltip("The name of the parameter in the animator that sets the turn angle of the character."), BoxGroup("Animation")]
+        private string m_TurnParameterName = "Turn";
+        [SerializeField, Tooltip("The speed of this character when at a run. It will usually be going slower than this, and for short periods, can go faster (at a sprint)."), BoxGroup("Animation")]
+        private float m_RunningSpeed = 8;
         #endregion
 
         protected NavMeshAgent m_Agent;
@@ -96,7 +99,7 @@ namespace WizardsCode.Character
                 Debug.LogWarning($"`{displayName}` does not have an Animator Controller set in the Animator. No animations will be played.");
             }
 
-            if (!head || !animator)
+            if (!HeadBone || !animator)
             {
                 m_IsLookAtIKActive = false;
             }
@@ -252,11 +255,11 @@ namespace WizardsCode.Character
 
             float lookAtTargetWeight = m_IsLookAtIKActive ? 1.0f : 0.0f;
 
-            Vector3 curDir = m_CurrentLookAtPosition - head.position;
-            Vector3 futDir = pos - head.position;
+            Vector3 curDir = m_CurrentLookAtPosition - HeadBone.position;
+            Vector3 futDir = pos - HeadBone.position;
 
             curDir = Vector3.RotateTowards(curDir, futDir, m_LookAtSpeed * Time.deltaTime, float.PositiveInfinity);
-            m_CurrentLookAtPosition = head.position + curDir;
+            m_CurrentLookAtPosition = HeadBone.position + curDir;
 
             float blendTime = lookAtTargetWeight > lookAtWeight ? m_LookAtHeatTime : m_LookAtCoolTime;
             lookAtWeight = Mathf.MoveTowards(lookAtWeight, lookAtTargetWeight, Time.deltaTime / blendTime);
@@ -310,6 +313,15 @@ namespace WizardsCode.Character
             if (Animator == null) return;
             AnimationPlayableUtilities.PlayAnimatorController(Animator, m_AnimatorController, out _playableGraph);
         }
-#endregion // Animation
+        #endregion // Animation
+
+        protected override void OnValidate()
+        {
+            base.OnValidate();
+            if (m_Animator == null)
+            {
+                m_Animator = GetComponentInChildren<Animator>();
+            }
+        }
     }
 }

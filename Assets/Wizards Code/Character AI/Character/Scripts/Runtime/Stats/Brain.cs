@@ -197,7 +197,7 @@ namespace WizardsCode.Stats {
             }
         }
 
-        public bool hasPrioritized { get { return string.IsNullOrEmpty(m_RequestedBehaviour); } }
+        public bool hasPrioritized { get { return !string.IsNullOrEmpty(m_RequestedBehaviour); } }
 
         internal override void Update()
         {
@@ -328,7 +328,7 @@ namespace WizardsCode.Stats {
                 ActiveBlockingBehaviour.FinishBehaviour();
             }
 
-            if (candidateBehaviour.IsBlocking)
+            if (candidateBehaviour != ActiveBlockingBehaviour && candidateBehaviour.IsBlocking)
             {
                 ActiveBlockingBehaviour = candidateBehaviour;
                 if (ActiveBlockingBehaviour is GenericInteractionBehaviour)
@@ -355,14 +355,14 @@ namespace WizardsCode.Stats {
                     ActiveBlockingBehaviour.StartBehaviour();
                 }
             }
-            else
+            else if (candidateBehaviour != ActiveBlockingBehaviour)
             {
                 candidateBehaviour.EndTime = 0;
                 candidateBehaviour.StartBehaviour();
                 ActiveNonBlockingBehaviours.Add(candidateBehaviour);
             }
 
-            if (candidateBehaviour.DisplayName == m_RequestedBehaviour)
+            if (hasPrioritized && candidateBehaviour.DisplayName == m_RequestedBehaviour)
             {
                 m_RequestedBehaviour = "";
             }

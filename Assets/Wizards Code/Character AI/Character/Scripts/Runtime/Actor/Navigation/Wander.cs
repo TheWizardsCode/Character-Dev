@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using NaughtyAttributes;
+using UnityEngine;
 using UnityEngine.AI;
 using WizardsCode.BackgroundAI;
 
@@ -16,26 +17,21 @@ namespace WizardsCode.Character
 #endif
     {
         [Space]
-        [Header("Wander Configuration")]
-        [SerializeField, Tooltip("The minimum time that a character will continue on a random. If the character reaches a waypoint within this time then they will continue in roughly the same direction.")]
-        private float minTimeBetweenRandomPathChanges = 10;
-        [SerializeField, Tooltip("The maximum time that a character will continue on a random path.")]
-        private float maxTimeBetweenRandomPathChanges = 20;
-        [SerializeField, Tooltip("The minimum distance the agent will typically travel on a given path before they change direction.")]
+        // Wander Configuration
+        [SerializeField, Tooltip("The minimum distance the agent will typically travel on a given path before they change direction."), BoxGroup("Wander Configuration")]
         private float minDistanceOfRandomPathChange = 15;
-        [SerializeField, Tooltip("The maximum distance the agent will typically travel on a given path before they change direction.")]
+        [SerializeField, Tooltip("The maximum distance the agent will typically travel on a given path before they change direction."), BoxGroup("Wander Configuration")]
         private float maxDistanceOfRandomPathChange = 30;
-        [SerializeField, Tooltip("The minimum angle that the character will deviate from the current path when changing the wander direction.")]
+        [SerializeField, Tooltip("The minimum angle that the character will deviate from the current path when changing the wander direction."), BoxGroup("Wander Configuration")]
         private float minAngleOfRandomPathChange = -60;
-        [SerializeField, Tooltip("The maximum angle that the character will deviate from the current path when changing the wander direction.")]
+        [SerializeField, Tooltip("The maximum angle that the character will deviate from the current path when changing the wander direction."), BoxGroup("Wander Configuration")]
         private float maxAngleOfRandomPathChange = 60;
-        [SerializeField, Tooltip("The approximate maximum range the agent will normally wander from their start position.")]
+        [SerializeField, Tooltip("The approximate maximum range the agent will normally wander from their start position."), BoxGroup("Wander Configuration")]
         private float m_MaxWanderRange = 50f;
-        [SerializeField, NavMeshAreaMask, Tooltip("The area mask for allowed areas for this agent to wander within.")]
+        [SerializeField, NavMeshAreaMask, Tooltip("The area mask for allowed areas for this agent to wander within."), BoxGroup("Wander Configuration")]
         public int navMeshAreaMask = NavMesh.AllAreas;
 
         private Vector3 m_TargetPosition;
-        private float timeToNextWanderPathChange;
         private Vector3 m_StartPosition;
         private Terrain m_Terrain;
         
@@ -44,7 +40,6 @@ namespace WizardsCode.Character
             base.Init();
 
             m_StartPosition = transform.position;
-            timeToNextWanderPathChange = float.MinValue;
         }
 
         /// <summary>
@@ -59,7 +54,6 @@ namespace WizardsCode.Character
                 {
                     m_TargetPosition = value;
                     ActorController.MoveTargetPosition = value;
-                    timeToNextWanderPathChange = Random.Range(minTimeBetweenRandomPathChanges, maxTimeBetweenRandomPathChanges);
                 }
             }
         }
@@ -74,24 +68,10 @@ namespace WizardsCode.Character
             UpdateMove();
         }
 
-        /*
-        protected override void OnUpdate()
-        {
-            timeToNextWanderPathChange -= Time.deltaTime;
-
-            if (timeToNextWanderPathChange <= 0)
-            {
-                OnReachedTarget();
-                FinishBehaviour();
-            }
-        }
-        */
-
         internal override float FinishBehaviour()
         {
             float endTime = base.FinishBehaviour();
             Brain.Actor.StopMoving();
-            timeToNextWanderPathChange = float.MinValue;
             return endTime;
         }
 
@@ -101,6 +81,11 @@ namespace WizardsCode.Character
         virtual protected void UpdateMove()
         {   
             UpdateWanderTarget();
+        }
+
+        protected override void OnUpdateState()
+        {
+            base.OnUpdateState();
         }
 
         /// <summary>
@@ -136,7 +121,7 @@ namespace WizardsCode.Character
                 }
                 else
                 {
-                    // TODO Rather than turning 180 degress we should turn a multiple of the max or min angles.
+                    // TODO Rather than turning 180 degrees we should turn a multiple of the max or min angles.
                     position = transform.position + ((randAng * -transform.forward) * Random.Range(minDistance, maxDistance));
                 }
 

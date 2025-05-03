@@ -13,81 +13,92 @@ using UnityEngine.Serialization;
 using static WizardsCode.Character.BaseActorController;
 using UnityEngine.Timeline;
 using UnityEngine.Playables;
+using NaughtyAttributes;
 
 namespace WizardsCode.Character
 {
     public abstract class AbstractAIBehaviour : MonoBehaviour
     {
         #region Inspector Fields
-        [Header("UI")]
-        [SerializeField, Tooltip("The name to use in the User Interface.")]
+        // UI
+        [SerializeField, Tooltip("The name to use in the User Interface."), BoxGroup("UI")]
         string m_DisplayName = "Unnamed AI Behaviour";
-        [SerializeField, Tooltip("A player readable description of the behaviour.")]
+        [SerializeField, Tooltip("A player readable description of the behaviour."), BoxGroup("UI")]
         [TextArea(3, 10)]
         string m_Description;
-        [SerializeField, Tooltip("Icon for this behaviour.")]
+        [SerializeField, Tooltip("Icon for this behaviour."), BoxGroup("UI")]
         internal Sprite Icon;
 
-        [Header("Controls")]
-        [SerializeField, Tooltip("How frequently, in seconds, this behaviour should be tested for activation."), Range(0.01f, 5f)]
+        [Space]
+        // Controls
+        [SerializeField, Tooltip("How frequently, in seconds, this behaviour should be tested for activation."), Range(0.01f, 5f), BoxGroup("Controls")]
         float m_RetryFrequency = 2;
-        [SerializeField, Tooltip("Is this behaviour interuptable. That is if the actor decides something else is more important can this behaviour be finished early.")]
+        [SerializeField, Tooltip("Is this behaviour interuptable. That is if the actor decides something else is more important can this behaviour be finished early."), BoxGroup("Controls")]
         bool m_isInteruptable = false;
         [SerializeField, Tooltip("Maximum time until execution of this behaviour is ended. " +
             "For behaviours that act on the self rather than another interactable object or actor this is the duration of the behaviour." +
             "For behaviours that involve an interaction with another object or actor the duration is defined by that interaction. " +
             "In this situation this value is used as a safeguard in case something prevents the actor from completing " +
-            "the actions associated with this behaviour, e.g. if they are unable to reach the chosen interactable.")]
+            "the actions associated with this behaviour, e.g. if they are unable to reach the chosen interactable."), BoxGroup("Controls")]
         float m_MaximumExecutionTime = 30;
-        [SerializeField, Tooltip("If a behaviour is blocking it means no other blocking behaviour can be carried out at the same time. Most behaviours are blocking, however, some special behaviours, such as being pregnant, do not entirely block other behaviours.")]
+        [SerializeField, Tooltip("If a behaviour is blocking it means no other blocking behaviour can be carried out at the same time. Most behaviours are blocking, however, some special behaviours, such as being pregnant, do not entirely block other behaviours."), BoxGroup("Controls")]
         bool m_IsBlocking = true;
 
-        [Header("Events")]
-        [SerializeField, Tooltip("Events to fire when this behaviour is started.")]
+        [Space]
+        // Events
+        [SerializeField, Tooltip("Events to fire when this behaviour is started."), BoxGroup("Events")]
         protected UnityEvent m_OnStartEvent;
-        [SerializeField, Tooltip("Events to fire when this behaviour is finished.")]
+        [SerializeField, Tooltip("Events to fire when this behaviour is finished."), BoxGroup("Events")]
         protected UnityEvent m_OnEndEvent;
 
-        [Header("Cues")]
-        [SerializeField]
+        [Space]
+        // Lifecycle
+        [SerializeField, Tooltip("A timeline asset to play when this behaviour is started."), BoxGroup("Lifecycle")]
         internal TimelineAsset m_timeline;
-        [SerializeField, Tooltip("An actor cue to send to the actor upon the start of this interaction. It should be used to configure the actor ready for the interaction.")]
-        [FormerlySerializedAs("m_OnStart")] // v0.12
+        [SerializeField, Tooltip("An actor cue to send to the actor upon the start of this interaction. It should be used to configure the actor ready for the interaction."), BoxGroup("Lifecycle")]
+        // [FormerlySerializedAs("m_OnStart")] // v0.12
         protected ActorCue m_OnStartCue;
-        [SerializeField, Tooltip("An actor cue to send to the actor as they start the prepare phase of this interaction. This is where you will typically play wind up animations and the like.")]
-        [FormerlySerializedAs("m_OnArrivingCue")] // v0.11
-        [FormerlySerializedAs("m_OnPrepare")] // v0.12
+        [SerializeField, Tooltip("An actor cue to send to the actor as they start the prepare phase of this interaction. This is where you will typically play wind up animations and the like."), BoxGroup("Lifecycle")]
+        // [FormerlySerializedAs("m_OnArrivingCue")] // v0.11
+        // [FormerlySerializedAs("m_OnPrepare")] // v0.12
         protected ActorCue m_OnPrepareCue;
-        [SerializeField, Tooltip("A set of actor cues from which to randomly select an appropriate cue when enacting this behaviour. This is where you will usually play animations and sounds reflecting the interaction itself.")]
-        [FormerlySerializedAs("m_OnPerformInteraction")] // changed in v0.1.1
-        [FormerlySerializedAs("m_OnPerformAction")] // v0.12
+        [SerializeField, Tooltip("A set of actor cues from which to randomly select an appropriate cue when enacting this behaviour. This is where you will usually play animations and sounds reflecting the interaction itself."), BoxGroup("Lifecycle")]
+        // [FormerlySerializedAs("m_OnPerformInteraction")] // changed in v0.1.1
+        // [FormerlySerializedAs("m_OnPerformAction")] // v0.12
         protected ActorCue[] m_OnPerformCue;
-        [SerializeField, Tooltip("An actor cue to send to the actor as they finalize this interaction. This is where you will typically play wind up animations and the like.")]
-        [FormerlySerializedAs("m_OnFinalize")] // v0.12
+        [SerializeField, Tooltip("The minimum duration of the performance phase of this interaction. Note that if there are explicit perform cues this value will be overridden by the settings in those cues."), HideIf("m_OnPerformCue"), BoxGroup("Lifecycle")]
+        protected float m_MinimumPerformanceDuration = 1;
+        [SerializeField, Tooltip("An actor cue to send to the actor as they finalize this interaction. This is where you will typically play wind up animations and the like."), BoxGroup("Lifecycle")]
+        // [FormerlySerializedAs("m_OnFinalize")] // v0.12
         protected ActorCue m_OnFinalizeCue;
-        [SerializeField, Tooltip("An actor cue sent when ending this interaction. This should set the character back to their default state.")]
-        [FormerlySerializedAs("m_OnEnd")] // v0.12
+        [SerializeField, Tooltip("An actor cue sent when ending this interaction. This should set the character back to their default state."), BoxGroup("Lifecycle")]
+        // [FormerlySerializedAs("m_OnEnd")] // v0.12
         protected ActorCue m_OnEndCue;
-        [SerializeField, Tooltip("If this behaviour should always be followed by the same behaviour (assuming it is possible) drop the behaviour here. If this is null the brain will be free to select its own behaviour")]
+        [SerializeField, Tooltip("If this behaviour should always be followed by the same behaviour (assuming it is possible) drop the behaviour here. If this is null the brain will be free to select its own behaviour"), BoxGroup("Lifecycle")]
         AbstractAIBehaviour m_NextBehaviour;
+        [SerializeField, Tooltip("Indicates if this behaviour should be destroyed, and thus removed from the character when it next enters the Inactive state."), BoxGroup("Lifecycle")]
+        public bool DestroyOnInactive = false;
 
-        [Header("Conditions")]
-        [SerializeField, Range(0.1f, 5), Tooltip("The Weight Multiplier is used to lower or higher the priority of this behaviour relative to others the actor has. The higher this multiplier is the more likely it is the behaviour will be fired. The lower, the less likely.")]
+        [Space]
+        // Execution Conditions
+        [SerializeField, Range(0.1f, 5), Tooltip("The Weight Multiplier is used to lower or higher the priority of this behaviour relative to others the actor has. The higher this multiplier is the more likely it is the behaviour will be fired. The lower, the less likely."), BoxGroup("Execution Conditions")]
         internal float m_WeightMultiplier = 1;
-        [SerializeField, Range(0f, 2f), Tooltip("An allowable variation in the Weight Multiplier. Each time the behaviour is evaluated the base weight multiplier will be increased or decreased by a random number between +/- this amount.")]
+        [SerializeField, Range(0f, 2f), Tooltip("An allowable variation in the Weight Multiplier. Each time the behaviour is evaluated the base weight multiplier will be increased or decreased by a random number between +/- this amount."), BoxGroup("Execution Conditions")]
         float m_WeightVariation = 0.1f;
         [SerializeField, Tooltip("The required senses about the current world state around the actor. For example, we may have a sense for whether there is a willing mate nearby which will permit a make babies  behaviour to fire. Another example is that a" +
-            "character will only sleep in the open if they sense there are no threats nearby.")]
+            "character will only sleep in the open if they sense there are no threats nearby."), BoxGroup("Execution Conditions")]
         AbstractSense[] m_RequiredSenses;
-        [SerializeField, Tooltip("The required stats to enable this behaviour. Here you should set minimum, maximum or approximate values for stats that are needed for this behaviour to fire. For example, buying items is only possible if the actor has cash.")]
+        [SerializeField, Tooltip("The required stats to enable this behaviour. Here you should set minimum, maximum or approximate values for stats that are needed for this behaviour to fire. For example, buying items is only possible if the actor has cash."), BoxGroup("Execution Conditions")]
         RequiredStat[] m_RequiredStats = default;
-        [SerializeField, Tooltip("The set of character stats and the influence to apply to them when a character chooses this behaviour AND the behaviour does not require an interactable (influences come from the interactable if one is required).")]
+        [SerializeField, Tooltip("The set of character stats and the influence to apply to them when a character chooses this behaviour AND the behaviour does not require an interactable (influences come from the interactable if one is required)."), BoxGroup("Execution Conditions")]
         internal StatInfluence[] m_CharacterInfluences;
-        [SerializeField, Tooltip("The impacts we need an interactable to have on states for this behaviour to be enabled by it.")]
+        [SerializeField, Tooltip("The impacts we need an interactable to have on states for this behaviour to be enabled by it."), BoxGroup("Execution Conditions")]
         DesiredStatImpact[] m_DesiredStateImpacts = new DesiredStatImpact[0];
-        [SerializeField, Tooltip("The conditions required in the world state for this behaviour to be valid.")]
+        [SerializeField, Tooltip("The conditions required in the world state for this behaviour to be valid."), BoxGroup("Execution Conditions")]
         WorldStateSO[] m_RequiredWorldState;
         #endregion
+
+        private PlayableDirector m_Director;
 
         public enum State { Starting, Preparing, Performing, Finalizing, Ending, Inactive, MovingTo }
         State m_State = State.Inactive;
@@ -256,13 +267,6 @@ namespace WizardsCode.Character
                 }
             }
         }
-
-        /// <summary>
-        /// Indicates if this behaviour should be destroyed, and thus removed from the character
-        /// when it next enters the Inactive state.
-        /// </summary>
-        public bool DestroyOnInactive = false;
-        private PlayableDirector m_Director;
         private EmotionalState m_emotionalState;
 
         /// <summary>
@@ -507,14 +511,16 @@ namespace WizardsCode.Character
             {
                 OnUpdateState();
             }
-        }
+          }
 
         /// <summary>
-        /// `OnUpdateState` this is used to update the behaviour while it is being executed. It is similar to the `Update` method in Unity except that it is not called every frame. 
-        /// The frequency of calls can be customized in the inspector. This is important from a performance perspective.
-        /// 
-        /// 
+        /// `OnUpdateState` this is used to update the behaviour while it is being executed. 
+        /// Whenever the state of the behaviour needs to be changes this method should be called.
+        /// The method will change the state based on the current state and the state of the actor controller and/or behaviour being executed.
+        /// Generally this method will set the state of the behaviour to the next state in the lifecycle of the behaviour, e.g. MovingTo -> Starting -> Preparing -> etc.
         /// </summary>
+        /// <seealso cref="State"/>
+        /// <seealso cref="CurrentState"/>
         protected virtual void OnUpdateState()
         {   
             if (CurrentState == State.MovingTo)
@@ -528,7 +534,7 @@ namespace WizardsCode.Character
 
             if (CurrentState == State.Starting)
             {
-                AddCharacterInfluencers(10); // TODO: why is this hard coded to 10 seconds?
+                AddCharacterInfluencers(10); // TODO: this shouldn't be hard coded to 10 seconds?
 
                 if (m_OnStartCue != null)
                 {
@@ -545,24 +551,30 @@ namespace WizardsCode.Character
                 return;
             }
 
-            if (CurrentState == State.Preparing && !Brain.Actor.IsMoving)
-            {
-                CurrentState = State.Performing;
-
-                if (m_OnPerformCue.Length > 0)
-                {
-                    performingCue = m_OnPerformCue[Random.Range(0, m_OnPerformCue.Length)];
-                    if (performingCue != null)
-                    {
-                        Brain.Actor.Prompt(performingCue);
-                        EndTime = Time.timeSinceLevelLoad + performingCue.Duration;
-                    }
+            if (CurrentState == State.Preparing) {
+                if(Brain.Actor.IsMoving) {
+                    // still moving to the target location for this behaviour
+                    return;
                 }
                 else
                 {
-                    EndTime = Time.timeSinceLevelLoad + 1;
+                    CurrentState = State.Performing;
+
+                    if (m_OnPerformCue.Length > 0)
+                    {
+                        performingCue = m_OnPerformCue[Random.Range(0, m_OnPerformCue.Length)];
+                        if (performingCue != null)
+                        {
+                            Brain.Actor.Prompt(performingCue);
+                            EndTime = Time.timeSinceLevelLoad + performingCue.Duration;
+                        }
+                    }
+                    else
+                    {
+                        EndTime = Time.timeSinceLevelLoad + m_MinimumPerformanceDuration;
+                    }
+                    return;
                 }
-                return;
             }
 
             if (CurrentState == State.Performing)

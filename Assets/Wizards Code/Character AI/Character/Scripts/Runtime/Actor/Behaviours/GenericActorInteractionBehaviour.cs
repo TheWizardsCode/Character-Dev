@@ -226,7 +226,7 @@ namespace WizardsCode.Character.AI
                     BaseActorController other = participants[i].GetComponentInParent<BaseActorController>();
                     if (other != null)
                     {
-                        m_ActorController.LookAtTarget = other.head;
+                        m_ActorController.LookAtTarget = other.HeadBone;
                     } else
                     {
                         m_ActorController.LookAtTarget = participants[i].transform;

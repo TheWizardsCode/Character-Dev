@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
+using NaughtyAttributes;
 using UnityEngine;
+using UnityEngine.Serialization;
 using WizardsCode.AnimationControl;
 using WizardsCode.Stats;
 
@@ -17,26 +19,28 @@ namespace WizardsCode.Character
         public enum States { Idle, Moving, Arriving, Arrived }
 
         #region InspectorParameters
-        [Header("Character Ground Movement")]
-        [SerializeField, Tooltip("The maximum speed of this character, this will usually be a full sprint.")]
+        // Ground Movement
+        [SerializeField, Tooltip("The maximum speed of this character, this will usually be a full sprint."), BoxGroup("Ground Movement")]
         protected float m_MaxSpeed = 8f;
-        [SerializeField, Tooltip("If the distance the actor needs to travel to reach their destination is greater than this and the actor can run then they will do so.")]
+        [SerializeField, Tooltip("If the distance the actor needs to travel to reach their destination is greater than this and the actor can run then they will do so."), BoxGroup("Ground Movement")]
         protected float m_MinRunDistance = 15;
-        [SerializeField, Tooltip("If the distance the actor needs to travel to reach their destination is greater than this and the actor can sprint then they will do so.")]
+        [SerializeField, Tooltip("If the distance the actor needs to travel to reach their destination is greater than this and the actor can sprint then they will do so."), BoxGroup("Ground Movement")]
         protected float m_MinSprintDistance = 30;
-        [SerializeField, Tooltip("The factor used to calculate the top walking speed of the character relative to the maximum speed. The higher this value the faster the character needs to be moving before switching to a run animation.")]
+        [SerializeField, Tooltip("The factor used to calculate the top walking speed of the character relative to the maximum speed. The higher this value the faster the character needs to be moving before switching to a run animation."), BoxGroup("Ground Movement")]
         protected float m_WalkSpeedFactor = 0.45f;
-        [SerializeField, Tooltip("The factor used to calculate the top running speed of the character relative to the maximum speed. The higher this value the faster the character needs to be moving before switching to a sprint animation.")]
+        [SerializeField, Tooltip("The factor used to calculate the top running speed of the character relative to the maximum speed. The higher this value the faster the character needs to be moving before switching to a sprint animation."), BoxGroup("Ground Movement")]
         protected float m_RunSpeedFactor = 0.8f;
-        [SerializeField, Tooltip("The distance within which the character is considered to be arriving at their destination. This is used to allow callbacks for when the character has nearly completed their movement. This can be useful when the character needs to, for example, turn to sit on a chair just before reaching the final stopping point.")]
+        [SerializeField, Tooltip("The distance within which the character is considered to be arriving at their destination. This is used to allow callbacks for when the character has nearly completed their movement. This can be useful when the character needs to, for example, turn to sit on a chair just before reaching the final stopping point."), BoxGroup("Ground Movement")]
         protected float m_ArrivingDistance = 1f;
 
-        [Header("Look")]
-        [SerializeField, Tooltip("A transform at the point in space that the actor should look towards.")]
+        [Space]
+        // Look
+        [SerializeField, Tooltip("A transform at the point in space that the actor should look towards. This should be moved at runtime to cause the character to adjust their body position to enable them to look at the target. If this is not set in the inspector a target will be created at runtime. This may not be optimally placed."), BoxGroup("Look")]
         Transform m_LookAtTarget;
-        [SerializeField, Tooltip("The \"head\" bone or object, used to look. If this is blank there will be an attempt to automatically find the head upon startup.")]
-        public Transform head = null;
-        [SerializeField, Tooltip("The speed at which a character will turn their head to look at a target.")]
+        [SerializeField, Tooltip("The \"head\" bone or object, used to look. If this is blank there will be an attempt to automatically find the head upon startup."), BoxGroup("Look")]
+        [FormerlySerializedAs("head")] // 5/3/25
+        Transform m_HeadBone = null;
+        [SerializeField, Tooltip("The speed at which a character will turn their head to look at a target."), BoxGroup("Look")]
         protected float m_LookAtSpeed = 6f;
         #endregion
 
@@ -59,6 +63,11 @@ namespace WizardsCode.Character
         public string displayName
         {
             get { return brain.DisplayName; }
+        }
+
+        public Transform HeadBone
+        {
+            get { return m_HeadBone; }
         }
 
         public Brain brain
@@ -242,11 +251,7 @@ namespace WizardsCode.Character
             brain = GetComponentInChildren<Brain>();
 
             // Look IK Setup
-            if (!head)
-            {
-                head = transform.Find("Head");
-            }
-            if (!head)
+            if (!HeadBone)
             {
                 Debug.LogWarning("No head transform set on " + gameObject.name + " and one could not be found automatically - LookAt disabled");
             }
@@ -438,9 +443,9 @@ namespace WizardsCode.Character
         {
             LookAtTarget.transform.SetParent(transform);
             Vector3 pos = Vector3.zero;
-            if (head)
+            if (HeadBone)
             {
-                LookAtTarget.transform.position = head.position + transform.forward;
+                LookAtTarget.transform.position = HeadBone.position + transform.forward;
             } else
             {
                 LookAtTarget.transform.localPosition = new Vector3(0, 1.7f, 1);
@@ -473,9 +478,9 @@ namespace WizardsCode.Character
             {
                 Gizmos.color = Color.green;
                 Gizmos.DrawSphere(LookAtTarget.position, 0.15f);
-                if (head != null)
+                if (HeadBone != null)
                 {
-                    Gizmos.DrawLine(head.position, LookAtTarget.position);
+                    Gizmos.DrawLine(HeadBone.position, LookAtTarget.position);
                 }
             }
         }
@@ -496,6 +501,20 @@ namespace WizardsCode.Character
             }
             StopMoving();
             ResetLookAt();
+        }
+
+        protected virtual void OnValidate() {
+            if (m_HeadBone == null)
+            {
+                foreach (var t in transform.GetComponentsInChildren<Transform>(true))
+                {
+                    if (t.name == "Head")
+                    {
+                        m_HeadBone = t;
+                        break;
+                    }
+                }
+            }
         }
     }
 }
