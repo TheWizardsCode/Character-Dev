@@ -57,6 +57,11 @@ namespace WizardsCode.Stats {
         private string m_RequestedBehaviour;
         private float m_TimeOfNextBehaviourUpdate;
 
+        public SpriteRenderer Icon {
+            get { return m_IconUI; }
+            set { m_IconUI = value; }
+        }
+
         public AbstractAIBehaviour ActiveBlockingBehaviour {
             get { return m_ActiveBlockingBehaviour; }
             set {

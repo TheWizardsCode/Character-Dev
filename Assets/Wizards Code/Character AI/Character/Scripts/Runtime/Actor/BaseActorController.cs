@@ -59,7 +59,7 @@ namespace WizardsCode.Character
         private States m_state;
         #endregion
 
-        #region Properties
+#region Properties
         public string displayName
         {
             get { return brain.DisplayName; }
@@ -89,11 +89,18 @@ namespace WizardsCode.Character
             }
         }
 
+        public float MaxSpeed
+        {
+            get { return m_MaxSpeed; }
+            set { m_MaxSpeed = value; }
+        }
+
         public float ArrivingDistance
         {
             get { return m_ArrivingDistance; }
             set { m_ArrivingDistance = value; }
         }
+#endregion
 
         protected Vector3 m_CurrentLookAtPosition;
 
@@ -104,7 +111,6 @@ namespace WizardsCode.Character
         bool isRotating = false;
 
         AnimationLayerController m_AnimationLayers;
-        #endregion
 
         /// <summary>
         /// Set the LookAtTarget to a specific position in world space.

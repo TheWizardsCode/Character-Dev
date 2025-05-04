@@ -36,8 +36,6 @@ namespace WizardsCode.Character
         private string m_SpeedParameterName = "Forward";
         [SerializeField, Tooltip("The name of the parameter in the animator that sets the turn angle of the character."), BoxGroup("Animation")]
         private string m_TurnParameterName = "Turn";
-        [SerializeField, Tooltip("The speed of this character when at a run. It will usually be going slower than this, and for short periods, can go faster (at a sprint)."), BoxGroup("Animation")]
-        private float m_RunningSpeed = 8;
         #endregion
 
         protected NavMeshAgent m_Agent;
