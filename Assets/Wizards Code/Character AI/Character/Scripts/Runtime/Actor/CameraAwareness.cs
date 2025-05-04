@@ -25,6 +25,31 @@ namespace WizardsCode
             set => canCameraFollowTarget = value;
         }
 
+        public CinemachineCamera FollowCamera
+        {
+            get {
+                if (followCamera == null)
+                {
+                    followCamera = CinemachineBrain.GetActiveBrain(0).ActiveVirtualCamera as CinemachineCamera;
+                    if (followCamera != null && followCamera.GetComponent<CinemachineFollow>() == null)
+                    {
+                        followCamera = null; // the active camera is not a follow camera
+                    }
+                }
+                if (followCamera == null)
+                {
+                    followCamera = FindFirstObjectByType<CinemachineFollow>()?.GetComponent<CinemachineCamera>();
+                }
+                if (followCamera == null)
+                {
+                    Debug.LogWarning("No follow camera found in the scene. Cannot set follow target.");
+                }
+
+                return followCamera;
+            }
+            set => followCamera = value;
+        }
+
         void OnBecameVisible()
         {
             if (Vector3.Distance(transform.position, Camera.main.transform.position) > maxDistanceFromCamera)
@@ -54,55 +79,27 @@ namespace WizardsCode
         /// </summary>
         public void SetAsFollowTarget() 
         {
-            if (!canCameraFollowTarget)
-            {
-                Debug.LogWarning("This object is not a camera follow target. Cannot set follow target.");
-                return;
-            }
-
-            if (followCamera == null)
-            {
-                followCamera = CinemachineBrain.GetActiveBrain(0).ActiveVirtualCamera as CinemachineCamera;
-                if (followCamera != null && followCamera.GetComponent<CinemachineFollow>() == null)
-                {
-                    followCamera = null; // the active camera is not a follow camera
-                }
-            }
-            if (followCamera == null)
-            {
-                followCamera = FindFirstObjectByType<CinemachineFollow>()?.GetComponent<CinemachineCamera>();
-            }
-            if (followCamera == null)
-            {
-                Debug.LogWarning("No follow camera found in the scene. Cannot set follow target.");
-                return;
-            }
-
-            followCamera.Follow = transform;
+            FollowCamera.Follow = transform;
             if (cameraLookAtTarget == null)
             {
                 cameraLookAtTarget = transform;
             }
             else 
             {
-                followCamera.LookAt = cameraLookAtTarget;
+                FollowCamera.LookAt = cameraLookAtTarget;
             }
         }
 
         #region Editor
 #if UNITY_EDITOR
         protected void OnValidate()
-        {
-            if (CanCameraFollowTarget) 
+        {   if (cameraLookAtTarget == null)
             {
-                if (cameraLookAtTarget == null)
-                {
-                    cameraLookAtTarget = FindTransform(new string[] { "LookAt", "CameraLookAt", "CameraTarget", "Neck", "Head" });
-                }
-                if (cameraLookAtTarget == null)
-                {
-                    cameraLookAtTarget = transform;
-                }
+                cameraLookAtTarget = FindTransform(new string[] { "LookAt", "CameraLookAt", "CameraTarget", "Neck", "Head" });
+            }
+            if (cameraLookAtTarget == null)
+            {
+                cameraLookAtTarget = transform;
             }
         }
 
