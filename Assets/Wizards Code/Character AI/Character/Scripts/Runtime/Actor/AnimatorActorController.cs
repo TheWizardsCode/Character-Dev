@@ -10,7 +10,6 @@ namespace WizardsCode.Character
     /// It provides functionality for controlling the character's movement using a NavMeshAgent, updating animations based on the character's speed and direction, and using IK for look-at and foot placement.
     /// It also provides functionality for playing animation clips and switching back to the animator controller.
     /// </summary>
-    [RequireComponent(typeof(NavMeshAgent))]
     public class AnimatorActorController : BaseActorController
     {
         #region InspectorParameters
@@ -71,7 +70,7 @@ namespace WizardsCode.Character
         {
             base.Awake();
 
-            m_Agent = GetComponent<NavMeshAgent>();
+            m_Agent = GetComponentInChildren<NavMeshAgent>();
 
             if (m_Agent.isOnNavMesh)
             {

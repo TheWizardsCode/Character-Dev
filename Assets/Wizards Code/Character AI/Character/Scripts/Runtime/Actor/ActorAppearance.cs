@@ -11,33 +11,35 @@ namespace WizardsCode {
         [SerializeField, Tooltip("Should this component delete itself after it has randomized the appearance of the animal? If this is false and the animal is disabled/re-enabled then it will be randomized again on. If true, the animal will not be randomized again on re-enablement."), BoxGroup("General")]
         private bool deleteAfterEnable = true;
 
-        [SerializeField, Tooltip("The main mesh renderer for the animal."), ShowIf("randomizeRendering"), BoxGroup("Rendering")]
+        [SerializeField, Tooltip("The main mesh renderer for the animal."), BoxGroup("Rendering")]
         private SkinnedMeshRenderer mainMeshRenderer;
-        [SerializeField, Tooltip("If true, the animal's appearance will be randomized on start, using the options defined below."), BoxGroup("Rendering")]
-        private bool randomizeRendering;
-        [SerializeField, Tooltip("The set of materials from which to randomly select a material for the animal's body."), ShowIf("randomizeRendering"), BoxGroup("Rendering")]
+        [SerializeField, Tooltip("The set of materials from which to randomly select a material for the animal's body."), BoxGroup("Rendering")]
         private Material[] bodyMaterials;
-        [SerializeField, Tooltip("The set of additive mesh renderers that may be enables/disabled to create a unique look for the animal."), ShowIf("randomizeRendering"), BoxGroup("Rendering")]
+        [SerializeField, Tooltip("The set of additive mesh renderers that may be enabled/disabled to create a unique look for the animal. There may be multiple of these turned on."), BoxGroup("Rendering")]
         private SkinnedMeshRenderer[] additiveMeshRenderers;
-
-        // Items
-        [Space]
-        [SerializeField, Tooltip("Should the animal's items be randomized on start?"), BoxGroup("Items")]
-        private bool randomizeItems = false;
-        [SerializeField, Tooltip("A set of items from which a single instance will be enabled."), ShowIf("randomizeItems"), BoxGroup("Items")]
+        [SerializeField, Tooltip("A set of items from which a single instance will be enabled."), BoxGroup("Items")]
         private GameObject[] uniqueItem;
 
         [Space]
         [SerializeField, Tooltip("If true, the animal's shape will be randomized on start, using the options defined below."), ShowIf("HasBlendShapes"), BoxGroup("Blend Shapes")]
         private bool randomizeShape;
         [SerializeField, Tooltip("The range of values to use when randomizing the blend shapes."), ShowIf("randomizeShape"), BoxGroup("Blend Shapes")]
-        private Vector2 randomizeShapeRange = new Vector2(-60, 60);
+        private Vector2 randomizeShapeRange = new Vector2(-40, 40);
 
         internal bool HasBlendShapes => mainMeshRenderer && mainMeshRenderer.sharedMesh.blendShapeCount > 0;
 
         public SkinnedMeshRenderer MainMeshRenderer {
             get => mainMeshRenderer;
             set => mainMeshRenderer = value;
+        }
+
+        public Material[] BodyMaterials {
+            get => bodyMaterials;
+            set => bodyMaterials = value;
+        }
+        public SkinnedMeshRenderer[] AdditiveMeshRenderers {
+            get => additiveMeshRenderers;
+            set => additiveMeshRenderers = value;
         }
 
         void OnEnable()
@@ -60,13 +62,11 @@ namespace WizardsCode {
 
         void RandomizeRendering()
         {   
-            if (!randomizeRendering)
+            if (bodyMaterials.Length > 0)
             {
-                return;
+                mainMeshRenderer.material = bodyMaterials[Random.Range(0, bodyMaterials.Length)];
             }
 
-            mainMeshRenderer.material = bodyMaterials[Random.Range(0, bodyMaterials.Length)];
-            
             foreach (var renderer in additiveMeshRenderers)
             {
                 renderer.gameObject.SetActive(Random.value > 0.5f);
@@ -91,10 +91,7 @@ namespace WizardsCode {
 
         void RandomizeItems()
         {
-            if (!randomizeItems || uniqueItem.Length == 0)
-            {
-                return;
-            }
+            if (uniqueItem.Length == 0)
             {
                 return;
             }
