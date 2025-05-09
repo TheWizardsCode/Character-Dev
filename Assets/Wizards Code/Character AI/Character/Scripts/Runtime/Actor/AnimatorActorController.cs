@@ -1,4 +1,5 @@
 ﻿using NaughtyAttributes;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Playables;
@@ -197,19 +198,27 @@ namespace WizardsCode.Character
             {
                 speedParam = magVelocity / m_MaxSpeed;
             }
-            // OPTIMIZATION: Use hashes for animation parameters
-            m_Animator.SetFloat(m_SpeedParameterName, speedParam, speedDampTime, Time.deltaTime);
+
+            if (Mathf.Abs(speedParam) > 0.05) 
+            {
+                // OPTIMIZATION: Use hashes for animation parameters
+                m_Animator.SetFloat(m_SpeedParameterName, speedParam, speedDampTime, Time.deltaTime);
+                state = States.Moving;
+            }
+            else
+            {
+                m_Animator.SetFloat(m_SpeedParameterName, 0);
+            }
 
             // Calculate the turn parameter from the direction of the character.
             Vector3 s = m_Agent.transform.InverseTransformDirection(m_Agent.velocity).normalized;
             float turn = s.x;
-            // OPTIMIZATION: Use hashes for animation parameters
-            m_Animator.SetFloat(m_TurnParameterName, turn, directionDampTime, Time.deltaTime);
-
-            // Set state if moving or turning
-            if (Mathf.Abs(speedParam) > 0.05 || Mathf.Abs(turn) > 0.05)
-            {
+            if (Mathf.Abs(turn) > 0.05) {
+                // OPTIMIZATION: Use hashes for animation parameters
+                m_Animator.SetFloat(m_TurnParameterName, turn, directionDampTime, Time.deltaTime);
                 state = States.Moving;
+            } else {
+                m_Animator.SetFloat(m_TurnParameterName, 0);
             }
         }
         
