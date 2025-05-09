@@ -35,11 +35,11 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("The name of the parameter in the animator that sets the forward speed of the character."), BoxGroup("Animation")]
         private string m_SpeedParameterName = "Forward";
         [SerializeField, Tooltip("The damping time for the speed animation parameter. Higher values will result in more gradual speed changes, but can lead to sluggishness."), BoxGroup("Animation")]
-        float speedDampTime = 0.3f;
+        float speedDampTime = 0f;
         [SerializeField, Tooltip("The name of the parameter in the animator that sets the turn angle of the character."), BoxGroup("Animation")]
         private string m_TurnParameterName = "Turn";
         [SerializeField, Tooltip("The damping time for the direction animation parameter. Higher values will result in more gradual turns, but can lead to sluggishness."), BoxGroup("Animation")]
-        float directionDampTime = 0.25f;
+        float directionDampTime = 0.5f;
         
         #endregion
 
