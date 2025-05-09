@@ -30,11 +30,16 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("The animation controller for updating animations of the model representing this actor. If left empty no animations will be played."), BoxGroup("Animation")]
         protected Animator m_Animator;
         [SerializeField, Tooltip("Should the character use Root Motion baked into the animations?"), BoxGroup("Animation")]
-        bool m_UseRootMotion = false;
+        bool m_UseRootMotion = true;
         [SerializeField, Tooltip("The name of the parameter in the animator that sets the forward speed of the character."), BoxGroup("Animation")]
         private string m_SpeedParameterName = "Forward";
+        [SerializeField, Tooltip("The damping time for the speed animation parameter. Higher values will result in more gradual speed changes, but can lead to sluggishness."), BoxGroup("Animation")]
+        float speedDampTime = 0.3f;
         [SerializeField, Tooltip("The name of the parameter in the animator that sets the turn angle of the character."), BoxGroup("Animation")]
         private string m_TurnParameterName = "Turn";
+        [SerializeField, Tooltip("The damping time for the direction animation parameter. Higher values will result in more gradual turns, but can lead to sluggishness."), BoxGroup("Animation")]
+        float directionDampTime = 0.25f;
+        
         #endregion
 
         protected NavMeshAgent m_Agent;
@@ -185,9 +190,6 @@ namespace WizardsCode.Character
 
         private void SetForwardAndTurnParameters()
         {
-            float directionDampTime = 0.25f;
-            float speedDampTime = 0.3f;
-
             // Calculate the forward parameter from the speed of the character.
             float magVelocity = m_Agent.velocity.magnitude;
             float speedParam = 0;
