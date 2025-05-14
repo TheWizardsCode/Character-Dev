@@ -98,8 +98,8 @@ namespace WizardsCode.Character {
                 }
                 else
                 {
-                    EditorGUILayout.HelpBox("Select a character profile.", MessageType.Warning);
                     EditorGUILayout.EndHorizontal();
+                    EditorGUILayout.HelpBox("Select a character profile.", MessageType.Warning);
                     return;
                 }
             }
@@ -433,10 +433,6 @@ namespace WizardsCode.Character {
                 isValid = false;
             }
 
-            if (GUILayout.Button("Setup Grounder")) {
-                SetupGrounder();
-            }
-
             isValid &= ToDoListGUI(ref creatorController.animatorToDoList);
 
             isValid &= animator != null;
@@ -449,9 +445,13 @@ namespace WizardsCode.Character {
             }
                 
             Animator template = templatePrefab?.GetComponent<Animator>();
-            if (template != null && GUILayout.Button("Copy Controller from Template"))
+            if (template != null && animator.runtimeAnimatorController != template.runtimeAnimatorController && GUILayout.Button("Copy Controller from Template"))
             {
                 animator.runtimeAnimatorController = template.runtimeAnimatorController;
+            }
+
+            if (GUILayout.Button("Setup Grounder")) {
+                SetupGrounder();
             }
 
             EditorGUILayout.BeginVertical();
@@ -473,17 +473,21 @@ namespace WizardsCode.Character {
                 Transform parent = character.transform.Find(parentName);
                 if (parent == null)
                 {
-                    EditorUtility.DisplayDialog("Error", $"Grounder objects Template on the template prefab has a parent named '{parentName}' but there is no object with that name on the current character.", "OK");
-                    return;
+                    if (creatorController.grounderParent == null)
+                    {
+                        EditorUtility.DisplayDialog("Error", $"Grounder objects Template on the template prefab has a parent named '{parentName}' but there is no object with that name on the current character.\n\nManually set the Grounder Root in the Character Creation Controller.", "OK");
+                        return;
+                    }
                 }
 
                 Transform copiedGrounderConfigObjectsParent = Instantiate(grounderConfigObjectsTemplate, parent);
                 copiedGrounderConfigObjectsParent.name = grounderConfigObjectsTemplate.name;
+                creatorController.grounderParent = copiedGrounderConfigObjectsParent;
 
                 bool hasErrors = false;
 
-                // copy the grounder object from root to this character
                 Grounder grounderTemplate = templatePrefab.GetComponent<Grounder>();
+
                 if (grounderTemplate == null)
                 {
                     EditorUtility.DisplayDialog("Error", "Grounder not found in the template prefab. Configure it manually.", "OK");
@@ -899,6 +903,8 @@ namespace WizardsCode.Character {
                     character.name = characterName;
                     character.transform.position = Vector3.zero;
                     character.transform.rotation = Quaternion.identity;
+
+                    creatorController = character.GetComponent<CharacterCreatorController>();
                 }
 
                 Camera sceneCamera = Camera.main;
