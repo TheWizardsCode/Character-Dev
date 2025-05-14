@@ -7,6 +7,8 @@ using System.Linq;
 using WizardsCode.Stats;
 using UnityEditor.SceneTemplate;
 using System;
+using RootMotion.FinalIK;
+using static RootMotion.FinalIK.IKSolverTrigonometric;
 
 namespace WizardsCode.Character {
 
@@ -31,94 +33,9 @@ namespace WizardsCode.Character {
         [Tooltip("An Actor Controller prefab from which settings can optionally be copied. This, in conjunction with the profile can be used to minimize the amount of manual configuration required. This template defines specific settings that can, optionally, be copied into your character. The profile defines defaults that the character will initially be set to. That is the profile usually defines a class of character while the template defines specific settings for a type of character.")]
         private BaseActorController templatePrefab;
         private bool showAppearanceEditor;
+        private CharacterCreatorController creatorController;
 
-        private string[] appearanceToDoList = new string[]
-        {
-            "Set main mesh renderer.",
-            "Ensure model is centered.",
-            "Set material options - if the model has multiple base materials that give a different look, set them in the rendering section.",
-            "Set additive mesh renderers - if the model has additive meshes that give a different look when they are turned on, set them in the rendering section.",
-        };
-        private bool[] appearanceToDoListStatus = new bool[]
-        {
-            false,
-            false
-        };
-
-        private string[] navMeshToDoList = new string[]
-        {
-            "Set height and radius.",
-            "Set angular speed.",
-            "Set acceleration.",
-        };
-
-        private bool[] navMeshToDoListStatus = new bool[]
-        {
-            false,
-            false,
-            false
-        };
-
-        private string[] animatorToDoList = new string[]
-        {
-            "Set animator controller.",
-            "Set avatar.",
-            "Validate whether you want to animate physics.",
-        };
-        private bool[] animatorToDoListStatus = new bool[]
-        {
-            false,
-            false,
-            false
-        };
-
-        private string[] colliderToDoList = new string[]
-        {
-            "Validate automatically generated collider.",
-        };
-        private bool[] colliderToDoListStatus = new bool[]
-        {
-            false,
-        };
-
-        private string[] actorControllerToDoList = new string[]
-        {   
-            "Max speed.",
-            "Set the min run distance - this is the distance at which the character will start running.",
-            "Set the min sprint distance - this is the distance at which the character will start sprinting.",
-            "Set the walk speed factor - a % of the max speed that represents normal walk speed.",
-            "Set the run speed factor - a % of the max speed that represents normal run speed.",
-            "Set arriving distance.",
-            "Ensure root motion is set correctly for your animations.",
-        };
-        private bool[] actorControllerToDoListStatus = new bool[]
-        {
-        };
-
-        private string[] brainToDoList = new string[]
-        {
-            "Do you want this character to display a behaviour icon?",
-        };
-        private bool[] brainToDoListStatus = new bool[]
-        {
-        };
-
-        private string[] behavioursToDoList = new string[]
-        {
-            "Add behaviours to the character.",
-        };
-        private bool[] behavioursToDoListStatus = new bool[]
-        {
-            false,
-        };
-
-        private string[] cameraAwarenessToDoList = new string[]
-        {
-            "Should the camera be able to follow this character?",
-        };
-        private bool[] cameraAwarenessToDoListStatus = new bool[]
-        {
-        };
+        bool IsConfigSceneOpen => configurationScene != null && configurationScene.isLoaded;
 
         [MenuItem("Tools/Wizards Code/AI/Character Creation")]
         public static void ShowWindow()
@@ -132,7 +49,7 @@ namespace WizardsCode.Character {
             {
                 GUILayout.Label("Character Creation", EditorStyles.boldLabel);
 
-                if (GUILayout.Button("Close and Restore Original Scene"))
+                if (IsConfigSceneOpen && GUILayout.Button("Close and Restore Original Scene"))
                 {
                     RestoreOriginalScene();
                 }
@@ -146,23 +63,11 @@ namespace WizardsCode.Character {
             }
 
             GameObject originalModel = characterModel;
-            characterModel = EditorGUILayout.ObjectField("Character Model", characterModel, typeof(GameObject), true) as GameObject;
+            characterModel = EditorGUILayout.ObjectField(new GUIContent("Character Model/Prefab", "Select the character model or prefab to use for this character. If the object provided here has a 'WizardsCodeCharacter' component then the system will modify the existing prefab, otherwise a new prefab will be created."), characterModel, typeof(GameObject), true) as GameObject;
             if (characterModel == null)
             {
-                EditorGUILayout.HelpBox("Please select a character model.", MessageType.Warning);
+                EditorGUILayout.HelpBox("Please select a character model or existing prefab.", MessageType.Warning);
                 return;
-            }
-            else if (originalModel != characterModel)
-            {
-                appearanceToDoListStatus = new bool[appearanceToDoList.Length];
-                navMeshToDoListStatus = new bool[navMeshToDoList.Length];
-                animatorToDoListStatus = new bool[animatorToDoList.Length];
-                colliderToDoListStatus = new bool[colliderToDoList.Length];
-                actorControllerToDoListStatus = new bool[actorControllerToDoList.Length];
-                brainToDoListStatus = new bool[brainToDoList.Length];
-                behavioursToDoListStatus = new bool[behavioursToDoList.Length];
-                cameraAwarenessToDoListStatus = new bool[cameraAwarenessToDoList.Length];
-                characterName = characterModel.name;
             }
 
             EditorGUILayout.BeginHorizontal();
@@ -194,6 +99,7 @@ namespace WizardsCode.Character {
                 else
                 {
                     EditorGUILayout.HelpBox("Select a character profile.", MessageType.Warning);
+                    EditorGUILayout.EndHorizontal();
                     return;
                 }
             }
@@ -205,7 +111,7 @@ namespace WizardsCode.Character {
             }
             EditorGUILayout.EndHorizontal();
 
-            if (configurationScene == null || !configurationScene.isLoaded)
+            if (!IsConfigSceneOpen)
             {
                 EditorGUILayout.HelpBox("Configuration scene is not open. To create this AI open the configuration scene by clicking the button below.", MessageType.Warning);
 
@@ -353,7 +259,7 @@ namespace WizardsCode.Character {
                 return false;
             }
 
-            isValid = ToDoListGUI(appearanceToDoList, ref appearanceToDoListStatus);
+            isValid = ToDoListGUI(ref creatorController.appearanceToDoList);
 
             isValid &= appearance != null;
             string foldoutLabel = isValid ? "✔ Appearance" : "✘ Appearance";
@@ -393,20 +299,15 @@ namespace WizardsCode.Character {
             return isValid;
         }
 
-        private bool ToDoListGUI(string[] todoList, ref bool[] status)
+        private bool ToDoListGUI(ref CharacterCreatorToDoItem[] todoList)
         {
             bool isValid = true;
 
-            if (todoList.Length != status.Length)
-            {
-                Array.Resize(ref status, todoList.Length);
-            }
-
             for (int i = 0; i < todoList.Length; i++)
             {
-                if (!status[i])
+                if (!todoList[i].isComplete)
                 {
-                    status[i] = EditorGUILayout.ToggleLeft(todoList[i], status[i]);
+                    todoList[i].isComplete = EditorGUILayout.ToggleLeft(todoList[i].description, todoList[i].isComplete);
                     isValid &= false;
                 }
             }
@@ -425,7 +326,7 @@ namespace WizardsCode.Character {
                 characterProfile.ConfigureActorController(actorController);
             }
 
-            isValid = ToDoListGUI(actorControllerToDoList, ref actorControllerToDoListStatus);
+            isValid = ToDoListGUI(ref creatorController.actorControllerToDoList);
 
             string foldoutLabel = actorController != null ? "✔ Actor Controller" : "✘ Actor Controller";
             showControllerEditor |= !isValid;
@@ -459,7 +360,7 @@ namespace WizardsCode.Character {
                 navMeshAgent = character.AddComponent<NavMeshAgent>();
             }
 
-            isValid = ToDoListGUI(navMeshToDoList, ref navMeshToDoListStatus);
+            isValid = ToDoListGUI(ref creatorController.navMeshToDoList);
 
             isValid &= navMeshAgent != null;
             string foldoutLabel =  isValid ? "✔ NavMesh Agent" : "✘ NavMesh Agent";
@@ -532,7 +433,11 @@ namespace WizardsCode.Character {
                 isValid = false;
             }
 
-            isValid &= ToDoListGUI(animatorToDoList, ref animatorToDoListStatus);
+            if (GUILayout.Button("Setup Grounder")) {
+                SetupGrounder();
+            }
+
+            isValid &= ToDoListGUI(ref creatorController.animatorToDoList);
 
             isValid &= animator != null;
             string foldoutLabel = isValid ? "✔ Animator" : "✘ Animator";
@@ -557,6 +462,184 @@ namespace WizardsCode.Character {
             EditorGUILayout.EndVertical();
 
             return isValid;
+        }
+
+        void SetupGrounder() 
+        {
+            Transform grounderConfigObjectsTemplate = templatePrefab?.GetComponentInChildren<CharacterCreatorController>().grounderParent;
+            if (grounderConfigObjectsTemplate != null)
+            {
+                string parentName =  grounderConfigObjectsTemplate.parent.name;
+                Transform parent = character.transform.Find(parentName);
+                if (parent == null)
+                {
+                    EditorUtility.DisplayDialog("Error", $"Grounder objects Template on the template prefab has a parent named '{parentName}' but there is no object with that name on the current character.", "OK");
+                    return;
+                }
+
+                Transform copiedGrounderConfigObjectsParent = Instantiate(grounderConfigObjectsTemplate, parent);
+                copiedGrounderConfigObjectsParent.name = grounderConfigObjectsTemplate.name;
+
+                bool hasErrors = false;
+
+                // copy the grounder object from root to this character
+                Grounder grounderTemplate = templatePrefab.GetComponent<Grounder>();
+                if (grounderTemplate == null)
+                {
+                    EditorUtility.DisplayDialog("Error", "Grounder not found in the template prefab. Configure it manually.", "OK");
+                    hasErrors = true;
+                } 
+                else if (grounderTemplate is GrounderQuadruped)
+                {
+                    GrounderQuadruped copiedGrounder = character.AddComponent<GrounderQuadruped>();
+                    EditorUtility.CopySerialized(grounderTemplate, copiedGrounder);
+
+                    // locate the character root
+                    string transformName = ((GrounderQuadruped)grounderTemplate).characterRoot.name;
+                    Transform transform = character.transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == transformName);
+                    if (transform == null)
+                    {
+                        hasErrors = true;
+                        Debug.LogWarning($"<color=orange>[Grounder]</color> Character Root '{transformName}' found on Grounder of {templatePrefab.name} not found on character. Please set manually.");
+                    }
+                    else
+                    {
+                        copiedGrounder.characterRoot = transform;
+                    }
+
+                    // locate pelvis
+                    transformName = ((GrounderQuadruped)grounderTemplate).pelvis.name;
+                    transform = character.transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == transformName);
+                    if (transform == null)
+                    {
+                        hasErrors = true;
+                        Debug.LogWarning($"<color=orange>[Grounder]</color> Pelvis '{transformName}' found on Grounder of {templatePrefab.name} not found on character. Please set manually.");
+                    }
+                    else
+                    {
+                        copiedGrounder.pelvis = transform;
+                    }
+
+                    // locate last spine bone
+                    transformName = ((GrounderQuadruped)grounderTemplate).lastSpineBone.name;
+                    transform = character.transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == transformName);
+                    if (transform == null)
+                    {
+                        hasErrors = true;
+                        Debug.LogWarning($"<color=orange>[Grounder]</color> Last Spine Bone '{transformName}' found on Grounder of {templatePrefab.name} not found on character. Please set manually.");
+                    }
+                    else
+                    {
+                        copiedGrounder.lastSpineBone = transform;
+                    }
+
+                    // locate head
+                    transformName = ((GrounderQuadruped)grounderTemplate).head.name;
+                    transform = character.transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == transformName);
+                    if (transform == null)
+                    {
+                        hasErrors = true;
+                        Debug.LogWarning($"<color=orange>[Grounder]</color> Head '{transformName}' found on Grounder of {templatePrefab.name} not found on character. Please set manually.");
+                    }
+                    else
+                    {
+                        copiedGrounder.head = transform;
+                    }
+
+                    // Locate Legs
+                    for (int i = 0; i < ((GrounderQuadruped)grounderTemplate).legs.Length; i++)
+                    {
+                        transformName = ((GrounderQuadruped)grounderTemplate).legs[i].name;
+                        LimbIK limb = character.transform.GetComponentsInChildren<LimbIK>().FirstOrDefault(t => t.name == transformName);
+                        if (limb == null)
+                        {
+                            hasErrors = true;
+                            Debug.LogWarning($"<color=orange>[Grounder]</color> Legs '{transformName}' found on Grounder of {templatePrefab.name} not found on character. Please set manually.");
+                        }
+                        else
+                        {
+                            copiedGrounder.legs[i] = limb;
+                        }
+                    }
+
+                    // Locate Forelegs
+                    for (int i = 0; i < ((GrounderQuadruped)grounderTemplate).forelegs.Length; i++)
+                    {
+                        transformName = ((GrounderQuadruped)grounderTemplate).forelegs[i].name;
+                        LimbIK limb = character.transform.GetComponentsInChildren<LimbIK>().FirstOrDefault(t => t.name == transformName);
+                        if (limb == null)
+                        {
+                            hasErrors = true;
+                            Debug.LogWarning($"<color=orange>[Grounder]</color> Forelegs '{transformName}' found on Grounder of {templatePrefab.name} not found on character. Please set manually.");
+                        }
+                        else
+                        {
+                            copiedGrounder.forelegs[i] = limb;
+                        }
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"We don't know how to copy a grounder of type {grounderTemplate.GetType().Name}. Please configure it manually.");
+                    hasErrors = true;
+                }
+
+                foreach (Transform child in copiedGrounderConfigObjectsParent)
+                {
+                    LimbIK limbIK = child.GetComponent<LimbIK>();
+                    if (limbIK != null)
+                    {
+                        string boneName = limbIK.solver.bone1.transform.name;
+                        Transform bone1 = character.transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == boneName);
+                        if (bone1 == null)
+                        {
+                            hasErrors = true;
+                            Debug.LogWarning($"<color=orange>[Grounder]</color> LimbIK Bone '{boneName}' found on {child.name} not found on character. Please set manually.");
+                        }
+                        else
+                        {
+                            limbIK.solver.bone1.transform = bone1;
+                        }
+
+                        boneName = limbIK.solver.bone2.transform.name;
+                        Transform bone2 = character.transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == boneName);
+                        if (bone2 == null)
+                        {
+                            hasErrors = true;
+                            Debug.LogWarning($"<color=orange>[Grounder]</color> LimbIK Bone '{boneName}' found on {child.name} not found on character. Please set manually.");
+                        }
+                        else
+                        {
+                            limbIK.solver.bone2.transform = bone2;
+                        }
+
+                        boneName = limbIK.solver.bone3.transform.name;
+                        Transform bone3 = character.transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == boneName);
+                        if (bone3 == null)
+                        {
+                            hasErrors = true;
+                            Debug.LogWarning($"<color=orange>[Grounder]</color> LimbIK Bone '{boneName}' found on {child.name} not found on character. Please set manually.");
+                        }
+                        else
+                        {
+                            limbIK.solver.bone3.transform = bone3;
+                        }
+
+                        limbIK.solver.Initiate(limbIK.transform);
+                    }
+                }
+
+                if (hasErrors)
+                {
+                    EditorUtility.DisplayDialog("Error", "Some grounder configuration could not be copied from the template. They have not been set up correctly. Please check the console for warnings.", "OK");
+                    return;
+                }
+            }
+            else
+            {
+                EditorUtility.DisplayDialog("Error", "Grounder not found in the template prefab.", "OK");
+                return;
+            }
         }
 
         private bool OnCollidersGUI()
@@ -606,7 +689,7 @@ namespace WizardsCode.Character {
                 }
             }
 
-            isValid = ToDoListGUI(colliderToDoList, ref colliderToDoListStatus);
+            isValid = ToDoListGUI(ref creatorController.colliderToDoList);
 
             isValid &= collider != null;
             string foldoutLabel = isValid ? "✔ Collider" : "✘ Collider";
@@ -646,7 +729,7 @@ namespace WizardsCode.Character {
                     brain.Icon = behaviourIcon.AddComponent<SpriteRenderer>();
             }
 
-            isValid = ToDoListGUI(brainToDoList, ref brainToDoListStatus);
+            isValid = ToDoListGUI(ref creatorController.brainToDoList);
 
             isValid &= brain != null;
             string foldoutLabel = isValid ? "✔ Brain" : "✘ Brain";
@@ -683,7 +766,7 @@ namespace WizardsCode.Character {
                 behaviours = character.GetComponentsInChildren<AbstractAIBehaviour>();
             }
 
-            isValid = ToDoListGUI(behavioursToDoList, ref behavioursToDoListStatus);
+            isValid = ToDoListGUI(ref creatorController.behavioursToDoList);
 
             isValid &= behaviours.Length > 0 && behaviours.All(b => b != null);
             string foldoutLabel = isValid ? "✔ Behaviours" : "✘ Behaviours";
@@ -720,7 +803,7 @@ namespace WizardsCode.Character {
                 cameraAwareness = character.AddComponent<CameraAwareness>();
             }
 
-            isValid = ToDoListGUI(cameraAwarenessToDoList, ref cameraAwarenessToDoListStatus);
+            isValid = ToDoListGUI(ref creatorController.cameraAwarenessToDoList);
 
             isValid &= cameraAwareness != null;
             string foldoutLabel = isValid ? "✔ Camera Awareness" : "✘ Camera Awareness";
@@ -751,11 +834,19 @@ namespace WizardsCode.Character {
         {
             if (character != null)
             {
-                string path = EditorUtility.SaveFilePanelInProject("Save Character Prefab", characterName, "prefab", "Specify a location to save the prefab.");
-                if (!string.IsNullOrEmpty(path))
+                if (PrefabUtility.IsPartOfPrefabInstance(character))
                 {
-                    PrefabUtility.SaveAsPrefabAsset(character, path);
-                    Debug.Log("Character saved as prefab at: " + path);
+                    PrefabUtility.ApplyPrefabInstance(character, InteractionMode.UserAction);
+                    Debug.Log("Changes applied to the original prefab.");
+                }
+                else
+                {
+                    string path = EditorUtility.SaveFilePanelInProject("Save Character Prefab", characterName, "prefab", "Specify a location to save the prefab.");
+                    if (!string.IsNullOrEmpty(path))
+                    {
+                        PrefabUtility.SaveAsPrefabAsset(character, path);
+                        Debug.Log("Character saved as prefab at: " + path);
+                    }
                 }
             }
             else
@@ -791,11 +882,24 @@ namespace WizardsCode.Character {
             
             if (characterModel != null)
             {
-                character = new GameObject(characterName);
-                GameObject model = Instantiate(characterModel, character.transform);
-                model.transform.localPosition = Vector3.zero;
-                model.transform.localRotation = Quaternion.identity;
-                model.name = characterModel.name + " (Model)";
+                creatorController = characterModel.GetComponent<CharacterCreatorController>();
+                if (creatorController == null)
+                {
+                    character = new GameObject(characterName);
+                    GameObject model = Instantiate(characterModel, character.transform);
+                    model.transform.localPosition = Vector3.zero;
+                    model.transform.localRotation = Quaternion.identity;
+                    model.name = characterModel.name + " (Model)";
+
+                    creatorController = character.AddComponent<CharacterCreatorController>();
+                } 
+                else 
+                {
+                    character = PrefabUtility.InstantiatePrefab(characterModel) as GameObject;
+                    character.name = characterName;
+                    character.transform.position = Vector3.zero;
+                    character.transform.rotation = Quaternion.identity;
+                }
 
                 Camera sceneCamera = Camera.main;
                 sceneCamera.transform.position = character.transform.position + new Vector3(1, 2, 5);
