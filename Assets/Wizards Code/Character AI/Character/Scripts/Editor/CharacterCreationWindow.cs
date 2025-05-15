@@ -284,7 +284,7 @@ namespace WizardsCode.Character {
                 ActorAppearance template = templatePrefab?.GetComponent<ActorAppearance>();
                 if (template != null && GUILayout.Button("Copy Body Materials from Template"))
                 {
-                    if (appearance.BodyMaterials.Length < template.BodyMaterials.Length)
+                    if (appearance.BodyMaterials == null || appearance.BodyMaterials.Length < template.BodyMaterials.Length)
                     {
                         appearance.BodyMaterials = new Material[template.BodyMaterials.Length];
                     }
@@ -450,7 +450,8 @@ namespace WizardsCode.Character {
                 animator.runtimeAnimatorController = template.runtimeAnimatorController;
             }
 
-            if (GUILayout.Button("Setup Grounder")) {
+            Grounder grounder = character.GetComponent<Grounder>();
+            if (grounder == null && GUILayout.Button("Setup Grounder")) {
                 SetupGrounder();
             }
 
@@ -641,7 +642,7 @@ namespace WizardsCode.Character {
             }
             else
             {
-                EditorUtility.DisplayDialog("Error", "Grounder not found in the template prefab.", "OK");
+                EditorUtility.DisplayDialog("Error", "Grounder configuration object set in the template prefab CharacterCreatorController.", "OK");
                 return;
             }
         }
@@ -650,8 +651,16 @@ namespace WizardsCode.Character {
         {
             bool isValid = true;
 
+
+            isValid = ToDoListGUI(ref creatorController.colliderToDoList);
+
             Collider collider = character.GetComponent<Collider>();
-            if (collider == null)
+
+            string foldoutLabel = isValid ? "✔ Collider" : "✘ Collider";
+            showColliderEditor |= !isValid;
+            showColliderEditor = EditorGUILayout.Foldout(showColliderEditor, foldoutLabel, GetFoldoutStyle(collider != null));
+
+            if (collider == null && GUILayout.Button("Generate Collider"))
             {
                 Bounds totalBounds = new Bounds(character.transform.position, Vector3.zero);
                 SkinnedMeshRenderer[] renderers = character.GetComponentsInChildren<SkinnedMeshRenderer>();
@@ -693,13 +702,8 @@ namespace WizardsCode.Character {
                 }
             }
 
-            isValid = ToDoListGUI(ref creatorController.colliderToDoList);
-
-            isValid &= collider != null;
-            string foldoutLabel = isValid ? "✔ Collider" : "✘ Collider";
-            showColliderEditor |= !isValid;
-            showColliderEditor = EditorGUILayout.Foldout(showColliderEditor, foldoutLabel, GetFoldoutStyle(collider != null));
-            if (!showColliderEditor)
+            
+            if (collider == null || !showColliderEditor)
             {
                 return isValid;
             }

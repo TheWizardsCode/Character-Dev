@@ -19,7 +19,8 @@ namespace WizardsCode.Character
             new CharacterCreatorToDoItem { description = "Set main mesh renderer.", isComplete = false },
             new CharacterCreatorToDoItem { description = "Ensure model is centered.", isComplete = false },
             new CharacterCreatorToDoItem { description = "Set material options - if the model has multiple base materials that give a different look, set them in the rendering section.", isComplete = false },
-            new CharacterCreatorToDoItem { description = "Set additive mesh renderers - if the model has additive meshes that give a different look when they are turned on, set them in the rendering section.", isComplete = false },
+            new CharacterCreatorToDoItem { description = "Set additive mesh renderers - if the model has additive meshes (can all be enabled at the same time) that give a different look when they are turned on, set them in the rendering section.", isComplete = false },
+            new CharacterCreatorToDoItem { description = "Set unique item mesh renderers - if the model has unique meshes (only one can be enabled at any one time) that give a different look when they are turned on, set them in the rendering section.", isComplete = false },
         };
 
         public CharacterCreatorToDoItem[] navMeshToDoList = new CharacterCreatorToDoItem[]
@@ -27,6 +28,7 @@ namespace WizardsCode.Character
             new CharacterCreatorToDoItem { description = "Set height and radius.", isComplete = false },
             new CharacterCreatorToDoItem { description = "Set angular speed.", isComplete = false },
             new CharacterCreatorToDoItem { description = "Set acceleration.", isComplete = false },
+            new CharacterCreatorToDoItem { description = "Set priority. Higher is less important. NPCs and characters should be between 50 and 100, animals between 100 and 150.", isComplete = false },
         };
 
         public CharacterCreatorToDoItem[] animatorToDoList = new CharacterCreatorToDoItem[]
@@ -34,12 +36,12 @@ namespace WizardsCode.Character
             new CharacterCreatorToDoItem { description = "Set animator controller.", isComplete = false },
             new CharacterCreatorToDoItem { description = "Set avatar.", isComplete = false },
             new CharacterCreatorToDoItem { description = "Validate whether you want to animate physics.", isComplete = false },
-            new CharacterCreatorToDoItem { description = "Enable foot IK if required.", isComplete = false },
+            new CharacterCreatorToDoItem { description = "Enable and configure Grounder if required.", isComplete = false },
         };
 
         public CharacterCreatorToDoItem[] colliderToDoList = new CharacterCreatorToDoItem[]
         {
-            new CharacterCreatorToDoItem { description = "Validate automatically generated collider.", isComplete = false },
+            new CharacterCreatorToDoItem { description = "Generate and Validate collider, or skip tu use existing collider(s).", isComplete = false },
         };
 
         public CharacterCreatorToDoItem[] actorControllerToDoList = new CharacterCreatorToDoItem[]
@@ -55,7 +57,7 @@ namespace WizardsCode.Character
 
         public CharacterCreatorToDoItem[] brainToDoList = new CharacterCreatorToDoItem[]
         {
-            new CharacterCreatorToDoItem { description = "Do you want this character to display a behaviour icon?", isComplete = false },
+            new CharacterCreatorToDoItem { description = "Configure the display of the behaviour icon?", isComplete = false },
         };
 
         public CharacterCreatorToDoItem[] behavioursToDoList = new CharacterCreatorToDoItem[]

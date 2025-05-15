@@ -94,6 +94,17 @@ namespace WizardsCode.Character
                     Debug.LogWarning($"`{displayName}` does not have a consistent root motion setting in the AnimatorActorController and the Animator. Overriding to `{m_UseRootMotion}` from the AnimatorActorController.");
                     animator.applyRootMotion = m_UseRootMotion;
                 }
+
+                if (m_UseRootMotion)
+                {
+                    m_Agent.updatePosition = false;
+                    m_Agent.updateRotation = false;
+                }
+                else
+                {
+                    m_Agent.updatePosition = true;
+                    m_Agent.updateRotation = true;
+                }
             }
 
             m_AnimatorController = m_Animator.runtimeAnimatorController;
@@ -117,6 +128,15 @@ namespace WizardsCode.Character
             {
                 m_Agent.stoppingDistance = ArrivingDistance / 2;
             }
+        }
+
+        void OnAnimatorMove()
+        {
+            Vector3 rootPosition = m_Animator.rootPosition;
+            rootPosition.y = m_Agent.nextPosition.y;
+            transform.position = rootPosition;
+            transform.rotation = m_Animator.rootRotation;
+            m_Agent.nextPosition = rootPosition;    
         }
 
         protected override void Update()
@@ -163,6 +183,12 @@ namespace WizardsCode.Character
             }
         }
 
+        public Vector2 m_smoothDeltaPosition { get; private set; }
+
+        private Vector2 m_Velocity;
+
+
+
         /// <summary>
         /// Stop the actor from moving. Clearing the current path if there is one.
         /// </summary>
@@ -186,39 +212,87 @@ namespace WizardsCode.Character
                 m_Agent.speed = Mathf.Lerp(m_Agent.speed, m_RunSpeed, Time.deltaTime * 2);
             }
             
-            SetForwardAndTurnParameters();
+            SynchronizeAnimatorAndAgent();
         }
 
-        private void SetForwardAndTurnParameters()
+        private void SynchronizeAnimatorAndAgent()
         {
-            // Calculate the forward parameter from the speed of the character.
-            float magVelocity = m_Agent.velocity.magnitude;
-            float speedParam = 0;
-            if (!Mathf.Approximately(magVelocity, 0))
+            if (m_UseRootMotion)
             {
-                speedParam = magVelocity / m_MaxSpeed;
-            }
+                // REFACTOR: There are some magic numbers in here that should be moved to values set in the inspector.
 
-            if (Mathf.Abs(speedParam) > 0.05) 
-            {
-                // OPTIMIZATION: Use hashes for animation parameters
-                m_Animator.SetFloat(m_SpeedParameterName, speedParam, speedDampTime, Time.deltaTime);
-                state = States.Moving;
+                Vector3 worldDeltaPosition = m_Agent.nextPosition - transform.position;
+                worldDeltaPosition.y = 0;
+
+                float dx = Vector3.Dot(transform.right, worldDeltaPosition);
+                float dy = Vector3.Dot(transform.forward, worldDeltaPosition);
+                Vector2 delta = new Vector2(dx, dy);
+
+                float smooth = Mathf.Min(1, Time.deltaTime / 0,1f);
+                m_smoothDeltaPosition = Vector2.Lerp(m_smoothDeltaPosition, delta, smooth);
+
+                m_Velocity = m_smoothDeltaPosition / Time.deltaTime;
+                if (m_Agent.remainingDistance <= m_Agent.stoppingDistance)
+                {
+                    m_Velocity = Vector2.Lerp(Vector2.zero, m_Velocity, m_Agent.remainingDistance / m_Agent.stoppingDistance);
+                }
+
+                Vector3 direction = m_Agent.transform.InverseTransformDirection(m_Agent.velocity).normalized;
+                float turn = direction.x;
+                Debug.Log($"{this.name} - Direction: {direction} Turn: {turn}");
+
+                bool isMoving = (m_Velocity.magnitude > 0.03f || Mathf.Abs(turn) > 0.05f)
+                    && m_Agent.remainingDistance > m_Agent.radius;
+                if (isMoving)
+                {   
+                    // OPTIMIZATION: Use hashes for animation parameters
+                    m_Animator.SetFloat(m_SpeedParameterName, m_Velocity.magnitude / m_MaxSpeed, speedDampTime, Time.deltaTime);
+                    m_Animator.SetFloat(m_TurnParameterName, turn, directionDampTime, Time.deltaTime);
+                    state = States.Moving;
+                }
+                else
+                {
+                    // OPTIMIZATION: Use hashes for animation parameters
+                    m_Animator.SetFloat(m_SpeedParameterName, 0);
+                    m_Animator.SetFloat(m_TurnParameterName, 0);
+                    state = States.Idle;
+                }
+
+                float deltaMagnitude = worldDeltaPosition.magnitude;
+                if (deltaMagnitude > m_Agent.radius / 2f)
+                {
+                    transform.position = Vector3.Lerp(m_Animator.rootPosition, m_Agent.nextPosition, smooth);
+                }
             }
             else
             {
-                m_Animator.SetFloat(m_SpeedParameterName, 0);
-            }
+                float magVelocity = m_Agent.velocity.magnitude;
+                float speedParam = 0;
+                if (!Mathf.Approximately(magVelocity, 0))
+                {
+                    speedParam = magVelocity / m_MaxSpeed;
+                }
 
-            // Calculate the turn parameter from the direction of the character.
-            Vector3 s = m_Agent.transform.InverseTransformDirection(m_Agent.velocity).normalized;
-            float turn = s.x;
-            if (Mathf.Abs(turn) > 0.05) {
-                // OPTIMIZATION: Use hashes for animation parameters
-                m_Animator.SetFloat(m_TurnParameterName, turn, directionDampTime, Time.deltaTime);
-                state = States.Moving;
-            } else {
-                m_Animator.SetFloat(m_TurnParameterName, 0);
+                if (Mathf.Abs(speedParam) > 0.05) 
+                {
+                    // OPTIMIZATION: Use hashes for animation parameters
+                    m_Animator.SetFloat(m_SpeedParameterName, speedParam, speedDampTime, Time.deltaTime);
+                    state = States.Moving;
+                }
+                else
+                {
+                    m_Animator.SetFloat(m_SpeedParameterName, 0);
+                }
+
+                Vector3 s = m_Agent.transform.InverseTransformDirection(m_Agent.velocity).normalized;
+                float turn = s.x;
+                if (Mathf.Abs(turn) > 0.05) {
+                    // OPTIMIZATION: Use hashes for animation parameters
+                    m_Animator.SetFloat(m_TurnParameterName, turn, directionDampTime, Time.deltaTime);
+                    state = States.Moving;
+                } else {
+                    m_Animator.SetFloat(m_TurnParameterName, 0);
+                }
             }
         }
         
