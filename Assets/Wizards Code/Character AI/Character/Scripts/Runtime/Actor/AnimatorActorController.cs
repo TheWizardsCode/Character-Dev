@@ -1,5 +1,4 @@
 ﻿using NaughtyAttributes;
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Playables;
@@ -32,6 +31,10 @@ namespace WizardsCode.Character
         protected Animator m_Animator;
         [SerializeField, Tooltip("Should the character use Root Motion baked into the animations?"), BoxGroup("Animation")]
         bool m_UseRootMotion = true;
+        [SerializeField, Tooltip("The smoothing factor for the NavMeshAgent to Animation sync. The higher this is the more smoothly they will sync, but at the cost of responsiveness"), Range(0.1f, 1.0f), BoxGroup("Animation")]
+        float m_SyncSmoothing = 0.5f;
+        [SerializeField, Tooltip("The maximum distance from the intended next position of the NavMeshAgent and the current position of the character. If the character drifts further than this away they will be forced back together. This is expressed as a multiple of the NavMeshAgents radius. Higher values will allow greater deltas, resulting in more natural motion until it needs to be corrected, which can be sudden and noticeable."), Range(0.1f, 1f), BoxGroup("Animation")]
+        float m_MaxPositionDeltaRatio = 0.5f;
         [SerializeField, Tooltip("The name of the parameter in the animator that sets the forward speed of the character."), BoxGroup("Animation")]
         private string m_SpeedParameterName = "Forward";
         [SerializeField, Tooltip("The damping time for the speed animation parameter. Higher values will result in more gradual speed changes, but can lead to sluggishness."), BoxGroup("Animation")]
@@ -215,88 +218,6 @@ namespace WizardsCode.Character
             SynchronizeAnimatorAndAgent();
         }
 
-        private void SynchronizeAnimatorAndAgent()
-        {
-            if (m_UseRootMotion)
-            {
-                // REFACTOR: There are some magic numbers in here that should be moved to values set in the inspector.
-
-                Vector3 worldDeltaPosition = m_Agent.nextPosition - transform.position;
-                worldDeltaPosition.y = 0;
-
-                float dx = Vector3.Dot(transform.right, worldDeltaPosition);
-                float dy = Vector3.Dot(transform.forward, worldDeltaPosition);
-                Vector2 delta = new Vector2(dx, dy);
-
-                float smooth = Mathf.Min(1, Time.deltaTime / 0,1f);
-                m_smoothDeltaPosition = Vector2.Lerp(m_smoothDeltaPosition, delta, smooth);
-
-                m_Velocity = m_smoothDeltaPosition / Time.deltaTime;
-                if (m_Agent.remainingDistance <= m_Agent.stoppingDistance)
-                {
-                    m_Velocity = Vector2.Lerp(Vector2.zero, m_Velocity, m_Agent.remainingDistance / m_Agent.stoppingDistance);
-                }
-
-                Vector3 direction = m_Agent.transform.InverseTransformDirection(m_Agent.velocity).normalized;
-                float turn = direction.x;
-                Debug.Log($"{this.name} - Direction: {direction} Turn: {turn}");
-
-                bool isMoving = (m_Velocity.magnitude > 0.03f || Mathf.Abs(turn) > 0.05f)
-                    && m_Agent.remainingDistance > m_Agent.radius;
-                if (isMoving)
-                {   
-                    // OPTIMIZATION: Use hashes for animation parameters
-                    m_Animator.SetFloat(m_SpeedParameterName, m_Velocity.magnitude / m_MaxSpeed, speedDampTime, Time.deltaTime);
-                    m_Animator.SetFloat(m_TurnParameterName, turn, directionDampTime, Time.deltaTime);
-                    state = States.Moving;
-                }
-                else
-                {
-                    // OPTIMIZATION: Use hashes for animation parameters
-                    m_Animator.SetFloat(m_SpeedParameterName, 0);
-                    m_Animator.SetFloat(m_TurnParameterName, 0);
-                    state = States.Idle;
-                }
-
-                float deltaMagnitude = worldDeltaPosition.magnitude;
-                if (deltaMagnitude > m_Agent.radius / 2f)
-                {
-                    transform.position = Vector3.Lerp(m_Animator.rootPosition, m_Agent.nextPosition, smooth);
-                }
-            }
-            else
-            {
-                float magVelocity = m_Agent.velocity.magnitude;
-                float speedParam = 0;
-                if (!Mathf.Approximately(magVelocity, 0))
-                {
-                    speedParam = magVelocity / m_MaxSpeed;
-                }
-
-                if (Mathf.Abs(speedParam) > 0.05) 
-                {
-                    // OPTIMIZATION: Use hashes for animation parameters
-                    m_Animator.SetFloat(m_SpeedParameterName, speedParam, speedDampTime, Time.deltaTime);
-                    state = States.Moving;
-                }
-                else
-                {
-                    m_Animator.SetFloat(m_SpeedParameterName, 0);
-                }
-
-                Vector3 s = m_Agent.transform.InverseTransformDirection(m_Agent.velocity).normalized;
-                float turn = s.x;
-                if (Mathf.Abs(turn) > 0.05) {
-                    // OPTIMIZATION: Use hashes for animation parameters
-                    m_Animator.SetFloat(m_TurnParameterName, turn, directionDampTime, Time.deltaTime);
-                    state = States.Moving;
-                } else {
-                    m_Animator.SetFloat(m_TurnParameterName, 0);
-                }
-            }
-        }
-        
-
         /// <summary>
         /// Teleport the actor to a location. The actor will inherit the rotation and position of the location.
         /// </summary>
@@ -371,6 +292,100 @@ namespace WizardsCode.Character
 #endregion // IK
 
 #region Animation
+        private void SynchronizeAnimatorAndAgent()
+        {
+            if (m_UseRootMotion)
+            {
+                Vector3 worldDeltaPosition = m_Agent.nextPosition - transform.position;
+                worldDeltaPosition.y = 0;
+
+                float dx = Vector3.Dot(transform.right, worldDeltaPosition);
+                float dy = Vector3.Dot(transform.forward, worldDeltaPosition);
+                Vector2 delta = new Vector2(dx, dy);
+
+                float smooth = Mathf.Min(1, Time.deltaTime / m_SyncSmoothing);
+                m_smoothDeltaPosition = Vector2.Lerp(m_smoothDeltaPosition, delta, smooth);
+
+                m_Velocity = m_smoothDeltaPosition / Time.deltaTime;
+                if (m_Agent.remainingDistance <= m_Agent.stoppingDistance)
+                {
+                    m_Velocity = Vector2.Lerp(Vector2.zero, m_Velocity, m_Agent.remainingDistance / m_Agent.stoppingDistance);
+                }
+
+                m_Velocity = m_Velocity.normalized;
+
+                float turn = 0;
+                if (m_Agent.path != null && m_Agent.path.corners.Length > 1)
+                {
+                    Vector3 toNextCorner = m_Agent.path.corners[1] - transform.position;
+                    toNextCorner.y = 0;
+                    toNextCorner.Normalize();
+
+                    Vector3 localDirection = transform.InverseTransformDirection(toNextCorner);
+                    turn = localDirection.x;
+                }
+                else
+                {
+                    // fallback to velocity-based turn
+                    Vector3 direction = m_Agent.transform.InverseTransformDirection(m_Agent.velocity).normalized;
+                    turn = direction.x;
+                }
+
+                bool isMoving = (m_Velocity.magnitude > 0.03f || Mathf.Abs(turn) > 0.05f)
+                    && m_Agent.remainingDistance > m_Agent.stoppingDistance;
+                if (isMoving)
+                {   
+                    // OPTIMIZATION: Use hashes for animation parameters
+                    m_Animator.SetFloat(m_SpeedParameterName, m_Velocity.magnitude / m_MaxSpeed, speedDampTime, Time.deltaTime);
+                    m_Animator.SetFloat(m_TurnParameterName, turn, directionDampTime, Time.deltaTime);
+                    state = States.Moving;
+                }
+                else
+                {
+                    // OPTIMIZATION: Use hashes for animation parameters
+                    m_Animator.SetFloat(m_SpeedParameterName, 0);
+                    m_Animator.SetFloat(m_TurnParameterName, 0);
+                    state = States.Idle;
+                }
+
+                float deltaMagnitude = worldDeltaPosition.magnitude;
+                if (deltaMagnitude > m_Agent.radius * m_MaxPositionDeltaRatio)
+                {
+                    transform.position = Vector3.Lerp(m_Animator.rootPosition, m_Agent.nextPosition, smooth);
+                }
+            }
+            else
+            {
+                float magVelocity = m_Agent.velocity.magnitude;
+                float speedParam = 0;
+                if (!Mathf.Approximately(magVelocity, 0))
+                {
+                    speedParam = magVelocity / m_MaxSpeed;
+                }
+
+                if (Mathf.Abs(speedParam) > 0.05) 
+                {
+                    // OPTIMIZATION: Use hashes for animation parameters
+                    m_Animator.SetFloat(m_SpeedParameterName, speedParam, speedDampTime, Time.deltaTime);
+                    state = States.Moving;
+                }
+                else
+                {
+                    m_Animator.SetFloat(m_SpeedParameterName, 0);
+                }
+
+                Vector3 s = m_Agent.transform.InverseTransformDirection(m_Agent.velocity).normalized;
+                float turn = s.x;
+                if (Mathf.Abs(turn) > 0.05) {
+                    // OPTIMIZATION: Use hashes for animation parameters
+                    m_Animator.SetFloat(m_TurnParameterName, turn, directionDampTime, Time.deltaTime);
+                    state = States.Moving;
+                } else {
+                    m_Animator.SetFloat(m_TurnParameterName, 0);
+                }
+            }
+        }
+        
         /// <summary>
         /// If the clip is non null then it will be played using a Playable. This will stop the animator from controlling the character.
         /// To set the animator back to using the animator controller use `PlayAnimatorController()`.
@@ -395,8 +410,10 @@ namespace WizardsCode.Character
             if (Animator == null) return;
             AnimationPlayableUtilities.PlayAnimatorController(Animator, m_AnimatorController, out _playableGraph);
         }
-        #endregion // Animation
+#endregion // Animation
 
+
+        #if UNITY_EDITOR
         protected override void OnValidate()
         {
             base.OnValidate();
@@ -405,5 +422,19 @@ namespace WizardsCode.Character
                 m_Animator = GetComponentInChildren<Animator>();
             }
         }
+
+        private void OnDrawGizmosSelected() {
+            if (m_Agent != null && m_Agent.hasPath)
+            {
+                Gizmos.color = Color.cyan;
+                var path = m_Agent.path;
+                for (int i = 0; i < path.corners.Length - 1; i++)
+                {
+                    Gizmos.DrawLine(path.corners[i], path.corners[i + 1]);
+                    Gizmos.DrawSphere(path.corners[i], 0.08f);
+                }
+            }
+        }
+        #endif
     }
 }
