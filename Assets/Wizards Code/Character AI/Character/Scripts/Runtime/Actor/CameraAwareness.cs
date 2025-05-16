@@ -15,7 +15,7 @@ namespace WizardsCode
         [SerializeField, Tooltip("Is this object a potential camera follow target?"), BoxGroup("Follow Camera Settings")]
         bool canCameraFollowTarget = false;
         [SerializeField, Tooltip("The follow camera to use when this object is the camera follow target. If this is not set then the currently active cinemachine camera will be used, if it is a follow camera. If the currently active camera is not a follow camera then the first follow camera found in the scene will be used."), ShowIf("canCameraFollowTarget"), BoxGroup("Follow Camera Settings")]
-        CinemachineCamera followCamera;
+        CinemachineClearShot followCamera;
         [SerializeField, Tooltip("The Look At target to use for the follow camera. If this is not set then the transform of this object will be used."), ShowIf("canCameraFollowTarget"), BoxGroup("Follow Camera Settings")]
         Transform cameraLookAtTarget;
 
@@ -25,24 +25,20 @@ namespace WizardsCode
             set => canCameraFollowTarget = value;
         }
 
-        public CinemachineCamera FollowCamera
+        public CinemachineClearShot FollowCamera
         {
             get {
                 if (followCamera == null)
                 {
-                    followCamera = CinemachineBrain.GetActiveBrain(0).ActiveVirtualCamera as CinemachineCamera;
-                    if (followCamera != null && followCamera.GetComponent<CinemachineFollow>() == null)
-                    {
-                        followCamera = null; // the active camera is not a follow camera
-                    }
+                    followCamera = CinemachineBrain.GetActiveBrain(0).ActiveVirtualCamera as CinemachineClearShot;
                 }
                 if (followCamera == null)
                 {
-                    followCamera = FindFirstObjectByType<CinemachineFollow>()?.GetComponent<CinemachineCamera>();
+                    followCamera = FindFirstObjectByType<CinemachineClearShot>()?.GetComponent<CinemachineClearShot>();
                 }
                 if (followCamera == null)
                 {
-                    Debug.LogWarning("No follow camera found in the scene. Cannot set follow target.");
+                    Debug.LogWarning("No ClearShot camera found in the scene. Cannot set follow target.");
                 }
 
                 return followCamera;
