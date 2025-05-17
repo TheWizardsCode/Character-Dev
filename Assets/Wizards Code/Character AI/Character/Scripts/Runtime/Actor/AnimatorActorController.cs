@@ -31,8 +31,8 @@ namespace WizardsCode.Character
         protected Animator m_Animator;
         [SerializeField, Tooltip("Should the character use Root Motion baked into the animations?"), BoxGroup("Animation")]
         bool m_UseRootMotion = true;
-        [SerializeField, Tooltip("The smoothing factor for the NavMeshAgent to Animation sync. The higher this is the more smoothly they will sync, but at the cost of responsiveness"), Range(0.1f, 1.0f), BoxGroup("Animation")]
-        float m_SyncSmoothing = 0.5f;
+        [SerializeField, Tooltip("The smoothing factor for the NavMeshAgent to Animation sync. The higher this is the more smoothly they will sync, but at the cost of responsiveness"), Range(0.01f, 0.2f), BoxGroup("Animation")]
+        float m_SyncSmoothing = 0.1f;
         [SerializeField, Tooltip("The maximum distance from the intended next position of the NavMeshAgent and the current position of the character. If the character drifts further than this away they will be forced back together. This is expressed as a multiple of the NavMeshAgents radius. Higher values will allow greater deltas, resulting in more natural motion until it needs to be corrected, which can be sudden and noticeable."), Range(0.1f, 1f), BoxGroup("Animation")]
         float m_MaxPositionDeltaRatio = 0.5f;
         [SerializeField, Tooltip("The name of the parameter in the animator that sets the forward speed of the character."), BoxGroup("Animation")]
