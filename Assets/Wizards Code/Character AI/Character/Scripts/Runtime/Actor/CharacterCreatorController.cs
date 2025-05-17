@@ -75,7 +75,7 @@ namespace WizardsCode.Character
     #if !UNITY_EDITOR
             if (Application.isPlaying)
             {
-            Destroy(this);
+                Destroy(this);
             }
     #endif
         }
