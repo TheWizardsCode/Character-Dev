@@ -40,12 +40,19 @@ namespace WizardsCode.Stats {
             get { return m_StatsInfluencers; }
         }
 
+        private string m_DisplayName;
         public string DisplayName
         {
             get
             {
-                return transform.root.gameObject.name;
+                if (string.IsNullOrEmpty(m_DisplayName))
+                {
+                    return transform.root.gameObject.name;
+                }
+
+                return m_DisplayName;
             }
+            set { m_DisplayName = value; }
         }
 
         /// <summary>

@@ -59,10 +59,17 @@ namespace WizardsCode.Character
         private States m_state;
         #endregion
 
-#region Properties
+        #region Properties
+        [Obsolete("Use DisplayName instead. Deprecated in 0.4.0.")]
         public string displayName
         {
+            get { return DisplayName; }
+        }
+
+        public string DisplayName
+        {
             get { return brain.DisplayName; }
+            set { brain.DisplayName = value; }
         }
 
         public Transform HeadBone

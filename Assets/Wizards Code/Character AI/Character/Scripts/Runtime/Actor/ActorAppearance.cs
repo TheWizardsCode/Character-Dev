@@ -1,5 +1,6 @@
 using NaughtyAttributes;
 using UnityEngine;
+using WizardsCode.Character;
 
 namespace WizardsCode {
     /// <summary>
@@ -10,6 +11,9 @@ namespace WizardsCode {
     {
         [SerializeField, Tooltip("Should this component delete itself after it has randomized the appearance of the animal? If this is false and the animal is disabled/re-enabled then it will be randomized again on. If true, the animal will not be randomized again on re-enablement."), BoxGroup("General")]
         private bool deleteAfterEnable = true;
+
+        [SerializeField, Tooltip("The name of the actor as used in the game."), BoxGroup("Meta Data")]
+        private string actorName = string.Empty;
 
         [SerializeField, Tooltip("The main mesh renderer for the animal."), BoxGroup("Rendering")]
         private SkinnedMeshRenderer mainMeshRenderer;
@@ -28,27 +32,63 @@ namespace WizardsCode {
 
         internal bool HasBlendShapes => mainMeshRenderer && mainMeshRenderer.sharedMesh.blendShapeCount > 0;
 
-        public SkinnedMeshRenderer MainMeshRenderer {
+        public SkinnedMeshRenderer MainMeshRenderer
+        {
             get => mainMeshRenderer;
             set => mainMeshRenderer = value;
         }
 
-        public Material[] BodyMaterials {
+        public Material[] BodyMaterials
+        {
             get => bodyMaterials;
             set => bodyMaterials = value;
         }
-        public SkinnedMeshRenderer[] AdditiveMeshRenderers {
+        public SkinnedMeshRenderer[] AdditiveMeshRenderers
+        {
             get => additiveMeshRenderers;
             set => additiveMeshRenderers = value;
         }
 
         void OnEnable()
         {
+            GenerateAndSetName();
             RandomizeAppearance();
 
             if (deleteAfterEnable)
             {
                 Destroy(this);
+            }
+        }
+
+        /// <summary>
+        /// Generates a name for the actor if one has not been set.
+        /// Ensures that the actor name is unique in the scene.
+        /// Ensures the object name is the same as the actor name.
+        /// </summary>
+        void GenerateAndSetName()
+        {
+            if (string.IsNullOrEmpty(actorName))
+            {
+                actorName = gameObject.name;
+            }
+
+            if (!UnityEditor.PrefabUtility.IsPartOfPrefabAsset(gameObject))
+            {
+                int suffix = 1;
+                string baseName = actorName;
+                while (GameObject.Find(actorName) != null && GameObject.Find(actorName) != gameObject)
+                {
+                    actorName = $"{baseName}_{suffix}";
+                    suffix++;
+                }
+            }
+
+            gameObject.name = actorName;
+
+            BaseActorController actorController = GetComponent<BaseActorController>();
+            if (actorController != null)
+            {
+                actorController.DisplayName = actorName;
             }
         }
 
@@ -61,7 +101,7 @@ namespace WizardsCode {
         }
 
         void RandomizeRendering()
-        {   
+        {
             if (bodyMaterials.Length > 0)
             {
                 mainMeshRenderer.material = bodyMaterials[Random.Range(0, bodyMaterials.Length)];
@@ -103,6 +143,11 @@ namespace WizardsCode {
 
             int randomIndex = Random.Range(0, uniqueItem.Length);
             uniqueItem[randomIndex].SetActive(true);
+        }
+
+        void OnValidate()
+        {
+            GenerateAndSetName();
         }
     }
 }
