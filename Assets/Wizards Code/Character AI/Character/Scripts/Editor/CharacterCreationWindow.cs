@@ -762,11 +762,12 @@ namespace WizardsCode.Character {
         {
             bool isValid = true;
 
+            Brain brain = character.GetComponentInChildren<Brain>();
             AbstractAIBehaviour[] behaviours = character.GetComponentsInChildren<AbstractAIBehaviour>();
             if (behaviours.Length == 0)
             {   
                 GameObject behaviourGO = new GameObject("Base Behaviours");
-                behaviourGO.transform.SetParent(character.transform);
+                behaviourGO.transform.SetParent(brain.transform);
                 behaviourGO.transform.localPosition = Vector3.zero;
 
                 behaviourGO.AddComponent<Wander>();       
