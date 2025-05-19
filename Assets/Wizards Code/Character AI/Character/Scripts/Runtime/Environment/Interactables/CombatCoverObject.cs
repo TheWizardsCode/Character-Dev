@@ -22,7 +22,7 @@ namespace WizardsCode.Character.AI
             {
                 Bounds bounds = GetComponent<Renderer>().bounds;
                 Vector3 position = new Vector3(bounds.max.x, bounds.min.y, bounds.max.z);
-                Vector3 targetPosition = actor.brain.GetTargetActor().transform.position;
+                Vector3 targetPosition = actor.Brain.GetTargetActor().transform.position;
 
                 NavMeshHit closestEdge = new NavMeshHit();
                 if (TestCoverPosition(targetPosition, position, out closestEdge))

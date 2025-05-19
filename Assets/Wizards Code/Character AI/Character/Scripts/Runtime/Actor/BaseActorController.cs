@@ -68,8 +68,8 @@ namespace WizardsCode.Character
 
         public string DisplayName
         {
-            get { return brain.DisplayName; }
-            set { brain.DisplayName = value; }
+            get { return Brain.DisplayName; }
+            set { Brain.DisplayName = value; }
         }
 
         public Transform HeadBone
@@ -77,15 +77,30 @@ namespace WizardsCode.Character
             get { return m_HeadBone; }
         }
 
+        [Obsolete("Use Brain instead. Deprecated in 0.4.0.")]
         public Brain brain
         {
-            get;
-            internal set;
+            get { return Brain; }
+            internal set { Brain = value; }
+        }
+
+        Brain m_Brain;
+        public Brain Brain
+        {
+            get
+            {
+                if (m_Brain == null)
+                {
+                    m_Brain = GetComponentInChildren<Brain>();
+                }
+                return m_Brain;
+            }
+            set { m_Brain = value; }
         }
 
         public virtual States state
         {
-            get { return m_state; } 
+            get { return m_state; }
             set
             {
                 if (m_state != value)
@@ -261,8 +276,6 @@ namespace WizardsCode.Character
                 m_LookAtTarget.localPosition = new Vector3(0, 1.6f, 0.5f);
             }
             
-            brain = GetComponentInChildren<Brain>();
-
             // Look IK Setup
             if (!HeadBone)
             {
@@ -508,9 +521,9 @@ namespace WizardsCode.Character
             transform.position = location.position;
             transform.rotation = location.rotation;
             
-            if (brain)
+            if (Brain)
             {
-                brain.active = aiActive;
+                Brain.active = aiActive;
             }
             StopMoving();
             ResetLookAt();
