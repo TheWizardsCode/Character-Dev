@@ -95,7 +95,7 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("The impacts we need an interactable to have on states for this behaviour to be enabled by it."), BoxGroup("Execution Conditions")]
         DesiredStatImpact[] m_DesiredStateImpacts = new DesiredStatImpact[0];
         [SerializeField, Tooltip("The conditions required in the world state for this behaviour to be valid."), BoxGroup("Execution Conditions")]
-        WorldStateSO[] m_RequiredWorldState;
+        WorldStateSO[] m_RequiredWorldState = new WorldStateSO[0];
         #endregion
 
         private PlayableDirector m_Director;
