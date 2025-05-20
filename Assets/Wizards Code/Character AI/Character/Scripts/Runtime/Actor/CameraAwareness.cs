@@ -14,8 +14,10 @@ namespace WizardsCode
         // Camera Follow Settings
         [SerializeField, Tooltip("Is this object a potential camera follow target?"), BoxGroup("Follow Camera Settings")]
         bool canCameraFollowTarget = false;
+        [SerializeField, Tooltip("When this object is enabled should it seek to become the focus of the camera? Note that this does not guarantee it will get focus, other objects may compete."), ShowIf("canCameraFollowTarget"), BoxGroup("Follow Camera Settings")]
+        bool m_StartWithFocus = false;
         [SerializeField, Tooltip("The follow camera to use when this object is the camera follow target. If this is not set then the currently active cinemachine camera will be used, if it is a follow camera. If the currently active camera is not a follow camera then the first follow camera found in the scene will be used."), ShowIf("canCameraFollowTarget"), BoxGroup("Follow Camera Settings")]
-        CinemachineClearShot followCamera;
+        CinemachineVirtualCameraBase m_FollowCamera;
         [SerializeField, Tooltip("The Look At target to use for the follow camera. If this is not set then the transform of this object will be used."), ShowIf("canCameraFollowTarget"), BoxGroup("Follow Camera Settings")]
         Transform cameraLookAtTarget;
 
@@ -25,25 +27,46 @@ namespace WizardsCode
             set => canCameraFollowTarget = value;
         }
 
-        public CinemachineClearShot FollowCamera
+        public CinemachineVirtualCameraBase FollowCamera
         {
             get {
-                if (followCamera == null)
+                if (m_FollowCamera == null)
                 {
-                    followCamera = CinemachineBrain.GetActiveBrain(0).ActiveVirtualCamera as CinemachineClearShot;
+                    var activeVCam = CinemachineBrain.GetActiveBrain(0).ActiveVirtualCamera;
+                    if (activeVCam is CinemachineClearShot || activeVCam is CinemachineFollow)
+                    {
+                        m_FollowCamera = activeVCam as CinemachineVirtualCameraBase;
+                    }
                 }
-                if (followCamera == null)
+                if (m_FollowCamera == null)
                 {
-                    followCamera = FindFirstObjectByType<CinemachineClearShot>()?.GetComponent<CinemachineClearShot>();
+                    m_FollowCamera = FindFirstObjectByType<CinemachineClearShot>();
                 }
-                if (followCamera == null)
+                if (m_FollowCamera == null)
                 {
-                    Debug.LogWarning("No ClearShot camera found in the scene. Cannot set follow target.");
+                    m_FollowCamera = FindFirstObjectByType<CinemachineVirtualCameraBase>();
+                    if (m_FollowCamera.GetComponent<CinemachineFollow>() == null)
+                    {
+                        m_FollowCamera = null;
+                    }
+                }
+                if (m_FollowCamera == null)
+                {
+                    Debug.LogWarning("No suitable follow VirtualCamera found in the scene. Cannot set follow target.");
                 }
 
-                return followCamera;
+                return m_FollowCamera;
             }
-            set => followCamera = value;
+            set => m_FollowCamera = value;
+        }
+
+        void OnEnable()
+        {
+            if (m_StartWithFocus && canCameraFollowTarget)
+            {
+                SetAsFollowTarget();
+                FollowCamera.Priority = 100;
+            }
         }
 
         void OnBecameVisible()
@@ -89,7 +112,12 @@ namespace WizardsCode
         #region Editor
 #if UNITY_EDITOR
         protected void OnValidate()
-        {   if (cameraLookAtTarget == null)
+        {
+            if (canCameraFollowTarget && m_FollowCamera == null)
+            {
+                _ = FollowCamera; // This will set the follow camera to the first follow camera found in the scene.
+            }
+            if (cameraLookAtTarget == null)
             {
                 cameraLookAtTarget = FindTransform(new string[] { "LookAt", "CameraLookAt", "CameraTarget", "Neck", "Head" });
             }
