@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19d0479af55690b459aa37cc281af882, type: 3}
+  m_Name: "Sol\u2019s Grace"
+  m_EditorClassIdentifier: 
+  DisplayName: "Sol\u2019s Grace"
+  m_Description: "Sol\u2019s Grace represents the fulfillment of devotion\u2014a
+    state in which the worshipper feels truly aligned with the divine will of the
+    sun gods. Those who attain Sol\u2019s Grace are believed to receive warmth beyond
+    the physical, wisdom beyond human understanding, and favor that ensures prosperity
+    in their endeavors. It is a state of enlightenment, where the worshipper transcends
+    mere ritual and is embraced by celestial radiance, guided by the ever-turning
+    cycle of the heavens.\n\nIf Sol\u2019s Grace is not achieved, the consequences
+    can be dire. Without this sacred harmony, doubt may fester in the heart, leading
+    to spiritual uncertainty and misfortune. Crops may wither, the days may feel
+    colder, and the worshipper may be cast into a shadow where the sun\u2019s light
+    no longer nurtures. Some believe that those who fail to uphold Sol\u2019s Covenant
+    risk being lost in an endless twilight, their souls wandering without direction,
+    forever yearning for the dawn that will never come."
+  m_Stat: {fileID: 11400000, guid: 624c0776a2e86134bbab0116793f0ae2, type: 2}
+  m_Objective: 2
+  m_NormalizedTargetValue: 0.8
+  m_NotInDesiredState:
+  - {fileID: 11400000, guid: 75c55611f4e170d45828971529345d6a, type: 2}
+  m_InDesiredState:
+  - {fileID: 11400000, guid: 876fd5bd246205e44b2f7d4168df1e6a, type: 2}
+  m_SatisfiedBehaviours: []
+  m_UnsatisfiedBehaviours:
+  - {fileID: 3244536229165064439, guid: 400f3fc8aa23ca948bb4bc95e1d56ca8, type: 3}
+  m_SubStates: []

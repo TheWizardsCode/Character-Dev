@@ -25,6 +25,11 @@ namespace WizardsCode.Animation {
 
         public override void OnStateMachineEnter(Animator animator, int stateMachinePathHash)
         {
+            if (animator == null)
+            {
+                Debug.LogWarning("Animator is null in OnStateMachineEnter.");
+                return;
+            }
             if (!randomizeOnStateMachineEnter)
             {
                 return;

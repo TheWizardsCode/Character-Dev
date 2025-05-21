@@ -12,11 +12,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19d0479af55690b459aa37cc281af882, type: 3}
   m_Name: Happy
   m_EditorClassIdentifier: 
-  DisplayName: Happy
+  DisplayName: "Euphoria\u2019s Embrace"
+  m_Description: "Euphoria\u2019s Embrace represents the peak of happiness\u2014a
+    state where everything feels lighter, brighter, and full of possibility. Those
+    who experience it move through life with ease, their minds clear, their emotions
+    balanced. Joy isn\u2019t just fleeting; it becomes a steady presence, influencing
+    their actions, relationships, and outlook on the future. Energy flows naturally,
+    and even challenges seem more manageable when approached with a positive state
+    of mind.\n\nIf Euphoria\u2019s Embrace is not achieved, life can feel heavier.
+    Routine turns into monotony, motivation fades, and even small setbacks can feel
+    overwhelming. Without happiness, frustration and fatigue take hold, making it
+    harder to connect with others or find meaning in daily experiences. Over time,
+    stress and negativity can build, leading to emotional exhaustion and a sense
+    of detachment. Some may struggle to recognize moments of joy, unable to break
+    free from cycles of doubt or discontent."
   m_Stat: {fileID: 11400000, guid: e7d5ac7f90040d04b892ec7dda97749d, type: 2}
   m_Objective: 2
   m_NormalizedTargetValue: 0.705
-  m_NotInDesiredState: []
+  m_NotInDesiredState:
+  - {fileID: 11400000, guid: 75c55611f4e170d45828971529345d6a, type: 2}
   m_InDesiredState: []
   m_SatisfiedBehaviours: []
   m_UnsatisfiedBehaviours:

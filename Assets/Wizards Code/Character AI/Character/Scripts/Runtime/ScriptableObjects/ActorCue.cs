@@ -1,4 +1,5 @@
 using System.Collections;
+using NaughtyAttributes;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.AI;
@@ -20,17 +21,16 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("Duration of this phase of this cue action. If 0 then it is unlimited. Note that this is overridden by the playable in the timeline since the timeline will set the duration of the cue.")]
         float m_Duration = 5;
 
-        [Header("Movement")]
-        [SerializeField, Tooltip("The name of the mark the actor should move to on this cue.")]
-        [FormerlySerializedAs("markName")] // 6/21/22
+        // Movement
+        [SerializeField, Tooltip("The name of the mark the actor should move to on this cue."), BoxGroup("Movement")]
         string m_MarkName;
-        [SerializeField, Tooltip("Should the name of the mark be prefixed with the display name of the actor and a ' - ' separator (with spaces)?")]
+        [SerializeField, Tooltip("Should the name of the mark be prefixed with the display name of the actor and a ' - ' separator (with spaces)?"), BoxGroup("Movement")]
         bool m_PrefixWithName = false;
-        [SerializeField, Tooltip("Stop movement upon receiving this cue. Note that this will override the markName setting above, that is if this is set and markName is set then no movement will occur.")]
+        [SerializeField, Tooltip("Stop movement upon receiving this cue. Note that this will override the markName setting above, that is if this is set and markName is set then no movement will occur."), BoxGroup("Movement")]
         bool m_StopMovement = false;
 
-        [Header("Sound")]
-        [SerializeField, Tooltip("Audio files for spoken lines")]
+        // Audio
+        [SerializeField, Tooltip("Audio files for spoken lines"), BoxGroup("Audio")]
         public AudioClip audioClip;
 
         protected BaseActorController m_Actor;

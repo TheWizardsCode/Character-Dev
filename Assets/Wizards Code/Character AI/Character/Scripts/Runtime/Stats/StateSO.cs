@@ -17,10 +17,14 @@ namespace WizardsCode.Character
         public enum Goal { Decrease, NoAction, Increase }
         public enum Objective { LessThan, Approximately, GreaterThan }
 
-        [Header("Stat Requirements")]
         [SerializeField, Tooltip("The name of this state")]
         //TODO need to ensure name is game unique
         string DisplayName = "No Name State";
+        [SerializeField, Tooltip("A description of this state, why it is sought and examples of what might happen if this state is not achieved."), TextArea(2, 10)]
+        string m_Description = string.Empty;
+
+        [Space]
+        [Header("Stat Requirements")]
         [SerializeField, Tooltip("The stat that manages this state.")]
         StatSO m_Stat;
         [SerializeField, Tooltip("State objective indicates whether our target value is a minimum, maxium or goal.")]

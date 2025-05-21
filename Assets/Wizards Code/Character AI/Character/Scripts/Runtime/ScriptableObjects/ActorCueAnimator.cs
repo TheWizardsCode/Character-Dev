@@ -4,6 +4,7 @@ using static WizardsCode.Character.ActorCueAnimator;
 using System;
 using UnityEngine.Playables;
 using UnityEngine.Animations;
+using NaughtyAttributes;
 
 namespace WizardsCode.Character
 {
@@ -13,27 +14,27 @@ namespace WizardsCode.Character
     [CreateAssetMenu(fileName = "Animation ActorCue", menuName = "Wizards Code/Actor/Animation Cue")]
     public class ActorCueAnimator : ActorCue
     {
-        [Header("Animation Layers")]
-        [SerializeField, Tooltip("The name of the layer to control the weight of. An emptry field means the layer weight has no effect.")]
+        // Animation Layers
+        [SerializeField, Tooltip("The name of the layer to control the weight of. An emptry field means the layer weight has no effect."), BoxGroup("Animation Layers")]
         string m_LayerName = "";
-        [SerializeField, Range(0f, 1), Tooltip("The weight of the layer")]
+        [SerializeField, Range(0f, 1), Tooltip("The weight of the layer"), BoxGroup("Animation Layers")]
         float m_LayerWeight = 1;
-        [SerializeField, Range(0f, 20), Tooltip("The time in seconds that it will take to reach the new layer weight.")]
+        [SerializeField, Range(0f, 20), Tooltip("The time in seconds that it will take to reach the new layer weight."), BoxGroup("Animation Layers")]
         float m_LayerWeightChangeTime = 0.5f;
-        [SerializeField, Tooltip("Should the layer weight be reverted back to the original level once this cue has completed?")]
+        [SerializeField, Tooltip("Should the layer weight be reverted back to the original level once this cue has completed?"), BoxGroup("Animation Layers")]
         bool m_RevertLayerWeight = false;
 
+        // Animation Parameters
         public enum ParameterType { Float, Int, Bool, Trigger }
-        [Header("Animation Parameters")]
-        [SerializeField, Tooltip("A set of animation parameter changes to make.")]
+        [SerializeField, Tooltip("A set of animation parameter changes to make."), BoxGroup("Animation Parameters")]
         AnimationParameter[] m_AnimationParams;
 
-        [Header("Animation Clips")]
-        [SerializeField, Tooltip("An animation to play that is not in an Animator.")]
+        // Animation Clips
+        [SerializeField, Tooltip("An animation to play that is not in an Animator."), BoxGroup("Animation Clips")]
         AnimationClip m_AnimationClip;
-        [SerializeField, Tooltip("Should the duration of this cue be set to the duration of the clip?")]
+        [SerializeField, Tooltip("Should the duration of this cue be set to the duration of the clip?"), BoxGroup("Animation Clips")]
         bool m_DurationMatchesAnimation = true;
-        [SerializeField, Tooltip("The normalized time from which to start the animation.")]
+        [SerializeField, Tooltip("The normalized time from which to start the animation."), BoxGroup("Animation Clips")]
         float animationNormalizedTime = 0;
 
         private int m_LayerIndex;
@@ -63,7 +64,8 @@ namespace WizardsCode.Character
         /// If the actor controller is an animator controller then this will return it, otherwise
         /// it will return a null.
         /// </summary>
-        internal AnimatorActorController AnimatorController {
+        internal AnimatorActorController AnimatorController
+        {
             get
             {
                 if (m_AnimatorController == null)
@@ -209,6 +211,14 @@ namespace WizardsCode.Character
                             break;
                     }
                 }
+            }
+        }
+
+        void OnValidate()
+        {
+            if (m_DurationMatchesAnimation && m_AnimationClip != null)
+            {
+                Duration = m_AnimationClip.length;
             }
         }
     }

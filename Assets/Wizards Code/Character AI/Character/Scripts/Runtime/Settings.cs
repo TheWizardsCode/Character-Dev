@@ -9,7 +9,7 @@ namespace WizardsCode.Character
         {
             get
             {
-            return LayerMask.GetMask(INTERACTABLE_LAYER_NAME);
+                return LayerMask.GetMask(INTERACTABLE_LAYER_NAME);
             }
         }
     }

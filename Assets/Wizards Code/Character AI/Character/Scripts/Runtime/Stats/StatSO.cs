@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using NaughtyAttributes;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace WizardsCode.Stats
@@ -10,22 +11,28 @@ namespace WizardsCode.Stats
     [CreateAssetMenu(fileName = "New Stat", menuName = "Wizards Code/Stats/New Stat")]
     public class StatSO : ScriptableObject
     {
-        [Header("Details")]
+        // Meta Data
         [SerializeField, Tooltip("The human readable name for this stat.")]
         string m_DisplayName = "No Name Stat";
-        [SerializeField, Tooltip("The start value for this stat (not normalized).")]
+        [SerializeField, Tooltip("A description of what this stat is, how it works and at least one example of what it would be used for."), TextArea(1,10)]
+        string m_Description = string.Empty;
+
+        [Space]
+        // Value
+        [SerializeField, Tooltip("The start value for this stat (not normalized)."), BoxGroup("Value")]
         float startValue = 100;
-        [SerializeField, Tooltip("The minimum value this stat can have (not normalized).")]
+        [SerializeField, Tooltip("The minimum value this stat can have (not normalized)."), BoxGroup("Value")]
         float m_MinValue = 0;
-        [SerializeField, Tooltip("The maximum value this stat can have (not normalized).")]
+        [SerializeField, Tooltip("The maximum value this stat can have (not normalized)."), BoxGroup("Value")]
         float m_MaxValue = 100;
 
-        [Header("Time Effects")]
-        [SerializeField, Tooltip("Should the value of this stat change naturally over time even when there are no other influencers acting upon it?")]
+        [Space]
+        // Time based effects
+        [SerializeField, Tooltip("Should the value of this stat change naturally over time even when there are no other influencers acting upon it?"), BoxGroup("Time Effects")]
         bool m_AdjustsOverTime = true;
-        [SerializeField, Tooltip("The base value for this stat. This is the value at start and that the character will always trend towards with no external factors influencing the current value."), Range(0, 1)]
+        [SerializeField, Tooltip("The base value for this stat. This is the value at start and that the character will always trend towards with no external factors influencing the current value."), Range(0, 1), BoxGroup("Time Effects"), ShowIf("m_AdjustsOverTime")]
         float m_BaseNormalizedValue = 0;
-        [SerializeField, Tooltip("The speed (lower is faster) at which this stat moved towards the base value if there are no other effects at play.")]
+        [SerializeField, Tooltip("The speed (lower is faster) at which this stat moved towards the base value if there are no other effects at play."), BoxGroup("Time Effects"), ShowIf("m_AdjustsOverTime")]
         float m_SpeedToBaseValue = 5;
 
         public StatChangedEvent onValueChanged = new StatChangedEvent();
@@ -37,6 +44,12 @@ namespace WizardsCode.Stats
         {
             get { return m_DisplayName; }
             set { m_DisplayName = value; }
+        }
+
+        public string Description
+        {
+            get { return m_Description; }
+            internal set { m_Description = value;  }
         }
 
         public float MinValue

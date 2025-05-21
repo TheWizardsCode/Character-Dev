@@ -5,6 +5,7 @@ using System;
 using static WizardsCode.Character.StateSO;
 using UnityEngine.Serialization;
 using WizardsCode.Character.WorldState;
+using NaughtyAttributes;
 
 namespace WizardsCode.Character
 {
@@ -19,7 +20,6 @@ namespace WizardsCode.Character
     public class Interactable : MonoBehaviour
     {
         #region Inspector Values
-        [Header("Overview")]
         [SerializeField, TextArea, Tooltip("A description of this interactable action.")]
         string m_Description;
         [SerializeField, Tooltip("The type of this interactable, this is used for sorting and filtering world state. This should represent the primary purpose of this interactable, there may be other interactables on the same object and there may be additional effects from this interactable. However, the type represents the primary purpose.")]
@@ -28,20 +28,19 @@ namespace WizardsCode.Character
         [FormerlySerializedAs("m_InteractionName")]
         string m_InteractionNameFromActorsPerspective = "";
 
-        [Header("Character Settings")]
-        [SerializeField, Tooltip("How many characters can interact using this influencer at any one time.")]
+        [SerializeField, Tooltip("How many characters can interact using this influencer at any one time."), BoxGroup("Character Settings")]
         int m_MaxInteractors = 1;
-        [SerializeField, Tooltip("The set of character stats and the influence to apply to them when a character interacts with the object.")]
+        [SerializeField, Tooltip("The set of character stats and the influence to apply to them when a character interacts with the object."), BoxGroup("Character Settings")]
         internal StatInfluence[] m_CharacterInfluences;
-        [SerializeField, Tooltip("The position an actor should be in to interact with this interactable. If this is left blank then a best guess interaction point will be selected.")]
+        [SerializeField, Tooltip("The position an actor should be in to interact with this interactable. If this is left blank then a best guess interaction point will be selected."), BoxGroup("Character Settings")]
         internal Transform m_InteractionPoint;
 
-        [Header("Object Settings")]
-        [SerializeField, Tooltip("When an actor has finished interacting with the object should the object be destroyed?")]
+        // Object Settings
+        [SerializeField, Tooltip("When an actor has finished interacting with the object should the object be destroyed?"), BoxGroup("Object Settings")]
         bool m_DestroyOnUse = false;
-        [SerializeField, Tooltip("The set of object stats and the influence to apply to them when a character interacts with the object.")]
+        [SerializeField, Tooltip("The set of object stats and the influence to apply to them when a character interacts with the object."), BoxGroup("Object Settings")]
         internal StatInfluence[] m_ObjectInfluences;
-        [SerializeField, Tooltip("The cooldown time before a character can be influenced by this influencer again. For example, if the character is harvesting a resource then the available resource within this object will be reduced.")]
+        [SerializeField, Tooltip("The cooldown time before a character can be influenced by this influencer again. For example, if the character is harvesting a resource then the available resource within this object will be reduced."), BoxGroup("Object Settings")]
         float m_Cooldown = 30;
         #endregion
 
@@ -149,6 +148,7 @@ namespace WizardsCode.Character
         {
             InteractableManager.Instance.Register(this);
         }
+        
         private void OnTriggerEnter(Collider other)
         {
             if (other.gameObject == this.gameObject) return;
