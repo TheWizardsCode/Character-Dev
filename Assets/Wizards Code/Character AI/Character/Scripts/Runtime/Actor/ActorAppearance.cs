@@ -67,11 +67,6 @@ namespace WizardsCode {
         /// </summary>
         void GenerateAndSetName()
         {
-            if (string.IsNullOrEmpty(actorName))
-            {
-                actorName = gameObject.name;
-            }
-
             if (!UnityEditor.PrefabUtility.IsPartOfPrefabAsset(gameObject))
             {
                 int suffix = 1;
@@ -147,7 +142,10 @@ namespace WizardsCode {
 
         void OnValidate()
         {
-            GenerateAndSetName();
+            if (actorName == string.Empty)
+            {
+                actorName = gameObject.name;
+            }
         }
     }
 }
