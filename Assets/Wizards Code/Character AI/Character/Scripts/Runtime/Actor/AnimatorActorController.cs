@@ -289,18 +289,36 @@ namespace WizardsCode.Character
                 m_Animator.SetIKRotation(AvatarIKGoal.LeftFoot, m_LeftFootPosition.rotation);
             }
         }
-#endregion // IK
+        #endregion // IK
 
-#region Animation
+        #region Animation
+        /// <summary>
+        /// Synchronize the animator and the NavMeshAgent. This will update the animator with the current speed and direction of the character.
+        /// It will also update the NavMeshAgent with the current position of the character.
+        /// If the character is using root motion then the NavMeshAgent will be disabled and the animator will control the character's movement,
+        /// only the path to follow will come from the NavMesh.
+        /// If the character is not using root motion then the NavMeshAgent will control the character's movement as well as path.
+        /// </summary>
         private void SynchronizeAnimatorAndAgent()
         {
+            if (m_Agent.pathStatus != NavMeshPathStatus.PathComplete)
+            {
+                m_Animator.SetFloat(m_SpeedParameterName, 0);
+                m_Animator.SetFloat(m_TurnParameterName, 0);
+                state = States.Idle;
+                return;
+            }
+
             if (m_UseRootMotion)
             {
                 Vector3 worldDeltaPosition = m_Agent.nextPosition - transform.position;
-                worldDeltaPosition.y = 0;
 
-                float dx = Vector3.Dot(transform.right, worldDeltaPosition);
-                float dy = Vector3.Dot(transform.forward, worldDeltaPosition);
+                // For animation parameters, use only XZ movement
+                Vector3 flatDelta = worldDeltaPosition;
+                flatDelta.y = 0;
+
+                float dx = Vector3.Dot(transform.right, flatDelta);
+                float dy = Vector3.Dot(transform.forward, flatDelta);
                 Vector2 delta = new Vector2(dx, dy);
 
                 float smooth = Mathf.Min(1, Time.deltaTime / m_SyncSmoothing);
@@ -334,7 +352,7 @@ namespace WizardsCode.Character
                 bool isMoving = (m_Velocity.magnitude > 0.03f || Mathf.Abs(turn) > 0.05f)
                     && m_Agent.remainingDistance > m_Agent.stoppingDistance;
                 if (isMoving)
-                {   
+                {
                     // OPTIMIZATION: Use hashes for animation parameters
                     m_Animator.SetFloat(m_SpeedParameterName, m_Velocity.magnitude / m_MaxSpeed, speedDampTime, Time.deltaTime);
                     m_Animator.SetFloat(m_TurnParameterName, turn, directionDampTime, Time.deltaTime);
@@ -363,7 +381,7 @@ namespace WizardsCode.Character
                     speedParam = magVelocity / m_MaxSpeed;
                 }
 
-                if (Mathf.Abs(speedParam) > 0.05) 
+                if (Mathf.Abs(speedParam) > 0.05)
                 {
                     // OPTIMIZATION: Use hashes for animation parameters
                     m_Animator.SetFloat(m_SpeedParameterName, speedParam, speedDampTime, Time.deltaTime);
@@ -376,11 +394,14 @@ namespace WizardsCode.Character
 
                 Vector3 s = m_Agent.transform.InverseTransformDirection(m_Agent.velocity).normalized;
                 float turn = s.x;
-                if (Mathf.Abs(turn) > 0.05) {
+                if (Mathf.Abs(turn) > 0.05)
+                {
                     // OPTIMIZATION: Use hashes for animation parameters
                     m_Animator.SetFloat(m_TurnParameterName, turn, directionDampTime, Time.deltaTime);
                     state = States.Moving;
-                } else {
+                }
+                else
+                {
                     m_Animator.SetFloat(m_TurnParameterName, 0);
                 }
             }
