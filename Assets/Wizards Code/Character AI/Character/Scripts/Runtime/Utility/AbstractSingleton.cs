@@ -12,23 +12,39 @@ namespace WizardsCode.BackgroundAI
     public abstract class AbstractSingleton<T> : MonoBehaviour where T : AbstractSingleton<T>
     {
         [SerializeField, Tooltip("If set to true this instance will persist between levels.")]
-        bool m_IsPersistant = false;
+        bool m_IsPersistent = false;
 
         static T m_Instance;
 
-        public static T Instance { get { return m_Instance; } }
+        public static T Instance
+        {
+            get
+            {
+                if (m_Instance == null)
+                {
+                    m_Instance = FindFirstObjectByType<T>();
+                    if (m_Instance == null)
+                    {
+                        GameObject singletonObject = new GameObject(typeof(T).Name);
+                        m_Instance = singletonObject.AddComponent<T>();
+                    }
+                }
+                return m_Instance;
+            }
+        }
 
         public virtual void OnEnable()
         {
-            if (m_IsPersistant)
+            if (m_IsPersistent)
             {
-                if (!m_Instance)
+                if (m_Instance == null)
                 {
                     m_Instance = this as T;
                 }
-                else
+                else if (m_Instance != this)
                 {
                     Destroy(gameObject);
+                    return;
                 }
                 DontDestroyOnLoad(gameObject);
             }

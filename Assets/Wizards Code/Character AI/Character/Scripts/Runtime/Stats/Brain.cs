@@ -382,11 +382,8 @@ namespace WizardsCode.Stats {
             }
             else
             {
-                if (ActiveBlockingBehaviour == candidateBehaviour) {
                     log.Insert(0, candidateBehaviour.DisplayName);
-                } else
-                {
-                    log.Insert(0, candidateBehaviour.DisplayName);
+                if (ActiveBlockingBehaviour != candidateBehaviour) {
                     log.Insert(0, " look for a place to ");
                 }
             }
