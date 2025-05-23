@@ -136,7 +136,7 @@ namespace WizardsCode.Character
         void OnAnimatorMove()
         {
             Vector3 rootPosition = m_Animator.rootPosition;
-            rootPosition.y = m_Agent.nextPosition.y;
+            rootPosition.y = Mathf.Lerp(transform.position.y, m_Agent.nextPosition.y, 0.5f);
             transform.position = rootPosition;
             transform.rotation = m_Animator.rootRotation;
             m_Agent.nextPosition = rootPosition;    
@@ -303,9 +303,13 @@ namespace WizardsCode.Character
         {
             if (m_Agent.pathStatus != NavMeshPathStatus.PathComplete)
             {
-                m_Animator.SetFloat(m_SpeedParameterName, 0);
-                m_Animator.SetFloat(m_TurnParameterName, 0);
-                state = States.Idle;
+                float currentSpeed = m_Animator.GetFloat(m_SpeedParameterName);
+                float deceleratedSpeed = Mathf.MoveTowards(currentSpeed, 0, Time.deltaTime / Mathf.Max(0.01f, speedDampTime));
+                m_Animator.SetFloat(m_SpeedParameterName, deceleratedSpeed, speedDampTime, Time.deltaTime);
+
+                float currentTurn = m_Animator.GetFloat(m_TurnParameterName);
+                float deceleratedTurn = Mathf.MoveTowards(currentTurn, 0, Time.deltaTime / Mathf.Max(0.01f, directionDampTime));
+                m_Animator.SetFloat(m_TurnParameterName, deceleratedTurn, directionDampTime, Time.deltaTime);
                 return;
             }
 
@@ -366,7 +370,7 @@ namespace WizardsCode.Character
                     state = States.Idle;
                 }
 
-                float deltaMagnitude = worldDeltaPosition.magnitude;
+                float deltaMagnitude = flatDelta.magnitude;
                 if (deltaMagnitude > m_Agent.radius * m_MaxPositionDeltaRatio)
                 {
                     transform.position = Vector3.Lerp(m_Animator.rootPosition, m_Agent.nextPosition, smooth);
