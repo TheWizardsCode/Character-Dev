@@ -30,7 +30,7 @@ namespace WizardsCode
         public CinemachineVirtualCameraBase FollowCamera
         {
             get {
-                if (m_FollowCamera == null)
+                if (m_FollowCamera == null && CinemachineBrain.ActiveBrainCount > 0)
                 {
                     var activeVCam = CinemachineBrain.GetActiveBrain(0).ActiveVirtualCamera;
                     if (activeVCam is CinemachineClearShot || activeVCam is CinemachineFollow)
@@ -45,7 +45,7 @@ namespace WizardsCode
                 if (m_FollowCamera == null)
                 {
                     m_FollowCamera = FindFirstObjectByType<CinemachineVirtualCameraBase>();
-                    if (m_FollowCamera.GetComponent<CinemachineFollow>() == null)
+                    if (m_FollowCamera != null && m_FollowCamera.GetComponent<CinemachineFollow>() == null)
                     {
                         m_FollowCamera = null;
                     }
