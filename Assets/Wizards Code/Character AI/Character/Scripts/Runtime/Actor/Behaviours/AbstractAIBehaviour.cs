@@ -22,9 +22,10 @@ namespace WizardsCode.Character
         #region Inspector Fields
         // UI
         [SerializeField, Tooltip("The name to use in the User Interface."), BoxGroup("UI")]
-        string m_DisplayName = "Unnamed AI Behaviour";
+        [Required]
+        string m_DisplayName = string.Empty;
         [SerializeField, Tooltip("A player readable description of the behaviour."), BoxGroup("UI")]
-        [TextArea(3, 10)]
+        [TextArea(3, 10), Required]
         string m_Description;
         [SerializeField, Tooltip("Icon for this behaviour."), BoxGroup("UI")]
         internal Sprite Icon;
