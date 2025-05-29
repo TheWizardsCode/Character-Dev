@@ -17,13 +17,16 @@ namespace WizardsCode.Stats {
         , IDebug
 #endif
     {
+        [SerializeField, Tooltip("Is this stats tracker in debug mode? If true then it will display debug information in the console at runtime.")]
+        internal bool m_IsDebugMode = false;
+
         [SerializeField, Tooltip("Desired States are the states that the actor would like to satisfy. These are, essentially, the things that drive the actor.")]
         StateSO[] m_DesiredStates = default;
 
         [Header("Optimization")]
         [SerializeField, Tooltip("How often stats should be processed for changes.")]
         protected float m_TimeBetweenUpdates = 0.5f;
-
+        
         [HideInInspector, SerializeField]
         internal List<StatSO> m_Stats = new List<StatSO>();
         [HideInInspector, SerializeField]
