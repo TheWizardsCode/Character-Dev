@@ -113,7 +113,7 @@ public class DangerousAreaScanner : AbstractSingleton<DangerousAreaScanner>
 
         if(!NavMesh.SamplePosition(transform.position, out hit, 2, NavMesh.AllAreas))
         {
-            return 1 << -1;
+            return 0;
         }
         return hit.mask;
     }
