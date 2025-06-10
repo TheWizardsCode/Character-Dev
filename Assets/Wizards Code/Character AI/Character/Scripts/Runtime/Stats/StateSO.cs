@@ -25,7 +25,7 @@ namespace WizardsCode.Character
 
         [Space]
         [Header("Stat Requirements")]
-        [SerializeField, Tooltip("The stat that manages this state.")]
+        [SerializeField, Tooltip("This is the stat that will determine whether this state is satisfied or not. The objective and normalized target value (below) will be used to determine if the stat is in the desired state.")]
         StatSO m_Stat;
         [SerializeField, Tooltip("State objective indicates whether our target value is a minimum, maxium or goal.")]
         Objective m_Objective;
@@ -85,6 +85,11 @@ namespace WizardsCode.Character
             }
         }
 
+        /// <summary>
+        /// The template for the stat that this state is based on.
+        /// This is used to determine if the state is satisfied or not.
+        /// It is not the actual stat, but a template that can be used to retrieve the state from a StatTracker or create the stat if it does not exist.
+        /// </summary>
         public StatSO statTemplate
         {
             get { return m_Stat; }

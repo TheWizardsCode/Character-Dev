@@ -1,13 +1,11 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using WizardsCode.Character;
-using WizardsCode.Character.Stats;
 using WizardsCode.Stats;
 
-namespace WizardsCode.Personality.Tests
+namespace WizardsCode.AI.Tests
 {
     public class MemoryControllerTest
     {
