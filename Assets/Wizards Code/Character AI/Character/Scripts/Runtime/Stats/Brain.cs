@@ -537,7 +537,10 @@ namespace WizardsCode.Stats {
             if (string.IsNullOrEmpty(log)) return;
 
             //TODO don't log to console, log to a characters history
-            Debug.Log(log, this);
+            if (m_IsDebugMode)
+            {
+                Debug.Log(log, this);
+            }
         }
 
         private void OnValidate()

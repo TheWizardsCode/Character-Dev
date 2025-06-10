@@ -22,9 +22,10 @@ namespace WizardsCode.Character
         #region Inspector Fields
         // UI
         [SerializeField, Tooltip("The name to use in the User Interface."), BoxGroup("UI")]
-        string m_DisplayName = "Unnamed AI Behaviour";
+        [Required]
+        string m_DisplayName = string.Empty;
         [SerializeField, Tooltip("A player readable description of the behaviour."), BoxGroup("UI")]
-        [TextArea(3, 10)]
+        [TextArea(3, 10), Required]
         string m_Description;
         [SerializeField, Tooltip("Icon for this behaviour."), BoxGroup("UI")]
         internal Sprite Icon;
@@ -65,7 +66,7 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("A set of actor cues from which to randomly select an appropriate cue when enacting this behaviour. This is where you will usually play animations and sounds reflecting the interaction itself."), BoxGroup("Lifecycle")]
         // [FormerlySerializedAs("m_OnPerformInteraction")] // changed in v0.1.1
         // [FormerlySerializedAs("m_OnPerformAction")] // v0.12
-        protected ActorCue[] m_OnPerformCue;
+        protected ActorCue[] m_OnPerformCue = new ActorCue[0];
         [SerializeField, Tooltip("The minimum duration of the performance phase of this interaction. Note that if there are explicit perform cues this value will be overridden by the settings in those cues."), HideIf("m_OnPerformCue"), BoxGroup("Lifecycle")]
         protected float m_MinimumPerformanceDuration = 1;
         [SerializeField, Tooltip("An actor cue to send to the actor as they finalize this interaction. This is where you will typically play wind up animations and the like."), BoxGroup("Lifecycle")]
@@ -87,11 +88,11 @@ namespace WizardsCode.Character
         float m_WeightVariation = 0.1f;
         [SerializeField, Tooltip("The required senses about the current world state around the actor. For example, we may have a sense for whether there is a willing mate nearby which will permit a make babies  behaviour to fire. Another example is that a" +
             "character will only sleep in the open if they sense there are no threats nearby."), BoxGroup("Execution Conditions")]
-        AbstractSense[] m_RequiredSenses;
+        AbstractSense[] m_RequiredSenses = new AbstractSense[0];
         [SerializeField, Tooltip("The required stats to enable this behaviour. Here you should set minimum, maximum or approximate values for stats that are needed for this behaviour to fire. For example, buying items is only possible if the actor has cash."), BoxGroup("Execution Conditions")]
-        RequiredStat[] m_RequiredStats = default;
+        RequiredStat[] m_RequiredStats = new RequiredStat[0];
         [SerializeField, Tooltip("The set of character stats and the influence to apply to them when a character chooses this behaviour AND the behaviour does not require an interactable (influences come from the interactable if one is required)."), BoxGroup("Execution Conditions")]
-        internal StatInfluence[] m_CharacterInfluences;
+        internal StatInfluence[] m_CharacterInfluences = new StatInfluence[0];
         [SerializeField, Tooltip("The impacts we need an interactable to have on states for this behaviour to be enabled by it."), BoxGroup("Execution Conditions")]
         DesiredStatImpact[] m_DesiredStateImpacts = new DesiredStatImpact[0];
         [SerializeField, Tooltip("The conditions required in the world state for this behaviour to be valid."), BoxGroup("Execution Conditions")]
@@ -416,15 +417,7 @@ namespace WizardsCode.Character
             {
                 if (!m_CharacterInfluences[i].applyOnCompletion)
                 {
-                    StatInfluencerSO influencer = ScriptableObject.CreateInstance<StatInfluencerSO>();
-                    influencer.InteractionName = m_CharacterInfluences[i].statTemplate.name;
-                    influencer.Trigger = null;
-                    influencer.stat = m_CharacterInfluences[i].statTemplate;
-                    influencer.maxChange = m_CharacterInfluences[i].maxChange;
-                    influencer.duration = duration;
-                    influencer.CooldownDuration = 0;
-
-                    Brain.TryAddInfluencer(influencer);
+                    Brain.TryAddInfluence(m_CharacterInfluences[i], duration);
                 }
             }
         }

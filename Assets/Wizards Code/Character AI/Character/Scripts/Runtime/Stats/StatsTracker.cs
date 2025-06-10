@@ -17,13 +17,16 @@ namespace WizardsCode.Stats {
         , IDebug
 #endif
     {
+        [SerializeField, Tooltip("Is this stats tracker in debug mode? If true then it will display debug information in the console at runtime.")]
+        internal bool m_IsDebugMode = false;
+
         [SerializeField, Tooltip("Desired States are the states that the actor would like to satisfy. These are, essentially, the things that drive the actor.")]
         StateSO[] m_DesiredStates = default;
 
         [Header("Optimization")]
         [SerializeField, Tooltip("How often stats should be processed for changes.")]
         protected float m_TimeBetweenUpdates = 0.5f;
-
+        
         [HideInInspector, SerializeField]
         internal List<StatSO> m_Stats = new List<StatSO>();
         [HideInInspector, SerializeField]
@@ -61,6 +64,14 @@ namespace WizardsCode.Stats {
         /// </summary>
         public StateSO[] DesiredStates { get { return m_DesiredStates; } }
 
+        /// <summary>
+        /// Gets or sets the list of desired states that are currently not satisfied by this stats tracker.
+        /// This property returns a cached value, which is updated during the regular update cycle,
+        /// so it can be safely called multiple times per frame without performance concerns.
+        /// 
+        /// The cache is refreshed every <see cref="m_TimeBetweenUpdates"/> seconds, which can be adjusted
+        /// via the <c>m_TimeBetweenUpdates</c> field to control the cache's time-to-live (TTL).
+        /// </summary>
         public List<StateSO> UnsatisfiedDesiredStates
         {
             get { return m_UnsatisfiedDesiredStatesCache; }
@@ -361,17 +372,22 @@ namespace WizardsCode.Stats {
         /// exist it will be created with a base value.
         /// </summary>
         /// <param name="name">Tha name of the stat to Get or Create for this controller</param>
+        /// <param name="normalizedValue">An optional value that is the normalized value of the stat (from 0 to 1). If not provided then the stat will be created with a default value of 0.</param>
         /// <returns>A StatSO representing the named stat</returns>
-        public StatSO GetOrCreateStat(StatSO template, float? value = null)
+        public StatSO GetOrCreateStat(StatSO template, float? normalizedValue = null)
         {
             StatSO stat = GetStat(template);
             if (stat != null) return stat;
 
             stat = Instantiate(template);
             stat.name = template.name;
-            if (value != null)
+            if (normalizedValue != null)
             {
-                stat.NormalizedValue = (float)value;
+                if (normalizedValue < 0 || normalizedValue > 1)
+                {
+                    Debug.LogError($"Stat {stat.name} is being initialized to a value of {normalizedValue} which is outside the range of 0 to 1, that is, it is not normalized. Clamping to 0 to 1.");
+                }
+                stat.NormalizedValue = (float)normalizedValue;
             }
 
             m_Stats.Add(stat);
