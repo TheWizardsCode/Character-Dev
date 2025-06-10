@@ -28,13 +28,11 @@ public class ObstacleListSingleton : WizardsCode.BackgroundAI.AbstractSingleton<
 
     public NavMeshObstacle[] getObstaclesWithTag(string tag)
     {
-        try
+        if (obstaclesByTag.TryGetValue(tag, out NavMeshObstacle[] obstacles))
         {
-            return obstaclesByTag[tag];
-        } catch
-        {
-            return new NavMeshObstacle[] { };
+            return obstacles;
         }
+        return new NavMeshObstacle[] { };
     }
 
     public void compileObstacleList(string tag = "")
