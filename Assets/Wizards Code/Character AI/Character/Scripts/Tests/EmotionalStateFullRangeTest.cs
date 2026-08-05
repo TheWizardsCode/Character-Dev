@@ -184,6 +184,134 @@ namespace WizardsCode.Character.Tests
             }
         }
 
+        [Test]
+        public void SomeSliderCombinationReachesExactlyZeroAndOne_OnEachAxis()
+        {
+            // The axes must actually REACH the extremes, not merely stay within
+            // [0, 1]. Scan every combination of sliders at 0 or 1 (2^5 = 32) and
+            // assert the full range is attainable on both axes. (This would fail
+            // if, e.g., the multipliers were weakened so the best achievable
+            // activation were only 0.75.)
+            float maxActivation = ComputeAxisExtreme(true, maximize: true);
+            float minActivation = ComputeAxisExtreme(true, maximize: false);
+            Assert.AreEqual(1f, maxActivation, Epsilon,
+                "Some slider combination must drive activationValue to exactly 1.0; " +
+                $"best achievable was {maxActivation}.");
+            Assert.AreEqual(0f, minActivation, Epsilon,
+                "Some slider combination must drive activationValue to exactly 0.0; " +
+                $"best achievable was {minActivation}.");
+
+            float maxEnjoyment = ComputeAxisExtreme(false, maximize: true);
+            float minEnjoyment = ComputeAxisExtreme(false, maximize: false);
+            Assert.AreEqual(1f, maxEnjoyment, Epsilon,
+                "Some slider combination must drive enjoymentValue to exactly 1.0; " +
+                $"best achievable was {maxEnjoyment}.");
+            Assert.AreEqual(0f, minEnjoyment, Epsilon,
+                "Some slider combination must drive enjoymentValue to exactly 0.0; " +
+                $"best achievable was {minEnjoyment}.");
+        }
+
+        [Test]
+        public void DominantSliderSweepsCoverEveryValue_OnEachAxis()
+        {
+            // For each axis, sweeping the single strongest positive and strongest
+            // negative slider from 0 to 1 must cover every value in between with no
+            // gaps: monotonic, consecutive-step delta bounded by step*|multiplier|,
+            // starting at neutral (0.5) and reaching the extreme exactly.
+            foreach (bool activation in new[] { true, false })
+            {
+                float bestPositive = float.NegativeInfinity;
+                float bestNegative = float.PositiveInfinity;
+                EmotionType positiveType = Multipliers[0].Type;
+                EmotionType negativeType = Multipliers[0].Type;
+
+                foreach ((EmotionType type, float a, float e) in Multipliers)
+                {
+                    float m = activation ? a : e;
+                    if (m > bestPositive) { bestPositive = m; positiveType = type; }
+                    if (m < bestNegative) { bestNegative = m; negativeType = type; }
+                }
+
+                string axisName = activation ? "activationValue" : "enjoymentValue";
+                const int steps = 100;
+                float stepSize = 1f / steps;
+
+                // Positive sweep: non-decreasing, no gaps, reaches exactly 1.0.
+                float prev = float.NaN;
+                float first = 0f;
+                for (int s = 0; s <= steps; s++)
+                {
+                    SetAllEmotions(0f);
+                    m_State.SetEmotionValue(positiveType, s * stepSize);
+                    float v = activation ? m_State.activationValue : m_State.enjoymentValue;
+                    if (s == 0) { first = v; }
+                    else
+                    {
+                        Assert.GreaterOrEqual(v, prev - Epsilon,
+                            $"{positiveType} sweep on {axisName} must be non-decreasing at step {s}.");
+                        Assert.LessOrEqual(Mathf.Abs(v - prev), bestPositive * stepSize + Epsilon,
+                            $"{positiveType} sweep on {axisName} has a gap of {Mathf.Abs(v - prev)} at step {s} " +
+                            "— not every value in between is reachable.");
+                    }
+                    prev = v;
+                }
+                Assert.AreEqual(0.5f, first, Epsilon,
+                    $"{positiveType} sweep must start at neutral 0.5 on {axisName}.");
+                Assert.AreEqual(1f, prev, Epsilon,
+                    $"{positiveType} sweep must reach exactly 1.0 on {axisName} (got {prev}).");
+
+                // Negative sweep: non-increasing, no gaps, reaches exactly 0.0.
+                prev = float.NaN;
+                for (int s = 0; s <= steps; s++)
+                {
+                    SetAllEmotions(0f);
+                    m_State.SetEmotionValue(negativeType, s * stepSize);
+                    float v = activation ? m_State.activationValue : m_State.enjoymentValue;
+                    if (s == 0) { first = v; }
+                    else
+                    {
+                        Assert.LessOrEqual(v, prev + Epsilon,
+                            $"{negativeType} sweep on {axisName} must be non-increasing at step {s}.");
+                        Assert.LessOrEqual(Mathf.Abs(v - prev), Mathf.Abs(bestNegative) * stepSize + Epsilon,
+                            $"{negativeType} sweep on {axisName} has a gap of {Mathf.Abs(v - prev)} at step {s} " +
+                            "— not every value in between is reachable.");
+                    }
+                    prev = v;
+                }
+                Assert.AreEqual(0.5f, first, Epsilon,
+                    $"{negativeType} sweep must start at neutral 0.5 on {axisName}.");
+                Assert.AreEqual(0f, prev, Epsilon,
+                    $"{negativeType} sweep must reach exactly 0.0 on {axisName} (got {prev}).");
+            }
+        }
+
+        /// <summary>
+        /// Returns the best (max or min) derived value achievable over every
+        /// combination of sliders at 0 or 1 (2^5 = 32 combinations).
+        /// </summary>
+        private float ComputeAxisExtreme(bool activation, bool maximize)
+        {
+            float best = maximize ? float.NegativeInfinity : float.PositiveInfinity;
+
+            int combinationCount = 1 << Multipliers.Length;
+            for (int mask = 0; mask < combinationCount; mask++)
+            {
+                SetAllEmotions(0f);
+                for (int i = 0; i < Multipliers.Length; i++)
+                {
+                    if ((mask & (1 << i)) != 0)
+                    {
+                        m_State.SetEmotionValue(Multipliers[i].Type, 1f);
+                    }
+                }
+
+                float value = activation ? m_State.activationValue : m_State.enjoymentValue;
+                best = maximize ? Mathf.Max(best, value) : Mathf.Min(best, value);
+            }
+
+            return best;
+        }
+
         private void SetAllEmotions(float value)
         {
             foreach ((EmotionType type, _, _) in Multipliers)
