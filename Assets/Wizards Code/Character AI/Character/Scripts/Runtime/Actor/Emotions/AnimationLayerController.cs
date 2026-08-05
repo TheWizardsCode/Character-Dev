@@ -1,4 +1,4 @@
-﻿#if CMS_SALSA
+#if CMS_SALSA
 using CrazyMinnow.SALSA;
 #endif
 using System;
@@ -44,6 +44,8 @@ namespace WizardsCode.AnimationControl
 
         void Update()
         {
+            if (m_animator == null) return;
+
             SetTalkingLayerWeight();
 
             float currentWeight = m_animator.GetLayerWeight(TALKING_LAYER_INDEX);
@@ -70,7 +72,7 @@ namespace WizardsCode.AnimationControl
         {
             get
             {
-                return m_salsa.IsSALSAing;
+                return m_salsa != null && m_salsa.IsSALSAing;
             }
 
             set

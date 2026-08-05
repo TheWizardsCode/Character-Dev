@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.InputSystem;
 
 namespace WizardsCode.Character
 {
@@ -46,37 +47,50 @@ namespace WizardsCode.Character
 
 		void Update()
 		{
-			if (Input.GetMouseButton(1))
+			if (Mouse.current != null && Mouse.current.rightButton.isPressed)
 			{
-				rotationX += Input.GetAxis("Mouse X") * cameraSensitivity * Time.deltaTime;
-				rotationY += Input.GetAxis("Mouse Y") * cameraSensitivity * Time.deltaTime;
+				rotationX += Mouse.current.delta.x.ReadValue() * (cameraSensitivity * 0.05f) * Time.deltaTime;
+				rotationY += Mouse.current.delta.y.ReadValue() * (cameraSensitivity * 0.05f) * Time.deltaTime;
 				rotationY = Mathf.Clamp(rotationY, -90, 90);
 			}
 
 			transform.localRotation = Quaternion.AngleAxis(rotationX, Vector3.up);
 			transform.localRotation *= Quaternion.AngleAxis(rotationY, Vector3.left);
 
-			if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+			float horizontalInput = 0f;
+			float verticalInput = 0f;
+			if (Keyboard.current != null)
 			{
-				transform.position += transform.forward * (normalMoveSpeed * fastMoveFactor) * Input.GetAxis("Vertical") * Time.deltaTime;
-				transform.position += transform.right * (normalMoveSpeed * fastMoveFactor) * Input.GetAxis("Horizontal") * Time.deltaTime;
+				if (Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed) horizontalInput += 1f;
+				if (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed) horizontalInput -= 1f;
+				if (Keyboard.current.wKey.isPressed || Keyboard.current.upArrowKey.isPressed) verticalInput += 1f;
+				if (Keyboard.current.sKey.isPressed || Keyboard.current.downArrowKey.isPressed) verticalInput -= 1f;
 			}
-			else if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+
+			bool isShiftPressed = Keyboard.current != null && (Keyboard.current.leftShiftKey.isPressed || Keyboard.current.rightShiftKey.isPressed);
+			bool isCtrlPressed = Keyboard.current != null && (Keyboard.current.leftCtrlKey.isPressed || Keyboard.current.rightCtrlKey.isPressed);
+
+			if (isShiftPressed)
 			{
-				transform.position += transform.forward * (normalMoveSpeed * slowMoveFactor) * Input.GetAxis("Vertical") * Time.deltaTime;
-				transform.position += transform.right * (normalMoveSpeed * slowMoveFactor) * Input.GetAxis("Horizontal") * Time.deltaTime;
+				transform.position += transform.forward * (normalMoveSpeed * fastMoveFactor) * verticalInput * Time.deltaTime;
+				transform.position += transform.right * (normalMoveSpeed * fastMoveFactor) * horizontalInput * Time.deltaTime;
+			}
+			else if (isCtrlPressed)
+			{
+				transform.position += transform.forward * (normalMoveSpeed * slowMoveFactor) * verticalInput * Time.deltaTime;
+				transform.position += transform.right * (normalMoveSpeed * slowMoveFactor) * horizontalInput * Time.deltaTime;
 			}
 			else
 			{
-				transform.position += transform.forward * normalMoveSpeed * Input.GetAxis("Vertical") * Time.deltaTime;
-				transform.position += transform.right * normalMoveSpeed * Input.GetAxis("Horizontal") * Time.deltaTime;
+				transform.position += transform.forward * normalMoveSpeed * verticalInput * Time.deltaTime;
+				transform.position += transform.right * normalMoveSpeed * horizontalInput * Time.deltaTime;
 			}
 
 
-			if (Input.GetKey(KeyCode.E)) { transform.position += transform.up * climbSpeed * Time.deltaTime; }
-			if (Input.GetKey(KeyCode.Q)) { transform.position -= transform.up * climbSpeed * Time.deltaTime; }
+			if (Keyboard.current != null && Keyboard.current.eKey.isPressed) { transform.position += transform.up * climbSpeed * Time.deltaTime; }
+			if (Keyboard.current != null && Keyboard.current.qKey.isPressed) { transform.position -= transform.up * climbSpeed * Time.deltaTime; }
 
-			if (Input.GetKeyDown(KeyCode.End))
+			if (Keyboard.current != null && Keyboard.current.endKey.wasPressedThisFrame)
 			{
 				if (Cursor.lockState == CursorLockMode.Locked)
 				{

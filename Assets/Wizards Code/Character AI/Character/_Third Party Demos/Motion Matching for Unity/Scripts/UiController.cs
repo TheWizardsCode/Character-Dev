@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
+using UnityEngine.InputSystem;
 
 namespace WizardsCode.Character.MxM
 {
@@ -33,12 +34,12 @@ namespace WizardsCode.Character.MxM
 
         public void Update()
         {
-            if (Input.GetKeyDown(KeyCode.H))
+            if (Keyboard.current != null && Keyboard.current.hKey.wasPressedThisFrame)
             {
                 m_UI.gameObject.SetActive(!m_UI.gameObject.activeSelf);
             }
 
-            if (Input.GetKeyDown(KeyCode.N))
+            if (Keyboard.current != null && Keyboard.current.nKey.wasPressedThisFrame)
             {
                 m_CharacterIndex++;
                 if (m_CharacterIndex >= m_Characters.Count)

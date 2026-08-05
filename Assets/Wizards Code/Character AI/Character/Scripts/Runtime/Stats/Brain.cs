@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
@@ -182,7 +182,7 @@ namespace WizardsCode.Stats {
         {
             get
             {
-                if (!Actor.isIdle) return false;
+                if (Actor == null || !Actor.isIdle) return false;
 
                 if (ActiveBlockingBehaviour == null
                     && Time.timeSinceLevelLoad > m_TimeOfNextBehaviourUpdate)

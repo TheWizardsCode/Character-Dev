@@ -1,8 +1,9 @@
-﻿using System.Collections;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 using WizardsCode.Character;
 using Random = UnityEngine.Random;
 
@@ -103,7 +104,11 @@ namespace WizardsCode.Ink
 
             while (m_CurrentText.maxVisibleCharacters < m_CurrentText.text.Length)
             {
-                if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Mouse0) || Input.GetKeyDown(KeyCode.Mouse1))
+                bool skipPressed = false;
+                if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame) skipPressed = true;
+                if (Mouse.current != null && (Mouse.current.leftButton.wasPressedThisFrame || Mouse.current.rightButton.wasPressedThisFrame)) skipPressed = true;
+
+                if (skipPressed)
                 {
                     m_CurrentText.maxVisibleCharacters = m_CurrentText.text.Length;
                     break;

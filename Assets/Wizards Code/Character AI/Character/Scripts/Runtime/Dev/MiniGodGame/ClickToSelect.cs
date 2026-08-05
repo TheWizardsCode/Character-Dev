@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using WizardsCode.Stats;
 
 namespace WizardsCode.Character
@@ -23,7 +24,7 @@ namespace WizardsCode.Character
 
         void Update()
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
             {
                 if (EventSystem.current.IsPointerOverGameObject())
                 {
@@ -33,7 +34,7 @@ namespace WizardsCode.Character
                 RaycastHit hit;
 
                 //OPTIMIZATION: don't use camera.main
-                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100))
+                if (Physics.Raycast(Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue()), out hit, 100))
                 {
                     Brain candidate = hit.collider.transform.root.GetComponentInChildren<Brain>();
                     if (candidate)

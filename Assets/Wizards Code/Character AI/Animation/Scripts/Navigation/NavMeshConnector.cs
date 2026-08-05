@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.InputSystem;
 
 namespace WizardsCode.AnimationControl
 {
@@ -63,9 +64,9 @@ namespace WizardsCode.AnimationControl
         void Update()
         {
 #if UNITY_EDITOR
-            if (m_EnableClickToMove && Input.GetMouseButtonDown(0))
+            if (m_EnableClickToMove && Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
                 if (Physics.Raycast(ray.origin, ray.direction, out hitInfo))
                     m_Agent.destination = hitInfo.point;
             }

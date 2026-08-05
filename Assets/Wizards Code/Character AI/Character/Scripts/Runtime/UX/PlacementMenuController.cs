@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 using TMPro;
 using UnityEngine.UI;
 using System;
+using UnityEngine.InputSystem;
 
 namespace WizardsCode.Character.UX
 {
@@ -34,7 +35,7 @@ namespace WizardsCode.Character.UX
 
         private void ShowMenu()
         {
-            m_PlacementPosition = Input.mousePosition;
+            m_PlacementPosition = Mouse.current != null ? (Vector3)Mouse.current.position.ReadValue() : Vector3.zero;
             if (m_PlacementPosition.x + m_MenuRect.rect.width > Screen.width)
             {
                 m_PlacementPosition.x -= m_MenuRect.rect.width - 10;
@@ -99,7 +100,7 @@ namespace WizardsCode.Character.UX
                 CreateMenu();
             }
 
-            if (Input.GetMouseButtonDown(0))
+            if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
             {
                 if (EventSystem.current.IsPointerOverGameObject())
                 {
@@ -107,7 +108,7 @@ namespace WizardsCode.Character.UX
                 }
 
                 RaycastHit hit;
-                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100))
+                if (Physics.Raycast(Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue()), out hit, 100))
                 {
                     if (GameObject.ReferenceEquals(hit.collider.gameObject, ground))
                     {

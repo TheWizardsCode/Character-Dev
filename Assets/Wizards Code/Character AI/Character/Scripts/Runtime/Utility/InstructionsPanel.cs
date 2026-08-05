@@ -1,8 +1,9 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace WizardsCode.BackgroundAI.UI
 {
@@ -37,7 +38,7 @@ namespace WizardsCode.BackgroundAI.UI
                 documentationTextGUI.text = documentation.text;
             }
 
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
             {
                 gameObject.SetActive(false);
                 Time.timeScale = 1;
