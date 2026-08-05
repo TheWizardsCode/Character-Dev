@@ -219,12 +219,13 @@ namespace WizardsCode.Character
 
         /// <summary>
         /// The value of this emotion from 0 to 1. 0 is neutral.
-        /// Serialised via the auto-property backing field so emotion values persist
-        /// in prefabs/scenes (matches the historical <c>value:</c> YAML keys).
-        /// Clamped to 0..1 at assignment points (SetEmotionValue / constructor).
+        /// Serialised under the historical <c>value:</c> key so existing prefabs
+        /// (Male UMA with Emotions, Neo with Emotions, Human-Custom) load their
+        /// configured emotion values unchanged. Clamped to 0..1 at assignment
+        /// points (SetEmotionValue / constructor).
         /// </summary>
-        [field: SerializeField, Tooltip("The value of this emotion from 0 to 1, 0 is neutral.")]
-        public float value { get; set; }
+        [Tooltip("The value of this emotion from 0 to 1, 0 is neutral.")]
+        public float value;
         public float activationMultiplier;
         public float enjoymentMultiplier;
 
