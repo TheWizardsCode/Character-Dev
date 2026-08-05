@@ -69,8 +69,51 @@ namespace WizardsCode.AnimationControl
                 AddRandomization(animator);
             }
 
-            animator.SetFloat(activationParamHash, Mathf.SmoothStep(startActivation, endActivation, m_PoseChangeTime * Time.deltaTime));
-            animator.SetFloat(enjoymentParamHash, Mathf.SmoothStep(startEnjoyment, endEnjoyment, m_PoseChangeTime * Time.deltaTime));
+            // Interpolate from the captured start values toward the current targets.
+            // Progress is measured in elapsed time, so the animator parameters track
+            // the emotional state within m_PoseChangeTime regardless of frame rate.
+            PoseChangeValues pose = ComputePoseValues(
+                startActivation, endActivation,
+                startEnjoyment, endEnjoyment,
+                m_timeSinceLastPoseChange, m_PoseChangeTime);
+            animator.SetFloat(activationParamHash, pose.activation);
+            animator.SetFloat(enjoymentParamHash, pose.enjoyment);
+        }
+
+        /// <summary>
+        /// The interpolated animator parameter values for a single pose-change update.
+        /// </summary>
+        public struct PoseChangeValues
+        {
+            public float activation;
+            public float enjoyment;
+        }
+
+        /// <summary>
+        /// Computes the interpolated Activation/Enjoyment values for a pose change.
+        /// Progress is measured as <c>elapsedTime / poseChangeTime</c> (clamped to
+        /// [0,1]), which makes the interpolation frame-rate independent: after
+        /// <c>poseChangeTime</c> seconds the values reach the targets regardless of
+        /// the frame rate.
+        /// </summary>
+        /// <param name="startActivation">The Activation value when the pose change began.</param>
+        /// <param name="endActivation">The target Activation value.</param>
+        /// <param name="startEnjoyment">The Enjoyment value when the pose change began.</param>
+        /// <param name="endEnjoyment">The target Enjoyment value.</param>
+        /// <param name="elapsedTime">Time (in seconds) since the pose change began.</param>
+        /// <param name="poseChangeTime">How long the pose change should take, in seconds.</param>
+        public static PoseChangeValues ComputePoseValues(
+            float startActivation, float endActivation,
+            float startEnjoyment, float endEnjoyment,
+            float elapsedTime, float poseChangeTime)
+        {
+            float t = poseChangeTime > 0f ? elapsedTime / poseChangeTime : 1f;
+            t = Mathf.Clamp01(t);
+
+            PoseChangeValues values;
+            values.activation = Mathf.SmoothStep(startActivation, endActivation, t);
+            values.enjoyment = Mathf.SmoothStep(startEnjoyment, endEnjoyment, t);
+            return values;
         }
 
         /// <summary>
