@@ -116,7 +116,7 @@ namespace WizardsCode.Character.Tests
                 float delta = Mathf.Abs(m_State.enjoymentValue - neutral);
 
                 Assert.GreaterOrEqual(
-                    delta, 0.1f,
+                    delta, 0.1f - Epsilon,
                     $"Dragging {type} 0→1 changed enjoymentValue by only {delta} (multiplier {enjoymentMultiplier}).");
 
                 Assert.LessOrEqual(

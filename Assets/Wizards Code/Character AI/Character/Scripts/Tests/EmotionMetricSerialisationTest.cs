@@ -52,7 +52,14 @@ namespace WizardsCode.Character.Tests
             EmotionalState state = source.AddComponent<EmotionalState>();
             state.emotions.Add(new EmotionMetric(EmotionType.Interest, 0.4f, 0.45f, 0.2f));
 
-            var serializedObject = new SerializedObject(state);
+            // Inspect the serialised representation via the prefab round-trip so
+            // the property path matches what Unity writes to disk for the
+            // auto-property backing field ([field: SerializeField] => key 'value').
+            PrefabUtility.SaveAsPrefabAsset(source, TestPrefabPath);
+            Object.DestroyImmediate(source);
+
+            GameObject loaded = AssetDatabase.LoadAssetAtPath<GameObject>(TestPrefabPath);
+            SerializedObject serializedObject = new SerializedObject(loaded);
             SerializedProperty valueProperty =
                 serializedObject.FindProperty("emotions.Array.data[0].value");
 
@@ -61,7 +68,8 @@ namespace WizardsCode.Character.Tests
                 "If EmotionMetric.value is intentionally excluded from persistence this test documents that decision explicitly.");
             Assert.AreEqual(0.4f, valueProperty.floatValue, 0.001f);
 
-            Object.DestroyImmediate(source);
+            AssetDatabase.DeleteAsset(TestPrefabPath);
+            Object.DestroyImmediate(loaded);
         }
     }
 }
