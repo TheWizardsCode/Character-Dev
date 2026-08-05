@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -47,6 +47,7 @@ namespace WizardsCode.Character.UI
                 control.name = name;
                 control.GetComponentInChildren<Text>().text = name;
                 Slider slider = control.GetComponentInChildren<Slider>();
+                slider.value = m_EmotionalState.emotions[i].value;
                 slider.onValueChanged.AddListener(delegate { SetEmotionValue(name, slider.value); });
                 control.SetActive(true);
             }
@@ -60,16 +61,30 @@ namespace WizardsCode.Character.UI
 
         void Update()
         {
-            m_AnimatorActivationValueText.text = m_Animator.GetFloat("Activation").ToString("0.000");
-            if (m_ActivationValueText != null)
+            if (m_Animator != null)
             {
-                m_ActivationValueText.text = m_EmotionalState.activationValue.ToString("0.000");
+                if (m_AnimatorActivationValueText != null)
+                {
+                    m_AnimatorActivationValueText.text = m_Animator.GetFloat("Activation").ToString("0.000");
+                }
+
+                if (m_AnimatorEnjoymentValueText != null)
+                {
+                    m_AnimatorEnjoymentValueText.text = m_Animator.GetFloat("Enjoyment").ToString("0.000");
+                }
             }
 
-            m_AnimatorEnjoymentValueText.text = m_Animator.GetFloat("Enjoyment").ToString("0.000");
-            if (m_EnjoymentValueText != null)
+            if (m_EmotionalState != null)
             {
-                m_EnjoymentValueText.text = m_EmotionalState.enjoymentValue.ToString("0.000");
+                if (m_ActivationValueText != null)
+                {
+                    m_ActivationValueText.text = m_EmotionalState.activationValue.ToString("0.000");
+                }
+
+                if (m_EnjoymentValueText != null)
+                {
+                    m_EnjoymentValueText.text = m_EmotionalState.enjoymentValue.ToString("0.000");
+                }
             }
         }
     }
