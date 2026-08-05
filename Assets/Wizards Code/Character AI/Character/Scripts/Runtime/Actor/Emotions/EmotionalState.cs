@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,7 +22,6 @@ namespace WizardsCode.Character
         [SerializeField, Tooltip("The Animator boolean parameter name that will cause the character to crouch when moving/idle.")]
         string m_CrouchParameterName = "Crouch";
 
-        [HideInInspector]
         public List<EmotionMetric> emotions = new List<EmotionMetric>();
 
         Animator m_Animator;
@@ -69,7 +68,9 @@ namespace WizardsCode.Character
             {
                 if (emotions[i].type == type)
                 {
-                    emotions[i].value = value;
+                    // Values are 0..1 with 0 neutral (matches the UI sliders, the
+                    // EmotionMetric docstring and the 0..1 animator blend tree range).
+                    emotions[i].value = Mathf.Clamp01(value);
                     return;
                 }
             }
@@ -84,10 +85,13 @@ namespace WizardsCode.Character
         {
             get {
                 // TODO Cache this?
+                // Emotion values are 0..1 (0 = neutral) and multipliers are signed
+                // (-1..1), so a single slider at max moves the derived value by its
+                // multiplier and the full 0..1 derived range is reachable.
                 float activation = 0.5f;
                 for (int i = 0; i < emotions.Count; i++)
                 {
-                    activation += emotions[i].value * emotions[i].activationMultiplier * 0.5f;
+                    activation += emotions[i].value * emotions[i].activationMultiplier;
                 }
                 return Mathf.Clamp01(activation);
             }
@@ -135,10 +139,11 @@ namespace WizardsCode.Character
             get
             {
                 // TODO Cache this?
+                // See activationValue for the aggregation rationale.
                 float enjoyment = 0.5f;
                 for (int i = 0; i < emotions.Count; i++)
                 {
-                    enjoyment += emotions[i].value * emotions[i].enjoymentMultiplier * 0.5f;
+                    enjoyment += emotions[i].value * emotions[i].enjoymentMultiplier;
                 }
                 return Mathf.Clamp01(enjoyment);
             }
@@ -193,10 +198,12 @@ namespace WizardsCode.Character
                 result -= GetEmotionValue(EmotionType.Fear);
                 result += GetEmotionValue(EmotionType.Interest) / 2;
                 result -= GetEmotionValue(EmotionType.Sadness) / 2;
-                result /= 4;
 
-                // we now have a result between -1 and 1, so normalize it
-                return (result + 1) / 2;
+                // With emotion values in 0..1 the raw result spans [-1.5, 1.5];
+                // normalise it so the full 0..1 output range is reachable
+                // (0 = as good as invisible, 1 = can't miss them).
+                result = (result + 1.5f) / 3f;
+                return Mathf.Clamp01(result);
             }
         }
     }
@@ -209,7 +216,15 @@ namespace WizardsCode.Character
     public class EmotionMetric
     {
         public EmotionType type; // The name of the emotion
-        float m_value; // the value, from 0 to 1 of this emotion
+
+        /// <summary>
+        /// The value of this emotion from 0 to 1. 0 is neutral.
+        /// Serialised via the auto-property backing field so emotion values persist
+        /// in prefabs/scenes (matches the historical <c>value:</c> YAML keys).
+        /// Clamped to 0..1 at assignment points (SetEmotionValue / constructor).
+        /// </summary>
+        [field: SerializeField, Tooltip("The value of this emotion from 0 to 1, 0 is neutral.")]
+        public float value { get; set; }
         public float activationMultiplier;
         public float enjoymentMultiplier;
 
@@ -224,21 +239,9 @@ namespace WizardsCode.Character
         public EmotionMetric(EmotionType type, float value, float activationMultiplier, float enjoymentMultiplier)
         {
             this.type = type;
-            this.value = value;
+            this.value = Mathf.Clamp01(value);
             this.activationMultiplier = activationMultiplier;
             this.enjoymentMultiplier = enjoymentMultiplier;
-        }
-
-        /// <summary>
-        /// Get or set the value of this emotion. The value is clamped between -1 and +1.
-        /// </summary>
-        public float value
-        {
-            get { return m_value; }
-            set
-            {
-                m_value = Mathf.Clamp(m_value + value, -1f, 1f);
-            }
         }
     }
 }
