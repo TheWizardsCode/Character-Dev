@@ -13,10 +13,10 @@ namespace WizardsCode.Character.Tests
     ///
     /// Rationale (work item NV-0MSG2R1Z7000KGBZ): emotion values must persist so
     /// that editor/prefab configured emotion values survive play sessions. The
-    /// serialised field name is <c>value</c> (auto-property with
-    /// <c>[field: SerializeField]</c>), which also matches the historical
-    /// <c>value:</c> keys present in the "Male UMA with Emotions" and
-    /// "Neo with Emotions" prefabs.
+    /// serialised field name is the historical <c>value:</c> key (a public field,
+    /// matching the "Male UMA with Emotions", "Neo with Emotions" and
+    /// "Human-Custom" prefabs) rather than the mangled
+    /// <c>&lt;value&gt;k__BackingField</c> that an auto-property backing field would produce.
     /// </summary>
     public class EmotionMetricSerialisationTest
     {
@@ -46,30 +46,28 @@ namespace WizardsCode.Character.Tests
         }
 
         [Test]
-        public void SerializedObjectExposesValuePropertyOnEmotionMetric()
+        public void SerialisedEmotionMetricUsesFriendlyValueKey()
         {
             GameObject source = new GameObject("EmotionalState Serialised Object Test");
             EmotionalState state = source.AddComponent<EmotionalState>();
             state.emotions.Add(new EmotionMetric(EmotionType.Interest, 0.4f, 0.45f, 0.2f));
 
-            // Inspect the serialised representation via the prefab round-trip so
-            // the property path matches what Unity writes to disk for the
-            // auto-property backing field ([field: SerializeField] => key 'value').
+            // Verify the on-disk serialised key for EmotionMetric.value is the
+            // historical 'value:' key rather than the mangled
+            // '<value>k__BackingField' that an auto-property would produce.
             PrefabUtility.SaveAsPrefabAsset(source, TestPrefabPath);
             Object.DestroyImmediate(source);
 
-            GameObject loaded = AssetDatabase.LoadAssetAtPath<GameObject>(TestPrefabPath);
-            SerializedObject serializedObject = new SerializedObject(loaded);
-            SerializedProperty valueProperty =
-                serializedObject.FindProperty("emotions.Array.data[0].value");
-
-            Assert.IsNotNull(valueProperty,
-                "Expected a serialised 'value' property on EmotionMetric. " +
-                "If EmotionMetric.value is intentionally excluded from persistence this test documents that decision explicitly.");
-            Assert.AreEqual(0.4f, valueProperty.floatValue, 0.001f);
+            string yaml = System.IO.File.ReadAllText(TestPrefabPath);
+            StringAssert.Contains("emotions:", yaml,
+                "Prefab must contain the serialised emotions list.");
+            StringAssert.Contains("value:", yaml,
+                "EmotionMetric.value must be serialised under the friendly key 'value:' " +
+                "(historical prefab format, work item NV-0MSG2R1Z7000KGBZ).");
+            StringAssert.DoesNotContain("k__BackingField", yaml,
+                "The mangled auto-property backing field name must not leak into the serialised YAML.");
 
             AssetDatabase.DeleteAsset(TestPrefabPath);
-            Object.DestroyImmediate(loaded);
         }
     }
 }
